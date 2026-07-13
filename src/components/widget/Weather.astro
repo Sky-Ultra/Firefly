@@ -1,0 +1,302 @@
+---
+import { Icon } from "astro-icon/components";
+import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
+import type { WidgetComponentConfig } from "@/types/config";
+
+interface Props {
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetComponentConfig;
+}
+
+const { class: className, style } = Astro.props;
+const config = visitorWidgetsConfig.weather;
+---
+
+<weather-widget
+	class:list={["block card-base p-4", className]}
+	style={style}
+	data-location-api={config.locationApi}
+	data-forecast-api={config.forecastApi}
+	data-weather-cache-duration={config.weatherCacheDuration}
+	data-location-cache-duration={config.locationCacheDuration}
+	data-fallback-name={config.fallbackLocation.name}
+	data-fallback-latitude={config.fallbackLocation.latitude}
+	data-fallback-longitude={config.fallbackLocation.longitude}
+>
+	<div class="mb-3 ml-4 flex items-center gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 relative before:absolute before:left-[-16px] before:h-4 before:w-1 before:rounded-md before:bg-(--primary)">
+		<Icon is:inline name="material-symbols:location-on-outline-rounded" class="text-(--primary)" aria-hidden="true" />
+		<span>天气预报</span>
+	</div>
+	<div class="flex items-start justify-between gap-4">
+		<div class="min-w-0 flex-1">
+			<p class="mb-1 break-words text-sm font-semibold text-neutral-700 dark:text-neutral-200" data-weather-location>
+				正在获取所在地区…
+			</p>
+			<p class="mb-3 text-xs text-neutral-400" data-weather-status>正在连接天气服务</p>
+			<div class="flex items-end gap-3">
+				<div class="font-mono text-[2.6rem] font-bold leading-none text-neutral-950 dark:text-white">
+					<span data-weather-temperature>--</span><span class="ml-1 text-base font-medium">°C</span>
+				</div>
+				<strong class="pb-1 text-base text-neutral-900 dark:text-neutral-100" data-weather-description>--</strong>
+			</div>
+		</div>
+		<div class="relative mt-8 h-12 w-12 shrink-0 text-(--primary)" aria-hidden="true">
+			<Icon is:inline name="material-symbols:light-mode-outline-rounded" class="absolute inset-0 hidden text-5xl" data-weather-icon="clear-day" />
+			<Icon is:inline name="material-symbols:clear-night" class="absolute inset-0 hidden text-5xl" data-weather-icon="clear-night" />
+			<Icon is:inline name="material-symbols:partly-cloudy-day-outline" class="absolute inset-0 hidden text-5xl" data-weather-icon="partly-cloudy-day" />
+			<Icon is:inline name="material-symbols:partly-cloudy-night-outline" class="absolute inset-0 hidden text-5xl" data-weather-icon="partly-cloudy-night" />
+			<Icon is:inline name="material-symbols:cloud-outline" class="absolute inset-0 hidden text-5xl" data-weather-icon="cloudy" />
+			<Icon is:inline name="material-symbols:foggy" class="absolute inset-0 hidden text-5xl" data-weather-icon="fog" />
+			<Icon is:inline name="material-symbols:rainy" class="absolute inset-0 hidden text-5xl" data-weather-icon="rain" />
+			<Icon is:inline name="material-symbols:weather-snowy" class="absolute inset-0 hidden text-5xl" data-weather-icon="snow" />
+			<Icon is:inline name="material-symbols:thunderstorm-outline" class="absolute inset-0 hidden text-5xl" data-weather-icon="thunderstorm" />
+		</div>
+	</div>
+</weather-widget>
+
+<script>
+	type LocationData = {
+		name: string;
+		latitude: number;
+		longitude: number;
+		isFallback: boolean;
+	};
+
+	type WeatherData = LocationData & {
+		temperature: number;
+		weatherCode: number;
+		isDay: boolean;
+	};
+
+	type CacheEntry<T> = {
+		expiresAt: number;
+		value: T;
+	};
+
+	type IpLocationResponse = {
+		success?: boolean;
+		country?: string;
+		region?: string;
+		city?: string;
+		latitude?: number;
+		longitude?: number;
+	};
+
+	type ForecastResponse = {
+		current?: {
+			temperature_2m?: number;
+			weather_code?: number;
+			is_day?: number;
+		};
+	};
+
+	const weatherRuntime = window as Window & {
+		__fireflyWeatherPromise?: Promise<WeatherData>;
+	};
+
+	const WEATHER_CACHE_KEY = "firefly-weather-cache-v1";
+	const LOCATION_CACHE_KEY = "firefly-location-cache-v1";
+
+	function readCache<T>(key: string): T | null {
+		try {
+			const raw = localStorage.getItem(key);
+			if (!raw) return null;
+			const entry = JSON.parse(raw) as CacheEntry<T>;
+			if (entry.expiresAt <= Date.now()) {
+				localStorage.removeItem(key);
+				return null;
+			}
+			return entry.value;
+		} catch {
+			return null;
+		}
+	}
+
+	function writeCache<T>(key: string, value: T, duration: number) {
+		try {
+			localStorage.setItem(
+				key,
+				JSON.stringify({ expiresAt: Date.now() + duration, value }),
+			);
+		} catch {
+			// 隐私模式或存储被禁用时，继续使用本次请求结果。
+		}
+	}
+
+	async function fetchJson<T>(url: string, timeout = 8000): Promise<T> {
+		const controller = new AbortController();
+		const timer = window.setTimeout(() => controller.abort(), timeout);
+		try {
+			const response = await fetch(url, {
+				signal: controller.signal,
+				headers: { Accept: "application/json" },
+			});
+			if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+			return (await response.json()) as T;
+		} finally {
+			window.clearTimeout(timer);
+		}
+	}
+
+	function getFallbackLocation(widget: HTMLElement): LocationData {
+		return {
+			name: widget.dataset.fallbackName || "Antarctica",
+			latitude: Number(widget.dataset.fallbackLatitude) || -77.8419,
+			longitude: Number(widget.dataset.fallbackLongitude) || 166.6863,
+			isFallback: true,
+		};
+	}
+
+	async function getLocation(widget: HTMLElement): Promise<LocationData> {
+		const cached = readCache<LocationData>(LOCATION_CACHE_KEY);
+		if (cached) return cached;
+
+		try {
+			const data = await fetchJson<IpLocationResponse>(
+				widget.dataset.locationApi || "https://ipwho.is/",
+			);
+			if (
+				data.success === false ||
+				typeof data.latitude !== "number" ||
+				typeof data.longitude !== "number"
+			) {
+				throw new Error("IP location unavailable");
+			}
+
+			const nameParts = [data.country, data.region, data.city].filter(
+				(value, index, values): value is string =>
+					Boolean(value) && values.indexOf(value) === index,
+			);
+			const location: LocationData = {
+				name: nameParts.join(" · ") || "当前位置",
+				latitude: data.latitude,
+				longitude: data.longitude,
+				isFallback: false,
+			};
+			writeCache(
+				LOCATION_CACHE_KEY,
+				location,
+				Number(widget.dataset.locationCacheDuration) || 21600000,
+			);
+			return location;
+		} catch {
+			return getFallbackLocation(widget);
+		}
+	}
+
+	async function loadWeather(widget: HTMLElement): Promise<WeatherData> {
+		const cached = readCache<WeatherData>(WEATHER_CACHE_KEY);
+		if (cached) return cached;
+
+		const location = await getLocation(widget);
+		const endpoint = new URL(
+			widget.dataset.forecastApi ||
+				"https://api.open-meteo.com/v1/forecast",
+		);
+		endpoint.searchParams.set("latitude", String(location.latitude));
+		endpoint.searchParams.set("longitude", String(location.longitude));
+		endpoint.searchParams.set(
+			"current",
+			"temperature_2m,weather_code,is_day",
+		);
+		endpoint.searchParams.set("timezone", "auto");
+		endpoint.searchParams.set("forecast_days", "1");
+
+		const forecast = await fetchJson<ForecastResponse>(endpoint.toString());
+		const current = forecast.current;
+		if (
+			!current ||
+			typeof current.temperature_2m !== "number" ||
+			typeof current.weather_code !== "number"
+		) {
+			throw new Error("Weather data unavailable");
+		}
+
+		const result: WeatherData = {
+			...location,
+			temperature: current.temperature_2m,
+			weatherCode: current.weather_code,
+			isDay: current.is_day !== 0,
+		};
+		writeCache(
+			WEATHER_CACHE_KEY,
+			result,
+			Number(widget.dataset.weatherCacheDuration) || 900000,
+		);
+		return result;
+	}
+
+	function getWeatherPresentation(code: number, isDay: boolean) {
+		if (code === 0) {
+			return { text: "晴天", icon: isDay ? "clear-day" : "clear-night" };
+		}
+		if (code <= 2) {
+			return {
+				text: "多云",
+				icon: isDay ? "partly-cloudy-day" : "partly-cloudy-night",
+			};
+		}
+		if (code === 3) return { text: "阴天", icon: "cloudy" };
+		if (code === 45 || code === 48) return { text: "雾", icon: "fog" };
+		if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+			return { text: "有雨", icon: "rain" };
+		}
+		if ((code >= 71 && code <= 77) || code === 85 || code === 86) {
+			return { text: "有雪", icon: "snow" };
+		}
+		if (code >= 95) return { text: "雷暴", icon: "thunderstorm" };
+		return { text: "天气变化", icon: "cloudy" };
+	}
+
+	class WeatherWidget extends HTMLElement {
+		connectedCallback() {
+			weatherRuntime.__fireflyWeatherPromise ??= loadWeather(this);
+			weatherRuntime.__fireflyWeatherPromise
+				.then((data) => this.renderWeather(data))
+				.catch(() => this.renderError());
+		}
+
+		private renderWeather(data: WeatherData) {
+			const presentation = getWeatherPresentation(
+				data.weatherCode,
+				data.isDay,
+			);
+			const location = this.querySelector<HTMLElement>("[data-weather-location]");
+			const status = this.querySelector<HTMLElement>("[data-weather-status]");
+			const temperature = this.querySelector<HTMLElement>(
+				"[data-weather-temperature]",
+			);
+			const description = this.querySelector<HTMLElement>(
+				"[data-weather-description]",
+			);
+
+			if (location) location.textContent = data.name;
+			if (status) {
+				status.textContent = data.isFallback
+					? "定位不可用，已显示南极天气"
+					: "根据访问位置自动更新";
+			}
+			if (temperature) temperature.textContent = data.temperature.toFixed(1);
+			if (description) description.textContent = presentation.text;
+			this.querySelectorAll<HTMLElement>("[data-weather-icon]").forEach((icon) => {
+				icon.classList.toggle(
+					"hidden",
+					icon.dataset.weatherIcon !== presentation.icon,
+				);
+			});
+		}
+
+		private renderError() {
+			const fallbackName = this.dataset.fallbackName || "Antarctica";
+			const location = this.querySelector<HTMLElement>("[data-weather-location]");
+			const status = this.querySelector<HTMLElement>("[data-weather-status]");
+			if (location) location.textContent = fallbackName;
+			if (status) status.textContent = "天气服务暂时不可用，请稍后再试";
+		}
+	}
+
+	if (!customElements.get("weather-widget")) {
+		customElements.define("weather-widget", WeatherWidget);
+	}
+</script>

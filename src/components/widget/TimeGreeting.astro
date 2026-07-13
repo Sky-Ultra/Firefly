@@ -1,0 +1,163 @@
+---
+import { Icon } from "astro-icon/components";
+import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
+import type { WidgetComponentConfig } from "@/types/config";
+
+interface Props {
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetComponentConfig;
+}
+
+const { class: className, style } = Astro.props;
+const { periods, image } = visitorWidgetsConfig.timeGreeting;
+---
+
+<time-greeting-widget
+	class:list={["block card-base overflow-hidden", className]}
+	style={style}
+	data-periods={JSON.stringify(periods)}
+>
+	<div class="flex items-start justify-between gap-3 p-4 pb-3">
+		<div class="min-w-0">
+			<p
+				class="time-greeting mb-1 min-h-10 text-sm font-semibold leading-5 text-neutral-800 dark:text-neutral-100"
+				data-greeting
+			>
+				正在读取时间…
+			</p>
+			<div class="flex items-end gap-3">
+				<time
+					class="font-mono text-[2rem] font-bold leading-none tracking-wide text-neutral-950 dark:text-white"
+					data-clock
+				>
+					--:--
+				</time>
+				<div class="pb-0.5 text-[0.7rem] font-medium leading-tight text-neutral-500 dark:text-neutral-400">
+					<div data-weekday>---</div>
+					<div data-date>--/--</div>
+				</div>
+			</div>
+		</div>
+		<div class="relative h-8 w-8 shrink-0 text-(--primary)" aria-hidden="true">
+			<Icon is:inline name="material-symbols:bedtime-outline-rounded" class="absolute inset-0 hidden text-3xl" data-period-icon="night" />
+			<Icon is:inline name="material-symbols:wb-twilight-outline-rounded" class="absolute inset-0 hidden text-3xl" data-period-icon="morning" />
+			<Icon is:inline name="material-symbols:light-mode-outline-rounded" class="absolute inset-0 hidden text-3xl" data-period-icon="afternoon" />
+			<Icon is:inline name="material-symbols:nights-stay-outline-rounded" class="absolute inset-0 hidden text-3xl" data-period-icon="evening" />
+		</div>
+	</div>
+	<ImageWrapper
+		src={image.src}
+		alt={image.alt}
+		position={image.position}
+		class="h-28 w-full"
+		widths={[320, 480]}
+		sizes="(max-width: 768px) 100vw, 320px"
+	/>
+</time-greeting-widget>
+
+<script>
+	type GreetingPeriod = {
+		startHour: number;
+		endHour: number;
+		texts: string[];
+		interval?: number;
+		icon: string;
+	};
+
+	class TimeGreetingWidget extends HTMLElement {
+		private timer: number | undefined;
+		private periods: GreetingPeriod[] = [];
+		private activePeriodIndex = -1;
+		private activeTextIndex = 0;
+		private nextRotationAt = Number.POSITIVE_INFINITY;
+
+		connectedCallback() {
+			try {
+				this.periods = JSON.parse(this.dataset.periods || "[]");
+			} catch {
+				this.periods = [];
+			}
+
+			this.update();
+			this.timer = window.setInterval(() => this.update(), 1000);
+		}
+
+		disconnectedCallback() {
+			if (this.timer !== undefined) {
+				window.clearInterval(this.timer);
+			}
+		}
+
+		private update() {
+			const now = new Date();
+			const hour = now.getHours();
+			const periodIndex = this.periods.findIndex(
+				(item) => hour >= item.startHour && hour < item.endHour,
+			);
+			const period = this.periods[periodIndex];
+
+			if (periodIndex !== this.activePeriodIndex) {
+				this.activePeriodIndex = periodIndex;
+				this.activeTextIndex = 0;
+				this.nextRotationAt =
+					period && period.texts.length > 1 && period.interval
+						? now.getTime() + period.interval
+						: Number.POSITIVE_INFINITY;
+			} else if (
+				period &&
+				period.texts.length > 1 &&
+				period.interval &&
+				now.getTime() >= this.nextRotationAt
+			) {
+				const elapsedRotations =
+					Math.floor(
+						(now.getTime() - this.nextRotationAt) / period.interval,
+					) + 1;
+
+				this.activeTextIndex =
+					(this.activeTextIndex + elapsedRotations) % period.texts.length;
+				this.nextRotationAt += elapsedRotations * period.interval;
+			}
+
+			const clock = this.querySelector<HTMLElement>("[data-clock]");
+			const greeting = this.querySelector<HTMLElement>("[data-greeting]");
+			const weekday = this.querySelector<HTMLElement>("[data-weekday]");
+			const date = this.querySelector<HTMLElement>("[data-date]");
+
+			if (clock) {
+				clock.textContent = now.toLocaleTimeString("zh-CN", {
+					hour: "2-digit",
+					minute: "2-digit",
+					hour12: false,
+				});
+				clock.setAttribute("datetime", now.toISOString());
+			}
+			if (greeting && period) {
+				greeting.textContent = period.texts[this.activeTextIndex] || "";
+			}
+			if (weekday) {
+				weekday.textContent = now
+					.toLocaleDateString("en-US", { weekday: "long" })
+					.toUpperCase();
+			}
+			if (date) {
+				date.textContent = `${String(now.getDate()).padStart(2, "0")}/${String(
+					now.getMonth() + 1,
+				).padStart(2, "0")}`;
+			}
+
+			this.querySelectorAll<HTMLElement>("[data-period-icon]").forEach((icon) => {
+				icon.classList.toggle(
+					"hidden",
+					icon.dataset.periodIcon !== period?.icon,
+				);
+			});
+		}
+	}
+
+	if (!customElements.get("time-greeting-widget")) {
+		customElements.define("time-greeting-widget", TimeGreetingWidget);
+	}
+</script>

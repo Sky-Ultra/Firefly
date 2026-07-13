@@ -1,0 +1,192 @@
+---
+import { Icon } from "astro-icon/components";
+import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
+import type { WidgetComponentConfig } from "@/types/config";
+
+interface Props {
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetComponentConfig;
+}
+
+const { class: className, style } = Astro.props;
+const config = visitorWidgetsConfig.dailyQuote;
+---
+
+<daily-quote-widget
+	class:list={["block card-base p-4", className]}
+	style={style}
+	data-api={config.api}
+	data-fallback-text={config.fallbackText}
+	data-fallback-author={config.fallbackAuthor}
+>
+	<div class="mb-3 ml-4 flex items-center gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 relative before:absolute before:left-[-16px] before:h-4 before:w-1 before:rounded-md before:bg-(--primary)">
+		<Icon is:inline name="material-symbols:auto-awesome-rounded" class="text-(--primary)" aria-hidden="true" />
+		<span>今日一言</span>
+	</div>
+	<a
+		class="block rounded-lg px-1 py-1 text-neutral-800 transition hover:text-(--primary) dark:text-neutral-100"
+		data-quote-link
+		target="_blank"
+		rel="noopener noreferrer"
+	>
+		<blockquote class="font-medium italic leading-relaxed" data-quote-text>
+			“正在获取今日一言…”
+		</blockquote>
+		<p class="mt-3 text-right text-xs text-neutral-500 dark:text-neutral-400" data-quote-author>
+			—— 一言
+		</p>
+	</a>
+</daily-quote-widget>
+
+<script>
+	type QuoteData = {
+		text: string;
+		author: string;
+		uuid?: string;
+	};
+
+	type QuoteResponse = {
+		hitokoto?: string;
+		from?: string;
+		from_who?: string | null;
+		uuid?: string;
+	};
+
+	type QuoteCache = {
+		date: string;
+		value: QuoteData;
+	};
+
+	const quoteRuntime = window as Window & {
+		__fireflyDailyQuotePromise?: Promise<QuoteData>;
+		__fireflyDailyQuoteDate?: string;
+	};
+	const QUOTE_CACHE_KEY = "firefly-daily-quote-v1";
+
+	function getLocalDateKey() {
+		return new Intl.DateTimeFormat("en-CA", {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+		}).format(new Date());
+	}
+
+	function readQuoteCache(): QuoteData | null {
+		try {
+			const cache = JSON.parse(
+				localStorage.getItem(QUOTE_CACHE_KEY) || "null",
+			) as QuoteCache | null;
+			return cache?.date === getLocalDateKey() ? cache.value : null;
+		} catch {
+			return null;
+		}
+	}
+
+	function writeQuoteCache(value: QuoteData) {
+		try {
+			localStorage.setItem(
+				QUOTE_CACHE_KEY,
+				JSON.stringify({ date: getLocalDateKey(), value }),
+			);
+		} catch {
+			// 存储不可用时不影响本次展示。
+		}
+	}
+
+	async function loadQuote(widget: HTMLElement): Promise<QuoteData> {
+		const cached = readQuoteCache();
+		if (cached) return cached;
+
+		const controller = new AbortController();
+		const timer = window.setTimeout(() => controller.abort(), 8000);
+		try {
+			const response = await fetch(widget.dataset.api || "https://v1.hitokoto.cn/", {
+				signal: controller.signal,
+				headers: { Accept: "application/json" },
+			});
+			if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+			const data = (await response.json()) as QuoteResponse;
+			if (!data.hitokoto) throw new Error("Quote unavailable");
+
+			const source = [data.from_who, data.from]
+				.filter((item): item is string => Boolean(item))
+				.join(" · ");
+			const quote: QuoteData = {
+				text: data.hitokoto,
+				author: source || "一言",
+				uuid: data.uuid,
+			};
+			writeQuoteCache(quote);
+			return quote;
+		} catch {
+			return {
+				text: widget.dataset.fallbackText || "愿今日有好事发生。",
+				author: widget.dataset.fallbackAuthor || "本站",
+			};
+		} finally {
+			window.clearTimeout(timer);
+		}
+	}
+
+	class DailyQuoteWidget extends HTMLElement {
+		private midnightTimer: number | undefined;
+
+		connectedCallback() {
+			this.loadCurrentQuote();
+			this.scheduleMidnightRefresh();
+		}
+
+		disconnectedCallback() {
+			if (this.midnightTimer !== undefined) {
+				window.clearTimeout(this.midnightTimer);
+			}
+		}
+
+		private loadCurrentQuote() {
+			const dateKey = getLocalDateKey();
+			if (quoteRuntime.__fireflyDailyQuoteDate !== dateKey) {
+				quoteRuntime.__fireflyDailyQuoteDate = dateKey;
+				quoteRuntime.__fireflyDailyQuotePromise = loadQuote(this);
+			}
+			quoteRuntime.__fireflyDailyQuotePromise?.then((quote) =>
+				this.renderQuote(quote),
+			);
+		}
+
+		private scheduleMidnightRefresh() {
+			const now = new Date();
+			const tomorrow = new Date(
+				now.getFullYear(),
+				now.getMonth(),
+				now.getDate() + 1,
+				0,
+				0,
+				1,
+			);
+			this.midnightTimer = window.setTimeout(() => {
+				this.loadCurrentQuote();
+				this.scheduleMidnightRefresh();
+			}, tomorrow.getTime() - now.getTime());
+		}
+
+		private renderQuote(quote: QuoteData) {
+			const text = this.querySelector<HTMLElement>("[data-quote-text]");
+			const author = this.querySelector<HTMLElement>("[data-quote-author]");
+			const link = this.querySelector<HTMLAnchorElement>("[data-quote-link]");
+			if (text) text.textContent = `“${quote.text}”`;
+			if (author) author.textContent = `—— ${quote.author}`;
+			if (link) {
+				if (quote.uuid) {
+					link.href = `https://hitokoto.cn/?uuid=${encodeURIComponent(quote.uuid)}`;
+				} else {
+					link.removeAttribute("href");
+				}
+			}
+		}
+	}
+
+	if (!customElements.get("daily-quote-widget")) {
+		customElements.define("daily-quote-widget", DailyQuoteWidget);
+	}
+</script>

@@ -1,6 +1,7 @@
 ---
 export interface Props {
 	text: string | string[];
+	randomOrder?: boolean;
 	speed?: number;
 	deleteSpeed?: number;
 	pauseTime?: number;
@@ -9,6 +10,7 @@ export interface Props {
 
 const {
 	text,
+	randomOrder = false,
 	speed = 100,
 	deleteSpeed = 50,
 	pauseTime = 2000,
@@ -20,6 +22,7 @@ const textData = Array.isArray(text) ? JSON.stringify(text) : text;
 <span
   class={`typewriter ${className}`}
   data-text={textData}
+  data-random-order={randomOrder}
   data-speed={speed}
   data-delete-speed={deleteSpeed}
   data-pause-time={pauseTime}></span>
@@ -29,6 +32,7 @@ const textData = Array.isArray(text) ? JSON.stringify(text) : text;
     private element: HTMLElement;
     private texts: string[];
     private currentTextIndex: number = 0;
+    private randomOrder: boolean;
     private speed: number;
     private deleteSpeed: number;
     private pauseTime: number;
@@ -48,9 +52,14 @@ const textData = Array.isArray(text) ? JSON.stringify(text) : text;
         this.texts = [textData];
       }
 
+      this.randomOrder = element.dataset.randomOrder === "true";
       this.speed = parseInt(element.dataset.speed || "100");
       this.deleteSpeed = parseInt(element.dataset.deleteSpeed || "50");
       this.pauseTime = parseInt(element.dataset.pauseTime || "2000");
+
+      if (this.randomOrder && this.texts.length > 1) {
+        this.currentTextIndex = Math.floor(Math.random() * this.texts.length);
+      }
 
       // 如果有多条文本且未启用打字机效果，随机显示一条
       if (this.texts.length > 1 && !this.isTypewriterEnabled()) {
@@ -102,8 +111,7 @@ const textData = Array.isArray(text) ? JSON.stringify(text) : text;
         } else {
           // 删除完成，切换到下一条文本
           this.isDeleting = false;
-          this.currentTextIndex =
-            (this.currentTextIndex + 1) % this.texts.length;
+          this.currentTextIndex = this.getNextTextIndex();
           this.timeoutId = window.setTimeout(() => this.type(), this.speed);
         }
       } else {
@@ -137,6 +145,15 @@ const textData = Array.isArray(text) ? JSON.stringify(text) : text;
     private segmentText(text: string): string[] {
       const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
       return Array.from(segmenter.segment(text), s => s.segment);
+    }
+
+    private getNextTextIndex(): number {
+      if (!this.randomOrder || this.texts.length < 2) {
+        return (this.currentTextIndex + 1) % this.texts.length;
+      }
+
+      const offset = Math.floor(Math.random() * (this.texts.length - 1)) + 1;
+      return (this.currentTextIndex + offset) % this.texts.length;
     }
 
   }

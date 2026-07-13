@@ -1,3 +1,19 @@
+export type UmamiPublicStatsConfig = {
+	/** Umami 公开分享链接，例如 https://analytics.example.com/share/xxxx */
+	shareUrl?: string;
+	/** 可选的同源公开统计接口，返回 pageviews、visits、visitors */
+	apiEndpoint?: string;
+	title?: string;
+	timezone?: string;
+	cacheTtlMs?: number;
+	timeoutMs?: number;
+	fallback?: {
+		pageviews?: number | null;
+		visits?: number | null;
+		visitors?: number | null;
+	};
+};
+
 export type AnalyticsConfig = {
 	googleAnalyticsId?: string; // Google Analytics ID
 	microsoftClarityId?: string; // Microsoft Clarity ID
@@ -7,6 +23,7 @@ export type AnalyticsConfig = {
 		replaysScriptUrl?: string; // Umami 会话回放脚本地址
 		trackOutboundLinks?: boolean; // 是否追踪出站链接点击事件，默认 true
 		collectWebVitals?: boolean; // 是否自动收集访客浏览器核心网页指标，默认 false
+		publicStats?: UmamiPublicStatsConfig; // 侧栏公开访问统计卡片
 		replays?: {
 			enabled?: boolean; // 是否启用会话回放，默认 false
 			sampleRate?: number; // 录制会话采样率，范围 0-1，默认 0.15

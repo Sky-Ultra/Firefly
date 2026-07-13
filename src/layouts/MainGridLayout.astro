@@ -219,7 +219,7 @@ const rightSidebarClass =
 const mainContentClass = generateMainContentClasses(updatedGridConfig);
 const staticBarClass = mainContentClass.replace("transition-main", "").trim();
 
-const footerClass = ["footer", "col-span-1", "onload-animation"];
+const footerClass = ["footer", "col-span-1", "self-end", "onload-animation"];
 
 if (
 	updatedGridConfig.isBothSidebars &&
@@ -631,6 +631,7 @@ const hasMultipleImages =
                             {backgroundWallpaper.common.homeText.typewriter?.enable ? (
                                 <TypewriterText
                                     text={backgroundWallpaper.common.homeText.subtitle}
+                                    randomOrder={backgroundWallpaper.common.homeText.typewriter.randomOrder}
                                     speed={backgroundWallpaper.common.homeText.typewriter.speed}
                                     deleteSpeed={backgroundWallpaper.common.homeText.typewriter.deleteSpeed}
                                     pauseTime={backgroundWallpaper.common.homeText.typewriter.pauseTime}
@@ -933,4 +934,3 @@ const hasMultipleImages =
   }
 
 </style>
-

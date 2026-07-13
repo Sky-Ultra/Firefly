@@ -17,6 +17,22 @@ export const analyticsConfig: AnalyticsConfig = {
 		trackOutboundLinks: true,
 		// 是否收集浏览器性能指标
 		collectWebVitals: false,
+		// 侧栏 Umami 访问统计卡片；仅填写公开分享链接，不要填写私密 API Token
+		publicStats: {
+			// 后续请替换为你的 Umami Share URL，留空时卡片显示占位符且不会发起请求
+			shareUrl: "",
+			// 如果你使用自己的只读代理，可在这里填写直接返回三项统计的公开接口
+			apiEndpoint: "",
+			title: "统计",
+			timezone: "Australia/Sydney",
+			cacheTtlMs: 10 * 60 * 1000,
+			timeoutMs: 8000,
+			fallback: {
+				pageviews: null,
+				visits: null,
+				visitors: null,
+			},
+		},
 		// 会话回放配置
 		replays: {
 			// 是否启用会话回放

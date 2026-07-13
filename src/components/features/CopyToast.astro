@@ -1,0 +1,114 @@
+---
+import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
+
+const { message, visibleDuration, fadeDuration } =
+	visitorWidgetsConfig.copyToast;
+---
+
+<copy-success-toast
+	data-visible-duration={visibleDuration}
+	data-fade-duration={fadeDuration}
+	data-state="hidden"
+	role="status"
+	aria-live="polite"
+	aria-atomic="true"
+>
+	<span>{message}</span>
+</copy-success-toast>
+
+<script>
+	class CopySuccessToast extends HTMLElement {
+		private fadeTimer: number | undefined;
+		private hideTimer: number | undefined;
+
+		private readonly handleCopy = () => {
+			this.show();
+		};
+
+		connectedCallback() {
+			document.addEventListener("copy", this.handleCopy);
+		}
+
+		disconnectedCallback() {
+			document.removeEventListener("copy", this.handleCopy);
+			this.clearTimers();
+		}
+
+		private show() {
+			this.clearTimers();
+			this.dataset.state = "visible";
+
+			const visibleDuration = Number(this.dataset.visibleDuration) || 1600;
+			const fadeDuration = Number(this.dataset.fadeDuration) || 400;
+
+			this.fadeTimer = window.setTimeout(() => {
+				this.dataset.state = "fading";
+			}, visibleDuration);
+
+			this.hideTimer = window.setTimeout(() => {
+				this.dataset.state = "hidden";
+			}, visibleDuration + fadeDuration);
+		}
+
+		private clearTimers() {
+			if (this.fadeTimer !== undefined) {
+				window.clearTimeout(this.fadeTimer);
+			}
+			if (this.hideTimer !== undefined) {
+				window.clearTimeout(this.hideTimer);
+			}
+		}
+	}
+
+	if (!customElements.get("copy-success-toast")) {
+		customElements.define("copy-success-toast", CopySuccessToast);
+	}
+</script>
+
+<style>
+	copy-success-toast {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 10000;
+		display: flex;
+		width: 100%;
+		min-height: 2.5rem;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem 1rem;
+		background: rgb(101 137 235 / 96%);
+		color: white;
+		font-weight: 700;
+		box-shadow: 0 0.25rem 1rem rgb(58 92 180 / 18%);
+		transform: translateY(-110%);
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transition:
+			transform 220ms ease,
+			opacity 360ms ease,
+			background-color 360ms ease,
+			visibility 0s linear 360ms;
+	}
+
+	copy-success-toast[data-state="visible"] {
+		transform: translateY(0);
+		opacity: 1;
+		visibility: visible;
+		transition-delay: 0s;
+	}
+
+	copy-success-toast[data-state="fading"] {
+		transform: translateY(0);
+		background: rgb(154 190 246 / 56%);
+		opacity: 0;
+		visibility: visible;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		copy-success-toast {
+			transition-duration: 1ms;
+		}
+	}
+</style>

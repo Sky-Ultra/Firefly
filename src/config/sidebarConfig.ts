@@ -98,10 +98,52 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 				collapseThreshold: 10,
 			},
 		},
+		{
+			// 组件类型：Umami 访问统计卡片
+			type: "umamiStats",
+			enable: true,
+			position: "sticky",
+			showOnPostPage: false,
+		},
+		{
+			// 组件类型：恋爱计时组件
+			type: "relationship",
+			enable: true,
+			position: "sticky",
+			showOnPostPage: false,
+		},
 	],
 
 	// 右侧边栏组件配置列表
 	rightComponents: [
+		{
+			// 组件类型：时间与分时问候
+			type: "timeGreeting",
+			enable: true,
+			position: "top",
+			showOnPostPage: true,
+		},
+		{
+			// 组件类型：基于访问位置的天气
+			type: "weather",
+			enable: true,
+			position: "top",
+			showOnPostPage: true,
+		},
+		{
+			// 组件类型：每日一言
+			type: "dailyQuote",
+			enable: true,
+			position: "top",
+			showOnPostPage: true,
+		},
+		{
+			// 组件类型：节日倒计时
+			type: "festivalCountdown",
+			enable: true,
+			position: "top",
+			showOnPostPage: true,
+		},
 		{
 			// 组件类型：站点统计组件
 			type: "stats",
@@ -270,6 +312,42 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 				// 折叠阈值：当标签数量超过20个时自动折叠
 				collapseThreshold: 10,
 			},
+		},
+		{
+			// 组件类型：Umami 访问统计卡片
+			type: "umamiStats",
+			enable: true,
+			showOnPostPage: false,
+		},
+		{
+			// 组件类型：恋爱计时组件
+			type: "relationship",
+			enable: true,
+			showOnPostPage: false,
+		},
+		{
+			// 组件类型：时间与分时问候
+			type: "timeGreeting",
+			enable: true,
+			showOnPostPage: true,
+		},
+		{
+			// 组件类型：基于访问位置的天气
+			type: "weather",
+			enable: true,
+			showOnPostPage: true,
+		},
+		{
+			// 组件类型：每日一言
+			type: "dailyQuote",
+			enable: true,
+			showOnPostPage: true,
+		},
+		{
+			// 组件类型：节日倒计时
+			type: "festivalCountdown",
+			enable: true,
+			showOnPostPage: true,
 		},
 		{
 			// 组件类型：站点统计组件

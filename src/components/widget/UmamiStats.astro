@@ -1,0 +1,379 @@
+---
+import WidgetLayout from "@/components/common/WidgetLayout.astro";
+import { analyticsConfig } from "@/config";
+import type { WidgetComponentConfig } from "@/types/config";
+
+interface Props {
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetComponentConfig;
+}
+
+const { class: className, style, widgetConfig } = Astro.props;
+const config = analyticsConfig.umamiAnalytics?.publicStats;
+const showTitle = widgetConfig?.showTitle !== false;
+const shareUrl = config?.shareUrl?.trim() || "";
+const apiEndpoint = config?.apiEndpoint?.trim() || "";
+const hasLink = Boolean(shareUrl);
+const hasDataSource = Boolean(shareUrl || apiEndpoint);
+const widgetId = `umami-stats-${Math.random().toString(36).slice(2, 9)}`;
+
+const fallbackPageviews = config?.fallback?.pageviews;
+const fallbackVisits = config?.fallback?.visits;
+const fallbackVisitors = config?.fallback?.visitors;
+---
+
+<WidgetLayout
+	id={widgetId}
+	name={config?.title || "统计"}
+	showTitle={showTitle}
+	class:list={[
+		"umami-stats-container transition-opacity",
+		hasLink && "cursor-pointer active:scale-95",
+		className,
+	]}
+	style={style}
+>
+	<umami-stats-card
+		class="block"
+		data-share-url={shareUrl || undefined}
+		data-api-endpoint={apiEndpoint || undefined}
+		data-timezone={config?.timezone || "UTC"}
+		data-cache-ttl-ms={String(config?.cacheTtlMs ?? 600_000)}
+		data-timeout-ms={String(config?.timeoutMs ?? 8000)}
+		data-fallback-pageviews={
+			typeof fallbackPageviews === "number"
+				? String(fallbackPageviews)
+				: undefined
+		}
+		data-fallback-visits={
+			typeof fallbackVisits === "number" ? String(fallbackVisits) : undefined
+		}
+		data-fallback-visitors={
+			typeof fallbackVisitors === "number"
+				? String(fallbackVisitors)
+				: undefined
+		}
+		aria-busy={hasDataSource ? "true" : "false"}
+	>
+		<a
+			href={shareUrl || undefined}
+			target={hasLink ? "_blank" : undefined}
+			rel={hasLink ? "noopener noreferrer" : undefined}
+			class:list={["block", !hasLink && "pointer-events-none"]}
+			aria-disabled={!hasLink ? "true" : undefined}
+		>
+			<div class="py-2 text-center">
+				<div
+					class="text-3xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100"
+					data-umami-stat="pageviews"
+				>
+					—
+				</div>
+				<div class="text-sm text-neutral-500 dark:text-neutral-400">总浏览量</div>
+			</div>
+			<div class="grid grid-cols-2 divide-x divide-neutral-200 pt-2 text-center dark:divide-neutral-700">
+				<div class="px-2">
+					<div
+						class="text-xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100"
+						data-umami-stat="visits"
+					>
+						—
+					</div>
+					<div class="text-sm text-neutral-500 dark:text-neutral-400">访问数</div>
+				</div>
+				<div class="px-2">
+					<div
+						class="text-xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100"
+						data-umami-stat="visitors"
+					>
+						—
+					</div>
+					<div class="text-sm text-neutral-500 dark:text-neutral-400">游客数</div>
+				</div>
+			</div>
+		</a>
+		<span class="sr-only" data-umami-status aria-live="polite">
+			{hasDataSource ? "正在载入访问统计" : "尚未配置 Umami 公开统计链接"}
+		</span>
+	</umami-stats-card>
+</WidgetLayout>
+
+<script>
+	type StatKey = "pageviews" | "visits" | "visitors";
+	type Stats = Record<StatKey, number>;
+	type StatsSourceConfig = {
+		shareUrl: string;
+		apiEndpoint: string;
+		timezone: string;
+		cacheTtlMs: number;
+		timeoutMs: number;
+	};
+	type CachedRequest = {
+		expiresAt: number;
+		promise: Promise<Stats>;
+	};
+
+	const requestCache = new Map<string, CachedRequest>();
+	const compactNumberFormatter = new Intl.NumberFormat("zh-CN", {
+		notation: "compact",
+		maximumFractionDigits: 1,
+	});
+
+	const formatStat = (value: number): string =>
+		compactNumberFormatter.format(Math.max(0, Math.round(value)));
+
+	const readStatValue = (value: unknown): number => {
+		const raw =
+			typeof value === "object" && value !== null && "value" in value
+				? (value as { value?: unknown }).value
+				: value;
+		const parsed = typeof raw === "number" ? raw : Number(raw);
+		if (!Number.isFinite(parsed) || parsed < 0) {
+			throw new Error("Umami 返回了无效的统计值");
+		}
+		return parsed;
+	};
+
+	const parseStats = (value: unknown): Stats => {
+		if (typeof value !== "object" || value === null) {
+			throw new Error("Umami 返回格式无效");
+		}
+		const data = value as Record<string, unknown>;
+		return {
+			pageviews: readStatValue(data.pageviews),
+			visits: readStatValue(data.visits),
+			visitors: readStatValue(data.visitors),
+		};
+	};
+
+	const fetchJson = async (
+		url: string,
+		timeoutMs: number,
+		init: RequestInit = {},
+	): Promise<unknown> => {
+		const controller = new AbortController();
+		const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+		try {
+			const response = await fetch(url, {
+				...init,
+				signal: controller.signal,
+				credentials: "omit",
+				referrerPolicy: "no-referrer",
+			});
+			if (!response.ok) throw new Error(`HTTP ${response.status}`);
+			return await response.json();
+		} finally {
+			window.clearTimeout(timeoutId);
+		}
+	};
+
+	const parseHttpUrl = (value: string, base?: string): URL => {
+		const url = new URL(value, base);
+		if (url.protocol !== "http:" && url.protocol !== "https:") {
+			throw new Error("仅支持 HTTP(S) 统计地址");
+		}
+		return url;
+	};
+
+	const fetchFromPublicEndpoint = async (
+		endpoint: string,
+		timeoutMs: number,
+	): Promise<Stats> => {
+		const url = parseHttpUrl(endpoint, window.location.href);
+		return parseStats(await fetchJson(url.toString(), timeoutMs));
+	};
+
+	const fetchFromShareUrl = async (
+		shareUrl: string,
+		timezone: string,
+		timeoutMs: number,
+	): Promise<Stats> => {
+		const url = parseHttpUrl(shareUrl);
+		const segments = url.pathname.split("/").filter(Boolean);
+		const shareIndex = segments.indexOf("share");
+		const shareId = shareIndex >= 0 ? segments[shareIndex + 1] : undefined;
+		if (!shareId) throw new Error("Umami Share URL 格式无效");
+
+		let apiBase: string;
+		if (url.hostname === "cloud.umami.is" || url.hostname === "analytics.umami.is") {
+			const region = url.pathname.includes("/analytics/eu/") ? "eu" : "us";
+			apiBase = `https://cloud.umami.is/analytics/${region}/api`;
+		} else {
+			const basePath = segments.slice(0, shareIndex).join("/");
+			apiBase = `${url.origin}${basePath ? `/${basePath}` : ""}/api`;
+		}
+
+		const shareConfig = (await fetchJson(
+			`${apiBase}/share/${encodeURIComponent(decodeURIComponent(shareId))}`,
+			timeoutMs,
+		)) as Record<string, unknown>;
+		const websiteId =
+			typeof shareConfig.websiteId === "string" ? shareConfig.websiteId : "";
+		const shareToken =
+			typeof shareConfig.token === "string" ? shareConfig.token : "";
+		if (!websiteId || !shareToken) {
+			throw new Error("Umami 公开分享配置不完整");
+		}
+
+		const params = new URLSearchParams({
+			startAt: "0",
+			endAt: String(Date.now()),
+			timezone,
+		});
+		const statsUrl = `${apiBase}/websites/${encodeURIComponent(websiteId)}/stats?${params}`;
+		return parseStats(
+			await fetchJson(statsUrl, timeoutMs, {
+				headers: {
+					"x-umami-share-context": "1",
+					"x-umami-share-token": shareToken,
+				},
+			}),
+		);
+	};
+
+	const loadStats = (config: StatsSourceConfig): Promise<Stats> => {
+		const key = JSON.stringify([
+			config.shareUrl,
+			config.apiEndpoint,
+			config.timezone,
+		]);
+		const cached = requestCache.get(key);
+		if (cached && cached.expiresAt > Date.now()) return cached.promise;
+
+		const promise = config.apiEndpoint
+			? fetchFromPublicEndpoint(config.apiEndpoint, config.timeoutMs)
+			: fetchFromShareUrl(config.shareUrl, config.timezone, config.timeoutMs);
+		requestCache.set(key, {
+			expiresAt: Date.now() + config.cacheTtlMs,
+			promise,
+		});
+		promise.catch(() => {
+			if (requestCache.get(key)?.promise === promise) requestCache.delete(key);
+		});
+		return promise;
+	};
+
+	class UmamiStatsCardElement extends HTMLElement {
+		private observer?: IntersectionObserver;
+		private animationFrames: number[] = [];
+		private started = false;
+
+		connectedCallback(): void {
+			const config = this.getSourceConfig();
+			if (!config.shareUrl && !config.apiEndpoint) {
+				this.setAttribute("aria-busy", "false");
+				this.dataset.state = "unconfigured";
+				return;
+			}
+
+			if (this.started) return;
+			if (!("IntersectionObserver" in window)) {
+				this.start(config);
+				return;
+			}
+
+			this.observer = new IntersectionObserver(
+				(entries) => {
+					if (entries.some((entry) => entry.isIntersecting)) {
+						this.observer?.disconnect();
+						this.start(config);
+					}
+				},
+				{ threshold: 0.1 },
+			);
+			this.observer.observe(this);
+		}
+
+		disconnectedCallback(): void {
+			this.observer?.disconnect();
+			this.animationFrames.forEach((id) => cancelAnimationFrame(id));
+			this.animationFrames = [];
+		}
+
+		private getSourceConfig(): StatsSourceConfig {
+			return {
+				shareUrl: this.dataset.shareUrl || "",
+				apiEndpoint: this.dataset.apiEndpoint || "",
+				timezone: this.dataset.timezone || "UTC",
+				cacheTtlMs: this.readPositiveNumber("cacheTtlMs", 600_000),
+				timeoutMs: this.readPositiveNumber("timeoutMs", 8000),
+			};
+		}
+
+		private readPositiveNumber(key: string, fallback: number): number {
+			const parsed = Number(this.dataset[key]);
+			return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+		}
+
+		private async start(config: StatsSourceConfig): Promise<void> {
+			if (this.started) return;
+			this.started = true;
+			try {
+				const stats = await loadStats(config);
+				if (!this.isConnected) return;
+				this.render(stats, true);
+				this.dataset.state = "ready";
+				this.updateStatus("访问统计已更新");
+			} catch (error) {
+				if (!this.isConnected) return;
+				const fallback = this.getFallbackStats();
+				if (fallback) {
+					this.render(fallback, false);
+					this.dataset.state = "fallback";
+					this.updateStatus("访问统计暂时不可用，当前显示备用数据");
+				} else {
+					this.dataset.state = "error";
+					this.updateStatus("访问统计暂时不可用");
+				}
+				console.warn("[UmamiStats] 获取公开统计失败", error);
+			} finally {
+				if (this.isConnected) this.setAttribute("aria-busy", "false");
+			}
+		}
+
+		private getFallbackStats(): Stats | null {
+			const keys: StatKey[] = ["pageviews", "visits", "visitors"];
+			const values = keys.map((key) => Number(this.dataset[`fallback${key[0].toUpperCase()}${key.slice(1)}`]));
+			if (values.some((value) => !Number.isFinite(value) || value < 0)) return null;
+			return {
+				pageviews: values[0],
+				visits: values[1],
+				visitors: values[2],
+			};
+		}
+
+		private render(stats: Stats, animate: boolean): void {
+			const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+			(Object.entries(stats) as [StatKey, number][]).forEach(([key, value]) => {
+				const element = this.querySelector<HTMLElement>(`[data-umami-stat="${key}"]`);
+				if (!element) return;
+				if (!animate || reduceMotion) {
+					element.textContent = formatStat(value);
+					return;
+				}
+
+				const startedAt = performance.now();
+				const duration = 700;
+				const tick = (now: number): void => {
+					const progress = Math.min(1, (now - startedAt) / duration);
+					const eased = 1 - (1 - progress) ** 3;
+					element.textContent = formatStat(value * eased);
+					if (progress < 1) {
+						this.animationFrames.push(requestAnimationFrame(tick));
+					}
+				};
+				this.animationFrames.push(requestAnimationFrame(tick));
+			});
+		}
+
+		private updateStatus(message: string): void {
+			const status = this.querySelector<HTMLElement>("[data-umami-status]");
+			if (status) status.textContent = message;
+		}
+	}
+
+	if (!customElements.get("umami-stats-card")) {
+		customElements.define("umami-stats-card", UmamiStatsCardElement);
+	}
+</script>

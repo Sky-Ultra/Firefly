@@ -18,12 +18,16 @@ export type {
 	NavBarConfig,
 	PlantUMLConfig,
 	ProfileConfig,
+	RelationshipConfig,
+	RelationshipPersonConfig,
 	SakuraConfig,
 	SidebarLayoutConfig,
 	SiteConfig,
 	SponsorConfig,
 	SponsorItem,
 	SponsorMethod,
+	UmamiPublicStatsConfig,
+	VisitorWidgetsConfig,
 	WidgetComponentConfig,
 	WidgetComponentType,
 	WidgetSpecificConfig,
@@ -54,8 +58,10 @@ export { navBarConfig, navBarSearchConfig } from "./navBarConfig"; // 导航栏�
 export { live2dWidgetConfig, spineModelConfig } from "./pioConfig"; // 看板娘配置
 export { plantumlConfig } from "./plantumlConfig"; // PlantUML 图表配置
 export { profileConfig } from "./profileConfig"; // 用户资料配置
+export { relationshipConfig } from "./relationshipConfig"; // 恋爱计时配置
 // 布局配置
 export { sidebarLayoutConfig } from "./sidebarConfig"; // 侧边栏布局配置
 // 核心配置
 export { siteConfig } from "./siteConfig"; // 站点基础配置
 export { sponsorConfig } from "./sponsorConfig"; // 打赏配置
+export { visitorWidgetsConfig } from "./visitorWidgetsConfig"; // 访客互动与侧栏卡片配置

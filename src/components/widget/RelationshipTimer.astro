@@ -1,0 +1,258 @@
+---
+import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import WidgetLayout from "@/components/common/WidgetLayout.astro";
+import { relationshipConfig } from "@/config";
+import type { WidgetComponentConfig } from "@/types/config";
+
+interface Props {
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetComponentConfig;
+}
+
+const { class: className, style, widgetConfig } = Astro.props;
+const config = relationshipConfig;
+const showTitle = widgetConfig?.showTitle !== false;
+const widgetId = `relationship-${Math.random().toString(36).slice(2, 9)}`;
+
+const getInitial = (name: string): string =>
+	Array.from(name.trim()).at(0) || "?";
+---
+
+<WidgetLayout
+	id={widgetId}
+	name={config.title || "恋爱计时"}
+	showTitle={showTitle}
+	class={className}
+	style={style}
+>
+	<relationship-timer data-start-at={config.startAt} class="block">
+		<div class="flex flex-col items-center p-2">
+			<div class="mb-4 flex items-center justify-center gap-2 text-sm font-medium text-neutral-600 dark:text-neutral-400">
+				<span>{config.people[0].name}</span>
+				<span class="text-red-500 motion-safe:animate-pulse" aria-hidden="true">
+					{config.heart || "❤️"}
+				</span>
+				<span>{config.people[1].name}</span>
+			</div>
+
+			<div class="mb-6 flex items-center justify-center gap-4">
+				{
+					config.people[0].avatar ? (
+						<ImageWrapper
+							src={config.people[0].avatar}
+							alt={config.people[0].avatarAlt || config.people[0].name}
+							class="h-16 w-16 rounded-full border-2 border-white shadow-md transition-transform hover:scale-110 dark:border-neutral-800"
+							widths={[64, 128]}
+							sizes="64px"
+						/>
+					) : (
+						<div
+							class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white bg-neutral-100 text-xl font-bold text-(--primary) shadow-md dark:border-neutral-800 dark:bg-neutral-800"
+							aria-label={config.people[0].name}
+						>
+							{getInitial(config.people[0].name)}
+						</div>
+					)
+				}
+				<span
+					class="cursor-default text-2xl text-red-500 transition-transform motion-safe:hover:rotate-12 motion-safe:hover:scale-125"
+					aria-hidden="true"
+				>
+					{config.heart || "❤️"}
+				</span>
+				{
+					config.people[1].avatar ? (
+						<ImageWrapper
+							src={config.people[1].avatar}
+							alt={config.people[1].avatarAlt || config.people[1].name}
+							class="h-16 w-16 rounded-full border-2 border-white shadow-md transition-transform hover:scale-110 dark:border-neutral-800"
+							widths={[64, 128]}
+							sizes="64px"
+						/>
+					) : (
+						<div
+							class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white bg-neutral-100 text-xl font-bold text-(--primary) shadow-md dark:border-neutral-800 dark:bg-neutral-800"
+							aria-label={config.people[1].name}
+						>
+							{getInitial(config.people[1].name)}
+						</div>
+					)
+				}
+			</div>
+
+			<div
+				class="flex max-w-full items-center justify-center gap-x-1 overflow-x-auto whitespace-nowrap py-1 text-sm"
+				role="timer"
+				aria-label="相伴时间"
+				aria-live="off"
+			>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="years">0</span>
+				<span class="shrink-0 rounded bg-red-400 px-1 py-0.5 text-[10px] font-medium text-white">年</span>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="months">0</span>
+				<span class="shrink-0 rounded bg-red-300 px-1 py-0.5 text-[10px] font-medium text-white">月</span>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="days">0</span>
+				<span class="shrink-0 rounded bg-blue-400 px-1 py-0.5 text-[10px] font-medium text-white">天</span>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="hours">0</span>
+				<span class="shrink-0 rounded bg-orange-400 px-1 py-0.5 text-[10px] font-medium text-white">时</span>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="minutes">0</span>
+				<span class="shrink-0 rounded bg-blue-500 px-1 py-0.5 text-[10px] font-medium text-white">分</span>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="seconds">00</span>
+				<span class="shrink-0 rounded bg-purple-400 px-1 py-0.5 text-[10px] font-medium text-white">秒</span>
+			</div>
+			<span class="sr-only" data-timer-status></span>
+		</div>
+	</relationship-timer>
+</WidgetLayout>
+
+<script>
+	type DurationParts = {
+		years: number;
+		months: number;
+		days: number;
+		hours: number;
+		minutes: number;
+		seconds: number;
+	};
+
+	const EMPTY_DURATION: DurationParts = {
+		years: 0,
+		months: 0,
+		days: 0,
+		hours: 0,
+		minutes: 0,
+		seconds: 0,
+	};
+
+	const daysInMonth = (year: number, month: number): number =>
+		new Date(year, month + 1, 0).getDate();
+
+	const addYears = (date: Date, years: number): Date => {
+		const result = new Date(date);
+		const month = result.getMonth();
+		const day = result.getDate();
+		const targetYear = result.getFullYear() + years;
+		result.setDate(1);
+		result.setFullYear(targetYear);
+		result.setMonth(month);
+		result.setDate(Math.min(day, daysInMonth(targetYear, month)));
+		return result;
+	};
+
+	const addMonths = (date: Date, months: number): Date => {
+		const result = new Date(date);
+		const day = result.getDate();
+		const targetMonthIndex = result.getFullYear() * 12 + result.getMonth() + months;
+		const targetYear = Math.floor(targetMonthIndex / 12);
+		const targetMonth = ((targetMonthIndex % 12) + 12) % 12;
+		result.setDate(1);
+		result.setFullYear(targetYear);
+		result.setMonth(targetMonth);
+		result.setDate(Math.min(day, daysInMonth(targetYear, targetMonth)));
+		return result;
+	};
+
+	const addDays = (date: Date, days: number): Date => {
+		const result = new Date(date);
+		result.setDate(result.getDate() + days);
+		return result;
+	};
+
+	const getDuration = (start: Date, now: Date): DurationParts => {
+		if (now.getTime() < start.getTime()) return EMPTY_DURATION;
+
+		let years = now.getFullYear() - start.getFullYear();
+		if (addYears(start, years).getTime() > now.getTime()) years -= 1;
+
+		let cursor = addYears(start, Math.max(0, years));
+		let months =
+			(now.getFullYear() - cursor.getFullYear()) * 12 +
+			(now.getMonth() - cursor.getMonth());
+		if (addMonths(cursor, months).getTime() > now.getTime()) months -= 1;
+		months = Math.max(0, months);
+		cursor = addMonths(cursor, months);
+
+		let days = Math.floor(
+			(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) -
+				Date.UTC(cursor.getFullYear(), cursor.getMonth(), cursor.getDate())) /
+				86_400_000,
+		);
+		if (addDays(cursor, days).getTime() > now.getTime()) days -= 1;
+		days = Math.max(0, days);
+		cursor = addDays(cursor, days);
+
+		let remaining = Math.max(0, now.getTime() - cursor.getTime());
+		const hours = Math.floor(remaining / 3_600_000);
+		remaining %= 3_600_000;
+		const minutes = Math.floor(remaining / 60_000);
+		remaining %= 60_000;
+		const seconds = Math.floor(remaining / 1000);
+
+		return { years: Math.max(0, years), months, days, hours, minutes, seconds };
+	};
+
+	class RelationshipTimerElement extends HTMLElement {
+		private timeoutId?: number;
+
+		connectedCallback(): void {
+			if (this.timeoutId !== undefined) return;
+			this.update();
+			this.scheduleNextTick();
+		}
+
+		disconnectedCallback(): void {
+			if (this.timeoutId !== undefined) window.clearTimeout(this.timeoutId);
+			this.timeoutId = undefined;
+		}
+
+		private scheduleNextTick(): void {
+			const delay = 1000 - (Date.now() % 1000) + 20;
+			this.timeoutId = window.setTimeout(() => {
+				this.update();
+				this.scheduleNextTick();
+			}, delay);
+		}
+
+		private update(): void {
+			const rawStartAt = this.dataset.startAt || "";
+			const startTimestamp = Date.parse(rawStartAt);
+			const status = this.querySelector<HTMLElement>("[data-timer-status]");
+
+			if (!Number.isFinite(startTimestamp)) {
+				this.renderInvalid();
+				if (status) status.textContent = "开始时间配置无效";
+				return;
+			}
+
+			const start = new Date(startTimestamp);
+			const now = new Date();
+			const isPending = now.getTime() < start.getTime();
+			this.render(getDuration(start, now));
+			if (status) status.textContent = isPending ? "计时尚未开始" : "计时正常";
+		}
+
+		private render(values: DurationParts): void {
+			(Object.entries(values) as [keyof DurationParts, number][]).forEach(
+				([unit, value]) => {
+					const element = this.querySelector<HTMLElement>(
+						`[data-timer-unit="${unit}"]`,
+					);
+					if (element) {
+						element.textContent =
+							unit === "seconds" ? value.toString().padStart(2, "0") : value.toString();
+					}
+				},
+			);
+		}
+
+		private renderInvalid(): void {
+			this.querySelectorAll<HTMLElement>("[data-timer-unit]").forEach((element) => {
+				element.textContent = "—";
+			});
+		}
+	}
+
+	if (!customElements.get("relationship-timer")) {
+		customElements.define("relationship-timer", RelationshipTimerElement);
+	}
+</script>

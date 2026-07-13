@@ -1,0 +1,212 @@
+---
+import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
+import type { WidgetComponentConfig } from "@/types/config";
+
+interface Props {
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetComponentConfig;
+}
+
+const { class: className, style } = Astro.props;
+const { festivals } = visitorWidgetsConfig.festivalCountdown;
+---
+
+<festival-countdown-widget
+	class:list={["block card-base p-4", className]}
+	style={style}
+	data-festivals={JSON.stringify(festivals)}
+>
+	<div class="space-y-3" aria-label="时间进度">
+		{["year", "month", "week"].map((range) => (
+			<div class="grid grid-cols-[3.4rem_1fr] items-center gap-3" data-progress-range={range}>
+				<strong class="text-sm text-(--primary)" data-progress-percent>--%</strong>
+				<div>
+					<div class="mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-200" data-progress-label>正在计算…</div>
+					<div class="h-2 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
+						<div class="h-full rounded-full bg-(--primary) transition-[width] duration-500" data-progress-bar style="width: 0%"></div>
+					</div>
+				</div>
+			</div>
+		))}
+	</div>
+	<div class="my-4 border-t border-neutral-200 dark:border-neutral-700"></div>
+	<div class="text-center">
+		<p class="font-semibold text-neutral-700 dark:text-neutral-200" data-festival-label>距离下一个节日</p>
+		<strong class="my-1 block text-4xl text-(--primary)" data-festival-days>--</strong>
+		<time class="text-xs text-neutral-500 dark:text-neutral-400" data-festival-date>----/--/--</time>
+	</div>
+</festival-countdown-widget>
+
+<script>
+	type FestivalRule = {
+		name: string;
+		calendar: "gregorian" | "chinese";
+		month: number;
+		day: number;
+	};
+
+	type ProgressRange = "year" | "month" | "week";
+
+	type ProgressData = {
+		percent: number;
+		remainingDays: number;
+		label: string;
+	};
+
+	const DAY_MS = 86400000;
+
+	function clampPercent(value: number) {
+		return Math.min(100, Math.max(0, value));
+	}
+
+	function getRemainingFullDays(now: Date, end: Date) {
+		const todayUtc = Date.UTC(
+			now.getFullYear(),
+			now.getMonth(),
+			now.getDate(),
+		);
+		const endUtc = Date.UTC(
+			end.getFullYear(),
+			end.getMonth(),
+			end.getDate(),
+		);
+		return Math.max(0, Math.round((endUtc - todayUtc) / DAY_MS) - 1);
+	}
+
+	function buildProgressData(now: Date): Record<ProgressRange, ProgressData> {
+		const yearStart = new Date(now.getFullYear(), 0, 1);
+		const nextYear = new Date(now.getFullYear() + 1, 0, 1);
+		const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+		const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+		const mondayOffset = (now.getDay() + 6) % 7;
+		const weekStart = new Date(
+			now.getFullYear(),
+			now.getMonth(),
+			now.getDate() - mondayOffset,
+		);
+		const nextWeek = new Date(
+			weekStart.getFullYear(),
+			weekStart.getMonth(),
+			weekStart.getDate() + 7,
+		);
+
+		const calculate = (start: Date, end: Date, label: string): ProgressData => ({
+			percent: clampPercent(((now.getTime() - start.getTime()) / (end.getTime() - start.getTime())) * 100),
+			remainingDays: getRemainingFullDays(now, end),
+			label,
+		});
+
+		return {
+			year: calculate(yearStart, nextYear, "本年还剩"),
+			month: calculate(monthStart, nextMonth, "本月还剩"),
+			week: calculate(weekStart, nextWeek, "本周还剩"),
+		};
+	}
+
+	function getChineseMonthDay(
+		date: Date,
+		formatter: Intl.DateTimeFormat | null,
+	): { month: number; day: number } | null {
+		if (!formatter) return null;
+		const parts = formatter.formatToParts(date);
+		const month = Number(parts.find((part) => part.type === "month")?.value);
+		const day = Number(parts.find((part) => part.type === "day")?.value);
+		return Number.isFinite(month) && Number.isFinite(day) ? { month, day } : null;
+	}
+
+	function findNextFestival(now: Date, festivals: FestivalRule[]) {
+		let chineseFormatter: Intl.DateTimeFormat | null = null;
+		try {
+			chineseFormatter = new Intl.DateTimeFormat("zh-CN-u-ca-chinese", {
+				month: "numeric",
+				day: "numeric",
+			});
+		} catch {
+			chineseFormatter = null;
+		}
+
+		for (let offset = 0; offset <= 400; offset += 1) {
+			const date = new Date(
+				now.getFullYear(),
+				now.getMonth(),
+				now.getDate() + offset,
+				12,
+			);
+			const chineseDate = getChineseMonthDay(date, chineseFormatter);
+			const festival = festivals.find((item) => {
+				if (item.calendar === "gregorian") {
+					return date.getMonth() + 1 === item.month && date.getDate() === item.day;
+				}
+				return chineseDate?.month === item.month && chineseDate.day === item.day;
+			});
+			if (festival) return { festival, date, days: offset };
+		}
+		return null;
+	}
+
+	function formatDate(date: Date) {
+		return [
+			date.getFullYear(),
+			String(date.getMonth() + 1).padStart(2, "0"),
+			String(date.getDate()).padStart(2, "0"),
+		].join("-");
+	}
+
+	class FestivalCountdownWidget extends HTMLElement {
+		private timer: number | undefined;
+		private festivals: FestivalRule[] = [];
+
+		connectedCallback() {
+			try {
+				this.festivals = JSON.parse(this.dataset.festivals || "[]");
+			} catch {
+				this.festivals = [];
+			}
+			this.update();
+			this.timer = window.setInterval(() => this.update(), 60000);
+		}
+
+		disconnectedCallback() {
+			if (this.timer !== undefined) window.clearInterval(this.timer);
+		}
+
+		private update() {
+			const now = new Date();
+			const progress = buildProgressData(now);
+			this.querySelectorAll<HTMLElement>("[data-progress-range]").forEach((row) => {
+				const range = row.dataset.progressRange as ProgressRange;
+				const data = progress[range];
+				if (!data) return;
+				const percent = row.querySelector<HTMLElement>("[data-progress-percent]");
+				const label = row.querySelector<HTMLElement>("[data-progress-label]");
+				const bar = row.querySelector<HTMLElement>("[data-progress-bar]");
+				if (percent) percent.textContent = `${data.percent.toFixed(1)}%`;
+				if (label) label.textContent = `${data.label} ${data.remainingDays} 天`;
+				if (bar) bar.style.width = `${data.percent}%`;
+			});
+
+			const next = findNextFestival(now, this.festivals);
+			if (!next) return;
+			const label = this.querySelector<HTMLElement>("[data-festival-label]");
+			const days = this.querySelector<HTMLElement>("[data-festival-days]");
+			const date = this.querySelector<HTMLTimeElement>("[data-festival-date]");
+			if (label) {
+				label.textContent = next.days === 0 ? `今天是${next.festival.name}` : `距离${next.festival.name}`;
+			}
+			if (days) days.textContent = String(next.days);
+			if (date) {
+				const value = formatDate(next.date);
+				date.textContent = value;
+				date.dateTime = value;
+			}
+		}
+	}
+
+	if (!customElements.get("festival-countdown-widget")) {
+		customElements.define(
+			"festival-countdown-widget",
+			FestivalCountdownWidget,
+		);
+	}
+</script>

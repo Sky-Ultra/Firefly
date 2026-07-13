@@ -1,4 +1,7 @@
-export type { AnalyticsConfig } from "./analyticsConfig";
+export type {
+	AnalyticsConfig,
+	UmamiPublicStatsConfig,
+} from "./analyticsConfig";
 export type { AnnouncementConfig } from "./announcementConfig";
 export type { BackgroundWallpaperConfig } from "./backgroundWallpaper";
 export type { CommentConfig } from "./commentConfig";
@@ -25,6 +28,10 @@ export type { Live2DWidgetConfig, SpineModelConfig } from "./pioConfig";
 export type { PlantUMLConfig } from "./plantumlConfig";
 export type { ProfileConfig } from "./profileConfig";
 export type {
+	RelationshipConfig,
+	RelationshipPersonConfig,
+} from "./relationshipConfig";
+export type {
 	AdConfig,
 	CalendarConfig,
 	MobileBottomComponentConfig,
@@ -45,6 +52,12 @@ export type {
 	SponsorItem,
 	SponsorMethod,
 } from "./sponsorConfig";
+export type {
+	FestivalRule,
+	GreetingPeriod,
+	GreetingPeriodIcon,
+	VisitorWidgetsConfig,
+} from "./visitorWidgetsConfig";
 
 // 响应式图像布局类型
 export type ResponsiveImageLayout = "constrained" | "full-width" | "none";

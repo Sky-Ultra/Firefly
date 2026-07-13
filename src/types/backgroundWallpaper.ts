@@ -23,6 +23,7 @@ export type BackgroundWallpaperConfig = {
 			subtitleSize?: string; // 副标题字体大小，如 "1.5rem"
 			typewriter?: {
 				enable: boolean; // 是否启用打字机效果
+				randomOrder?: boolean; // 是否随机选择下一条副标题（不会连续重复）
 				speed: number; // 打字速度（毫秒）
 				deleteSpeed: number; // 删除速度（毫秒）
 				pauseTime: number; // 完整显示后的暂停时间（毫秒）
