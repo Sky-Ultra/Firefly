@@ -56,11 +56,13 @@ type OverlaySliderItem = {
 	onValueChange: (value: number) => void;
 };
 
+type PostListLayout = "list" | "grid" | "masonry";
+
 let hue = $state(getHue());
 const defaultHue = getDefaultHue();
 let wallpaperMode: WALLPAPER_MODE = $state(backgroundWallpaper.mode);
 const defaultWallpaperMode = backgroundWallpaper.mode;
-let currentLayout: "list" | "grid" = $state("list");
+let currentLayout: PostListLayout = $state("list");
 const defaultLayout = siteConfig.postListLayout.defaultMode;
 const mobileDefaultLayout =
 	siteConfig.postListLayout.mobileDefaultMode || defaultLayout;
@@ -91,6 +93,7 @@ const defaultOverlayCardOpacity = getDefaultOverlayCardOpacity();
 
 const isWallpaperSwitchable = backgroundWallpaper.switchable ?? true;
 const allowLayoutSwitch = siteConfig.postListLayout.allowSwitch;
+const allowMasonryLayout = siteConfig.postListLayout.grid.masonry;
 let effectiveDefaultLayout = $derived(
 	isMobileWidth ? mobileDefaultLayout : defaultLayout,
 );
@@ -323,7 +326,7 @@ function checkScreenSize() {
 	isSmallScreen = window.innerWidth < 1200;
 	isMobileWidth = window.innerWidth < 780;
 	// 低于380px强制网格模式
-	if (window.innerWidth < 380 && currentLayout === "list") {
+	if (window.innerWidth < 380 && currentLayout !== "grid") {
 		currentLayout = "grid";
 		const event = new CustomEvent("layoutChange", {
 			detail: { layout: "grid" },
@@ -356,11 +359,11 @@ function refreshAllRangeProgress() {
 	});
 }
 
-function switchLayout() {
-	if (!mounted || isSwitching) return;
+function switchLayout(newLayout: PostListLayout) {
+	if (!mounted || isSwitching || currentLayout === newLayout) return;
 
 	isSwitching = true;
-	currentLayout = currentLayout === "list" ? "grid" : "list";
+	currentLayout = newLayout;
 	localStorage.setItem("postListLayout", currentLayout);
 
 	// 触发自定义事件，通知页面布局已改变
@@ -404,7 +407,12 @@ onMount(() => {
 
 	// 从localStorage读取用户偏好布局
 	const savedLayout = localStorage.getItem("postListLayout");
-	if (savedLayout && (savedLayout === "list" || savedLayout === "grid")) {
+	if (
+		savedLayout &&
+		(savedLayout === "list" ||
+			savedLayout === "grid" ||
+			(savedLayout === "masonry" && allowMasonryLayout))
+	) {
 		currentLayout = savedLayout;
 	} else {
 		currentLayout =
@@ -422,7 +430,7 @@ onMount(() => {
 // 监听布局变化事件
 onMount(() => {
 	const handleCustomEvent = (event: Event) => {
-		const customEvent = event as CustomEvent<{ layout: "list" | "grid" }>;
+		const customEvent = event as CustomEvent<{ layout: PostListLayout }>;
 		currentLayout = customEvent.detail.layout;
 	};
 
@@ -768,7 +776,7 @@ $effect(() => {
                     class:opacity-60={currentLayout !== 'list'}
                     class:bg-(--btn-regular-bg-hover)={currentLayout === 'list'}
                     disabled={isSwitching}
-                    onclick={switchLayout}
+                    onclick={() => switchLayout("list")}
                     title={i18n(I18nKey.postListLayoutList)}
                 >
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -782,7 +790,7 @@ $effect(() => {
                     class:opacity-60={currentLayout !== 'grid'}
                     class:bg-(--btn-regular-bg-hover)={currentLayout === 'grid'}
                     disabled={isSwitching}
-                    onclick={switchLayout}
+                    onclick={() => switchLayout("grid")}
                     title={i18n(I18nKey.postListLayoutGrid)}
                 >
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -790,6 +798,22 @@ $effect(() => {
                     </svg>
                     <span class="text-xs font-medium">{i18n(I18nKey.postListLayoutGrid)}</span>
                 </button>
+                {#if allowMasonryLayout}
+                    <button
+                        aria-label={i18n(I18nKey.postListLayoutMasonry)}
+                        class="flex-1 btn-regular rounded-md py-2 px-2 flex items-center justify-center gap-1.5 active:scale-95 transition-all relative overflow-hidden"
+                        class:opacity-60={currentLayout !== 'masonry'}
+                        class:bg-(--btn-regular-bg-hover)={currentLayout === 'masonry'}
+                        disabled={isSwitching}
+                        onclick={() => switchLayout("masonry")}
+                        title={i18n(I18nKey.postListLayoutMasonry)}
+                    >
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M3 3h8v6H3V3zm10 0h8v10h-8V3zM3 11h8v10H3V11zm10 4h8v6h-8v-6z"/>
+                        </svg>
+                        <span class="text-xs font-medium">{i18n(I18nKey.postListLayoutMasonry)}</span>
+                    </button>
+                {/if}
             </div>
         </div>
     {/if}

@@ -284,6 +284,7 @@ export const ko: Translation = {
 	[Key.postListLayout]: "게시글 목록 레이아웃",
 	[Key.postListLayoutList]: "목록형",
 	[Key.postListLayoutGrid]: "격자형",
+	[Key.postListLayoutMasonry]: "메이슨리",
 
 	// Sponsor Page
 	[Key.sponsor]: "후원",

@@ -1,0 +1,178 @@
+---
+import { Icon } from "astro-icon/components";
+import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
+import { personalPagesConfig } from "@/config";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import { url } from "@/utils/url-utils";
+
+const config = personalPagesConfig.devices;
+const categories = [...new Set(config.items.map((item) => item.category))];
+---
+
+<MainGridLayout title={config.title} description={config.description}>
+	<section class="card-base w-full p-5 sm:p-7 lg:p-9">
+		<PersonalPageHeader
+			title={config.title}
+			description={config.description}
+			icon="material-symbols:devices-rounded"
+		/>
+
+		<device-filter>
+			<div class="mb-6 flex flex-wrap gap-2" role="group" aria-label="设备分类">
+				<button
+					type="button"
+					data-category="all"
+					aria-pressed="true"
+					class="device-filter-button rounded-full px-4 py-2 text-sm font-medium transition-all duration-200"
+				>
+					全部
+				</button>
+				{categories.map((category) => (
+					<button
+						type="button"
+						data-category={category}
+						aria-pressed="false"
+						class="device-filter-button rounded-full px-4 py-2 text-sm font-medium transition-all duration-200"
+					>
+						{category}
+					</button>
+				))}
+			</div>
+
+			<div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+				{config.items.map((item) => (
+					<article
+						data-device-card
+						data-category={item.category}
+						class="group relative overflow-hidden rounded-xl border border-(--line-divider) bg-(--card-bg) shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-(--primary)/50 hover:shadow-md"
+					>
+						<div class="relative p-5 pb-0">
+							<div class="relative flex h-48 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-(--card-bg) to-(--btn-regular-bg)">
+								<div class="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-(--primary)/10 blur-2xl"></div>
+								{item.image ? (
+									<img
+										src={url(item.image)}
+										alt={item.name}
+										class:list={[
+											"relative z-10 h-full w-full drop-shadow-md transition-transform duration-500 group-hover:scale-105",
+											item.imageFit === "contain" ? "object-contain p-3" : "object-cover",
+										]}
+										style={`object-position: ${item.imagePosition || "center"};`}
+										loading="lazy"
+									/>
+								) : (
+									<Icon
+										is:inline
+										name={item.icon || "material-symbols:devices-rounded"}
+										class="relative z-10 text-8xl text-(--primary) drop-shadow-sm transition-transform duration-500 group-hover:scale-110"
+									/>
+								)}
+							</div>
+						</div>
+
+						<div class="p-5 pt-4">
+							<h2 class="mb-3 text-xl font-bold text-neutral-900 dark:text-neutral-100">
+								{item.name}
+							</h2>
+							<div class="mb-3 flex w-fit items-center gap-2 rounded-xl bg-(--btn-regular-bg) px-3 py-1 text-sm text-black/70 dark:text-white/70">
+								<Icon is:inline name="material-symbols:memory-rounded" class="text-(--primary)" />
+								<span class="whitespace-pre-line">{item.specs}</span>
+							</div>
+							{item.price && (
+								<div class="mb-3 flex w-fit items-center gap-2 rounded-full bg-(--primary)/10 px-3 py-1.5 text-sm font-bold text-(--primary)">
+									<Icon is:inline name="material-symbols:payments-outline-rounded" />
+									{item.price}
+								</div>
+							)}
+							<p class="line-clamp-2 min-h-10 text-sm leading-relaxed text-black/60 dark:text-white/60">
+								{item.description}
+							</p>
+
+							<div class="mt-4 flex items-center justify-between border-t border-dashed border-(--line-divider) pt-3 text-sm">
+								<span class="rounded-full bg-(--btn-regular-bg) px-2.5 py-1 text-xs text-neutral-500 dark:text-neutral-400">
+									{item.category}
+								</span>
+								{item.url ? (
+									<a
+										href={item.url.startsWith("http") ? item.url : url(item.url)}
+										target={item.url.startsWith("http") ? "_blank" : undefined}
+										rel={item.url.startsWith("http") ? "noopener noreferrer" : undefined}
+										class="flex items-center gap-1 font-medium text-(--primary)"
+									>
+										查看详情
+										<Icon is:inline name="material-symbols:arrow-forward-rounded" class="transition-transform group-hover:translate-x-1" />
+									</a>
+								) : (
+									<span class="text-xs text-neutral-400">详情待补充</span>
+								)}
+							</div>
+						</div>
+					</article>
+				))}
+			</div>
+
+			<div data-empty class="hidden py-14 text-center text-neutral-400">
+				<Icon is:inline name="material-symbols:devices-off-rounded" class="mb-2 text-5xl" />
+				<p>这个分类暂时没有设备</p>
+			</div>
+		</device-filter>
+	</section>
+</MainGridLayout>
+
+<style>
+	@reference "../styles/main.css";
+
+	.device-filter-button {
+		@apply bg-(--btn-regular-bg) text-neutral-600 hover:text-(--primary) dark:text-neutral-300;
+	}
+
+	.device-filter-button[aria-pressed="true"] {
+		@apply bg-(--primary) text-white shadow-sm dark:text-black/70;
+	}
+</style>
+
+<script>
+	if (!customElements.get("device-filter")) {
+		class DeviceFilter extends HTMLElement {
+			connectedCallback() {
+				this.addEventListener("click", this.handleClick);
+			}
+
+			disconnectedCallback() {
+				this.removeEventListener("click", this.handleClick);
+			}
+
+			handleClick = (event: Event) => {
+				const button = (event.target as HTMLElement).closest<HTMLButtonElement>(
+					"[data-category]",
+				);
+				if (!button || !this.contains(button)) return;
+
+				const selectedCategory = button.dataset.category || "all";
+				this.querySelectorAll<HTMLButtonElement>("button[data-category]").forEach(
+					(filterButton) => {
+						filterButton.setAttribute(
+							"aria-pressed",
+							String(filterButton === button),
+						);
+					},
+				);
+
+				let visibleCount = 0;
+				this.querySelectorAll<HTMLElement>("[data-device-card]").forEach((card) => {
+					const visible =
+						selectedCategory === "all" || card.dataset.category === selectedCategory;
+					card.classList.toggle("hidden", !visible);
+					if (visible) visibleCount += 1;
+				});
+
+				this.querySelector<HTMLElement>("[data-empty]")?.classList.toggle(
+					"hidden",
+					visibleCount > 0,
+				);
+			};
+		}
+
+		customElements.define("device-filter", DeviceFilter);
+	}
+</script>

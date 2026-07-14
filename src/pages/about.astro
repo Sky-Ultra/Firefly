@@ -1,7 +1,7 @@
 ---
-
 import { getEntry, render } from "astro:content";
 import Markdown from "@components/common/Markdown.astro";
+import { Icon } from "astro-icon/components";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -13,13 +13,164 @@ if (!aboutPost) {
 }
 
 const { Content } = await render(aboutPost);
+
+const skillGroups = [
+	{
+		title: "Software Development",
+		label: "软件开发",
+		icon: "material-symbols:code-rounded",
+		items: [
+			{
+				title: "Java",
+				description: "面向对象编程、数据结构与应用开发",
+			},
+			{
+				title: "HTML / CSS / JavaScript",
+				description: "响应式网页与前端交互开发",
+			},
+			{
+				title: "SQL & Databases",
+				description: "关系型数据库设计、查询与数据管理",
+			},
+			{
+				title: "Backend Development",
+				description: "REST API、业务逻辑与数据库集成",
+			},
+			{
+				title: "Software Architecture",
+				description: "MVC、分层架构与模块化系统设计",
+			},
+			{
+				title: "Git & GitHub",
+				description: "版本控制、分支管理与团队协作",
+			},
+			{
+				title: "Software Testing",
+				description: "单元测试、集成测试与质量保证",
+			},
+		],
+	},
+	{
+		title: "Interaction Design",
+		label: "交互设计",
+		icon: "material-symbols:design-services-outline-rounded",
+		items: [
+			{
+				title: "UI / UX Design",
+				description: "以用户为中心的网页与应用界面设计",
+			},
+			{
+				title: "Figma & Prototyping",
+				description: "线框图、高保真界面与交互原型",
+			},
+			{
+				title: "User Research",
+				description: "用户访谈、用户画像与可用性测试",
+			},
+		],
+	},
+	{
+		title: "Business & Systems",
+		label: "业务与系统",
+		icon: "material-symbols:account-tree-outline-rounded",
+		items: [
+			{
+				title: "Business Analysis",
+				description: "业务需求分析与系统功能规划",
+			},
+			{
+				title: "System Modelling",
+				description: "UML、ERD、Use Case 与业务流程建模",
+			},
+			{
+				title: "Agile & Scrum",
+				description: "迭代开发、任务规划与团队协作",
+			},
+			{
+				title: "IT Project Management",
+				description: "项目范围、风险、进度与交付管理",
+			},
+		],
+	},
+] as const;
 ---
+
 <MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
-    <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
-        <div class="card-base z-10 px-9 py-6 relative w-full ">
-            <Markdown class="mt-2">
-                <Content />
-            </Markdown>
-        </div>
-    </div>
+	<section class="card-base w-full overflow-hidden p-5 sm:p-7 lg:p-9">
+		<header class="mb-9 border-b border-(--line-divider) pb-7">
+			<div class="mb-4 flex items-center gap-3">
+				<div
+					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--primary) text-white shadow-sm dark:text-black/70"
+				>
+					<Icon
+						is:inline
+						name="material-symbols:person-rounded"
+						class="text-[1.65rem]"
+					/>
+				</div>
+				<h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+					关于我 <span class="text-(--primary)">/ About Me</span>
+				</h1>
+			</div>
+
+			<Markdown class="about-intro text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
+				<Content />
+			</Markdown>
+		</header>
+
+		<div class="space-y-10">
+			{
+				skillGroups.map((group) => (
+					<section aria-labelledby={`skill-group-${group.title}`}>
+						<header class="mb-5 flex items-center gap-3">
+							<div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-(--primary)/10 text-(--primary)">
+								<Icon is:inline name={group.icon} class="text-[1.4rem]" />
+							</div>
+							<div class="min-w-0">
+								<h2
+									id={`skill-group-${group.title}`}
+									class="text-xl font-bold text-neutral-900 dark:text-neutral-100"
+								>
+									{group.title}
+								</h2>
+								<p class="text-sm text-neutral-500 dark:text-neutral-400">
+									{group.label}
+								</p>
+							</div>
+							<span class="ml-auto rounded-full bg-(--btn-regular-bg) px-3 py-1 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+								{group.items.length} 项
+							</span>
+						</header>
+
+						<div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+							{group.items.map((skill, index) => (
+								<article class="group relative min-h-30 overflow-hidden rounded-xl border border-(--line-divider) bg-(--card-bg) p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-(--primary)/50 hover:shadow-md">
+									<div class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-(--primary)/5 transition-transform duration-300 group-hover:scale-125" />
+									<div class="relative z-10">
+										<div class="mb-3 flex items-start justify-between gap-3">
+											<h3 class="font-bold text-neutral-900 transition-colors group-hover:text-(--primary) dark:text-neutral-100">
+												{skill.title}
+											</h3>
+											<span class="font-mono text-xs text-(--primary)/50">
+												{String(index + 1).padStart(2, "0")}
+											</span>
+										</div>
+										<p class="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+											{skill.description}
+										</p>
+									</div>
+								</article>
+							))}
+						</div>
+					</section>
+				))
+			}
+		</div>
+	</section>
 </MainGridLayout>
+
+<style>
+	:global(.about-intro p) {
+		margin: 0;
+	}
+</style>

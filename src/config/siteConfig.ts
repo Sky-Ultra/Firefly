@@ -56,11 +56,16 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		{
 			// 图标文件路径
-			src: "/favicon/favicon.ico",
+			src: "/favicon/sky-avatar-v2.png",
 			// 可选，指定主题 'light' | 'dark'
 			// theme: "light",
 			// 可选，图标大小
-			// sizes: "32x32",
+			sizes: "64x64",
+		},
+		{
+			// ICO 回退图标，兼容仍会请求 favicon.ico 的浏览器
+			src: "/favicon/sky-avatar-v2.ico",
+			sizes: "16x16 32x32 48x48 64x64",
 		},
 	],
 
@@ -161,8 +166,8 @@ export const siteConfig: SiteConfig = {
 		},
 		// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
 		grid: {
-			// 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
-			masonry: false,
+			// 是否在显示设置中提供瀑布流布局选项
+			masonry: true,
 			// 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数
 			columnWidth: 250,
 		},

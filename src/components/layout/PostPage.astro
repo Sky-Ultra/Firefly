@@ -1,8 +1,14 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getPostUrlBySlug } from "@utils/url-utils";
+import RandomCoverProvider from "@/components/features/RandomCoverProvider.astro";
 import PostCard from "@/components/layout/PostCard.astro";
 import { siteConfig } from "@/config";
+import { isHomePage } from "@/utils/layout-utils";
+import {
+	getRandomCoverImages,
+	isRandomCoverImage,
+} from "@/utils/random-cover-utils";
 
 const { page } = Astro.props;
 
@@ -23,6 +29,23 @@ const initialLayoutClass =
 	defaultLayout === "grid"
 		? "post-grid-auto grid-mode"
 		: "flex flex-col gap-4 md:gap-4 list-mode";
+
+const hasRandomCovers = page.data.some((entry: PostEntry) =>
+	isRandomCoverImage(entry.data.image),
+);
+const useHomeWallpaper = isHomePage(Astro.url.pathname);
+const randomCoverImages = hasRandomCovers ? await getRandomCoverImages() : [];
+let randomCoverFallbackIndex = 0;
+const getRandomCoverFallback = (entry: PostEntry): string | undefined => {
+	if (!isRandomCoverImage(entry.data.image) || randomCoverImages.length === 0) {
+		return undefined;
+	}
+	const fallback =
+		randomCoverImages[randomCoverFallbackIndex % randomCoverImages.length]
+			.previewUrl;
+	randomCoverFallbackIndex++;
+	return fallback;
+};
 ---
 
 <div
@@ -50,6 +73,7 @@ const initialLayoutClass =
         pinned={entry.data.pinned}
         password={!!entry.data.password}
         loading={index < 2 ? "eager" : "lazy"}
+		randomCoverFallback={getRandomCoverFallback(entry)}
         class:list="onload-animation post-card-item"
         style={`animation-delay: calc(var(--content-delay) + ${delay++ * interval}ms);`}
       />
@@ -57,14 +81,26 @@ const initialLayoutClass =
   }
 </div>
 
+{hasRandomCovers && (
+	<RandomCoverProvider
+		images={randomCoverImages}
+		useHomeWallpaper={useHomeWallpaper}
+	/>
+)}
+
 <!-- 立即执行脚本：防止刷新时的布局闪烁 -->
-<script is:inline define:vars={{ defaultLayout, mobileDefaultLayout, columnWidth }}>
+<script is:inline define:vars={{ defaultLayout, mobileDefaultLayout, columnWidth, masonryEnabled }}>
   (function() {
     const savedLayout = localStorage.getItem('postListLayout');
+    const validSavedLayout =
+      savedLayout === 'list' || savedLayout === 'grid' ||
+      (savedLayout === 'masonry' && masonryEnabled)
+        ? savedLayout
+        : null;
     // 根据视口宽度确定有效的默认布局
     const effectiveDefault = window.innerWidth < 780 ? mobileDefaultLayout : defaultLayout;
     // 低于380px强制网格模式
-    const effectiveLayout = window.innerWidth < 380 ? 'grid' : (savedLayout || effectiveDefault);
+    const effectiveLayout = window.innerWidth < 380 ? 'grid' : (validSavedLayout || effectiveDefault);
 
     if (effectiveLayout !== defaultLayout) {
       const container = document.getElementById('post-list-container');
@@ -74,10 +110,12 @@ const initialLayoutClass =
         container.style.transition = 'none';
 
         // 移除所有布局类
-        container.classList.remove('list-mode', 'grid-mode', 'post-grid-auto', 'flex', 'flex-col', 'gap-4', 'md:gap-4');
+        container.classList.remove('list-mode', 'grid-mode', 'masonry-mode', 'post-grid-auto', 'flex', 'flex-col', 'gap-4', 'md:gap-4');
 
         if (effectiveLayout === 'grid') {
           container.classList.add('grid-mode', 'post-grid-auto');
+        } else if (effectiveLayout === 'masonry') {
+          container.classList.add('grid-mode', 'masonry-mode');
         } else {
           container.classList.add('list-mode', 'flex', 'flex-col', 'gap-4', 'md:gap-4');
         }
@@ -105,7 +143,14 @@ const initialLayoutClass =
 
     // 根据视口宽度确定有效的默认布局
     const effectiveDefault = window.innerWidth < 780 ? mobileDefaultLayout : defaultLayout;
-    let currentLayout = savedLayout || effectiveDefault;
+    const masonryEnabled =
+      postListContainer.getAttribute("data-masonry-enabled") === "true";
+    const validSavedLayout =
+      savedLayout === "list" || savedLayout === "grid" ||
+      (savedLayout === "masonry" && masonryEnabled)
+        ? savedLayout
+        : null;
+    let currentLayout = validSavedLayout || effectiveDefault;
 
     // 低于380px强制网格模式
     if (window.innerWidth < 380) {
@@ -120,32 +165,49 @@ const initialLayoutClass =
     const postListContainer = document.getElementById("post-list-container");
     if (!postListContainer) return;
 
+    const masonryEnabled =
+      postListContainer.getAttribute("data-masonry-enabled") === "true";
+    const normalizedLayout =
+      layout === "masonry" && masonryEnabled
+        ? "masonry"
+        : layout === "grid"
+          ? "grid"
+          : "list";
+
     // Check current layout state
+    const isCurrentMasonry = postListContainer.classList.contains("masonry-mode");
     const isCurrentGrid = postListContainer.classList.contains("grid-mode");
     const isCurrentList = postListContainer.classList.contains("list-mode");
-    const currentLayout = isCurrentGrid ? "grid" : (isCurrentList ? "list" : null);
-
-    // Common logic vars
-    const masonryEnabled = postListContainer.getAttribute("data-masonry-enabled") === "true";
+    const currentLayout = isCurrentMasonry
+      ? "masonry"
+      : isCurrentGrid
+        ? "grid"
+        : isCurrentList
+          ? "list"
+          : null;
 
     // Helper to apply layout classes (Pure logic, no animation)
     const applyClasses = () => {
-        postListContainer.classList.remove("list-mode", "grid-mode", "post-grid-auto");
-        if (layout === "grid") {
+        resetMasonryLayout();
+        postListContainer.classList.remove(
+          "list-mode",
+          "grid-mode",
+          "masonry-mode",
+          "post-grid-auto",
+          "flex",
+          "flex-col",
+          "gap-4",
+          "md:gap-4",
+        );
+        if (normalizedLayout === "grid") {
             postListContainer.classList.add("grid-mode");
-            postListContainer.classList.remove("flex", "flex-col");
-            if (masonryEnabled) {
-                postListContainer.classList.remove("post-grid-auto");
-                applyMasonryLayout();
-            } else {
-                postListContainer.classList.add("post-grid-auto");
-                resetMasonryLayout();
-            }
+            postListContainer.classList.add("post-grid-auto");
+        } else if (normalizedLayout === "masonry") {
+            postListContainer.classList.add("grid-mode", "masonry-mode");
+            applyMasonryLayout();
         } else {
             postListContainer.classList.add("list-mode");
             postListContainer.classList.add("flex", "flex-col", "gap-4", "md:gap-4");
-            postListContainer.classList.remove("post-grid-auto");
-            resetMasonryLayout();
         }
     };
 
@@ -156,8 +218,8 @@ const initialLayoutClass =
     }
 
     // Case 2: Same layout (e.g. Resize) - No animation, just refresh masonry
-    if (currentLayout === layout) {
-        if (layout === "grid" && masonryEnabled) {
+    if (currentLayout === normalizedLayout) {
+        if (normalizedLayout === "masonry") {
             applyMasonryLayout();
         }
         return;
@@ -196,6 +258,8 @@ const initialLayoutClass =
       item.style.left = "";
       // @ts-ignore
       item.style.width = "";
+      // @ts-ignore
+      item.style.height = "";
     });
   }
 
@@ -206,8 +270,8 @@ const initialLayoutClass =
     const masonryEnabled = container.getAttribute("data-masonry-enabled") === "true";
     if (!masonryEnabled) return;
 
-    // 仅在 grid 模式下应用
-    if (!container.classList.contains("grid-mode")) return;
+    // 仅在独立的瀑布流模式下应用
+    if (!container.classList.contains("masonry-mode")) return;
 
     const items = Array.from(container.querySelectorAll(".post-card-item"));
     if (items.length === 0) return;

@@ -1,0 +1,301 @@
+---
+import type { RandomCoverImage } from "@/utils/random-cover-utils";
+
+interface Props {
+	images: RandomCoverImage[];
+	useHomeWallpaper?: boolean;
+	useOriginalForArticles?: boolean;
+}
+
+const {
+	images,
+	useHomeWallpaper = false,
+	useOriginalForArticles = false,
+} = Astro.props;
+---
+
+<div
+	hidden
+	data-random-cover-pool={JSON.stringify(images)}
+	data-random-cover-home-wallpaper={useHomeWallpaper ? "true" : undefined}
+	data-random-cover-original-articles={useOriginalForArticles ? "true" : undefined}
+	aria-hidden="true"
+></div>
+
+<script>
+	interface RandomCoverCandidate {
+		id: string;
+		previewUrl: string;
+		originalUrl: string;
+	}
+
+	interface RandomCoverRuntime {
+		articleAssignments: Map<string, RandomCoverCandidate>;
+		homeWallpaperAssignments: RandomCoverCandidate[];
+	}
+
+	type RandomCoverWindow = Window & {
+		__fireflyRandomCoverRuntime?: RandomCoverRuntime;
+	};
+
+	function shuffleRandomCovers(
+		images: RandomCoverCandidate[],
+	): RandomCoverCandidate[] {
+		const shuffled = [...images];
+		for (let index = shuffled.length - 1; index > 0; index--) {
+			const randomIndex = Math.floor(Math.random() * (index + 1));
+			[shuffled[index], shuffled[randomIndex]] = [
+				shuffled[randomIndex],
+				shuffled[index],
+			];
+		}
+		return shuffled;
+	}
+
+	function replaceCoverImage(container: HTMLElement, src: string) {
+		const image = container.querySelector<HTMLImageElement>(
+			"img[data-cover-img]",
+		);
+		if (!image) return;
+
+		const picture = image.closest("picture");
+		picture?.querySelectorAll("source").forEach((source) => source.remove());
+		image.removeAttribute("srcset");
+		image.removeAttribute("sizes");
+
+		container.removeAttribute("data-error");
+		container.setAttribute("data-loading", "true");
+		image.style.opacity = "0";
+
+		const reveal = () => {
+			container.setAttribute("data-loading", "false");
+			image.style.opacity = "1";
+			container
+				.querySelector<HTMLElement>(".lqip-placeholder")
+				?.classList.add("loaded");
+		};
+
+		image.addEventListener("load", reveal, { once: true });
+		image.src = src;
+		if (image.complete && image.naturalWidth > 0) reveal();
+	}
+
+	function replaceWallpaperImage(container: HTMLElement, src: string) {
+		const image = container.querySelector<HTMLImageElement>("img");
+		if (!image) return;
+
+		image
+			.closest("picture")
+			?.querySelectorAll("source")
+			.forEach((source) => source.remove());
+		image.removeAttribute("srcset");
+		image.removeAttribute("sizes");
+		image.style.opacity = "0";
+
+		const reveal = () => {
+			image.style.opacity = "1";
+			container
+				.querySelector<HTMLElement>(".lqip-placeholder")
+				?.classList.add("loaded");
+		};
+
+		image.addEventListener("load", reveal, { once: true });
+		image.src = src;
+		if (image.complete && image.naturalWidth > 0) reveal();
+	}
+
+	function getRandomCoverRuntime(): RandomCoverRuntime {
+		const runtimeWindow = window as RandomCoverWindow;
+		if (!runtimeWindow.__fireflyRandomCoverRuntime) {
+			runtimeWindow.__fireflyRandomCoverRuntime = {
+				articleAssignments: new Map(),
+				homeWallpaperAssignments: [],
+			};
+		}
+		return runtimeWindow.__fireflyRandomCoverRuntime;
+	}
+
+	function findUnusedCandidate(
+		images: RandomCoverCandidate[],
+		blockedIds: Set<string>,
+	): RandomCoverCandidate | undefined {
+		return shuffleRandomCovers(images).find(
+			(candidate) => !blockedIds.has(candidate.id),
+		);
+	}
+
+	function getArticleCandidate(
+		key: string,
+		images: RandomCoverCandidate[],
+		runtime: RandomCoverRuntime,
+	): RandomCoverCandidate {
+		const imagesById = new Map(images.map((image) => [image.id, image]));
+		const existing = runtime.articleAssignments.get(key);
+		if (existing) {
+			const currentCandidate = imagesById.get(existing.id);
+			if (currentCandidate) {
+				runtime.articleAssignments.set(key, currentCandidate);
+				return currentCandidate;
+			}
+			runtime.articleAssignments.delete(key);
+		}
+
+		const blockedIds = new Set([
+			...Array.from(runtime.articleAssignments.values(), (image) => image.id),
+			...runtime.homeWallpaperAssignments.map((image) => image.id),
+		]);
+		const candidate = findUnusedCandidate(images, blockedIds);
+		if (candidate) {
+			runtime.articleAssignments.set(key, candidate);
+			return candidate;
+		}
+
+		console.warn("随机图片池数量不足，部分文章封面可能会重复。");
+		const fallback = images[runtime.articleAssignments.size % images.length];
+		runtime.articleAssignments.set(key, fallback);
+		return fallback;
+	}
+
+	function getHomeWallpaperCandidates(
+		images: RandomCoverCandidate[],
+		count: number,
+		runtime: RandomCoverRuntime,
+	): RandomCoverCandidate[] {
+		const imagesById = new Map(images.map((image) => [image.id, image]));
+		const articleIds = new Set(
+			Array.from(runtime.articleAssignments.values(), (image) => image.id),
+		);
+		const selected: RandomCoverCandidate[] = [];
+		const selectedIds = new Set<string>();
+
+		for (const existing of runtime.homeWallpaperAssignments) {
+			const currentCandidate = imagesById.get(existing.id);
+			if (
+				currentCandidate &&
+				!articleIds.has(currentCandidate.id) &&
+				!selectedIds.has(currentCandidate.id)
+			) {
+				selected.push(currentCandidate);
+				selectedIds.add(currentCandidate.id);
+			}
+		}
+
+		for (const candidate of shuffleRandomCovers(images)) {
+			if (selected.length >= count) break;
+			if (articleIds.has(candidate.id) || selectedIds.has(candidate.id)) continue;
+			selected.push(candidate);
+			selectedIds.add(candidate.id);
+		}
+
+		if (selected.length < count) {
+			console.warn("随机图片池数量不足，首页壁纸可能与文章封面重复。");
+			for (let index = selected.length; index < count; index++) {
+				selected.push(images[index % images.length]);
+			}
+		}
+
+		runtime.homeWallpaperAssignments = selected;
+		return selected.slice(0, count);
+	}
+
+	function assignHomeWallpaper(
+		poolCarrier: HTMLElement,
+		images: RandomCoverCandidate[],
+		runtime: RandomCoverRuntime,
+	) {
+		if (poolCarrier.dataset.randomCoverHomeWallpaper !== "true") return;
+
+		const wallpaper = document.getElementById("banner-images-container");
+		if (!wallpaper) return;
+
+		const slides = Array.from(
+			wallpaper.querySelectorAll<HTMLElement>(".slide-item[data-index]"),
+		);
+		if (slides.length > 0) {
+			const slideIndexes = Array.from(
+				new Set(slides.map((slide) => slide.dataset.index || "0")),
+			).sort((a, b) => Number(a) - Number(b));
+			const wallpaperImages = getHomeWallpaperCandidates(
+				images,
+				slideIndexes.length,
+				runtime,
+			);
+
+			for (let offset = 0; offset < slideIndexes.length; offset++) {
+				const src = wallpaperImages[offset].originalUrl;
+				for (const slide of slides) {
+					if (slide.dataset.index === slideIndexes[offset]) {
+						replaceWallpaperImage(slide, src);
+					}
+				}
+			}
+			return;
+		}
+
+		const singleImageSlots = Array.from(
+			wallpaper.querySelectorAll<HTMLElement>(
+				".banner-image-slot-mobile, .banner-image-slot-desktop",
+			),
+		);
+		if (singleImageSlots.length === 0) return;
+
+		const [wallpaperImage] = getHomeWallpaperCandidates(images, 1, runtime);
+		for (const slot of singleImageSlots) {
+			replaceWallpaperImage(slot, wallpaperImage.originalUrl);
+		}
+	}
+
+	function initRandomCovers() {
+		const poolCarrier = document.querySelector<HTMLElement>(
+			"[data-random-cover-pool]",
+		);
+		if (!poolCarrier || poolCarrier.dataset.randomCoverAssigned === "true") {
+			return;
+		}
+
+		let images: RandomCoverCandidate[] = [];
+		try {
+			images = JSON.parse(poolCarrier.dataset.randomCoverPool || "[]");
+		} catch {
+			console.error("随机封面图片池数据无法解析。");
+			return;
+		}
+		if (images.length === 0) return;
+
+		const containers = Array.from(
+			document.querySelectorAll<HTMLElement>("[data-random-cover-key]"),
+		);
+		const containersByPost = new Map<string, HTMLElement[]>();
+		for (const container of containers) {
+			const key = container.dataset.randomCoverKey;
+			if (!key) continue;
+			const matches = containersByPost.get(key) ?? [];
+			matches.push(container);
+			containersByPost.set(key, matches);
+		}
+
+		if (containersByPost.size > images.length) {
+			console.warn(
+				`随机封面图片只有 ${images.length} 张，无法保证 ${containersByPost.size} 篇文章全部不重复。`,
+			);
+		}
+
+		const runtime = getRandomCoverRuntime();
+		const useOriginalForArticles =
+			poolCarrier.dataset.randomCoverOriginalArticles === "true";
+		for (const [key, matches] of containersByPost) {
+			const candidate = getArticleCandidate(key, images, runtime);
+			const src = useOriginalForArticles
+				? candidate.originalUrl
+				: candidate.previewUrl;
+			for (const container of matches) replaceCoverImage(container, src);
+		}
+
+		assignHomeWallpaper(poolCarrier, images, runtime);
+		poolCarrier.dataset.randomCoverAssigned = "true";
+	}
+
+	initRandomCovers();
+	document.addEventListener("astro:page-load", initRandomCovers);
+	document.addEventListener("swup:contentReplaced", initRandomCovers);
+</script>

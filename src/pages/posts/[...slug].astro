@@ -19,6 +19,7 @@ import { Icon } from "astro-icon/components";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import CoverImage from "@/components/common/CoverImage.astro";
+import RandomCoverProvider from "@/components/features/RandomCoverProvider.astro";
 import PostMetadata from "@/components/layout/PostMeta.astro";
 import RecommendedPost from "@/components/misc/RecommendedPost.astro";
 import SharePoster from "@/components/misc/SharePoster.svelte";
@@ -29,6 +30,10 @@ import { siteConfig } from "@/config/siteConfig";
 import { sponsorConfig } from "@/config/sponsorConfig";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
+import {
+	getRandomCoverImages,
+	isRandomCoverImage,
+} from "@/utils/random-cover-utils";
 import { url } from "@/utils/url-utils";
 
 export async function getStaticPaths() {
@@ -56,8 +61,11 @@ const bannerPostMeta = {
 	minutes: remarkPluginFrontmatter.minutes,
 };
 
-// 处理随机图：如果image为"api"，则从配置的API获取随机图
-const processedImage = processCoverImageSync(entry.data.image, entry.id);
+const usesRandomCover = isRandomCoverImage(entry.data.image);
+const randomCoverImages = usesRandomCover ? await getRandomCoverImages() : [];
+const processedImage = usesRandomCover
+	? (randomCoverImages[0]?.originalUrl ?? "")
+	: processCoverImageSync(entry.data.image, entry.id);
 const apiUrls = getApiUrlList(entry.data.image, entry.id);
 
 let posterCoverUrl = processedImage;
@@ -253,6 +261,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
               class="mb-8 rounded-xl banner-container onload-animation"
               preview={false}
               apiUrls={apiUrls}
+			  randomCoverKey={usesRandomCover ? entry.id : undefined}
             />
           </div>
         )
@@ -541,6 +550,13 @@ const relatedPosts = await getRelatedPosts(entry, 5);
   </div>
 
   <RecommendedPost relatedPosts={relatedPosts} currentPostId={entry.id} />
+
+  {usesRandomCover && (
+	<RandomCoverProvider
+		images={randomCoverImages}
+		useOriginalForArticles={true}
+	/>
+  )}
 
   <!-- 评论 -->
   {entry.data.comment && !entry.data.password && <Comment post={entry} />}

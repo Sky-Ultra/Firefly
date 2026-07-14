@@ -1,0 +1,151 @@
+---
+import { Icon } from "astro-icon/components";
+import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import { profileConfig } from "@/config";
+import type { DiaryItem, MomentItem } from "@/types/config";
+import { url } from "@/utils/url-utils";
+
+interface Props {
+	item: MomentItem | DiaryItem;
+	variant: "moment" | "diary";
+}
+
+const { item, variant } = Astro.props;
+const mood = "mood" in item ? item.mood : undefined;
+const images = item.images || [];
+const dateLabel = new Intl.DateTimeFormat("zh-CN", {
+	year: "numeric",
+	month: "2-digit",
+	day: "2-digit",
+	hour: "2-digit",
+	minute: "2-digit",
+}).format(new Date(item.date));
+---
+
+<article
+	id={item.id}
+	class="social-feed-card card-base scroll-mt-24 border border-(--line-divider) p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-(--primary)/40 hover:shadow-md sm:p-6"
+>
+	<div class="flex gap-3.5">
+		<ImageWrapper
+			src={profileConfig.avatar || "assets/images/avatar.avif"}
+			alt={profileConfig.name}
+			class="h-11 w-11 shrink-0 rounded-full ring-2 ring-(--primary)/15"
+			widths={[44, 88]}
+			sizes="44px"
+		/>
+		<div class="min-w-0 flex-1">
+			<div class="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+				<div>
+					<div class="font-bold text-neutral-900 dark:text-neutral-100">
+						{profileConfig.name}
+					</div>
+					<time
+						datetime={item.date}
+						data-relative-time
+						class="text-xs text-neutral-400 dark:text-neutral-500"
+					>
+						{dateLabel}
+					</time>
+				</div>
+				{mood && (
+					<span
+						class="rounded-full bg-(--btn-regular-bg) px-2.5 py-1 text-sm"
+						title="此刻心情"
+					>
+						{mood}
+					</span>
+				)}
+			</div>
+
+			<p class="mt-3 whitespace-pre-line text-[0.95rem] leading-7 text-neutral-700 dark:text-neutral-300">
+				{item.content}
+			</p>
+
+			{images.length > 0 && (
+				<div
+					class:list={[
+						"mt-4 grid gap-2 overflow-hidden rounded-xl",
+						images.length === 1 ? "grid-cols-1" : "grid-cols-2",
+					]}
+				>
+					{images.map((image, index) => (
+						<a
+							href={image.src.startsWith("http") ? image.src : url(image.src)}
+							target="_blank"
+							rel="noopener noreferrer"
+							class:list={[
+								"group block overflow-hidden rounded-xl bg-(--btn-regular-bg)",
+								images.length === 3 && index === 0 ? "col-span-2" : "",
+							]}
+						>
+							<ImageWrapper
+								src={image.src}
+								alt={image.alt}
+								class:list={[
+									"transition-transform duration-500 group-hover:scale-[1.03]",
+									images.length === 1 ? "max-h-[30rem] min-h-60" : "aspect-[4/3]",
+								]}
+							/>
+						</a>
+					))}
+				</div>
+			)}
+
+			<div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-dashed border-(--line-divider) pt-3 text-xs text-neutral-500 dark:text-neutral-400">
+				{item.location && (
+					<span class="flex items-center gap-1">
+						<Icon is:inline name="material-symbols:location-on-rounded" class="text-(--primary)" />
+						{item.location}
+					</span>
+				)}
+				{item.tags?.map((tag) => (
+					<span class="rounded-full bg-(--btn-regular-bg) px-2.5 py-1">#{tag}</span>
+				))}
+				<a
+					href={`#${item.id}`}
+					class="ml-auto flex items-center gap-1 transition-colors hover:text-(--primary)"
+					aria-label={`定位到这条${variant === "moment" ? "动态" : "日记"}`}
+				>
+					<Icon is:inline name="material-symbols:link-rounded" />
+					永久链接
+				</a>
+			</div>
+		</div>
+	</div>
+</article>
+
+<script>
+	function updateRelativeTimes() {
+		const formatter = new Intl.RelativeTimeFormat("zh-CN", { numeric: "auto" });
+		const now = Date.now();
+
+		document.querySelectorAll<HTMLElement>("[data-relative-time]").forEach((element) => {
+			const timestamp = new Date(element.getAttribute("datetime") || "").getTime();
+			if (Number.isNaN(timestamp)) return;
+
+			const seconds = Math.round((timestamp - now) / 1000);
+			const absoluteSeconds = Math.abs(seconds);
+			let value = seconds;
+			let unit: Intl.RelativeTimeFormatUnit = "second";
+
+			if (absoluteSeconds >= 86400) {
+				value = Math.round(seconds / 86400);
+				unit = "day";
+			} else if (absoluteSeconds >= 3600) {
+				value = Math.round(seconds / 3600);
+				unit = "hour";
+			} else if (absoluteSeconds >= 60) {
+				value = Math.round(seconds / 60);
+				unit = "minute";
+			}
+
+			if (absoluteSeconds < 86400 * 7) {
+				element.textContent = formatter.format(value, unit);
+			}
+		});
+	}
+
+	updateRelativeTimes();
+	document.addEventListener("astro:page-load", updateRelativeTimes);
+</script>

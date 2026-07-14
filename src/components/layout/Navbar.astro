@@ -108,7 +108,7 @@ if (isLocalSrcLogo) {
         className,
         "overflow-visible! h-18 px-4"
     ]}>
-        <div class="mx-auto h-full w-full max-w-(--page-width) grid grid-cols-[auto_minmax(0,1fr)_auto] items-center">
+        <div class="relative mx-auto grid h-full w-full max-w-(--page-width) grid-cols-[auto_minmax(0,1fr)_auto] items-center">
             <a href={url('/')} class="btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
                 <div class:list={[
                     "flex flex-row items-center text-md",
@@ -120,7 +120,7 @@ if (isLocalSrcLogo) {
                                         <Picture
                                             src={logoImg}
                                             alt={siteConfig.navbar.logo.alt || siteConfig.title}
-                                            class="h-7 w-7 mb-1 mr-2 object-contain"
+                                            class="h-7 w-7 mb-1 mr-2 shrink-0 rounded-full object-contain"
                                             formats={getImageFormats()}
                                             fallbackFormat={getFallbackFormat()}
                                             widths={[28, 56]}
@@ -128,21 +128,21 @@ if (isLocalSrcLogo) {
                                             fetchpriority="high"
                                         />
                                     ) : siteConfig.navbar.logo?.type === "image" ? (
-                                        <img src={url(siteConfig.navbar.logo.value)} alt={siteConfig.navbar.logo.alt || siteConfig.title} class="h-7 w-7 mb-1 mr-2 object-contain" fetchpriority="high" />
+                                        <img src={url(siteConfig.navbar.logo.value)} alt={siteConfig.navbar.logo.alt || siteConfig.title} class="h-7 w-7 mb-1 mr-2 shrink-0 rounded-full object-contain" fetchpriority="high" />
                                     ) : siteConfig.navbar.logo?.type === "url" ? (
-                                        <img src={siteConfig.navbar.logo.value} alt={siteConfig.navbar.logo.alt || siteConfig.title} class="h-7 w-7 mb-1 mr-2 object-contain" fetchpriority="high" />
+                                        <img src={siteConfig.navbar.logo.value} alt={siteConfig.navbar.logo.alt || siteConfig.title} class="h-7 w-7 mb-1 mr-2 shrink-0 rounded-full object-contain" fetchpriority="high" />
                                     ) : (
                                         <Icon is:inline name="material-symbols:home-pin-outline" class="text-[1.75rem] mb-1 mr-2" />
                                     )}
                     {navbarTitle}
                 </div>
             </a>
-            <div class:list={[
-                "hidden lg:flex items-center space-x-1 col-start-2",
-                isNavbarMenuCentered
-                    ? "justify-center"
-                    : "justify-start pl-2"
-            ]}>
+			<div class:list={[
+				"hidden lg:flex items-center space-x-1",
+				isNavbarMenuCentered
+					? "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-center"
+					: "col-start-2 justify-start pl-2"
+			]}>
                 {links.map((l) => {
                     return <DropdownMenu link={l} />;
                 })}

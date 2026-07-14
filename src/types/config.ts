@@ -24,6 +24,13 @@ export type {
 	NavBarSearchConfig,
 	NavBarSearchMethod,
 } from "./navBarConfig";
+export type {
+	DeviceItem,
+	DiaryItem,
+	MomentItem,
+	PersonalPagesConfig,
+	SocialImage,
+} from "./personalPagesConfig";
 export type { Live2DWidgetConfig, SpineModelConfig } from "./pioConfig";
 export type { PlantUMLConfig } from "./plantumlConfig";
 export type { ProfileConfig } from "./profileConfig";

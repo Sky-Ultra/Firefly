@@ -48,6 +48,15 @@ const {
 
 const fallbackFormat = getFallbackFormat();
 const className = Astro.props.class;
+const localImageFiles = import.meta.glob<ImageMetadata>(
+	[
+		"../../assets/**/*.{png,jpg,jpeg,webp,avif}",
+		"../../content/**/*.{png,jpg,jpeg,webp,avif}",
+	],
+	{
+		import: "default",
+	},
+);
 
 const isLocal = !(
 	src.startsWith("/") ||
@@ -61,16 +70,10 @@ const isPublic = src.startsWith("/");
 // https://github.com/withastro/astro/issues/3373
 let img: ImageMetadata | null = null;
 if (isLocal) {
-	const files = import.meta.glob<ImageMetadata>(
-		"../../**/*.{png,jpg,jpeg,webp,avif}",
-		{
-			import: "default",
-		},
-	);
 	let normalizedPath = path
 		.normalize(path.join("../../", basePath, src))
 		.replace(/\\/g, "/");
-	const file = files[normalizedPath];
+	const file = localImageFiles[normalizedPath];
 	if (!file) {
 		console.error(
 			`\n[ERROR] Image file not found: ${normalizedPath.replace("../../", "src/")}`,

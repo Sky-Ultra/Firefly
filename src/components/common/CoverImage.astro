@@ -25,6 +25,7 @@ interface Props {
 	formats?: ImageFormat[];
 	loading?: "lazy" | "eager";
 	apiUrls?: string[];
+	randomCoverKey?: string;
 }
 
 const {
@@ -38,11 +39,21 @@ const {
 	formats = getImageFormats(),
 	loading = "lazy",
 	apiUrls = [],
+	randomCoverKey,
 } = Astro.props;
 
 const configQuality = getImageQuality();
 const fallbackFormat = getFallbackFormat();
 const className = Astro.props.class;
+const localImageFiles = import.meta.glob<ImageMetadata>(
+	[
+		"../../assets/**/*.{png,jpg,jpeg,webp,avif}",
+		"../../content/**/*.{png,jpg,jpeg,webp,avif}",
+	],
+	{
+		import: "default",
+	},
+);
 
 // 判断图片类型
 const isLocal = !(
@@ -56,16 +67,10 @@ const isPublic = src.startsWith("/");
 // 动态导入本地图片
 let img: ImageMetadata | null = null;
 if (isLocal) {
-	const files = import.meta.glob<ImageMetadata>(
-		"../../**/*.{png,jpg,jpeg,webp,avif}",
-		{
-			import: "default",
-		},
-	);
 	const normalizedPath = path
 		.normalize(path.join("../../", basePath, src))
 		.replace(/\\/g, "/");
-	const file = files[normalizedPath];
+	const file = localImageFiles[normalizedPath];
 	if (file) {
 		img = await file();
 	} else {
@@ -80,16 +85,10 @@ let fallbackImg: ImageMetadata | null = null;
 const fallbackPath = coverImageConfig.randomCoverImage.fallback;
 const isFallbackPublic = fallbackPath?.startsWith("/");
 if (fallbackPath && !isLocal && !isFallbackPublic) {
-	const files = import.meta.glob<ImageMetadata>(
-		"../../**/*.{png,jpg,jpeg,webp,avif}",
-		{
-			import: "default",
-		},
-	);
 	const normalizedFallbackPath = path
 		.normalize(path.join("../../", fallbackPath))
 		.replace(/\\/g, "/");
-	const file = files[normalizedFallbackPath];
+	const file = localImageFiles[normalizedFallbackPath];
 	if (file) {
 		fallbackImg = await file();
 	}
@@ -143,6 +142,7 @@ const remoteReferrerPolicy =
 	class:list={[className, "cover-image-container overflow-hidden relative"]}
 	data-loading={showLoading ? "true" : "false"}
 	data-api-urls={apiUrls.length > 0 ? JSON.stringify(apiUrls) : undefined}
+	data-random-cover-key={randomCoverKey}
 >
 	<!-- LQIP 渐变占位 -->
 	<div class="lqip-placeholder absolute inset-0 pointer-events-none" style={lqipProps.style} aria-hidden="true"></div>

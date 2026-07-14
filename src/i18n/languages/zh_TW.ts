@@ -279,6 +279,7 @@ export const zh_TW: Translation = {
 	[Key.postListLayout]: "文章佈局",
 	[Key.postListLayoutList]: "清單",
 	[Key.postListLayoutGrid]: "網格",
+	[Key.postListLayoutMasonry]: "瀑布流",
 
 	// 打賞頁面
 	[Key.sponsor]: "打賞",

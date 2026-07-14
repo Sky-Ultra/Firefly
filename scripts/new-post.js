@@ -46,7 +46,7 @@ const content = `---
 title: ${args[0]}
 published: ${getDate()}
 description: ''
-image: ''
+image: random
 tags: []
 category: ''
 draft: false 

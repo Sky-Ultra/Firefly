@@ -29,6 +29,7 @@ import { i18n } from "@/i18n/translation";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getImageQuality } from "@/utils/image-utils";
 import { getBackgroundImages, isHomePage } from "@/utils/layout-utils";
+import { getRandomCoverImages } from "@/utils/random-cover-utils";
 import {
 	generateGridClasses,
 	generateMainContentClasses,
@@ -60,7 +61,7 @@ interface Props {
 	};
 }
 
-const backgroundImages = getBackgroundImages();
+const configuredBackgroundImages = getBackgroundImages();
 
 const {
 	title,
@@ -112,6 +113,20 @@ const shouldRenderGradient =
 
 // 检查是否为首页
 const isHomePageCheck = isHomePage(Astro.url.pathname);
+const homeRandomCoverImages = isHomePageCheck
+	? await getRandomCoverImages()
+	: [];
+const homeWallpaperUrls = homeRandomCoverImages
+	.slice(-10)
+	.map((image) => image.originalUrl);
+const backgroundImages =
+	isHomePageCheck && homeWallpaperUrls.length > 0
+		? {
+				desktop: homeWallpaperUrls,
+				mobile: homeWallpaperUrls,
+				isMultiple: homeWallpaperUrls.length > 1,
+			}
+		: configuredBackgroundImages;
 
 const shouldRenderCategoryBar = !!siteConfig.categoryBar;
 

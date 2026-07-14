@@ -6,13 +6,14 @@ import type { CoverImageConfig } from "../types/coverImageConfig";
  * enableInPost - 是否在文章详情页显示封面图
  *
  * 随机封面图使用说明：
- * 1. 在文章的 Frontmatter 中添加 image: "api" 即可使用随机图功能
- * 2. 系统会依次尝试所有配置的 API，全部失败后使用备用图片
+ * 1. 在文章的 Frontmatter 中添加 image: "random"，即可从 src/Useing Picture
+ *    自动读取本地图片；每次页面加载重新洗牌，同页文章尽量不重复。
+ * 2. 旧的 image: "api" 仍使用下方远程 API 配置。
  *
  * // 文章 Frontmatter 示例：
  * ---
  * title: 文章标题
- * image: "api"
+ * image: "random"
  * ---
  */
 export const coverImageConfig: CoverImageConfig = {

@@ -16,9 +16,6 @@
   "src:assets/images/MobileWallpaper/m3.avif": "c3a6b4dac2cad2c0c9",
   "src:assets/images/MobileWallpaper/m2.avif": "f1e0ded8c2c6bbb0bc",
   "src:assets/images/MobileWallpaper/m1.avif": "cccce0cbc0d59294c0",
-  "public:assets/images/sponsor/wechat.png": "d5d5d5dad9d7dbd8cf",
-  "public:assets/images/sponsor/alipay.png": "8ebbde91bedf93c0e0",
-  "public:assets/images/ad/ad1.webp": "a1b8b68a8e918c8f93",
   "src:content/posts/images/vitepress.avif": "3d3d43e1e1e7ebe0da",
   "src:content/posts/images/right-grid2.avif": "cbcdcddddcd9d8d7db",
   "src:content/posts/images/obsidian.avif": "3a4145dce3e6e8ded8",
@@ -33,5 +30,11 @@
   "src:content/posts/images/both-list.avif": "e5e7e4e6e8e7e3e3e5",
   "src:content/posts/images/both-grid.avif": "d5d6d3e6e7e3d8d9e3",
   "src:content/posts/images/1.avif": "b5b0b3bcb6bbe0e0df",
-  "src:content/posts/guide/cover.avif": "c8bca9dde6d2babfb5"
+  "src:content/posts/guide/cover.avif": "c8bca9dde6d2babfb5",
+  "src:assets/images/relationship/aimisi.png": "8f81aba889ae9d90b5",
+  "public:assets/images/devices/iqoo-neo9s-pro-plus.png": "aab0b72d4261223d69",
+  "public:assets/images/devices/asus-tuf-gaming-f16-2024.webp": "3a4a493341413f4948",
+  "public:assets/images/devices/oppo-find-x8-ultra.webp": "9a9395c28293a85e73",
+  "public:assets/images/devices/oppo-pad-4-pro.webp": "baa1a398616f763a4e",
+  "public:assets/images/devices/oppo-enco-free4.webp": "e9e9e7e4e5e2d3d1d0"
 }

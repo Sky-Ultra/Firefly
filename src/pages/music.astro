@@ -1,0 +1,26 @@
+---
+import { Icon } from "astro-icon/components";
+import MusicPlayer from "@/components/features/MusicPlayer.astro";
+import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="音乐" description="我的歌单与正在播放">
+	<section class="card-base relative w-full overflow-hidden p-5 sm:p-7 lg:p-9">
+		<div class="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-(--primary)/12 blur-3xl"></div>
+		<div class="relative">
+			<PersonalPageHeader
+				title="音乐"
+				description="我的歌单与正在播放"
+				icon="material-symbols:music-note-rounded"
+			/>
+			<div class="mx-auto max-w-xl rounded-2xl border border-(--line-divider) bg-(--btn-regular-bg)/45 p-4 shadow-sm sm:p-6">
+				<MusicPlayer id="music-page-player" />
+			</div>
+			<p class="mt-5 flex items-center justify-center gap-2 text-center text-sm text-neutral-500 dark:text-neutral-400">
+				<Icon is:inline name="material-symbols:queue-music-rounded" class="text-lg text-(--primary)" />
+				歌单内容与顶部播放器共用同一份音乐配置
+			</p>
+		</div>
+	</section>
+</MainGridLayout>

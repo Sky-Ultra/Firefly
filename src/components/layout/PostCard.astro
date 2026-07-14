@@ -7,6 +7,7 @@ import PostMetadata from "@/components/layout/PostMeta.astro";
 import PostStats from "@/components/layout/PostStats.astro";
 import { siteConfig } from "@/config";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
+import { isRandomCoverImage } from "@/utils/random-cover-utils";
 import { getFileDirFromPath, getTagUrl } from "@/utils/url-utils";
 
 interface Props {
@@ -25,6 +26,7 @@ interface Props {
 	password?: boolean;
 	style: string;
 	loading?: "lazy" | "eager";
+	randomCoverFallback?: string;
 }
 const {
 	entry,
@@ -39,11 +41,15 @@ const {
 	password,
 	style,
 	loading = "lazy",
+	randomCoverFallback = "",
 } = Astro.props;
 const className = Astro.props.class;
 
-// 处理随机图：如果image为"api"，则从配置的API获取随机图
-const processedImage = processCoverImageSync(image, entry.id);
+const usesRandomCover = isRandomCoverImage(image);
+// 本地随机封面由页面级分配器统一洗牌，服务端回退图用于避免首屏布局闪烁。
+const processedImage = usesRandomCover
+	? randomCoverFallback
+	: processCoverImageSync(image, entry.id);
 const apiUrls = getApiUrlList(image, entry.id);
 const hasCover =
 	processedImage !== undefined &&
@@ -222,6 +228,7 @@ const minutes = remarkPluginFrontmatter.minutes;
           preview={true}
           loading={loading}
           apiUrls={apiUrls}
+		  randomCoverKey={usesRandomCover ? entry.id : undefined}
         />
       </a>
     )

@@ -1,0 +1,42 @@
+---
+import { Icon } from "astro-icon/components";
+import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
+import SocialFeedCard from "@/components/pages/personal/SocialFeedCard.astro";
+import { personalPagesConfig, profileConfig } from "@/config";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const config = personalPagesConfig.moments;
+const items = [...config.items].sort(
+	(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+);
+---
+
+<MainGridLayout title={config.title} description={config.description}>
+	<section class="card-base relative mb-4 overflow-hidden p-5 sm:p-7 lg:p-9">
+		<div class="absolute inset-x-0 top-0 h-28 bg-gradient-to-r from-(--primary)/15 via-(--primary)/5 to-transparent"></div>
+		<div class="relative">
+			<PersonalPageHeader
+				title={config.title}
+				description={config.description}
+				icon="material-symbols:diversity-1-rounded"
+			/>
+			<div class="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+				<Icon is:inline name="material-symbols:account-circle" class="text-lg text-(--primary)" />
+				<span>{profileConfig.name} 的近况</span>
+				<span class="text-neutral-300 dark:text-neutral-600">·</span>
+				<span>{items.length} 条动态</span>
+			</div>
+		</div>
+	</section>
+
+	<div class="space-y-4">
+		{items.length > 0 ? (
+			items.map((item) => <SocialFeedCard item={item} variant="moment" />)
+		) : (
+			<div class="card-base p-12 text-center text-neutral-400">
+				<Icon is:inline name="material-symbols:forum-outline-rounded" class="mb-3 text-5xl" />
+				<p>暂时还没有动态</p>
+			</div>
+		)}
+	</div>
+</MainGridLayout>
