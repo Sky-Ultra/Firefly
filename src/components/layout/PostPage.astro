@@ -6,6 +6,7 @@ import PostCard from "@/components/layout/PostCard.astro";
 import { siteConfig } from "@/config";
 import { isHomePage } from "@/utils/layout-utils";
 import {
+	getMobileHomeWallpaperImages,
 	getRandomCoverImages,
 	isRandomCoverImage,
 } from "@/utils/random-cover-utils";
@@ -34,7 +35,11 @@ const hasRandomCovers = page.data.some((entry: PostEntry) =>
 	isRandomCoverImage(entry.data.image),
 );
 const useHomeWallpaper = isHomePage(Astro.url.pathname);
-const randomCoverImages = hasRandomCovers ? await getRandomCoverImages() : [];
+const randomCoverImages =
+	hasRandomCovers || useHomeWallpaper ? await getRandomCoverImages() : [];
+const mobileHomeWallpaperImages = useHomeWallpaper
+	? getMobileHomeWallpaperImages()
+	: [];
 let randomCoverFallbackIndex = 0;
 const getRandomCoverFallback = (entry: PostEntry): string | undefined => {
 	if (!isRandomCoverImage(entry.data.image) || randomCoverImages.length === 0) {
@@ -81,10 +86,11 @@ const getRandomCoverFallback = (entry: PostEntry): string | undefined => {
   }
 </div>
 
-{hasRandomCovers && (
+{randomCoverImages.length > 0 && (
 	<RandomCoverProvider
 		images={randomCoverImages}
 		useHomeWallpaper={useHomeWallpaper}
+		mobileHomeWallpaperImages={mobileHomeWallpaperImages}
 	/>
 )}
 

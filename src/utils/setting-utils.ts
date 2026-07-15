@@ -33,7 +33,12 @@ export function getDefaultHue(): number {
 		return Number.parseInt(fallback, 10);
 	}
 	const configCarrier = document.getElementById("config-carrier");
-	return Number.parseInt(configCarrier?.dataset.hue || fallback, 10);
+	const mobileHue = Number.parseInt(configCarrier?.dataset.hue || fallback, 10);
+	const desktopHue = Number.parseInt(
+		configCarrier?.dataset.desktopHue || String(mobileHue),
+		10,
+	);
+	return window.innerWidth >= 1024 ? desktopHue : mobileHue;
 }
 
 export function getDefaultTheme(): LIGHT_DARK_MODE {
@@ -66,6 +71,29 @@ export function getHue(): number {
 		return getDefaultHue();
 	}
 	const stored = localStorage.getItem("hue");
+	const configCarrier = document.getElementById("config-carrier");
+	const mobileHue = Number.parseInt(
+		configCarrier?.dataset.hue || String(getDefaultHue()),
+		10,
+	);
+	const desktopHue = Number.parseInt(
+		configCarrier?.dataset.desktopHue || String(mobileHue),
+		10,
+	);
+	const migrationKey = "firefly-default-hue-version";
+	const migrationVersion = `desktop-${desktopHue}`;
+	const shouldCheckDesktopDefault =
+		window.innerWidth >= 1024 &&
+		desktopHue !== mobileHue &&
+		localStorage.getItem(migrationKey) !== migrationVersion;
+
+	if (shouldCheckDesktopDefault) {
+		localStorage.setItem(migrationKey, migrationVersion);
+		if (stored === null || Number.parseInt(stored, 10) === mobileHue) {
+			localStorage.setItem("hue", String(desktopHue));
+			return desktopHue;
+		}
+	}
 	return stored ? Number.parseInt(stored, 10) : getDefaultHue();
 }
 

@@ -37,6 +37,7 @@ export type SiteConfig = {
 
 	themeColor: {
 		hue: number;
+		desktopHue?: number; // PC 端默认色相；未设置时使用 hue
 		fixed: boolean;
 		defaultMode?: LIGHT_DARK_MODE; // 默认模式：浅色、深色或跟随系统
 	};
@@ -80,6 +81,7 @@ export type SiteConfig = {
 
 	// 页面开关配置
 	pages: {
+		rss: boolean; // RSS 入口及介绍页开关
 		friends: boolean; // 友链页面开关
 		sponsor: boolean; // 打赏页面开关
 		guestbook: boolean; // 留言板页面开关

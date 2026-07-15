@@ -39,6 +39,7 @@ const textData = Array.isArray(text) ? JSON.stringify(text) : text;
     private currentIndex: number = 0;
     private isDeleting: boolean = false;
     private timeoutId: number | null = null;
+    private randomQueue: number[] = [];
 
     constructor(element: HTMLElement) {
       this.element = element;
@@ -58,7 +59,11 @@ const textData = Array.isArray(text) ? JSON.stringify(text) : text;
       this.pauseTime = parseInt(element.dataset.pauseTime || "2000");
 
       if (this.randomOrder && this.texts.length > 1) {
-        this.currentTextIndex = Math.floor(Math.random() * this.texts.length);
+        // 每次初始化都固定从第一句开始，其余句子以不放回方式随机展示。
+        this.currentTextIndex = 0;
+        this.randomQueue = this.shuffleIndexes(
+          Array.from({ length: this.texts.length - 1 }, (_, index) => index + 1),
+        );
       }
 
       // 如果有多条文本且未启用打字机效果，随机显示一条
@@ -152,8 +157,36 @@ const textData = Array.isArray(text) ? JSON.stringify(text) : text;
         return (this.currentTextIndex + 1) % this.texts.length;
       }
 
-      const offset = Math.floor(Math.random() * (this.texts.length - 1)) + 1;
-      return (this.currentTextIndex + offset) % this.texts.length;
+      if (this.randomQueue.length === 0) {
+        this.randomQueue = this.shuffleIndexes(
+          Array.from({ length: this.texts.length }, (_, index) => index),
+        );
+        if (this.randomQueue[0] === this.currentTextIndex) {
+          const differentIndex = this.randomQueue.findIndex(
+            (index) => index !== this.currentTextIndex,
+          );
+          if (differentIndex > 0) {
+            [this.randomQueue[0], this.randomQueue[differentIndex]] = [
+              this.randomQueue[differentIndex],
+              this.randomQueue[0],
+            ];
+          }
+        }
+      }
+
+      return this.randomQueue.shift() ?? 0;
+    }
+
+    private shuffleIndexes(indexes: number[]): number[] {
+      const shuffled = [...indexes];
+      for (let index = shuffled.length - 1; index > 0; index--) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [
+          shuffled[randomIndex],
+          shuffled[index],
+        ];
+      }
+      return shuffled;
     }
 
   }

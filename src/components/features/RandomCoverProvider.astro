@@ -5,12 +5,14 @@ interface Props {
 	images: RandomCoverImage[];
 	useHomeWallpaper?: boolean;
 	useOriginalForArticles?: boolean;
+	mobileHomeWallpaperImages?: RandomCoverImage[];
 }
 
 const {
 	images,
 	useHomeWallpaper = false,
 	useOriginalForArticles = false,
+	mobileHomeWallpaperImages = [],
 } = Astro.props;
 ---
 
@@ -18,6 +20,11 @@ const {
 	hidden
 	data-random-cover-pool={JSON.stringify(images)}
 	data-random-cover-home-wallpaper={useHomeWallpaper ? "true" : undefined}
+	data-random-cover-mobile-home-wallpaper={
+		mobileHomeWallpaperImages.length > 0
+			? JSON.stringify(mobileHomeWallpaperImages)
+			: undefined
+	}
 	data-random-cover-original-articles={useOriginalForArticles ? "true" : undefined}
 	aria-hidden="true"
 ></div>
@@ -32,6 +39,7 @@ const {
 	interface RandomCoverRuntime {
 		articleAssignments: Map<string, RandomCoverCandidate>;
 		homeWallpaperAssignments: RandomCoverCandidate[];
+		mobileHomeWallpaperAssignments: RandomCoverCandidate[];
 	}
 
 	type RandomCoverWindow = Window & {
@@ -110,6 +118,7 @@ const {
 			runtimeWindow.__fireflyRandomCoverRuntime = {
 				articleAssignments: new Map(),
 				homeWallpaperAssignments: [],
+				mobileHomeWallpaperAssignments: [],
 			};
 		}
 		return runtimeWindow.__fireflyRandomCoverRuntime;
@@ -159,20 +168,18 @@ const {
 	function getHomeWallpaperCandidates(
 		images: RandomCoverCandidate[],
 		count: number,
-		runtime: RandomCoverRuntime,
+		existingAssignments: RandomCoverCandidate[],
+		blockedIds: Set<string>,
 	): RandomCoverCandidate[] {
 		const imagesById = new Map(images.map((image) => [image.id, image]));
-		const articleIds = new Set(
-			Array.from(runtime.articleAssignments.values(), (image) => image.id),
-		);
 		const selected: RandomCoverCandidate[] = [];
 		const selectedIds = new Set<string>();
 
-		for (const existing of runtime.homeWallpaperAssignments) {
+		for (const existing of existingAssignments) {
 			const currentCandidate = imagesById.get(existing.id);
 			if (
 				currentCandidate &&
-				!articleIds.has(currentCandidate.id) &&
+				!blockedIds.has(currentCandidate.id) &&
 				!selectedIds.has(currentCandidate.id)
 			) {
 				selected.push(currentCandidate);
@@ -182,7 +189,7 @@ const {
 
 		for (const candidate of shuffleRandomCovers(images)) {
 			if (selected.length >= count) break;
-			if (articleIds.has(candidate.id) || selectedIds.has(candidate.id)) continue;
+			if (blockedIds.has(candidate.id) || selectedIds.has(candidate.id)) continue;
 			selected.push(candidate);
 			selectedIds.add(candidate.id);
 		}
@@ -194,8 +201,26 @@ const {
 			}
 		}
 
-		runtime.homeWallpaperAssignments = selected;
 		return selected.slice(0, count);
+	}
+
+	function assignWallpaperSlides(
+		slides: HTMLElement[],
+		wallpaperImages: RandomCoverCandidate[],
+	) {
+		const slideIndexes = Array.from(
+			new Set(slides.map((slide) => slide.dataset.index || "0")),
+		).sort((a, b) => Number(a) - Number(b));
+
+		for (let offset = 0; offset < slideIndexes.length; offset++) {
+			const candidate = wallpaperImages[offset];
+			if (!candidate) break;
+			for (const slide of slides) {
+				if (slide.dataset.index === slideIndexes[offset]) {
+					replaceWallpaperImage(slide, candidate.originalUrl);
+				}
+			}
+		}
 	}
 
 	function assignHomeWallpaper(
@@ -207,27 +232,46 @@ const {
 
 		const wallpaper = document.getElementById("banner-images-container");
 		if (!wallpaper) return;
+		let mobileImages: RandomCoverCandidate[] = [];
+		try {
+			mobileImages = JSON.parse(
+				poolCarrier.dataset.randomCoverMobileHomeWallpaper || "[]",
+			);
+		} catch {
+			console.error("移动端首页壁纸池数据无法解析。");
+		}
 
 		const slides = Array.from(
 			wallpaper.querySelectorAll<HTMLElement>(".slide-item[data-index]"),
 		);
 		if (slides.length > 0) {
-			const slideIndexes = Array.from(
-				new Set(slides.map((slide) => slide.dataset.index || "0")),
-			).sort((a, b) => Number(a) - Number(b));
-			const wallpaperImages = getHomeWallpaperCandidates(
-				images,
-				slideIndexes.length,
-				runtime,
+			const desktopSlides = slides.filter((slide) =>
+				slide.classList.contains("lg:block"),
 			);
+			const mobileSlides = slides.filter((slide) =>
+				slide.classList.contains("lg:hidden"),
+			);
+			const articleIds = new Set(
+				Array.from(runtime.articleAssignments.values(), (image) => image.id),
+			);
+			const desktopWallpapers = getHomeWallpaperCandidates(
+				images,
+				desktopSlides.length,
+				runtime.homeWallpaperAssignments,
+				articleIds,
+			);
+			runtime.homeWallpaperAssignments = desktopWallpapers;
+			assignWallpaperSlides(desktopSlides, desktopWallpapers);
 
-			for (let offset = 0; offset < slideIndexes.length; offset++) {
-				const src = wallpaperImages[offset].originalUrl;
-				for (const slide of slides) {
-					if (slide.dataset.index === slideIndexes[offset]) {
-						replaceWallpaperImage(slide, src);
-					}
-				}
+			if (mobileImages.length > 0) {
+				const mobileWallpapers = getHomeWallpaperCandidates(
+					mobileImages,
+					mobileSlides.length,
+					runtime.mobileHomeWallpaperAssignments,
+					new Set(),
+				);
+				runtime.mobileHomeWallpaperAssignments = mobileWallpapers;
+				assignWallpaperSlides(mobileSlides, mobileWallpapers);
 			}
 			return;
 		}
@@ -239,9 +283,32 @@ const {
 		);
 		if (singleImageSlots.length === 0) return;
 
-		const [wallpaperImage] = getHomeWallpaperCandidates(images, 1, runtime);
+		const articleIds = new Set(
+			Array.from(runtime.articleAssignments.values(), (image) => image.id),
+		);
+		const [desktopWallpaper] = getHomeWallpaperCandidates(
+			images,
+			1,
+			runtime.homeWallpaperAssignments,
+			articleIds,
+		);
+		const [mobileWallpaper] = getHomeWallpaperCandidates(
+			mobileImages.length > 0 ? mobileImages : images,
+			1,
+			runtime.mobileHomeWallpaperAssignments,
+			new Set(),
+		);
+		if (desktopWallpaper) {
+			runtime.homeWallpaperAssignments = [desktopWallpaper];
+		}
+		if (mobileWallpaper) {
+			runtime.mobileHomeWallpaperAssignments = [mobileWallpaper];
+		}
 		for (const slot of singleImageSlots) {
-			replaceWallpaperImage(slot, wallpaperImage.originalUrl);
+			const wallpaperImage = slot.classList.contains("banner-image-slot-mobile")
+				? mobileWallpaper
+				: desktopWallpaper;
+			if (wallpaperImage) replaceWallpaperImage(slot, wallpaperImage.originalUrl);
 		}
 	}
 

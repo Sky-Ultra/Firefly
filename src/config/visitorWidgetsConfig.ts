@@ -1,6 +1,15 @@
 import type { VisitorWidgetsConfig } from "@/types/visitorWidgetsConfig";
 
 export const visitorWidgetsConfig: VisitorWidgetsConfig = {
+	welcomeToast: {
+		enabled: true,
+		homepageOnly: true,
+		locationApi: "https://ipwho.is/",
+		fallbackMessage: "你好，欢迎来到我的博客",
+		subtitle: "欢迎来到我的博客",
+		visibleDuration: 5_000,
+		fadeDuration: 500,
+	},
 	copyToast: {
 		message: "✨ 复制成功，转载请标注本文地址",
 		visibleDuration: 1600,

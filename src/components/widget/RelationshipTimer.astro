@@ -14,6 +14,9 @@ const { class: className, style, widgetConfig } = Astro.props;
 const config = relationshipConfig;
 const showTitle = widgetConfig?.showTitle !== false;
 const widgetId = `relationship-${Math.random().toString(36).slice(2, 9)}`;
+const frozenDuration = config.frozenDuration;
+const showDaysUnit = !config.frozen || frozenDuration?.days !== undefined;
+const rightAvatarBlur = Math.max(0, config.people[1].avatarBlur ?? 0);
 
 const getInitial = (name: string): string =>
 	Array.from(name.trim()).at(0) || "?";
@@ -26,7 +29,11 @@ const getInitial = (name: string): string =>
 	class={className}
 	style={style}
 >
-	<relationship-timer data-start-at={config.startAt} class="block">
+	<relationship-timer
+		data-start-at={config.startAt}
+		data-frozen={config.frozen ? "true" : undefined}
+		class="block"
+	>
 		<div class="flex flex-col items-center p-2">
 			<div class="mb-4 flex items-center justify-center gap-2 text-sm font-medium text-neutral-600 dark:text-neutral-400">
 				<span>{config.people[0].name}</span>
@@ -63,13 +70,26 @@ const getInitial = (name: string): string =>
 				</span>
 				{
 					config.people[1].avatar ? (
-						<ImageWrapper
-							src={config.people[1].avatar}
-							alt={config.people[1].avatarAlt || config.people[1].name}
-							class="h-16 w-16 rounded-full border-2 border-white shadow-md transition-transform hover:scale-110 dark:border-neutral-800"
-							widths={[64, 128]}
-							sizes="64px"
-						/>
+						<div class="relative h-16 w-16 overflow-hidden rounded-full border-2 border-white shadow-md dark:border-neutral-800">
+							<div
+								class="h-full w-full"
+								style={`filter: blur(${rightAvatarBlur}px); transform: scale(${rightAvatarBlur > 0 ? 1.2 : 1});`}
+							>
+								<ImageWrapper
+									src={config.people[1].avatar}
+									alt={config.people[1].avatarAlt || config.people[1].name}
+									class="h-full w-full"
+									widths={[64, 128]}
+									sizes="64px"
+								/>
+							</div>
+							<span
+								class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-lg font-black text-(--primary) drop-shadow-sm"
+								aria-hidden="true"
+							>
+								未抵
+							</span>
+						</div>
 					) : (
 						<div
 							class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white bg-neutral-100 text-xl font-bold text-(--primary) shadow-md dark:border-neutral-800 dark:bg-neutral-800"
@@ -87,17 +107,21 @@ const getInitial = (name: string): string =>
 				aria-label="相伴时间"
 				aria-live="off"
 			>
-				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="years">0</span>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="years">{config.frozen ? frozenDuration?.years ?? 99 : 0}</span>
 				<span class="shrink-0 rounded bg-red-400 px-1 py-0.5 text-[10px] font-medium text-white">年</span>
-				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="months">0</span>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="months">{config.frozen ? frozenDuration?.months ?? 99 : 0}</span>
 				<span class="shrink-0 rounded bg-red-300 px-1 py-0.5 text-[10px] font-medium text-white">月</span>
-				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="days">0</span>
-				<span class="shrink-0 rounded bg-blue-400 px-1 py-0.5 text-[10px] font-medium text-white">天</span>
-				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="hours">0</span>
+				{showDaysUnit && (
+					<>
+						<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="days">{config.frozen ? frozenDuration?.days ?? 99 : 0}</span>
+						<span class="shrink-0 rounded bg-blue-400 px-1 py-0.5 text-[10px] font-medium text-white">天</span>
+					</>
+				)}
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="hours">{config.frozen ? frozenDuration?.hours ?? 99 : 0}</span>
 				<span class="shrink-0 rounded bg-orange-400 px-1 py-0.5 text-[10px] font-medium text-white">时</span>
-				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="minutes">0</span>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="minutes">{config.frozen ? frozenDuration?.minutes ?? 99 : 0}</span>
 				<span class="shrink-0 rounded bg-blue-500 px-1 py-0.5 text-[10px] font-medium text-white">分</span>
-				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="seconds">00</span>
+				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="seconds">{config.frozen ? frozenDuration?.seconds ?? 99 : "00"}</span>
 				<span class="shrink-0 rounded bg-purple-400 px-1 py-0.5 text-[10px] font-medium text-white">秒</span>
 			</div>
 			<span class="sr-only" data-timer-status></span>
@@ -196,6 +220,11 @@ const getInitial = (name: string): string =>
 
 		connectedCallback(): void {
 			if (this.timeoutId !== undefined) return;
+			if (this.dataset.frozen === "true") {
+				const status = this.querySelector<HTMLElement>("[data-timer-status]");
+				if (status) status.textContent = "计时已暂停";
+				return;
+			}
 			this.update();
 			this.scheduleNextTick();
 		}

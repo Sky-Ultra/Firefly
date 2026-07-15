@@ -29,7 +29,10 @@ import { i18n } from "@/i18n/translation";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getImageQuality } from "@/utils/image-utils";
 import { getBackgroundImages, isHomePage } from "@/utils/layout-utils";
-import { getRandomCoverImages } from "@/utils/random-cover-utils";
+import {
+	getMobileHomeWallpaperImages,
+	getRandomCoverImages,
+} from "@/utils/random-cover-utils";
 import {
 	generateGridClasses,
 	generateMainContentClasses,
@@ -116,15 +119,26 @@ const isHomePageCheck = isHomePage(Astro.url.pathname);
 const homeRandomCoverImages = isHomePageCheck
 	? await getRandomCoverImages()
 	: [];
-const homeWallpaperUrls = homeRandomCoverImages
+const mobileHomeWallpaperImages = isHomePageCheck
+	? getMobileHomeWallpaperImages()
+	: [];
+const desktopHomeWallpaperUrls = homeRandomCoverImages
+	.slice(-10)
+	.map((image) => image.originalUrl);
+const mobileHomeWallpaperUrls = mobileHomeWallpaperImages
 	.slice(-10)
 	.map((image) => image.originalUrl);
 const backgroundImages =
-	isHomePageCheck && homeWallpaperUrls.length > 0
+	isHomePageCheck && desktopHomeWallpaperUrls.length > 0
 		? {
-				desktop: homeWallpaperUrls,
-				mobile: homeWallpaperUrls,
-				isMultiple: homeWallpaperUrls.length > 1,
+				desktop: desktopHomeWallpaperUrls,
+				mobile:
+					mobileHomeWallpaperUrls.length > 0
+						? mobileHomeWallpaperUrls
+						: desktopHomeWallpaperUrls,
+				isMultiple:
+					desktopHomeWallpaperUrls.length > 1 ||
+					mobileHomeWallpaperUrls.length > 1,
 			}
 		: configuredBackgroundImages;
 

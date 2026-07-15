@@ -27,6 +27,15 @@ const randomCoverOriginalModules = import.meta.glob<string>(
 	},
 );
 
+const mobileHomeWallpaperOriginalModules = import.meta.glob<string>(
+	"../Using Picture mobile/**/*.{png,jpg,jpeg,webp,avif}",
+	{
+		eager: true,
+		import: "default",
+		query: "?url",
+	},
+);
+
 let randomCoverImagesPromise: Promise<RandomCoverImage[]> | undefined;
 
 export function isRandomCoverImage(image?: string): boolean {
@@ -71,4 +80,25 @@ export function getRandomCoverImages(): Promise<RandomCoverImage[]> {
 	}
 
 	return randomCoverImagesPromise;
+}
+
+/**
+ * 扫描移动端首页专用壁纸池。这里保留原图 URL，不参与文章封面分配。
+ */
+export function getMobileHomeWallpaperImages(): RandomCoverImage[] {
+	const images = Object.entries(mobileHomeWallpaperOriginalModules).sort(
+		([a], [b]) => a.localeCompare(b, "zh-CN"),
+	);
+
+	if (images.length === 0) {
+		throw new Error(
+			"移动端首页壁纸池为空：请向 src/Using Picture mobile 添加 jpg、jpeg、png、webp 或 avif 图片。",
+		);
+	}
+
+	return images.map(([id, originalUrl]) => ({
+		id,
+		previewUrl: originalUrl,
+		originalUrl,
+	}));
 }

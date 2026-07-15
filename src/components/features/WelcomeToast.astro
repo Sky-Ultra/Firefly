@@ -1,0 +1,277 @@
+---
+import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
+
+const config = visitorWidgetsConfig.welcomeToast;
+const homePath = import.meta.env.BASE_URL || "/";
+---
+
+{
+	config.enabled && (
+		<welcome-visitor-toast
+			data-state="hidden"
+			data-home-path={homePath}
+			data-homepage-only={String(config.homepageOnly)}
+			data-location-api={config.locationApi}
+			data-fallback-message={config.fallbackMessage}
+			data-visible-duration={config.visibleDuration}
+			data-fade-duration={config.fadeDuration}
+			role="status"
+			aria-live="polite"
+			aria-atomic="true"
+		>
+			<div class="welcome-toast-card">
+				<span class="welcome-toast-icon" aria-hidden="true">👋</span>
+				<div class="welcome-toast-content">
+					<p class="welcome-toast-message" data-welcome-message>
+						{config.fallbackMessage}
+					</p>
+					<p class="welcome-toast-subtitle">{config.subtitle}</p>
+				</div>
+				<button type="button" class="welcome-toast-close" aria-label="关闭欢迎提示" data-welcome-close>
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+		</welcome-visitor-toast>
+	)
+}
+
+<script>
+	type IpLocationResponse = {
+		success?: boolean;
+		country?: string;
+		region?: string;
+		city?: string;
+	};
+
+	const welcomeRuntime = window as Window & {
+		__fireflyWelcomeToastInitialized?: boolean;
+	};
+
+	function normalizePath(path: string) {
+		const withoutIndex = path.replace(/index\.html$/i, "");
+		return withoutIndex.endsWith("/") ? withoutIndex : `${withoutIndex}/`;
+	}
+
+	class WelcomeVisitorToast extends HTMLElement {
+		private hideTimer: number | undefined;
+		private removeTimer: number | undefined;
+		private controller: AbortController | undefined;
+
+		private readonly handleClose = () => this.close();
+
+		connectedCallback() {
+			this.querySelector("[data-welcome-close]")?.addEventListener(
+				"click",
+				this.handleClose,
+			);
+
+			if (welcomeRuntime.__fireflyWelcomeToastInitialized) return;
+			welcomeRuntime.__fireflyWelcomeToastInitialized = true;
+
+			const homepageOnly = this.dataset.homepageOnly !== "false";
+			const homePath = normalizePath(this.dataset.homePath || "/");
+			if (
+				homepageOnly &&
+				normalizePath(window.location.pathname) !== homePath
+			) {
+				return;
+			}
+
+			this.show();
+			void this.loadLocation();
+		}
+
+		disconnectedCallback() {
+			this.querySelector("[data-welcome-close]")?.removeEventListener(
+				"click",
+				this.handleClose,
+			);
+			this.clearTimers();
+			this.controller?.abort();
+		}
+
+		private show() {
+			window.requestAnimationFrame(() => {
+				if (this.isConnected) this.dataset.state = "visible";
+			});
+
+			const visibleDuration =
+				Number(this.dataset.visibleDuration) || 5_000;
+			this.hideTimer = window.setTimeout(
+				() => this.close(),
+				visibleDuration,
+			);
+		}
+
+		private close() {
+			this.clearTimers();
+			if (this.dataset.state === "hidden") return;
+			this.dataset.state = "closing";
+
+			const fadeDuration = Number(this.dataset.fadeDuration) || 500;
+			this.removeTimer = window.setTimeout(() => {
+				this.dataset.state = "hidden";
+			}, fadeDuration);
+		}
+
+		private clearTimers() {
+			if (this.hideTimer !== undefined) {
+				window.clearTimeout(this.hideTimer);
+				this.hideTimer = undefined;
+			}
+			if (this.removeTimer !== undefined) {
+				window.clearTimeout(this.removeTimer);
+				this.removeTimer = undefined;
+			}
+		}
+
+		private async loadLocation() {
+			const message = this.querySelector<HTMLElement>(
+				"[data-welcome-message]",
+			);
+			if (!message) return;
+
+			this.controller = new AbortController();
+			const timeout = window.setTimeout(() => this.controller?.abort(), 4_000);
+			try {
+				const response = await fetch(
+					this.dataset.locationApi || "https://ipwho.is/",
+					{
+						headers: { Accept: "application/json" },
+						signal: this.controller.signal,
+					},
+				);
+				if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+				const data = (await response.json()) as IpLocationResponse;
+				if (data.success === false) throw new Error("Location unavailable");
+				const location = [data.country, data.region, data.city]
+					.filter(
+						(value, index, values): value is string =>
+							Boolean(value) && values.indexOf(value) === index,
+					)
+					.join(" · ");
+				if (location && this.isConnected) {
+					message.textContent = `你好，来自${location}的朋友`;
+				}
+			} catch {
+				message.textContent =
+					this.dataset.fallbackMessage || "你好，欢迎来到我的博客";
+			} finally {
+				window.clearTimeout(timeout);
+			}
+		}
+	}
+
+	if (!customElements.get("welcome-visitor-toast")) {
+		customElements.define("welcome-visitor-toast", WelcomeVisitorToast);
+	}
+</script>
+
+<style>
+	welcome-visitor-toast {
+		position: fixed;
+		right: 1rem;
+		bottom: 1rem;
+		z-index: 10001;
+		display: block;
+		max-width: min(22rem, calc(100vw - 2rem));
+		transform: translateY(calc(100% + 1.5rem));
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transition:
+			transform 500ms ease,
+			opacity 500ms ease,
+			visibility 0s linear 500ms;
+	}
+
+	welcome-visitor-toast[data-state="visible"] {
+		transform: translateY(0);
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transition-delay: 0s;
+	}
+
+	welcome-visitor-toast[data-state="closing"] {
+		transform: translateY(calc(100% + 1.5rem));
+		opacity: 0;
+		visibility: visible;
+		pointer-events: none;
+	}
+
+	.welcome-toast-card {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		padding: 1rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.9rem;
+		background: var(--card-bg);
+		box-shadow: 0 0.8rem 2rem rgb(0 0 0 / 16%);
+		color: var(--btn-content);
+		backdrop-filter: blur(0.75rem);
+	}
+
+	.welcome-toast-icon {
+		flex: none;
+		font-size: 1.5rem;
+		line-height: 1.5rem;
+	}
+
+	.welcome-toast-content {
+		min-width: 0;
+		flex: 1;
+	}
+
+	.welcome-toast-message {
+		font-size: 0.875rem;
+		font-weight: 700;
+		line-height: 1.35rem;
+		color: var(--btn-content);
+	}
+
+	.welcome-toast-subtitle {
+		margin-top: 0.35rem;
+		font-size: 0.75rem;
+		font-style: italic;
+		line-height: 1.15rem;
+		color: color-mix(in srgb, var(--btn-content) 62%, transparent);
+	}
+
+	.welcome-toast-close {
+		flex: none;
+		width: 1.5rem;
+		height: 1.5rem;
+		border: 0;
+		border-radius: 999px;
+		background: transparent;
+		color: color-mix(in srgb, var(--btn-content) 58%, transparent);
+		font-size: 1.25rem;
+		line-height: 1.25rem;
+		cursor: pointer;
+		transition:
+			color 150ms ease,
+			background-color 150ms ease;
+	}
+
+	.welcome-toast-close:hover {
+		background: var(--btn-plain-bg-hover);
+		color: var(--primary);
+	}
+
+	@media (max-width: 640px) {
+		welcome-visitor-toast {
+			right: 1rem;
+			left: 1rem;
+			max-width: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		welcome-visitor-toast {
+			transition-duration: 1ms;
+		}
+	}
+</style>

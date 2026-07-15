@@ -16,6 +16,15 @@ export type FestivalRule = {
 };
 
 export type VisitorWidgetsConfig = {
+	welcomeToast: {
+		enabled: boolean;
+		homepageOnly: boolean;
+		locationApi: string;
+		fallbackMessage: string;
+		subtitle: string;
+		visibleDuration: number;
+		fadeDuration: number;
+	};
 	copyToast: {
 		message: string;
 		visibleDuration: number;

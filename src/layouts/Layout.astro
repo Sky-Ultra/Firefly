@@ -8,6 +8,7 @@ import FancyboxManager from "@components/features/FancyboxManager.astro";
 import FontSetup from "@components/features/FontSetup.astro";
 import MusicManager from "@components/features/MusicManager.astro";
 import SakuraEffect from "@components/features/SakuraEffect.astro";
+import WelcomeToast from "@components/features/WelcomeToast.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
 
 import {
@@ -52,6 +53,7 @@ const isHomePageCheck = isHomePage(Astro.url.pathname);
 // defines global css variables
 // why doing this in Layout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
 const configHue = siteConfig.themeColor.hue;
+const desktopConfigHue = siteConfig.themeColor.desktopHue ?? configHue;
 
 // 获取导航栏透明模式配置
 const navbarTransparentMode =
@@ -239,6 +241,7 @@ const siteLang = lang.replace("_", "-");
         BANNER_HEIGHT_EXTEND,
         PAGE_WIDTH,
         configHue,
+        desktopConfigHue,
         defaultMode: siteConfig.themeColor.defaultMode ?? "light",
         defaultWallpaperMode: backgroundWallpaper.mode,
         isWallpaperSwitchable:
@@ -288,8 +291,25 @@ const siteLang = lang.replace("_", "-");
         isDark ? darkTheme : lightTheme
       );
 
-      // Load the hue from local storage
-      const hue = localStorage.getItem("hue") || configHue;
+      // PC 默认使用独立色相，并将旧版默认色相迁移一次；用户选择的其他色相保持优先。
+      const isDesktopViewport = window.matchMedia("(min-width: 1024px)").matches;
+      const defaultHue = isDesktopViewport ? desktopConfigHue : configHue;
+      const storedHue = localStorage.getItem("hue");
+      const hueMigrationKey = "firefly-default-hue-version";
+      const hueMigrationVersion = `desktop-${desktopConfigHue}`;
+      const shouldCheckDesktopHue =
+        isDesktopViewport &&
+        desktopConfigHue !== configHue &&
+        localStorage.getItem(hueMigrationKey) !== hueMigrationVersion;
+
+      let hue = storedHue || defaultHue;
+      if (shouldCheckDesktopHue) {
+        if (storedHue === null || Number.parseInt(storedHue, 10) === configHue) {
+          hue = desktopConfigHue;
+          localStorage.setItem("hue", String(desktopConfigHue));
+        }
+        localStorage.setItem(hueMigrationKey, hueMigrationVersion);
+      }
       document.documentElement.style.setProperty("--hue", hue);
 
       // 设置卡片透明度（全屏透明模式下使用），优先使用用户自定义值
@@ -542,12 +562,14 @@ const siteLang = lang.replace("_", "-");
 
     <slot name="head" />
 
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title={profileConfig.name}
-      href={`${Astro.site}rss.xml`}
-    />
+    {siteConfig.pages.rss && (
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={profileConfig.name}
+        href={`${Astro.site}rss.xml`}
+      />
+    )}
 
     <!-- Font Setup (Astro Font API) -->
     <FontSetup />
@@ -568,6 +590,7 @@ const siteLang = lang.replace("_", "-");
 
     <div id="progress-bar"></div>
     <CopyToast />
+    <WelcomeToast />
 
     <!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
     {shouldShowTopHighlight && <div class="top-gradient-highlight" />}
