@@ -55,6 +55,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 番组计划
 			LinkPresets.Bangumi,
 
+			// 游戏
+			LinkPresets.Games,
+
 			// 友链
 			LinkPresets.Friends,
 
@@ -119,12 +122,6 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		icon: "material-symbols:group",
 		pageKey: "friends",
 	},
-	Sponsor: {
-		name: "打赏",
-		url: "/sponsor/",
-		icon: "material-symbols:favorite",
-		pageKey: "sponsor",
-	},
 	Guestbook: {
 		name: "留言",
 		url: "/guestbook/",
@@ -141,6 +138,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/bangumi/",
 		icon: "material-symbols:movie",
 		pageKey: "bangumi",
+	},
+	Games: {
+		name: "游戏",
+		url: "/games/",
+		icon: "material-symbols:sports-esports-rounded",
+		pageKey: "games",
 	},
 	Gallery: {
 		name: "相册",

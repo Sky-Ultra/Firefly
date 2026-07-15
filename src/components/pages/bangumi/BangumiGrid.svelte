@@ -2,7 +2,11 @@
 import { onMount } from "svelte";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import type { UserSubjectCollection } from "@/types/bangumi";
+import type {
+	BangumiFeaturedSubject,
+	UserSubjectCollection,
+} from "@/types/bangumi";
+import { applyFeaturedSubjects } from "@/utils/bangumi-data";
 import BangumiSection from "./BangumiSection.svelte";
 import TabNav from "./TabNav.svelte";
 
@@ -19,6 +23,8 @@ interface Props {
 		categories: Record<string, boolean>;
 		categoryOrder: string[];
 		pagination: { limit: number; delay: number; maxTotal: number };
+		excludedSubjectIds?: Record<string, number[]>;
+		featuredSubjects?: Record<string, BangumiFeaturedSubject[]>;
 	};
 }
 
@@ -105,8 +111,15 @@ async function fetchCategory(
 
 async function loadDynamicData() {
 	if (!fetchConfig) return;
-	const { username, apiUrl, categories, categoryOrder, pagination } =
-		fetchConfig;
+	const {
+		username,
+		apiUrl,
+		categories,
+		categoryOrder,
+		pagination,
+		excludedSubjectIds = {},
+		featuredSubjects = {},
+	} = fetchConfig;
 
 	const enabled: string[] = [];
 	for (const [k, v] of Object.entries(categories)) {
@@ -130,11 +143,21 @@ async function loadDynamicData() {
 		const info = categoryMap[catKey];
 		if (!info) continue;
 		try {
-			const data = await fetchCategory(
+			const fetchedData = await fetchCategory(
 				apiUrl,
 				username,
 				info.subjectType,
 				pagination,
+			);
+			const excludedIds = new Set(excludedSubjectIds[catKey] || []);
+			const filteredData =
+				excludedIds.size > 0
+					? fetchedData.filter((item) => !excludedIds.has(item.subject_id))
+					: fetchedData;
+			const data = await applyFeaturedSubjects(
+				filteredData,
+				featuredSubjects[catKey] || [],
+				apiUrl,
 			);
 			newData[catKey] = data;
 			newTabs.push({ id: catKey, name: info.name, count: data.length });
@@ -193,7 +216,7 @@ onMount(async () => {
   <!-- Tab 骨架 -->
   <div class="border-b border-(--line-divider) mb-3">
     <div class="flex min-w-max space-x-8">
-      {#each [1, 2, 3, 4] as _}
+      {#each [1, 2, 3] as _}
         <div class="h-10 w-20 bg-(--btn-regular-bg) rounded animate-pulse"></div>
       {/each}
     </div>

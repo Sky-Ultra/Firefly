@@ -1,0 +1,45 @@
+---
+import { Icon } from "astro-icon/components";
+import GameSection from "@/components/pages/games/GameSection.astro";
+import { gamesPageConfig, siteConfig } from "@/config";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+if (!siteConfig.pages.games) {
+	return Astro.redirect("/404/");
+}
+---
+
+<MainGridLayout
+	title={gamesPageConfig.title}
+	description={gamesPageConfig.description}
+>
+	<div class="flex min-h-32 w-full overflow-hidden rounded-(--radius-large)">
+		<div class="card-base relative z-10 w-full px-5 py-6 sm:px-9">
+			<header class="mb-9 border-b border-(--line-divider) pb-7">
+				<div class="mb-3 flex items-center gap-3">
+					<div class="flex h-9 w-9 items-center justify-center rounded-xl bg-(--primary) text-white dark:text-black/70">
+						<Icon
+							is:inline
+							name="material-symbols:sports-esports-rounded"
+							class="text-[1.6rem]"
+						/>
+					</div>
+					<h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+						{gamesPageConfig.title}
+					</h1>
+				</div>
+				<p class="text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
+					{gamesPageConfig.description}
+				</p>
+			</header>
+
+			<div class="space-y-11">
+				{
+					gamesPageConfig.categories.map((category) => (
+						<GameSection category={category} />
+					))
+				}
+			</div>
+		</div>
+	</div>
+</MainGridLayout>

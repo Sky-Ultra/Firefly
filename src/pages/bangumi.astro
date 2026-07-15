@@ -9,6 +9,7 @@ import type {
 	UserSubjectCollection,
 	UserSubjectCollectionResponse,
 } from "@/types/bangumi";
+import { applyFeaturedSubjects } from "@/utils/bangumi-data";
 import { formatDateI18nWithTime } from "@/utils/date-utils";
 
 //参考：霞葉 https://kasuha.com/posts/fuwari-enhance-ep2/
@@ -32,7 +33,7 @@ const bangumiConfig = {
 		book: true,
 		anime: true,
 		music: true,
-		game: true,
+		game: false,
 		real: false,
 	},
 	// 数据获取设置
@@ -133,6 +134,18 @@ async function fetchBangumiData(username: string, subjectType: number) {
 	return allData;
 }
 
+function filterExcludedItems(
+	categoryKey: keyof typeof categoryMap,
+	items: UserSubjectCollection[],
+) {
+	const excludedIds = new Set(
+		siteConfig.bangumi?.excludedSubjectIds?.[categoryKey] || [],
+	);
+	return excludedIds.size > 0
+		? items.filter((item) => !excludedIds.has(item.subject_id))
+		: items;
+}
+
 // 获取所有启用分类的数据
 const bangumiData: Record<string, UserSubjectCollection[]> = {};
 const tabs: Array<{ id: string; name: string; count: number }> = [];
@@ -161,10 +174,21 @@ if (!isDynamic) {
 		if (enabled && categoryMap[categoryKey as keyof typeof categoryMap]) {
 			const categoryInfo = categoryMap[categoryKey as keyof typeof categoryMap];
 			try {
-				const data = await fetchBangumiData(
+				const fetchedData = await fetchBangumiData(
 					// biome-ignore lint/style/noNonNullAssertion: Checked by isUserIdConfigured
 					bangumiConfig.username!,
 					categoryInfo.subjectType,
+				);
+				const filteredData = filterExcludedItems(
+					categoryKey as keyof typeof categoryMap,
+					fetchedData,
+				);
+				const data = await applyFeaturedSubjects(
+					filteredData,
+					siteConfig.bangumi?.featuredSubjects?.[
+						categoryKey as keyof typeof categoryMap
+					] || [],
+					bangumiConfig.apiUrl,
 				);
 				bangumiData[categoryKey] = data;
 				tabs.push({
@@ -250,7 +274,9 @@ const activeTab = tabs[0]?.id || "anime";
                 apiUrl: bangumiConfig.apiUrl,
                 categories: bangumiConfig.categories,
                 categoryOrder: siteConfig.bangumi?.categoryOrder || [],
-                pagination: bangumiConfig.pagination,
+				pagination: bangumiConfig.pagination,
+				excludedSubjectIds: siteConfig.bangumi?.excludedSubjectIds || {},
+				featuredSubjects: siteConfig.bangumi?.featuredSubjects || {},
               }}
             />
           )}

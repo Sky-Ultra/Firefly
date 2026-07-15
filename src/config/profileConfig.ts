@@ -45,5 +45,11 @@ export const profileConfig: ProfileConfig = {
 			url: "/rss/",
 			showName: false,
 		},
+		{
+			name: "关于我",
+			icon: "material-symbols:person-rounded",
+			url: "/about/",
+			showName: false,
+		},
 	],
 };

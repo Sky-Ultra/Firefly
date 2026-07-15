@@ -3,7 +3,6 @@
 
 // 类型导出
 export type {
-	AdConfig,
 	AnalyticsConfig,
 	AnnouncementConfig,
 	BackgroundWallpaperConfig,
@@ -13,6 +12,10 @@ export type {
 	FooterConfig,
 	GalleryAlbum,
 	GalleryConfig,
+	GameCategory,
+	GameItem,
+	GamesPageConfig,
+	GameStatus,
 	LicenseConfig,
 	MusicPlayerConfig,
 	NavBarConfig,
@@ -51,6 +54,7 @@ export { fontConfig, fontsList } from "./fontConfig"; // 字体配置
 export { footerConfig } from "./footerConfig"; // 页脚配置
 export { friendsPageConfig, getEnabledFriends } from "./friendsConfig"; // 友链配置
 export { galleryConfig } from "./galleryConfig"; // 相册配置
+export { gamesPageConfig } from "./gameConfig"; // 游戏页面配置
 export { licenseConfig } from "./licenseConfig"; // 许可证配置
 // 组件配置
 export { musicPlayerConfig } from "./musicConfig"; // 音乐播放器配置

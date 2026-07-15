@@ -7,6 +7,7 @@ import type {
 	WALLPAPER_NONE,
 	WALLPAPER_OVERLAY,
 } from "../constants/constants";
+import type { BangumiFeaturedSubject } from "./bangumi";
 
 export type LIGHT_DARK_MODE =
 	| typeof LIGHT_MODE
@@ -83,6 +84,7 @@ export type SiteConfig = {
 		sponsor: boolean; // 打赏页面开关
 		guestbook: boolean; // 留言板页面开关
 		bangumi: boolean;
+		games: boolean; // 游戏页面开关
 		gallery: boolean; // 相册页面开关
 		anime: boolean; // 追番页面开关
 	};
@@ -150,6 +152,15 @@ export type SiteConfig = {
 		apiUrl?: string; // Bangumi API 地址
 		subjectBaseUrl?: string; // 条目详情页地址
 		categoryOrder?: ("anime" | "game" | "book" | "music" | "real")[]; // 条目类型排序顺序
+		excludedSubjectIds?: Partial<
+			Record<"anime" | "game" | "book" | "music" | "real", number[]>
+		>; // 各分类中不展示的条目 ID
+		featuredSubjects?: Partial<
+			Record<
+				"anime" | "game" | "book" | "music" | "real",
+				BangumiFeaturedSubject[]
+			>
+		>; // 各分类中固定置顶、补充并覆盖收藏状态的条目
 	};
 
 	// 追番配置（Bilibili + TMDB）

@@ -1,0 +1,101 @@
+---
+import type { GameItem } from "@/types/gameConfig";
+
+interface Props {
+	item: GameItem;
+	index?: number;
+}
+
+const { item, index = 0 } = Astro.props;
+const status =
+	item.status === "playing"
+		? { label: "在玩", className: "bg-amber-500" }
+		: { label: "玩过", className: "bg-emerald-500" };
+const visibleTags = (item.tags || []).slice(0, 3);
+const hiddenTagCount = Math.max(
+	(item.tags?.length || 0) - visibleTags.length,
+	0,
+);
+---
+
+<a
+	href={item.url}
+	target="_blank"
+	rel="noopener noreferrer nofollow"
+	class="game-card group relative block overflow-hidden rounded-xl bg-(--btn-regular-bg) transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+	aria-label={`${item.title}，${status.label}`}
+>
+	<div class="relative aspect-2/3 overflow-hidden">
+		<div
+			class="absolute inset-0 bg-(--btn-regular-bg)"
+			aria-hidden="true"
+		></div>
+		<img
+			src={item.image}
+			alt={`${item.title}封面`}
+			class="relative h-full w-full object-cover opacity-0 transition-all duration-500 ease-out group-hover:scale-105"
+			loading={index < 3 ? "eager" : "lazy"}
+			decoding="async"
+			referrerpolicy="no-referrer"
+			onload="this.style.opacity='1'"
+		/>
+
+		<div
+			class:list={[
+				"absolute left-2 top-2 rounded-full px-2.5 py-1 text-xs font-semibold text-white shadow-sm",
+				status.className,
+			]}
+		>
+			{status.label}
+		</div>
+
+		{
+			typeof item.score === "number" && (
+				<div class="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+					<span class="text-yellow-300" aria-hidden="true">★</span>
+					{item.score.toFixed(1)}
+				</div>
+			)
+		}
+
+		<div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent"></div>
+		<div class="absolute inset-x-0 bottom-0 p-3.5">
+			<h3 class="line-clamp-2 text-sm font-bold text-white drop-shadow-lg sm:text-base">
+				{item.title}
+			</h3>
+			<p class="mt-1 text-xs text-white/65">{item.year}</p>
+			{
+				visibleTags.length > 0 && (
+					<div class="mt-2 flex flex-wrap gap-1">
+						{visibleTags.map((tag) => (
+							<span class="rounded bg-white/20 px-1.5 py-0.5 text-[0.65rem] text-white/90 backdrop-blur-sm">
+								{tag}
+							</span>
+						))}
+						{hiddenTagCount > 0 && (
+							<span class="rounded bg-white/20 px-1.5 py-0.5 text-[0.65rem] text-white/65 backdrop-blur-sm">
+								+{hiddenTagCount}
+							</span>
+						)}
+					</div>
+				)
+			}
+		</div>
+	</div>
+</a>
+
+<style>
+	.line-clamp-2 {
+		display: -webkit-box;
+		line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.game-card,
+		.game-card img {
+			transition: none;
+		}
+	}
+</style>
