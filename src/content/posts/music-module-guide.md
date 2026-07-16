@@ -3,7 +3,7 @@ title: 音乐模块的原理和实现方式
 published: 2026-07-15
 description: 有关音乐模块
 image: random
-tags: [Astro, Firefly, 音乐, 组件, 使用指南]
+tags: [Astro, 音乐, 组件, 使用指南]
 category: 指南
 draft: false
 ---
@@ -258,5 +258,3 @@ showInNavbar: true,
 - 使用本地音乐，就在 `local.playlist` 里继续添加歌曲对象；
 - 想换初始音量或播放模式，修改 `volume` 与 `playMode`；
 - 不需要歌词抽屉时，把 `showLyrics` 改成 `false`。
-
-音乐模块最容易写出来的是播放按钮，真正需要耐心处理的是“只有一个声音来源”这件事。把音频和界面拆开以后，侧栏、顶栏和页面切换都只是同一份状态的不同窗口。读者不会看到这些连接过程，只会感觉音乐一直安静地待在那里——换了页面，歌还接着唱。

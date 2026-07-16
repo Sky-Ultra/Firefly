@@ -3,7 +3,7 @@ title: 代码块展示
 published: 2026-07-16T09:18:00+10:00
 pinned: false
 description: 在网站中使用表达性代码的代码块在 Markdown 中的外观。
-tags: [Markdown, Firefly]
+tags: [Markdown]
 category: 展示
 draft: false
 image: random

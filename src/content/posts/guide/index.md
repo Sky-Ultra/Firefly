@@ -4,7 +4,7 @@ published: 1970-01-02
 pinned: false
 description: "如何使用 Firefly 博客模板。"
 image: random
-tags: ["Firefly", "博客", "Markdown", "指南"]
+tags: ["博客", "Markdown", "指南"]
 category: 指南
 draft: true
 ---

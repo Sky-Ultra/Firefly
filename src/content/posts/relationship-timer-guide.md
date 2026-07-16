@@ -1,14 +1,14 @@
 ---
 title: 恋爱计时组件的原理和实现方式
 published: 2026-07-17
-description: 给的侧栏加一张恋爱计时卡片，记录两个人的名字、头像和相伴时间
+description: 丝丝线线牵连，春秋几声叹
 image: random
-tags: [Astro, Firefly, 组件, 使用指南]
+tags: [Astro, 组件, 使用指南]
 category: 指南
 draft: false
 ---
 
-这篇文章记一下现在这张「恋爱计时」卡片的实现过程。界面构思参考了 [Hyde Blog 的恋爱计时组件](https://seasir.top/posts/RelationshipTimer/)，代码则按照本站目前的 Firefly 结构重新整理过。
+这篇文章记一下现在这张「恋爱计时」卡片的实现过程。界面构思参考了 [Hyde Blog 的恋爱计时组件](https://seasir.top/posts/RelationshipTimer/)，代码则按照本站目前的结构重新整理过。
 
 ## 要做成什么
 

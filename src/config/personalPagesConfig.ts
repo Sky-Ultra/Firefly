@@ -71,8 +71,7 @@ export const personalPagesConfig: PersonalPagesConfig = {
 			{
 				id: "welcome",
 				date: "2026-07-15T09:00:00+10:00",
-				content:
-					"这是一条朋友圈示例。之后可以在配置文件中替换文字、时间、地点、标签并添加图片。",
+				content: "我想留在大家身边，从过去...一同迈向明天。",
 				tags: ["示例", "生活"],
 				location: "Sydney",
 			},
@@ -85,8 +84,7 @@ export const personalPagesConfig: PersonalPagesConfig = {
 			{
 				id: "first-note",
 				date: "2026-07-15T20:00:00+10:00",
-				content:
-					"这里是一篇日记示例。日记支持文字、标签、地点、心情与多张图片。",
+				content: "只要不失去你的崇高，整个世界都会向你敞开",
 				tags: ["日常", "示例"],
 				location: "Sydney",
 				mood: "🌟",

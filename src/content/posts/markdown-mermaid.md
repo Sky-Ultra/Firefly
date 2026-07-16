@@ -4,7 +4,7 @@ published: 2026-07-14T08:53:00+10:00
 pinned: false
 description: 一个包含 Mermaid 的 Markdown 博客文章简单示例。
 image: random
-tags: [Markdown, 博客, Mermaid, Firefly]
+tags: [Markdown, 博客, Mermaid]
 category: 展示
 draft: false
 ---

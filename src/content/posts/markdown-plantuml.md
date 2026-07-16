@@ -3,7 +3,7 @@ title: Markdown PlantUML 图表
 published: 2026-07-13T16:35:00+10:00
 description: 用于验证个人网站中 PlantUML 插件渲染、主题切换与交互能力的示例文章。
 image: random
-tags: [PlantUML, Firefly, Markdown]
+tags: [PlantUML, Markdown]
 category: 展示
 draft: false
 ---
@@ -18,7 +18,7 @@ PlantUML 是一种使用纯文本描述图表的工具。你只需要写一段�
 - 修改图只需要改文本，适合频繁迭代
 - 能和 Markdown 无缝结合，保持文档统一
 
-在 Firefly 中，`plantuml` 代码块会在构建阶段编码并生成服务器 SVG 地址，页面端再根据亮暗主题自动切换图源，并支持缩放、拖拽和全屏交互。
+在本网站中，`plantuml` 代码块会在构建阶段编码并生成服务器 SVG 地址，页面端再根据亮暗主题自动切换图源，并支持缩放、拖拽和全屏交互。
 
 如果你想快速上手，可以记住这个最小模板：
 
