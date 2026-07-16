@@ -1,14 +1,14 @@
 ---
-title: KaTeX 数学公式示例
-published: 1970-01-02
-description: 展示 Firefly 主题对 KaTeX 数学公式的支持，包括行内公式、块级公式和复杂数学符号。
+title: KaTeX 数学公式渲染展示
+published: 2026-07-16T14:42:00+10:00
+description: 展示对 KaTeX 数学公式的支持，包括行内公式、块级公式和复杂数学符号。
 tags: [KaTeX, Math, 示例]
-category: 文章示例
+category: 展示
 draft: false
 image: random
 ---
 
-本文展示了 [Firefly](https://github.com/CuteLeaf/Firefly) 主题对 KaTeX 数学公式的渲染支持。
+本文展示了个人网页对于 KaTeX 数学公式的渲染支持。
 
 ## 行内公式 (Inline)
 

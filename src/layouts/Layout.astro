@@ -16,6 +16,7 @@ import {
 	backgroundWallpaper,
 	expressiveCodeConfig,
 	profileConfig,
+	sakuraConfig,
 	siteConfig,
 } from "@/config";
 import {
@@ -54,6 +55,25 @@ const isHomePageCheck = isHomePage(Astro.url.pathname);
 // why doing this in Layout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
 const configHue = siteConfig.themeColor.hue;
 const desktopConfigHue = siteConfig.themeColor.desktopHue ?? configHue;
+const legacyDefaultHue = 165;
+const globalHuePresetVersion = "all-devices-360-2026-07-17";
+const desktopThemePresetVersion = "pink-fullscreen-masonry-2026-07-17";
+const desktopPostLayoutDefault = siteConfig.postListLayout.defaultMode;
+const desktopBannerTitleDefault =
+	backgroundWallpaper.common?.homeText?.enable ?? true;
+const desktopCarouselDefault =
+	backgroundWallpaper.common?.carousel?.enable ?? false;
+const wavesDefaultConfig = backgroundWallpaper.common?.waves?.enable;
+const desktopWavesDefault =
+	typeof wavesDefaultConfig === "object"
+		? wavesDefaultConfig.desktop
+		: (wavesDefaultConfig ?? false);
+const gradientDefaultConfig = backgroundWallpaper.common?.gradient?.enable;
+const desktopGradientDefault =
+	typeof gradientDefaultConfig === "object"
+		? gradientDefaultConfig.desktop
+		: (gradientDefaultConfig ?? true);
+const desktopSakuraDefault = sakuraConfig.enable;
 
 // 获取导航栏透明模式配置
 const navbarTransparentMode =
@@ -242,6 +262,15 @@ const siteLang = lang.replace("_", "-");
         PAGE_WIDTH,
         configHue,
         desktopConfigHue,
+        legacyDefaultHue,
+        globalHuePresetVersion,
+        desktopThemePresetVersion,
+        desktopPostLayoutDefault,
+        desktopBannerTitleDefault,
+        desktopCarouselDefault,
+        desktopWavesDefault,
+        desktopGradientDefault,
+        desktopSakuraDefault,
         defaultMode: siteConfig.themeColor.defaultMode ?? "light",
         defaultWallpaperMode: backgroundWallpaper.mode,
         isWallpaperSwitchable:
@@ -256,6 +285,37 @@ const siteLang = lang.replace("_", "-");
       const LIGHT_MODE = "light";
       const DARK_MODE = "dark";
       const SYSTEM_MODE = "system";
+      const isDesktopViewport = window.matchMedia("(min-width: 1024px)").matches;
+
+      // 将旧版全局默认绿色迁移到粉色，同时保留访客主动选择的其他色相。
+      const globalHuePresetKey = "firefly-global-hue-preset-version";
+      if (localStorage.getItem(globalHuePresetKey) !== globalHuePresetVersion) {
+        const storedGlobalHue = localStorage.getItem("hue");
+        if (
+          storedGlobalHue === null ||
+          Number.parseInt(storedGlobalHue, 10) === legacyDefaultHue
+        ) {
+          localStorage.setItem("hue", String(configHue));
+        }
+        localStorage.setItem(globalHuePresetKey, globalHuePresetVersion);
+      }
+
+      // 将旧版桌面端设置一次性迁移到当前默认方案；迁移后仍允许访客自由调整。
+      const desktopPresetKey = "firefly-desktop-theme-preset-version";
+      if (
+        isDesktopViewport &&
+        localStorage.getItem(desktopPresetKey) !== desktopThemePresetVersion
+      ) {
+        localStorage.setItem("hue", String(desktopConfigHue));
+        localStorage.setItem("wallpaperMode", defaultWallpaperMode);
+        localStorage.setItem("bannerTitleEnabled", String(desktopBannerTitleDefault));
+        localStorage.setItem("bannerCarouselEnabled", String(desktopCarouselDefault));
+        localStorage.setItem("wavesEnabled", String(desktopWavesDefault));
+        localStorage.setItem("gradientEnabled", String(desktopGradientDefault));
+        localStorage.setItem("sakuraEnabled", String(desktopSakuraDefault));
+        localStorage.setItem("postListLayout", desktopPostLayoutDefault);
+        localStorage.setItem(desktopPresetKey, desktopThemePresetVersion);
+      }
 
       // 获取存储的主题，如果没有则使用默认值
       const theme = localStorage.getItem("theme") || defaultMode;
@@ -292,7 +352,6 @@ const siteLang = lang.replace("_", "-");
       );
 
       // PC 默认使用独立色相，并将旧版默认色相迁移一次；用户选择的其他色相保持优先。
-      const isDesktopViewport = window.matchMedia("(min-width: 1024px)").matches;
       const defaultHue = isDesktopViewport ? desktopConfigHue : configHue;
       const storedHue = localStorage.getItem("hue");
       const hueMigrationKey = "firefly-default-hue-version";
@@ -1702,6 +1761,7 @@ function disableAnimation() {
       if (!container) return;
       const img = container.querySelector<HTMLImageElement>('img, picture img');
       if (!img) return;
+	  if (img.dataset.deferredImage === 'true') return;
 
       if (img.complete && img.naturalWidth > 0) {
         img.style.opacity = '1';

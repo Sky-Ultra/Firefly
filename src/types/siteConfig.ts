@@ -99,8 +99,8 @@ export type SiteConfig = {
 
 	// 文章列表布局配置
 	postListLayout: {
-		defaultMode: "list" | "grid"; // 默认布局模式：list=列表模式，grid=网格模式
-		mobileDefaultMode?: "list" | "grid"; // 移动端默认布局模式（视口宽度<780px时使用），不设置则跟随 defaultMode
+		defaultMode: "list" | "grid" | "masonry"; // 默认布局模式
+		mobileDefaultMode?: "list" | "grid" | "masonry"; // 移动端默认布局模式（视口宽度<780px时使用），不设置则跟随 defaultMode
 		allowSwitch: boolean; // 是否允许用户切换布局
 		descriptionLines?: number; // 文章简介显示行数，设为 0 则不截断，默认 2
 		showStatsIcons?: boolean; // 文章卡片底部统计是否显示图标

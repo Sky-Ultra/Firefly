@@ -28,6 +28,7 @@ interface Props {
 	widths?: number[];
 	sizes?: string;
 	quality?: number;
+	deferSrc?: boolean;
 }
 
 const {
@@ -44,7 +45,11 @@ const {
 	widths,
 	sizes,
 	quality = getImageQuality(),
+	deferSrc = false,
 } = Astro.props;
+
+const TRANSPARENT_PIXEL =
+	"data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 
 const fallbackFormat = getFallbackFormat();
 const className = Astro.props.class;
@@ -134,5 +139,5 @@ const lqipProps = isLocal
             {...responsiveProps}
         />
     )}
-    {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} referrerpolicy={referrerPolicy} />}
+    {!isLocal && <img src={deferSrc ? TRANSPARENT_PIXEL : isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} referrerpolicy={referrerPolicy} data-deferred-image={deferSrc ? "true" : undefined} />}
 </div>

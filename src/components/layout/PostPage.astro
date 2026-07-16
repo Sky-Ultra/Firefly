@@ -27,9 +27,11 @@ const defaultLayout = siteConfig.postListLayout.defaultMode || "list";
 const mobileDefaultLayout =
 	siteConfig.postListLayout.mobileDefaultMode || defaultLayout;
 const initialLayoutClass =
-	defaultLayout === "grid"
-		? "post-grid-auto grid-mode"
-		: "flex flex-col gap-4 md:gap-4 list-mode";
+	defaultLayout === "masonry" && masonryEnabled
+		? "grid-mode masonry-mode"
+		: defaultLayout === "grid"
+			? "post-grid-auto grid-mode"
+			: "flex flex-col gap-4 md:gap-4 list-mode";
 
 const hasRandomCovers = page.data.some((entry: PostEntry) =>
 	isRandomCoverImage(entry.data.image),

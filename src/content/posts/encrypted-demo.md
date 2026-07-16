@@ -4,7 +4,8 @@ published: 1970-01-02
 description: 这是一篇密码保护的示例文章，用于演示文章加密功能。
 image: random
 tags: [示例, 密码保护]
-category: 文章示例
+category: 展示
+draft: true
 password: "123456"
 passwordHint: "示例文章密码123456"
 ---

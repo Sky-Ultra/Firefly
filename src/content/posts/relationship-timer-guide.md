@@ -1,18 +1,16 @@
 ---
 title: 恋爱计时组件的原理和实现方式
-published: 2026-07-15
-description: 给 Firefly 的侧栏加一张恋爱计时卡片，记录两个人的名字、头像和相伴时间，同时处理好时区、月份天数与站内切页后的计时器清理。
+published: 2026-07-17
+description: 给的侧栏加一张恋爱计时卡片，记录两个人的名字、头像和相伴时间
 image: random
 tags: [Astro, Firefly, 组件, 使用指南]
-category: 博客指南
+category: 指南
 draft: false
 ---
 
-侧栏里的计时卡最初只是想记住一个日期：两张头像、一个爱心，再放一串不断变化的数字。真正写起来后，麻烦的地方反而不在样式，而在那些容易被忽略的小事——访客身处不同时区会不会差一天，以及站内切换页面后会不会悄悄留下好几个定时器。
-
 这篇文章记一下现在这张「恋爱计时」卡片的实现过程。界面构思参考了 [Hyde Blog 的恋爱计时组件](https://seasir.top/posts/RelationshipTimer/)，代码则按照本站目前的 Firefly 结构重新整理过。
 
-## 最后要做成什么
+## 要做成什么
 
 组件由三部分组成：
 
@@ -22,7 +20,7 @@ draft: false
 
 桌面端把它放在侧栏，移动端也可以加入底部组件列表。头像缺失时显示名字的首字符，不至于让整张卡片空掉。
 
-## 把资料留在配置文件里
+## 资料留在配置文件
 
 名字、头像和纪念日都属于内容，不该散落在组件模板中。先在 `src/types/relationshipConfig.ts` 定义配置结构：
 
@@ -151,7 +149,7 @@ const widgetId = `relationship-${Math.random().toString(36).slice(2, 9)}`;
 </div>
 ```
 
-## 时间不能只除以 365 天
+## 正确计算时间
 
 如果只显示“总天数”，两个时间戳相减就够了。但这里要拆成年月日，直接把毫秒依次除以 365 天和 30 天会逐渐产生偏差，因为月份长度并不固定。
 
@@ -240,7 +238,7 @@ const getDuration = (start: Date, now: Date): DurationParts => {
 
 把日期暂时设为每月 1 日，再切换年份或月份，是为了避开“1 月 31 日加一个月”这类自动溢出问题。最后用目标月份的实际天数夹住日期，闰年的 2 月也会自然算对。
 
-## 让计时器跟着组件一起离开
+## 计时器与组件一起刷新
 
 Firefly 的页面切换不是每次都完整刷新。如果用一个挂在 `window` 上的全局 `setInterval`，组件已经离开页面后，它仍可能继续运行。多逛几篇文章，后台就会留下重复的任务。
 
@@ -293,7 +291,7 @@ if (!customElements.get("relationship-timer")) {
 
 元素进入页面时启动，离开时清理。查询范围也限定在 `this` 内部，所以即使页面上有两个实例，也只会更新各自的数字。
 
-## 把它放进侧栏
+## 放进侧栏
 
 在 `src/components/layout/SideBar.astro` 中引入组件，并加入映射表：
 
@@ -321,7 +319,7 @@ const componentMap = {
 
 `position: "sticky"` 会让它跟随侧栏内容正常排列；`showOnPostPage: false` 表示只在主页等非文章页面显示。如果希望读文章时也能看见，把它改成 `true` 即可。移动端同样添加一份配置，只是不需要填写 `position`。
 
-## 后续修改其实只动一处
+## 后续修改只动一处
 
 组件完成后，日常最常改的内容都集中在 `src/config/relationshipConfig.ts`：
 

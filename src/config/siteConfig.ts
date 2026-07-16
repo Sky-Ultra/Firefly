@@ -6,13 +6,13 @@ const SITE_LANG = "zh_CN";
 
 export const siteConfig: SiteConfig = {
 	// 站点标题
-	title: "Firefly",
+	title: "Sky",
 
 	// 站点副标题
-	subtitle: "Demo site",
+	subtitle: "",
 
 	// 站点 URL
-	site_url: "https://firefly.cuteleaf.cn",
+	site_url: "https://xiaoxiaoboluo.cn",
 
 	// 站点描述
 	description:
@@ -31,8 +31,8 @@ export const siteConfig: SiteConfig = {
 
 	// 主题色
 	themeColor: {
-		// 移动端默认色相
-		hue: 165,
+		// 全设备默认使用粉色色相
+		hue: 360,
 		// PC 端默认使用粉色主题（截图中的 360）
 		desktopHue: 360,
 		// 是否对访问者隐藏主题色选择器
@@ -131,8 +131,8 @@ export const siteConfig: SiteConfig = {
 
 	// 文章列表布局配置
 	postListLayout: {
-		// 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（多列布局）
-		defaultMode: "grid",
+		// PC 端默认使用瀑布流布局
+		defaultMode: "masonry",
 		// 移动端默认布局模式，不设置则跟随 defaultMode
 		mobileDefaultMode: "grid",
 		// 是否允许用户切换布局

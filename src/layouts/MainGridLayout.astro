@@ -373,6 +373,7 @@ const hasMultipleImages =
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchpriority={index === 0 ? "high" : undefined}
                     quality={mobileQuality}
+					deferSrc={isHomePageCheck}
                 />
             </div>
         ))}
@@ -389,6 +390,7 @@ const hasMultipleImages =
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchpriority={index === 0 ? "high" : undefined}
                     quality={configQuality}
+					deferSrc={isHomePageCheck}
                 />
             </div>
         ))}
@@ -444,6 +446,7 @@ const hasMultipleImages =
             var effect = container.dataset.carouselEffect || 'fade';
             var FADE_MS = 800;
             var transitioning = false;
+			var slideLoadPromises = new WeakMap();
 
             // 创建过渡遮罩（用于 kenburns 效果的 LQIP 桥接）
             var overlay = null;
@@ -499,6 +502,108 @@ const hasMultipleImages =
                 return 0;
             }
 
+			function ensureSlideLoaded(slide) {
+				var source = slide.dataset.wallpaperSrc;
+				if (!source) return Promise.resolve(true);
+
+				var state = slide.dataset.wallpaperLoadState;
+				if (state === 'loaded') return Promise.resolve(true);
+				if (state === 'error') return Promise.resolve(false);
+
+				var existingPromise = slideLoadPromises.get(slide);
+				if (existingPromise) return existingPromise;
+
+				var loadPromise = new Promise(function(resolve) {
+					var image = slide.querySelector('img');
+					if (!image) {
+						slide.dataset.wallpaperLoadState = 'error';
+						resolve(false);
+						return;
+					}
+
+					slide.dataset.wallpaperLoadState = 'loading';
+					var settled = false;
+					var finish = function(success) {
+						if (settled) return;
+						settled = true;
+						slide.dataset.wallpaperLoadState = success ? 'loaded' : 'error';
+						if (success) {
+							image.removeAttribute('data-deferred-image');
+							image.style.opacity = '1';
+							var placeholder = slide.querySelector('.lqip-placeholder');
+							if (placeholder) placeholder.classList.add('loaded');
+						}
+						resolve(success);
+					};
+
+					var picture = image.closest('picture');
+					if (picture) {
+						picture.querySelectorAll('source').forEach(function(sourceElement) {
+							sourceElement.remove();
+						});
+					}
+					image.removeAttribute('srcset');
+					image.removeAttribute('sizes');
+					image.style.opacity = '0';
+					image.addEventListener('load', function() {
+						if (typeof image.decode === 'function') {
+							image.decode().catch(function() {}).then(function() {
+								finish(true);
+							});
+						} else {
+							finish(true);
+						}
+					}, { once: true });
+					image.addEventListener('error', function() {
+						finish(false);
+					}, { once: true });
+					image.src = source;
+					if (image.complete && image.naturalWidth > 0) {
+						if (typeof image.decode === 'function') {
+							image.decode().catch(function() {}).then(function() {
+								finish(true);
+							});
+						} else {
+							finish(true);
+						}
+					}
+				});
+
+				slideLoadPromises.set(slide, loadPromise);
+				return loadPromise;
+			}
+
+			function findLoadableSlide(slides, targetIndex, attempts) {
+				if (attempts >= slides.length) return Promise.resolve(-1);
+				var normalizedIndex = ((targetIndex % slides.length) + slides.length) % slides.length;
+				return ensureSlideLoaded(slides[normalizedIndex]).then(function(success) {
+					if (success) return normalizedIndex;
+					return findLoadableSlide(slides, normalizedIndex + 1, attempts + 1);
+				});
+			}
+
+			function preloadNextAvailable(slides, currentIndex) {
+				if (slides.length <= 1) return Promise.resolve(-1);
+				return findLoadableSlide(slides, currentIndex + 1, 0);
+			}
+
+			function prepareCurrentAndNext() {
+				var slides = getVisibleSlides();
+				if (slides.length === 0) return;
+				var currentIndex = getCurrentIndex(slides);
+
+				ensureSlideLoaded(slides[currentIndex]).then(function(success) {
+					if (success || getCurrentIndex(slides) !== currentIndex) return;
+					findLoadableSlide(slides, currentIndex + 1, 0).then(function(nextIndex) {
+						if (nextIndex < 0 || nextIndex === currentIndex) return;
+						if (getCurrentIndex(slides) !== currentIndex) return;
+						applySlideChange(slides, nextIndex);
+						preloadNextAvailable(slides, nextIndex);
+					});
+				});
+				preloadNextAvailable(slides, currentIndex);
+			}
+
             function applySlideChange(slides, nextIndex) {
                 // Slide 效果需要 prev-waiting 辅助类
                 if (effect === 'slide') {
@@ -513,40 +618,54 @@ const hasMultipleImages =
                 }
             }
 
-            function changeToSlide(targetIndex, resetProgress) {
-                var slides = getVisibleSlides();
-                if (slides.length <= 1) return;
-                if (transitioning) return;
+			function changeToSlide(targetIndex, resetProgress) {
+				var slides = getVisibleSlides();
+				if (slides.length <= 1 || transitioning) return Promise.resolve(false);
 
-                var nextIndex = targetIndex;
-                if (nextIndex >= slides.length) nextIndex = 0;
-                else if (nextIndex < 0) nextIndex = slides.length - 1;
+				var nextIndex = ((targetIndex % slides.length) + slides.length) % slides.length;
+				if (nextIndex === getCurrentIndex(slides)) return Promise.resolve(false);
 
-                var currentIndex = getCurrentIndex(slides);
-                if (nextIndex === currentIndex) return;
+				var restartAutoPlay = resetProgress !== false && appState.isPlaying;
+				if (restartAutoPlay) stopAutoPlay();
+				transitioning = true;
 
-                if (effect === 'kenburns' && overlay) {
-                    // Ken Burns: 用下一张图的 LQIP 做桥接过渡
-                    transitioning = true;
-                    overlay.style.background = getSlideLqipStyle(slides[nextIndex]);
-                    overlay.style.opacity = '1';
-                    setTimeout(function() {
-                        applySlideChange(slides, nextIndex);
-                        // 等新图 Ken Burns 动画开始后再移除遮罩
-                        setTimeout(function() {
-                            overlay.style.opacity = '0';
-                            transitioning = false;
-                        }, 150);
-                    }, FADE_MS / 2);
-                } else {
-                    // 其他效果：直接切换（CSS transition 处理）
-                    applySlideChange(slides, nextIndex);
-                }
+				return findLoadableSlide(slides, nextIndex, 0).then(function(loadableIndex) {
+					if (loadableIndex < 0 || loadableIndex === getCurrentIndex(slides)) {
+						transitioning = false;
+						if (restartAutoPlay) startAutoPlay();
+						return false;
+					}
 
-                if (resetProgress !== false && appState.isPlaying) {
-                    startAutoPlay();
-                }
-            }
+					return new Promise(function(resolve) {
+						var finishTransition = function() {
+							transitioning = false;
+							preloadNextAvailable(slides, loadableIndex);
+							if (restartAutoPlay) startAutoPlay();
+							resolve(true);
+						};
+
+						if (effect === 'kenburns' && overlay) {
+							overlay.style.background = getSlideLqipStyle(slides[loadableIndex]);
+							overlay.style.opacity = '1';
+							setTimeout(function() {
+								applySlideChange(slides, loadableIndex);
+								setTimeout(function() {
+									overlay.style.opacity = '0';
+									finishTransition();
+								}, 150);
+							}, FADE_MS / 2);
+						} else {
+							applySlideChange(slides, loadableIndex);
+							finishTransition();
+						}
+					});
+				}).catch(function(error) {
+					console.warn('Wallpaper preload failed.', error);
+					transitioning = false;
+					if (restartAutoPlay) startAutoPlay();
+					return false;
+				});
+			}
 
             var appState = {
                 isPlaying: false,
@@ -565,8 +684,10 @@ const hasMultipleImages =
                     if (!appState.isPlaying) return;
                     var slides = getVisibleSlides();
                     var currentIdx = getCurrentIndex(slides);
-                    changeToSlide(currentIdx + 1, false);
-                    appState.autoPlayTimer = setTimeout(advance, interval);
+					changeToSlide(currentIdx + 1, false).finally(function() {
+						if (!appState.isPlaying) return;
+						appState.autoPlayTimer = setTimeout(advance, interval);
+					});
                 }, interval);
             }
 
@@ -618,6 +739,7 @@ const hasMultipleImages =
                     stopAutoPlay();
                 }
             });
+			window.addEventListener('firefly:wallpaper-assignments-ready', prepareCurrentAndNext);
 
             // 随机首张
             var slides = getVisibleSlides();
@@ -628,6 +750,7 @@ const hasMultipleImages =
                     else slides[k].classList.remove('active');
                 }
             }
+			prepareCurrentAndNext();
 
             // 启动
             if (isCarouselEnabled() && isBannerWallpaperMode()) {

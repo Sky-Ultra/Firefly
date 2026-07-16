@@ -217,7 +217,8 @@ const {
 			if (!candidate) break;
 			for (const slide of slides) {
 				if (slide.dataset.index === slideIndexes[offset]) {
-					replaceWallpaperImage(slide, candidate.originalUrl);
+					slide.dataset.wallpaperSrc = candidate.originalUrl;
+					slide.dataset.wallpaperLoadState = "idle";
 				}
 			}
 		}
@@ -273,6 +274,9 @@ const {
 				runtime.mobileHomeWallpaperAssignments = mobileWallpapers;
 				assignWallpaperSlides(mobileSlides, mobileWallpapers);
 			}
+			window.dispatchEvent(
+				new CustomEvent("firefly:wallpaper-assignments-ready"),
+			);
 			return;
 		}
 
