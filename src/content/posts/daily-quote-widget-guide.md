@@ -1,6 +1,6 @@
 ---
 title: 每日一言组件的实现方式
-published: 2026-07-16
+published: 2026-07-14
 description: 给网站的侧栏做一张每日一言卡片
 image: random
 tags: [Astro, 组件, 使用指南]
