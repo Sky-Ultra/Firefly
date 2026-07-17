@@ -1,5 +1,5 @@
 ---
-title: 恋爱计时组件的原理和实现方式
+title: 在 Firefly 中实现恋爱计时组件
 published: 2026-07-17
 description: 丝丝线线牵连，春秋几声叹
 image: random
@@ -8,21 +8,23 @@ category: 指南
 draft: false
 ---
 
-这篇文章记一下现在这张「恋爱计时」卡片的实现过程。界面构思参考了 [Hyde Blog 的恋爱计时组件](https://seasir.top/posts/RelationshipTimer/)，代码则按照本站目前的结构重新整理过。
+本文记录「恋爱计时」卡片的实现过程。界面参考了 [Hyde Blog 的恋爱计时组件](https://seasir.top/posts/RelationshipTimer/)，代码则根据本站现有的 Firefly 项目结构重新编写。
 
-## 要做成什么
+## 组件效果与功能
 
-组件由三部分组成：
+这个组件主要包含三部分：
 
-- 标题与双方名字；
-- 两张圆形头像，中间放一个会轻微跳动的爱心；
-- 年、月、日、时、分、秒六段计时，每秒更新一次。
+- 卡片标题和双方名字；
+- 两张圆形头像，以及中间轻微跳动的爱心；
+- 按年、月、日、时、分、秒显示的计时内容，每秒更新一次。
 
-桌面端把它放在侧栏，移动端也可以加入底部组件列表。头像缺失时显示名字的首字符，不至于让整张卡片空掉。
+桌面端可以将它放在侧栏，移动端则可以加入底部组件列表。头像未配置时，可回退显示名字首字符，避免出现空白或破图。
 
-## 资料留在配置文件
+## 拆分配置与类型
 
-名字、头像和纪念日都属于内容，不该散落在组件模板中。先在 `src/types/relationshipConfig.ts` 定义配置结构：
+名字、头像和起始日期属于可变内容，适合集中放在配置文件中，而不是直接写进组件模板。
+
+先在 `src/types/relationshipConfig.ts` 中定义配置类型：
 
 ```ts
 export type RelationshipPersonConfig = {
@@ -39,7 +41,7 @@ export type RelationshipConfig = {
 };
 ```
 
-随后创建 `src/config/relationshipConfig.ts`：
+然后创建 `src/config/relationshipConfig.ts`：
 
 ```ts
 import type { RelationshipConfig } from "../types/relationshipConfig";
@@ -64,13 +66,13 @@ export const relationshipConfig: RelationshipConfig = {
 };
 ```
 
-第一张头像直接复用个人资料卡的配置。以后更换站点头像时，这里也会跟着变化，不必改两遍。
+第一张头像直接复用个人资料卡中的配置。以后修改站点头像时，恋爱计时组件也会同步更新，不需要重复维护。
 
-`startAt` 最好写成完整的 ISO 8601 时间。这里的 `+11:00` 表示悉尼夏令时的 UTC 偏移，浏览器拿到的是一个明确的时间点。只写 `2026-02-06` 虽然也能运行，但不同环境对日期字符串的解析细节容易让人心里没底。
+`startAt` 建议使用完整的 ISO 8601 时间。示例中的 `+11:00` 是悉尼夏令时的 UTC 偏移，可以让浏览器准确识别起始时间。相比只写 `2026-02-06`，完整时间格式在不同运行环境中更稳定，也更容易排查时区问题。
 
-## 组件的外壳
+## 搭建组件结构
 
-组件文件放在 `src/components/widget/RelationshipTimer.astro`。外层继续使用 Firefly 自带的 `WidgetLayout`，这样圆角、背景色、暗色模式和其他侧栏卡片能够保持一致。
+组件文件放在 `src/components/widget/RelationshipTimer.astro`。外层继续使用 Firefly 自带的 `WidgetLayout`，这样可以直接沿用站点现有的圆角、背景色和暗色模式样式。
 
 ```astro
 ---
@@ -104,9 +106,9 @@ const widgetId = `relationship-${Math.random().toString(36).slice(2, 9)}`;
 </WidgetLayout>
 ```
 
-`widgetId` 每次渲染都会生成一个独立值。桌面侧栏与移动端组件同时存在时，它们不会抢用同一个 HTML `id`。
+`widgetId` 会在每次渲染时生成独立值。即使桌面侧栏和移动端组件同时存在，也不会使用重复的 HTML `id`。
 
-头像建议交给 `ImageWrapper` 处理，而不是直接写普通的 `<img>`。本地图片可以继续参与 Astro 的图片优化，也能统一懒加载和尺寸信息：
+头像使用 `ImageWrapper` 处理，而不是直接写普通的 `<img>`。这样既能保留 Astro 的图片优化，也能统一处理懒加载、尺寸和响应式资源：
 
 ```astro
 <div class="mb-6 flex items-center justify-center gap-4">
@@ -132,7 +134,7 @@ const widgetId = `relationship-${Math.random().toString(36).slice(2, 9)}`;
 </div>
 ```
 
-计时数字不用分别设置六个全局 `id`，而是在当前组件内部使用 `data-timer-unit` 标记：
+计时字段不需要分别设置六个全局 `id`。这里使用 `data-timer-unit` 标记各个单位，脚本只在当前组件内部查找并更新对应元素：
 
 ```astro
 <div
@@ -149,11 +151,11 @@ const widgetId = `relationship-${Math.random().toString(36).slice(2, 9)}`;
 </div>
 ```
 
-## 正确计算时间
+## 按自然日历计算时长
 
-如果只显示“总天数”，两个时间戳相减就够了。但这里要拆成年月日，直接把毫秒依次除以 365 天和 30 天会逐渐产生偏差，因为月份长度并不固定。
+如果只显示累计天数，直接计算两个时间戳的差值即可。但组件需要分别显示年、月和日，不能简单地将毫秒除以 365 天或 30 天，因为每个月的天数不同，闰年也会影响结果。
 
-现在的做法是沿着开始日期逐段推进：先尝试加整年，再加整月和整日，最后把剩余毫秒换算成时分秒。
+这里采用逐段计算的方式：从起始日期开始，依次增加完整的年、月和日，再把剩余毫秒换算为时、分、秒。
 
 ```ts
 type DurationParts = {
@@ -236,13 +238,13 @@ const getDuration = (start: Date, now: Date): DurationParts => {
 };
 ```
 
-把日期暂时设为每月 1 日，再切换年份或月份，是为了避开“1 月 31 日加一个月”这类自动溢出问题。最后用目标月份的实际天数夹住日期，闰年的 2 月也会自然算对。
+切换年份或月份前，先把日期设为当月 1 日，可以避免“1 月 31 日加一个月”产生日期溢出。随后再根据目标月份的实际天数修正日期，因此二月和闰年也能得到正确结果。
 
-## 计时器与组件一起刷新
+## 管理计时器生命周期
 
-Firefly 的页面切换不是每次都完整刷新。如果用一个挂在 `window` 上的全局 `setInterval`，组件已经离开页面后，它仍可能继续运行。多逛几篇文章，后台就会留下重复的任务。
+Firefly 的页面切换不一定会触发完整刷新。如果直接在 `window` 上创建全局 `setInterval`，组件离开页面后，计时任务仍可能继续运行。多次切换页面后，还可能出现重复计时器。
 
-这里用一个自定义元素管理生命周期：
+为避免这个问题，可以使用自定义元素管理组件的创建和销毁：
 
 ```ts
 class RelationshipTimerElement extends HTMLElement {
@@ -289,11 +291,11 @@ if (!customElements.get("relationship-timer")) {
 }
 ```
 
-元素进入页面时启动，离开时清理。查询范围也限定在 `this` 内部，所以即使页面上有两个实例，也只会更新各自的数字。
+元素挂载时启动计时，移除时清理定时任务。所有查询都限定在当前元素内部，因此页面上同时存在多个组件实例时，它们也只会更新自己的内容。
 
-## 放进侧栏
+## 注册侧栏组件
 
-在 `src/components/layout/SideBar.astro` 中引入组件，并加入映射表：
+在 `src/components/layout/SideBar.astro` 中引入组件，并将它加入组件映射表：
 
 ```ts
 import RelationshipTimer from "@/components/widget/RelationshipTimer.astro";
@@ -304,9 +306,9 @@ const componentMap = {
 };
 ```
 
-同时在 `src/types/sidebarConfig.ts` 的 `WidgetComponentType` 联合类型中加入 `"relationship"`，这样配置文件写错名称时，TypeScript 会直接提醒。
+接着在 `src/types/sidebarConfig.ts` 的 `WidgetComponentType` 联合类型中加入 `"relationship"`。这样如果配置中的组件名称写错，TypeScript 会在构建前直接提示。
 
-最后在 `src/config/sidebarConfig.ts` 选择组件的位置：
+最后在 `src/config/sidebarConfig.ts` 中添加组件配置：
 
 ```ts
 {
@@ -317,20 +319,22 @@ const componentMap = {
 },
 ```
 
-`position: "sticky"` 会让它跟随侧栏内容正常排列；`showOnPostPage: false` 表示只在主页等非文章页面显示。如果希望读文章时也能看见，把它改成 `true` 即可。移动端同样添加一份配置，只是不需要填写 `position`。
+`position: "sticky"` 表示组件按照侧栏布局正常排列；`showOnPostPage: false` 表示它只显示在首页等非文章页面。若希望文章页也显示，将其改为 `true` 即可。
 
-## 后续修改只动一处
+移动端可以添加相同类型的配置，但不需要填写 `position`。
 
-组件完成后，日常最常改的内容都集中在 `src/config/relationshipConfig.ts`：
+## 修改配置与构建检查
 
-- 改 `startAt`，调整起算时间；
-- 改 `people` 中的名字与头像；
-- 改 `heart`，换成其他符号；
-- 改 `title`，更换卡片标题。
+组件完成后，日常需要调整的内容都集中在 `src/config/relationshipConfig.ts`：
 
-头像文件建议放在 `src/assets/images/relationship/`。如果暂时没有头像，也可以在模板里保留首字符回退样式，至少不会出现破图图标。
+- 修改 `startAt`，调整计时起点；
+- 修改 `people`，更换名字和头像；
+- 修改 `heart`，替换中间的符号；
+- 修改 `title`，更换卡片标题。
 
-写完后运行一次检查和构建：
+头像文件可以统一放在 `src/assets/images/relationship/`。如果暂时没有头像，建议保留首字符回退样式，避免页面出现破图图标。
+
+完成修改后，运行以下命令检查类型并确认项目可以正常构建：
 
 ```bash
 pnpm check
@@ -338,4 +342,4 @@ pnpm type-check
 pnpm build
 ```
 
-这张卡片没有复杂的数据源，也不需要额外接口。它只是安静地待在侧栏里，把一个普通的日期一秒一秒地往前写。对我来说，这就已经够了。
+这个组件不依赖接口，也没有复杂的数据来源。配置好起始时间和头像后，它就会在侧栏中持续记录两个人共同经过的时间。
