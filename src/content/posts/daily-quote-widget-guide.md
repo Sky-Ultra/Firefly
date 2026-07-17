@@ -1,5 +1,5 @@
 ---
-title: Astro 每日一言组件的设计与实现
+title: 每日一言组件的实现方式
 published: 2026-07-14
 description: 介绍每日一言组件的接口配置、缓存策略、请求复用与自动刷新方式
 image: random

@@ -1,5 +1,5 @@
 ---
-title: Astro 音乐模块的设计与实现
+title: 音乐模块的实现方式
 published: 2026-07-15
 description: 介绍音乐播放器的组件结构、状态管理、歌单配置与歌词同步方式
 image: random

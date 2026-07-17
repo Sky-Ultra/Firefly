@@ -1,5 +1,5 @@
 ---
-title: 在 Firefly 中实现恋爱计时组件
+title: 恋爱计时组件的实现方式和原理
 published: 2026-07-17
 description: 丝丝线线牵连，春秋几声叹
 image: random
