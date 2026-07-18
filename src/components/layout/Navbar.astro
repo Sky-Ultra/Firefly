@@ -194,14 +194,17 @@ if (isLocalSrcLogo) {
                             <a
                                 href={link.external ? link.url : url(link.url)}
                                 class="mobile-navbar-link btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90"
-                                id={link.url === "/about/" ? "mobile-about-link" : undefined}
                                 aria-label={link.name}
                                 title={link.name}
                                 target={link.external ? "_blank" : null}
                                 rel={link.external ? "noopener noreferrer" : null}
                             >
                                 <span class="mobile-navbar-icon">
-                                    {link.icon && <Icon is:inline name={link.icon} class="text-[1.15rem]" />}
+                                    {link.url === "/about/" ? (
+                                        <Icon is:inline name="material-symbols:info" class="text-[1.15rem]" />
+                                    ) : (
+                                        link.icon && <Icon is:inline name={link.icon} class="text-[1.15rem]" />
+                                    )}
                                 </span>
                                 <span class="mobile-navbar-label">{link.name}</span>
                             </a>
@@ -346,12 +349,6 @@ if (isLocalSrcLogo) {
 
         #mobile-tools-panel {
             top: 5.25rem;
-        }
-
-        #mobile-about-link {
-            color: var(--card-bg);
-            background-color: var(--primary);
-            box-shadow: 0 0 0.65rem color-mix(in srgb, var(--primary) 35%, transparent);
         }
 
         .navbar-shell {
