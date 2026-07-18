@@ -16,7 +16,6 @@ import { getFallbackFormat, getImageFormats } from "@/utils/image-utils";
 import { isHomePage } from "@/utils/layout-utils";
 import { url } from "@/utils/url-utils";
 import DropdownMenu from "./DropdownMenu.astro";
-import NavMenuPanel from "./NavMenuPanel.astro";
 
 const className = Astro.props.class;
 
@@ -106,10 +105,10 @@ if (isLocalSrcLogo) {
 <div id="navbar" class="z-50" style={`--navbar-glass-blur: ${navbarBlur}px;`} data-transparent-mode={navbarTransparentMode} data-enable-blur={String(navbarEnableBlur)} data-is-home={isHomePageCheck} data-full-width={navbarWidthFull}>
     <div class:list={[
         className,
-        "overflow-visible! h-18 px-4"
+        "navbar-shell overflow-visible! h-18 px-4"
     ]}>
         <div class="relative mx-auto grid h-full w-full max-w-(--page-width) grid-cols-[auto_minmax(0,1fr)_auto] items-center">
-            <a href={url('/')} class="btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
+            <a href={url('/')} class="navbar-brand btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
                 <div class:list={[
                     "flex flex-row items-center text-md",
                     siteConfig.navbar.followTheme ? "text-(--primary)" : "dark:text-white text-black"
@@ -148,19 +147,80 @@ if (isLocalSrcLogo) {
                 })}
             </div>
             <div class="flex col-start-3 justify-self-end">
+                <div class="flex items-center lg:hidden" aria-label="Mobile navigation">
+                    {links.map((link) => (
+                        link.children && link.children.length > 0 ? (
+                            <div class="mobile-navbar-item" data-mobile-navbar-item>
+                                <button
+                                    type="button"
+                                    class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90"
+                                    aria-label={link.name}
+                                    title={link.name}
+                                    aria-expanded="false"
+                                    data-mobile-navbar-trigger
+                                >
+                                    <span class="mobile-navbar-icon">
+                                        {link.icon && <Icon is:inline name={link.icon} class="text-[1.15rem]" />}
+                                    </span>
+                                    <span class="mobile-navbar-label">{link.name}</span>
+                                </button>
+                                <div
+                                    class="mobile-navbar-panel float-panel float-panel-closed fixed right-4 p-2 max-h-[80vh] overflow-y-auto z-50"
+                                    data-mobile-navbar-panel
+                                >
+                                    {link.children.map((child) => (
+                                        <a
+                                            href={child.external ? child.url : url(child.url)}
+                                            class="group flex justify-between items-center py-2 pl-3 pr-2 rounded-lg gap-8 hover:bg-(--btn-plain-bg-hover) active:bg-(--btn-plain-bg-active) transition"
+                                            target={child.external ? "_blank" : null}
+                                            rel={child.external ? "noopener noreferrer" : null}
+                                        >
+                                            <div class="flex items-center whitespace-nowrap text-black/75 dark:text-white/75 font-medium group-hover:text-(--primary) group-active:text-(--primary) transition">
+                                                {child.icon && <Icon is:inline name={child.icon} class="text-[1.1rem] mr-2" />}
+                                                {child.name}
+                                            </div>
+                                            {child.external && (
+                                                <Icon
+                                                    is:inline
+                                                    name="fa7-solid:arrow-up-right-from-square"
+                                                    class="text-[0.75rem] text-black/25 dark:text-white/25"
+                                                />
+                                            )}
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <a
+                                href={link.external ? link.url : url(link.url)}
+                                class="mobile-navbar-link btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90"
+                                id={link.url === "/about/" ? "mobile-about-link" : undefined}
+                                aria-label={link.name}
+                                title={link.name}
+                                target={link.external ? "_blank" : null}
+                                rel={link.external ? "noopener noreferrer" : null}
+                            >
+                                <span class="mobile-navbar-icon">
+                                    {link.icon && <Icon is:inline name={link.icon} class="text-[1.15rem]" />}
+                                </span>
+                                <span class="mobile-navbar-label">{link.name}</span>
+                            </a>
+                        )
+                    ))}
+                </div>
                 <!--<SearchPanel client:load>-->
                 <Search
                     client:load
                 />
                 {musicPlayerConfig.showInNavbar && (
-                    <button aria-label={i18n(I18nKey.music)} class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="music-player-switch">
+                    <button aria-label={i18n(I18nKey.music)} class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 hidden lg:flex" id="music-player-switch">
                         <Icon is:inline name="material-symbols:music-note-rounded" class="text-[1.25rem]"></Icon>
                     </button>
                 )}
                 {backgroundWallpaper.playerEnable && backgroundWallpaper.mode !== "none" && (
                     <button
                         aria-label={i18n(I18nKey.videoPlay)}
-                        class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90"
+                        class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 hidden lg:flex"
                         id="bg-player-toggle"
                         data-i18n-play={i18n(I18nKey.videoPlay)}
                         data-i18n-pause={i18n(I18nKey.videoPause)}
@@ -175,7 +235,14 @@ if (isLocalSrcLogo) {
                 )}
                 {/* @ts-ignore */}
                 <LightDarkSwitch client:load></LightDarkSwitch>
-                <button aria-label="Menu" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 lg:hidden!" id="nav-menu-switch">
+                <button
+                    type="button"
+                    aria-label="更多工具"
+                    title="更多工具"
+                    aria-expanded="false"
+                    class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 lg:hidden!"
+                    id="mobile-tools-switch"
+                >
                     <Icon is:inline name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
                 </button>
             </div>
@@ -185,10 +252,147 @@ if (isLocalSrcLogo) {
                 <MusicPlayer />
             </div>
         )}
-        <NavMenuPanel links={links}></NavMenuPanel>
+        <div
+            id="mobile-tools-panel"
+            class="float-panel float-panel-closed transition-all fixed right-4 p-2 z-50 lg:hidden"
+            aria-label="移动端工具"
+        >
+            <div class="flex items-center">
+                <button
+                    type="button"
+                    aria-label={i18n(I18nKey.search)}
+                    title={i18n(I18nKey.search)}
+                    class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90"
+                    data-mobile-tool-target="search-switch"
+                >
+                    <Icon is:inline name="material-symbols:search" class="text-[1.25rem]" />
+                </button>
+                {musicPlayerConfig.showInNavbar && (
+                    <button
+                        type="button"
+                        aria-label={i18n(I18nKey.music)}
+                        title={i18n(I18nKey.music)}
+                        class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90"
+                        data-mobile-tool-target="music-player-switch"
+                    >
+                        <Icon is:inline name="material-symbols:music-note-rounded" class="text-[1.25rem]" />
+                    </button>
+                )}
+                {backgroundWallpaper.playerEnable && backgroundWallpaper.mode !== "none" && (
+                    <button
+                        type="button"
+                        aria-label={i18n(I18nKey.videoPlay)}
+                        title={i18n(I18nKey.videoPlay)}
+                        class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90"
+                        data-mobile-tool-target="bg-player-toggle"
+                    >
+                        <Icon is:inline name="material-symbols:play-arrow-rounded" class="text-[1.5rem]" />
+                    </button>
+                )}
+                <button
+                    type="button"
+                    aria-label="明暗模式"
+                    title="明暗模式"
+                    class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90"
+                    data-mobile-tool-target="scheme-switch"
+                >
+                    <Icon is:inline name="material-symbols:wb-sunny-outline-rounded" class="text-[1.25rem]" />
+                </button>
+            </div>
+        </div>
         <DisplaySettings client:load></DisplaySettings>
     </div>
 </div>
+
+<style>
+    @media (max-width: 1023px) {
+        :global(#navbar #search-switch),
+        :global(#navbar #scheme-switch) {
+            display: none !important;
+        }
+
+        .mobile-navbar-item,
+        .mobile-navbar-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-navbar-item > button,
+        .mobile-navbar-link {
+            flex-direction: column;
+            gap: 0.16rem;
+        }
+
+        .mobile-navbar-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .mobile-navbar-label {
+            color: inherit;
+            font-size: 0.6rem;
+            font-weight: 600;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .mobile-navbar-panel {
+            top: 5.25rem;
+            min-width: 11rem;
+        }
+
+        #mobile-tools-panel {
+            top: 5.25rem;
+        }
+
+        #mobile-about-link {
+            color: var(--card-bg);
+            background-color: var(--primary);
+            box-shadow: 0 0 0.65rem color-mix(in srgb, var(--primary) 35%, transparent);
+        }
+
+        .navbar-shell {
+            padding-inline: 0.5rem;
+        }
+
+        .navbar-brand {
+            padding-inline: 0.5rem;
+        }
+
+        .mobile-navbar-item > button,
+        .mobile-navbar-link {
+            width: 2.5rem;
+            height: 3.25rem;
+        }
+
+        #display-settings-switch,
+        #mobile-tools-switch {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .mobile-navbar-item > button,
+        .mobile-navbar-link {
+            width: 2.25rem;
+            height: 3.25rem;
+        }
+
+        #display-settings-switch,
+        #mobile-tools-switch {
+            width: 2.25rem;
+            height: 2.25rem;
+        }
+
+        .mobile-navbar-label {
+            font-size: 0.55rem;
+        }
+    }
+</style>
 
 <script>
 function loadButtonScript() {
@@ -202,15 +406,30 @@ function loadButtonScript() {
         };
     }
 
-    let menuBtn = document.getElementById("nav-menu-switch");
-    if (menuBtn) {
-        menuBtn.onclick = function () {
-            let menuPanel = document.getElementById("nav-menu-panel");
-            if (menuPanel) {
-                menuPanel.classList.toggle("float-panel-closed");
-            }
+    const mobileNavbarItems = document.querySelectorAll<HTMLElement>("[data-mobile-navbar-item]");
+    const closeMobileNavbarPanels = (exceptItem?: HTMLElement) => {
+        mobileNavbarItems.forEach((item) => {
+            if (item === exceptItem) return;
+            item.querySelector<HTMLElement>("[data-mobile-navbar-panel]")?.classList.add("float-panel-closed");
+            item.querySelector<HTMLElement>("[data-mobile-navbar-trigger]")?.setAttribute("aria-expanded", "false");
+        });
+    };
+
+    mobileNavbarItems.forEach((item) => {
+        const trigger = item.querySelector<HTMLElement>("[data-mobile-navbar-trigger]");
+        const panel = item.querySelector<HTMLElement>("[data-mobile-navbar-panel]");
+        if (!trigger || !panel) return;
+
+        trigger.onclick = function (event) {
+            event.stopPropagation();
+            const shouldOpen = panel.classList.contains("float-panel-closed");
+            document.getElementById("mobile-tools-panel")?.classList.add("float-panel-closed");
+            document.getElementById("mobile-tools-switch")?.setAttribute("aria-expanded", "false");
+            closeMobileNavbarPanels(item);
+            panel.classList.toggle("float-panel-closed", !shouldOpen);
+            trigger.setAttribute("aria-expanded", String(shouldOpen));
         };
-    }
+    });
 
     let musicBtn = document.getElementById("music-player-switch");
     if (musicBtn) {
@@ -277,9 +496,32 @@ function loadButtonScript() {
         };
     }
 
+    const mobileToolsBtn = document.getElementById("mobile-tools-switch");
+    const mobileToolsPanel = document.getElementById("mobile-tools-panel");
+    if (mobileToolsBtn && mobileToolsPanel) {
+        mobileToolsBtn.onclick = function (event) {
+            event.stopPropagation();
+            const shouldOpen = mobileToolsPanel.classList.contains("float-panel-closed");
+            closeMobileNavbarPanels();
+            mobileToolsPanel.classList.toggle("float-panel-closed", !shouldOpen);
+            mobileToolsBtn.setAttribute("aria-expanded", String(shouldOpen));
+        };
+    }
+
+    document.querySelectorAll<HTMLElement>("[data-mobile-tool-target]").forEach((toolButton) => {
+        toolButton.onclick = function (event) {
+            event.stopPropagation();
+            const targetId = toolButton.dataset.mobileToolTarget;
+            if (!targetId) return;
+            document.getElementById(targetId)?.click();
+            mobileToolsPanel?.classList.add("float-panel-closed");
+            mobileToolsBtn?.setAttribute("aria-expanded", "false");
+        };
+    });
+
     document.addEventListener("click", function(event) {
-        const panels = ["display-setting", "nav-menu-panel", "music-nav-panel", "theme-mode-panel"];
-        const buttons = ["display-settings-switch", "nav-menu-switch", "music-player-switch", "scheme-switch"];
+        const panels = ["display-setting", "music-nav-panel", "theme-mode-panel", "mobile-tools-panel"];
+        const buttons = ["display-settings-switch", "music-player-switch", "scheme-switch", "mobile-tools-switch"];
 
         panels.forEach((id, index) => {
             const panel = document.getElementById(id);
@@ -287,9 +529,17 @@ function loadButtonScript() {
             if (panel && button && !panel.classList.contains("float-panel-closed")) {
                 if (event.target instanceof Node && !panel.contains(event.target) && !button.contains(event.target)) {
                     panel.classList.add("float-panel-closed");
+                    button.setAttribute("aria-expanded", "false");
                 }
             }
         });
+
+        if (event.target instanceof Node) {
+            const clickedInsideMobileNavbar = Array.from(mobileNavbarItems).some((item) => item.contains(event.target as Node));
+            if (!clickedInsideMobileNavbar) {
+                closeMobileNavbarPanels();
+            }
+        }
     });
 }
 
