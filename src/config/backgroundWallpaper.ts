@@ -95,6 +95,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				"愿此行，终抵群星",
 				"采菊东篱下，悠然见南山",
 				"醉后不知天在水，满船惊梦压星河",
+				"至少我还在为你而歌唱，在黑暗漫长的反乌托邦",
 			],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",
