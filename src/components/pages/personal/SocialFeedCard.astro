@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import { profileConfig } from "@/config";
 import type { DiaryItem, MomentItem } from "@/types/config";
 import { url } from "@/utils/url-utils";
@@ -59,7 +60,7 @@ const dateLabel = new Intl.DateTimeFormat("zh-CN", {
 			</div>
 
 			<p class="mt-3 whitespace-pre-line text-[0.95rem] leading-7 text-neutral-700 dark:text-neutral-300">
-				{item.content}
+				<LocalizedText zh={item.content} en={item.contentEn ?? item.content} />
 			</p>
 
 			{images.length > 0 && (
@@ -96,11 +97,11 @@ const dateLabel = new Intl.DateTimeFormat("zh-CN", {
 				{item.location && (
 					<span class="flex items-center gap-1">
 						<Icon is:inline name="material-symbols:location-on-rounded" class="text-(--primary)" />
-						{item.location}
+						<LocalizedText zh={item.location} en={item.locationEn ?? item.location} />
 					</span>
 				)}
-				{item.tags?.map((tag) => (
-					<span class="rounded-full bg-(--btn-regular-bg) px-2.5 py-1">#{tag}</span>
+				{item.tags?.map((tag, index) => (
+					<span class="rounded-full bg-(--btn-regular-bg) px-2.5 py-1">#<LocalizedText zh={tag} en={item.tagsEn?.[index] ?? tag} /></span>
 				))}
 				<a
 					href={`#${item.id}`}
@@ -108,7 +109,7 @@ const dateLabel = new Intl.DateTimeFormat("zh-CN", {
 					aria-label={`定位到这条${variant === "moment" ? "动态" : "日记"}`}
 				>
 					<Icon is:inline name="material-symbols:link-rounded" />
-					永久链接
+					<LocalizedText zh="永久链接" en="Permalink" />
 				</a>
 			</div>
 		</div>
@@ -117,7 +118,15 @@ const dateLabel = new Intl.DateTimeFormat("zh-CN", {
 
 <script>
 	function updateRelativeTimes() {
-		const formatter = new Intl.RelativeTimeFormat("zh-CN", { numeric: "auto" });
+		const locale = document.documentElement.dataset.language === "en" ? "en" : "zh-CN";
+		const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+		const absoluteFormatter = new Intl.DateTimeFormat(locale, {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			hour: "2-digit",
+			minute: "2-digit",
+		});
 		const now = Date.now();
 
 		document.querySelectorAll<HTMLElement>("[data-relative-time]").forEach((element) => {
@@ -142,10 +151,13 @@ const dateLabel = new Intl.DateTimeFormat("zh-CN", {
 
 			if (absoluteSeconds < 86400 * 7) {
 				element.textContent = formatter.format(value, unit);
+			} else {
+				element.textContent = absoluteFormatter.format(new Date(timestamp));
 			}
 		});
 	}
 
 	updateRelativeTimes();
 	document.addEventListener("astro:page-load", updateRelativeTimes);
+	document.addEventListener("firefly:language-change", updateRelativeTimes);
 </script>

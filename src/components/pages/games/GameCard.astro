@@ -1,4 +1,5 @@
 ---
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import type { GameItem } from "@/types/gameConfig";
 
 interface Props {
@@ -9,8 +10,8 @@ interface Props {
 const { item, index = 0 } = Astro.props;
 const status =
 	item.status === "playing"
-		? { label: "在玩", className: "bg-amber-500" }
-		: { label: "玩过", className: "bg-emerald-500" };
+		? { label: "在玩", labelEn: "Playing", className: "bg-amber-500" }
+		: { label: "玩过", labelEn: "Played", className: "bg-emerald-500" };
 const visibleTags = (item.tags || []).slice(0, 3);
 const hiddenTagCount = Math.max(
 	(item.tags?.length || 0) - visibleTags.length,
@@ -46,7 +47,7 @@ const hiddenTagCount = Math.max(
 				status.className,
 			]}
 		>
-			{status.label}
+			<LocalizedText zh={status.label} en={status.labelEn} />
 		</div>
 
 		{
@@ -61,15 +62,15 @@ const hiddenTagCount = Math.max(
 		<div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent"></div>
 		<div class="absolute inset-x-0 bottom-0 p-3.5">
 			<h3 class="line-clamp-2 text-sm font-bold text-white drop-shadow-lg sm:text-base">
-				{item.title}
+				<LocalizedText zh={item.title} en={item.titleEn ?? item.title} />
 			</h3>
 			<p class="mt-1 text-xs text-white/65">{item.year}</p>
 			{
 				visibleTags.length > 0 && (
 					<div class="mt-2 flex flex-wrap gap-1">
-						{visibleTags.map((tag) => (
+						{visibleTags.map((tag, tagIndex) => (
 							<span class="rounded bg-white/20 px-1.5 py-0.5 text-[0.65rem] text-white/90 backdrop-blur-sm">
-								{tag}
+								<LocalizedText zh={tag} en={item.tagsEn?.[tagIndex] ?? tag} />
 							</span>
 						))}
 						{hiddenTagCount > 0 && (

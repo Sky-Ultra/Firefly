@@ -41,6 +41,7 @@ const { festivals } = visitorWidgetsConfig.festivalCountdown;
 <script>
 	type FestivalRule = {
 		name: string;
+		nameEn: string;
 		calendar: "gregorian" | "chinese";
 		month: number;
 		day: number;
@@ -74,7 +75,7 @@ const { festivals } = visitorWidgetsConfig.festivalCountdown;
 		return Math.max(0, Math.round((endUtc - todayUtc) / DAY_MS) - 1);
 	}
 
-	function buildProgressData(now: Date): Record<ProgressRange, ProgressData> {
+	function buildProgressData(now: Date, english: boolean): Record<ProgressRange, ProgressData> {
 		const yearStart = new Date(now.getFullYear(), 0, 1);
 		const nextYear = new Date(now.getFullYear() + 1, 0, 1);
 		const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -98,9 +99,9 @@ const { festivals } = visitorWidgetsConfig.festivalCountdown;
 		});
 
 		return {
-			year: calculate(yearStart, nextYear, "本年还剩"),
-			month: calculate(monthStart, nextMonth, "本月还剩"),
-			week: calculate(weekStart, nextWeek, "本周还剩"),
+			year: calculate(yearStart, nextYear, english ? "Left this year:" : "本年还剩"),
+			month: calculate(monthStart, nextMonth, english ? "Left this month:" : "本月还剩"),
+			week: calculate(weekStart, nextWeek, english ? "Left this week:" : "本周还剩"),
 		};
 	}
 
@@ -156,6 +157,7 @@ const { festivals } = visitorWidgetsConfig.festivalCountdown;
 	class FestivalCountdownWidget extends HTMLElement {
 		private timer: number | undefined;
 		private festivals: FestivalRule[] = [];
+		private readonly handleLanguageChange = () => this.update();
 
 		connectedCallback() {
 			try {
@@ -164,16 +166,19 @@ const { festivals } = visitorWidgetsConfig.festivalCountdown;
 				this.festivals = [];
 			}
 			this.update();
+			document.addEventListener("firefly:language-change", this.handleLanguageChange);
 			this.timer = window.setInterval(() => this.update(), 60000);
 		}
 
 		disconnectedCallback() {
 			if (this.timer !== undefined) window.clearInterval(this.timer);
+			document.removeEventListener("firefly:language-change", this.handleLanguageChange);
 		}
 
 		private update() {
 			const now = new Date();
-			const progress = buildProgressData(now);
+			const english = document.documentElement.dataset.language === "en";
+			const progress = buildProgressData(now, english);
 			this.querySelectorAll<HTMLElement>("[data-progress-range]").forEach((row) => {
 				const range = row.dataset.progressRange as ProgressRange;
 				const data = progress[range];
@@ -182,7 +187,9 @@ const { festivals } = visitorWidgetsConfig.festivalCountdown;
 				const label = row.querySelector<HTMLElement>("[data-progress-label]");
 				const bar = row.querySelector<HTMLElement>("[data-progress-bar]");
 				if (percent) percent.textContent = `${data.percent.toFixed(1)}%`;
-				if (label) label.textContent = `${data.label} ${data.remainingDays} 天`;
+				if (label) label.textContent = english
+					? `${data.label} ${data.remainingDays} days`
+					: `${data.label} ${data.remainingDays} 天`;
 				if (bar) bar.style.width = `${data.percent}%`;
 			});
 
@@ -192,7 +199,10 @@ const { festivals } = visitorWidgetsConfig.festivalCountdown;
 			const days = this.querySelector<HTMLElement>("[data-festival-days]");
 			const date = this.querySelector<HTMLTimeElement>("[data-festival-date]");
 			if (label) {
-				label.textContent = next.days === 0 ? `今天是${next.festival.name}` : `距离${next.festival.name}`;
+				const festivalName = english ? next.festival.nameEn : next.festival.name;
+				label.textContent = next.days === 0
+					? english ? `Today is ${festivalName}` : `今天是${festivalName}`
+					: english ? `Until ${festivalName}` : `距离${festivalName}`;
 			}
 			if (days) days.textContent = String(next.days);
 			if (date) {

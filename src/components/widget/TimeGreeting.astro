@@ -62,6 +62,7 @@ const { periods, image } = visitorWidgetsConfig.timeGreeting;
 		startHour: number;
 		endHour: number;
 		texts: string[];
+		textsEn: string[];
 		interval?: number;
 		icon: string;
 	};
@@ -82,13 +83,17 @@ const { periods, image } = visitorWidgetsConfig.timeGreeting;
 
 			this.update();
 			this.timer = window.setInterval(() => this.update(), 1000);
+			document.addEventListener("firefly:language-change", this.handleLanguageChange);
 		}
 
 		disconnectedCallback() {
 			if (this.timer !== undefined) {
 				window.clearInterval(this.timer);
 			}
+			document.removeEventListener("firefly:language-change", this.handleLanguageChange);
 		}
+
+		private handleLanguageChange = () => this.update();
 
 		private update() {
 			const now = new Date();
@@ -135,7 +140,8 @@ const { periods, image } = visitorWidgetsConfig.timeGreeting;
 				clock.setAttribute("datetime", now.toISOString());
 			}
 			if (greeting && period) {
-				greeting.textContent = period.texts[this.activeTextIndex] || "";
+				const texts = window.fireflyLanguage?.get() === "en" ? period.textsEn : period.texts;
+				greeting.textContent = texts[this.activeTextIndex] || "";
 			}
 			if (weekday) {
 				weekday.textContent = now

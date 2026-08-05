@@ -4,10 +4,20 @@ import { Icon } from "astro-icon/components";
 interface Props {
 	title: string;
 	description: string;
+	titleEn?: string;
+	descriptionEn?: string;
 	icon: string;
 }
 
-const { title, description, icon } = Astro.props;
+import LocalizedText from "@/components/common/LocalizedText.astro";
+
+const {
+	title,
+	description,
+	titleEn = title,
+	descriptionEn = description,
+	icon,
+} = Astro.props;
 ---
 
 <header class="mb-7">
@@ -18,10 +28,10 @@ const { title, description, icon } = Astro.props;
 			<Icon is:inline name={icon} class="text-[1.55rem]" />
 		</div>
 		<h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-			{title}
+			<LocalizedText zh={title} en={titleEn} />
 		</h1>
 	</div>
 	<p class="text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
-		{description}
+		<LocalizedText zh={description} en={descriptionEn} />
 	</p>
 </header>

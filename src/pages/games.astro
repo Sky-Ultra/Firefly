@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import GameSection from "@/components/pages/games/GameSection.astro";
 import { gamesPageConfig, siteConfig } from "@/config";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -25,11 +26,11 @@ if (!siteConfig.pages.games) {
 						/>
 					</div>
 					<h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-						{gamesPageConfig.title}
+						<LocalizedText zh={gamesPageConfig.title} en={gamesPageConfig.titleEn ?? gamesPageConfig.title} />
 					</h1>
 				</div>
 				<p class="text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
-					{gamesPageConfig.description}
+					<LocalizedText zh={gamesPageConfig.description} en={gamesPageConfig.descriptionEn ?? gamesPageConfig.description} />
 				</p>
 			</header>
 

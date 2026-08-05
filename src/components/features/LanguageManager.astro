@@ -1,0 +1,204 @@
+---
+import { en } from "@/i18n/languages/en";
+import { zh_CN } from "@/i18n/languages/zh_CN";
+
+const automaticTranslations = Object.fromEntries(
+	Object.entries(zh_CN)
+		.map(([key, zh]) => [zh, en[key as keyof typeof en]])
+		.filter(([zh, english]) => zh && english && zh !== english),
+);
+---
+
+<script
+	is:inline
+	type="application/json"
+	id="firefly-ui-translations"
+	set:html={JSON.stringify(automaticTranslations).replaceAll("<", "\\u003c")}
+></script>
+
+<script is:inline>
+	(() => {
+		const storageKey = "firefly-language";
+		let language = "zh-CN";
+		try {
+			language = localStorage.getItem(storageKey) === "en" ? "en" : "zh-CN";
+		} catch {
+			language = "zh-CN";
+		}
+		document.documentElement.lang = language;
+		document.documentElement.dataset.language = language;
+	})();
+</script>
+
+<script>
+	import {
+		DEFAULT_LANGUAGE,
+		LANGUAGE_CHANGE_EVENT,
+		normalizeLanguage,
+		readStoredLanguage,
+		writeStoredLanguage,
+		type SiteLanguage,
+	} from "@/i18n/runtime-language";
+
+	type LocalizedAttribute = "content" | "title" | "aria-label" | "placeholder";
+	type LanguageChangeDetail = { language: SiteLanguage };
+	type TranslationDictionary = Record<string, string>;
+
+	const readAutomaticTranslations = (): TranslationDictionary => {
+		const element = document.getElementById("firefly-ui-translations");
+		if (!element?.textContent) return {};
+		try {
+			return JSON.parse(element.textContent) as TranslationDictionary;
+		} catch {
+			return {};
+		}
+	};
+
+	const automaticTranslations = readAutomaticTranslations();
+	const reverseAutomaticTranslations = Object.fromEntries(
+		Object.entries(automaticTranslations).map(([zh, english]) => [english, zh]),
+	);
+
+	const getCurrentLanguage = (): SiteLanguage =>
+		normalizeLanguage(document.documentElement.dataset.language);
+
+	function applyElement(element: HTMLElement, language: SiteLanguage): void {
+		const value = language === "en" ? element.dataset.i18nEn : element.dataset.i18nZh;
+		if (value === undefined) return;
+
+		const attribute = (element.dataset.i18nAttr || "content") as LocalizedAttribute;
+		if (attribute === "content") {
+			if (element.textContent !== value) element.textContent = value;
+			return;
+		}
+		if (element.getAttribute(attribute) !== value) element.setAttribute(attribute, value);
+	}
+
+	function shouldSkipTextNode(node: Text): boolean {
+		const parent = node.parentElement;
+		return !parent || Boolean(parent.closest(".markdown-content, [data-i18n-skip]"));
+	}
+
+	function applyAutomaticText(root: ParentNode, language: SiteLanguage): void {
+		const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+		const dictionary = language === "en" ? automaticTranslations : reverseAutomaticTranslations;
+		let current = walker.nextNode();
+		while (current) {
+			const textNode = current as Text;
+			if (!shouldSkipTextNode(textNode)) {
+				const raw = textNode.nodeValue ?? "";
+				const trimmed = raw.trim();
+				const translated = dictionary[trimmed];
+				if (trimmed && translated) {
+					textNode.nodeValue = raw.replace(trimmed, translated);
+				}
+			}
+			current = walker.nextNode();
+		}
+	}
+
+	function applyAutomaticAttributes(root: ParentNode, language: SiteLanguage): void {
+		const dictionary = language === "en" ? automaticTranslations : reverseAutomaticTranslations;
+		const elements: HTMLElement[] = [];
+		if (root instanceof HTMLElement) elements.push(root);
+		elements.push(...root.querySelectorAll<HTMLElement>("[placeholder], [title], [aria-label]"));
+		for (const element of elements) {
+			if (element.closest(".markdown-content, [data-i18n-skip]")) continue;
+			for (const attribute of ["placeholder", "title", "aria-label"] as const) {
+				const value = element.getAttribute(attribute);
+				if (value && dictionary[value]) element.setAttribute(attribute, dictionary[value]);
+			}
+		}
+	}
+
+	function applyLanguage(root: ParentNode = document): void {
+		const language = getCurrentLanguage();
+		const titleSource = document.querySelector<HTMLElement>(
+			"[data-document-title-zh][data-document-title-en]",
+		);
+		if (titleSource) {
+			document.title =
+				language === "en"
+					? titleSource.dataset.documentTitleEn ?? document.title
+					: titleSource.dataset.documentTitleZh ?? document.title;
+		}
+		if (root instanceof HTMLElement && root.matches("[data-i18n-zh][data-i18n-en]")) {
+			applyElement(root, language);
+		}
+		root
+			.querySelectorAll<HTMLElement>("[data-i18n-zh][data-i18n-en]")
+			.forEach((element) => applyElement(element, language));
+
+		root.querySelectorAll<HTMLElement>("[data-language-only]").forEach((element) => {
+			const visible = element.dataset.languageOnly === language;
+			element.hidden = !visible;
+			element.setAttribute("aria-hidden", String(!visible));
+		});
+		if (root instanceof HTMLElement && root.matches("[data-language-only]")) {
+			const visible = root.dataset.languageOnly === language;
+			root.hidden = !visible;
+			root.setAttribute("aria-hidden", String(!visible));
+		}
+		applyAutomaticText(root, language);
+		applyAutomaticAttributes(root, language);
+	}
+
+	function setLanguage(language: SiteLanguage, persist = true): void {
+		const normalized = normalizeLanguage(language);
+		document.documentElement.lang = normalized;
+		document.documentElement.dataset.language = normalized;
+		if (persist) writeStoredLanguage(window.localStorage, normalized);
+		applyLanguage();
+		document.dispatchEvent(
+			new CustomEvent<LanguageChangeDetail>(LANGUAGE_CHANGE_EVENT, {
+				detail: { language: normalized },
+			}),
+		);
+	}
+
+	function initializeLanguageManager(): void {
+		if (window.fireflyLanguage) {
+			window.fireflyLanguage.apply();
+			return;
+		}
+
+		window.fireflyLanguage = {
+			get: getCurrentLanguage,
+			set: (language) => setLanguage(language),
+			toggle: () => setLanguage(getCurrentLanguage() === "en" ? DEFAULT_LANGUAGE : "en"),
+			apply: applyLanguage,
+		};
+
+		const stored = readStoredLanguage(window.localStorage);
+		document.documentElement.lang = stored;
+		document.documentElement.dataset.language = stored;
+		applyLanguage();
+
+		const observer = new MutationObserver((mutations) => {
+			for (const mutation of mutations) {
+				for (const node of mutation.addedNodes) {
+					if (!(node instanceof HTMLElement)) continue;
+					if (node.matches("[data-i18n-zh][data-i18n-en]")) {
+						applyElement(node, getCurrentLanguage());
+					}
+					applyLanguage(node);
+				}
+			}
+		});
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+		});
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", initializeLanguageManager, { once: true });
+	} else {
+		initializeLanguageManager();
+	}
+
+	document.addEventListener("astro:page-load", initializeLanguageManager);
+	document.addEventListener("swup:contentReplaced", () => {
+		requestAnimationFrame(() => window.fireflyLanguage?.apply());
+	});
+</script>

@@ -1,94 +1,111 @@
 ---
-import { getEntry, render } from "astro:content";
-import Markdown from "@components/common/Markdown.astro";
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
-
-const aboutPost = await getEntry("spec", "about");
-
-if (!aboutPost) {
-	throw new Error("About page content not found");
-}
-
-const { Content } = await render(aboutPost);
 
 const skillGroups = [
 	{
 		title: "Software Development",
 		label: "软件开发",
+		labelEn: "Software development",
 		icon: "material-symbols:code-rounded",
 		items: [
 			{
 				title: "Java",
 				description: "面向对象编程、数据结构与应用开发",
+				descriptionEn:
+					"Object-oriented programming, data structures, and application development",
 			},
 			{
 				title: "HTML / CSS / JavaScript",
 				description: "响应式网页与前端交互开发",
+				descriptionEn:
+					"Responsive web interfaces and front-end interaction development",
 			},
 			{
 				title: "SQL & Databases",
 				description: "关系型数据库设计、查询与数据管理",
+				descriptionEn:
+					"Relational database design, querying, and data management",
 			},
 			{
 				title: "Backend Development",
 				description: "REST API、业务逻辑与数据库集成",
+				descriptionEn: "REST APIs, business logic, and database integration",
 			},
 			{
 				title: "Software Architecture",
 				description: "MVC、分层架构与模块化系统设计",
+				descriptionEn: "MVC, layered architecture, and modular system design",
 			},
 			{
 				title: "Git & GitHub",
 				description: "版本控制、分支管理与团队协作",
+				descriptionEn:
+					"Version control, branch management, and team collaboration",
 			},
 			{
 				title: "Software Testing",
 				description: "单元测试、集成测试与质量保证",
+				descriptionEn:
+					"Unit testing, integration testing, and quality assurance",
 			},
 		],
 	},
 	{
 		title: "Interaction Design",
 		label: "交互设计",
+		labelEn: "Interaction design",
 		icon: "material-symbols:design-services-outline-rounded",
 		items: [
 			{
 				title: "UI / UX Design",
 				description: "以用户为中心的网页与应用界面设计",
+				descriptionEn:
+					"User-centered interface design for websites and applications",
 			},
 			{
 				title: "Figma & Prototyping",
 				description: "线框图、高保真界面与交互原型",
+				descriptionEn:
+					"Wireframes, high-fidelity interfaces, and interactive prototypes",
 			},
 			{
 				title: "User Research",
 				description: "用户访谈、用户画像与可用性测试",
+				descriptionEn: "User interviews, personas, and usability testing",
 			},
 		],
 	},
 	{
 		title: "Business & Systems",
 		label: "业务与系统",
+		labelEn: "Business and systems",
 		icon: "material-symbols:account-tree-outline-rounded",
 		items: [
 			{
 				title: "Business Analysis",
 				description: "业务需求分析与系统功能规划",
+				descriptionEn:
+					"Business requirements analysis and system feature planning",
 			},
 			{
 				title: "System Modelling",
 				description: "UML、ERD、Use Case 与业务流程建模",
+				descriptionEn: "UML, ERD, use cases, and business process modelling",
 			},
 			{
 				title: "Agile & Scrum",
 				description: "迭代开发、任务规划与团队协作",
+				descriptionEn:
+					"Iterative development, task planning, and team collaboration",
 			},
 			{
 				title: "IT Project Management",
 				description: "项目范围、风险、进度与交付管理",
+				descriptionEn: "Project scope, risk, schedule, and delivery management",
 			},
 		],
 	},
@@ -109,13 +126,13 @@ const skillGroups = [
 					/>
 				</div>
 				<h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-					关于我 <span class="text-(--primary)">/ About Me</span>
+					<LocalizedText zh="关于我" en="About Me" /> <span class="text-(--primary)">/ <LocalizedText zh="About Me" en="关于我" /></span>
 				</h1>
 			</div>
 
-			<Markdown class="about-intro text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
-				<Content />
-			</Markdown>
+			<p class="about-intro text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
+				<LocalizedText zh="你好！我是 Sky，一个在数字世界中默默无闻的一片叶子。" en="Hi! I'm Sky, a quiet leaf drifting through the digital world." />
+			</p>
 		</header>
 
 		<div class="mb-7 flex items-center gap-3">
@@ -127,7 +144,7 @@ const skillGroups = [
 				aria-hidden="true"
 			/>
 			<h2 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-				我的技术栈
+				<LocalizedText zh="我的技术栈" en="My Tech Stack" />
 			</h2>
 		</div>
 
@@ -147,11 +164,11 @@ const skillGroups = [
 									{group.title}
 								</h3>
 								<p class="text-sm text-neutral-500 dark:text-neutral-400">
-									{group.label}
+									<LocalizedText zh={group.label} en={group.labelEn} />
 								</p>
 							</div>
 							<span class="ml-auto rounded-full bg-(--btn-regular-bg) px-3 py-1 text-xs font-medium text-neutral-500 dark:text-neutral-400">
-								{group.items.length} 项
+								{group.items.length} <LocalizedText zh="项" en="items" />
 							</span>
 						</header>
 
@@ -169,7 +186,7 @@ const skillGroups = [
 											</span>
 										</div>
 										<p class="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-											{skill.description}
+											<LocalizedText zh={skill.description} en={skill.descriptionEn} />
 										</p>
 									</div>
 								</article>

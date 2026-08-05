@@ -1,17 +1,22 @@
 ---
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import I18nKey from "@/i18n/i18nKey";
-import { i18n } from "@/i18n/translation";
+import { localizedI18n } from "@/i18n/localized-content";
 import { getLqipProps } from "@/utils/lqip-utils";
 import { url } from "@/utils/url-utils";
 
 interface Props {
 	id: string;
 	name: string;
+	nameEn?: string;
 	cover: string;
 	description?: string;
+	descriptionEn?: string;
 	date?: string;
 	location?: string;
+	locationEn?: string;
 	tags?: string[];
+	tagsEn?: string[];
 	photoCount: number;
 	encrypted?: boolean;
 }
@@ -19,11 +24,15 @@ interface Props {
 const {
 	id,
 	name,
+	nameEn = name,
 	cover,
 	description,
+	descriptionEn = description,
 	date,
 	location,
+	locationEn = location,
 	tags,
+	tagsEn = tags,
 	photoCount,
 	encrypted,
 } = Astro.props;
@@ -58,7 +67,7 @@ const lqipProps = cover ? getLqipProps(cover, undefined, true) : { style: "" };
 
     <!-- Photo count badge -->
     <div class="absolute top-2 right-2 px-2 py-1 rounded-full text-xs text-white font-medium bg-black/50 backdrop-blur-sm">
-      {photoCount} {i18n(I18nKey.galleryPhotos)}
+      {photoCount} <LocalizedText {...localizedI18n(I18nKey.galleryPhotos)} />
     </div>
 
     {/* Encrypted badge */}
@@ -72,12 +81,12 @@ const lqipProps = cover ? getLqipProps(cover, undefined, true) : { style: "" };
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
     <div class="absolute bottom-0 left-0 right-0 p-4">
       <h3 class="font-bold text-base text-white line-clamp-1 drop-shadow-lg">
-        {name}
+        <LocalizedText zh={name} en={nameEn} />
       </h3>
 
       {description && (
         <p class="text-xs text-white/75 line-clamp-1 mt-1 leading-relaxed" title={description}>
-          {description}
+          <LocalizedText zh={description} en={descriptionEn ?? description} />
         </p>
       )}
 
@@ -86,16 +95,16 @@ const lqipProps = cover ? getLqipProps(cover, undefined, true) : { style: "" };
         {location && (
           <span class="inline-flex items-center gap-0.5">
             <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
-            {location}
+            <LocalizedText zh={location} en={locationEn ?? location} />
           </span>
         )}
       </div>
 
       {tags && tags.length > 0 && (
         <div class="flex flex-wrap gap-1 mt-2">
-          {tags.slice(0, 4).map((tag) => (
+          {tags.slice(0, 4).map((tag, index) => (
             <span class="text-[0.6rem] px-1.5 py-0.5 rounded bg-white/20 text-white/90 backdrop-blur-sm">
-              {tag}
+              <LocalizedText zh={tag} en={tagsEn?.[index] ?? tag} />
             </span>
           ))}
         </div>

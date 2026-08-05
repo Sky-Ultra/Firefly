@@ -1,11 +1,14 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import I18nKey from "@/i18n/i18nKey";
+import { localizedI18n } from "@/i18n/localized-content";
 import { i18n } from "@/i18n/translation";
 
 interface Props {
 	id: string;
 	name?: string;
+	nameEn?: string;
 	showTitle?: boolean;
 	isCollapsed?: boolean;
 	collapsedHeight?: string;
@@ -18,6 +21,7 @@ interface Props {
 const {
 	id,
 	name,
+	nameEn = name,
 	showTitle = true,
 	isCollapsed,
 	collapsedHeight,
@@ -39,7 +43,7 @@ const className = Astro.props.class;
         <div class="widget-title font-bold transition text-lg text-neutral-900 dark:text-neutral-100 relative ml-8 mt-4 mb-2
             before:w-1 before:h-4 before:rounded-md before:bg-(--primary)
             before:absolute before:left-[-16px] before:top-[5.5px] flex items-center justify-between">
-            <span class="widget-name">{name}</span>
+            <span class="widget-name"><LocalizedText zh={name} en={nameEn ?? name} /></span>
             <slot name="title-icon" />
         </div>
     )}
@@ -55,7 +59,7 @@ const className = Astro.props.class;
             >
                 <div class="text-(--primary) flex items-center justify-center gap-2 -translate-x-2">
                     <Icon is:inline name="material-symbols:more-horiz" class="text-[1.75rem]" aria-hidden="true"></Icon>
-                    <span>{i18n(I18nKey.more)}</span>
+					<LocalizedText {...localizedI18n(I18nKey.more)} />
                 </div>
             </a>
         ) : (
@@ -70,7 +74,7 @@ const className = Astro.props.class;
                 <div class="text-(--primary) flex items-center justify-center gap-2 -translate-x-2">
                     <Icon is:inline name="material-symbols:more-horiz" class="toggle-icon-more text-[1.75rem]" aria-hidden="true"></Icon>
                     <Icon is:inline name="material-symbols:keyboard-arrow-up-rounded" class="toggle-icon-less hidden text-[1.75rem]" aria-hidden="true"></Icon>
-                    <span class="toggle-text">{i18n(I18nKey.more)}</span>
+					<span class="toggle-text"><LocalizedText {...localizedI18n(I18nKey.more)} /></span>
                 </div>
             </button>
         )}

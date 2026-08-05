@@ -1,10 +1,11 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import EncryptedContent from "@/components/features/EncryptedContent.astro";
 import PhotoCard from "@/components/pages/gallery/PhotoCard.astro";
 import { galleryConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
-import { i18n } from "@/i18n/translation";
+import { localizedI18n } from "@/i18n/localized-content";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import { getAlbumCover, scanAlbumPhotos } from "@/utils/gallery-utils";
 import { getLqipProps } from "@/utils/lqip-utils";
@@ -60,16 +61,16 @@ const coverLqipProps = cover
           class="absolute top-4 left-4 inline-flex items-center gap-1.5 text-sm text-white/90 hover:text-white bg-black/30 hover:bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-lg transition-colors"
         >
           <Icon is:inline name="material-symbols:arrow-back" class="text-base" />
-          {i18n(I18nKey.galleryBackToAlbums)}
+          <LocalizedText {...localizedI18n(I18nKey.galleryBackToAlbums)} />
         </a>
         <!-- 封面上的信息 -->
         <div class="absolute bottom-0 left-0 right-0 p-6">
           <div class="text-2xl sm:text-3xl font-bold text-white mb-2 drop-shadow-lg">
-            {albumMeta.name}
+            <LocalizedText zh={albumMeta.name} en={albumMeta.nameEn ?? albumMeta.name} />
           </div>
           {albumMeta.description && (
             <p class="text-sm text-white/75 leading-relaxed mb-2 max-w-2xl line-clamp-2">
-              {albumMeta.description}
+              <LocalizedText zh={albumMeta.description} en={albumMeta.descriptionEn ?? albumMeta.description} />
             </p>
           )}
           <div class="flex items-center gap-4 text-sm text-white/80 flex-wrap">
@@ -82,19 +83,19 @@ const coverLqipProps = cover
             {albumMeta.location && (
               <span class="inline-flex items-center gap-1">
                 <Icon is:inline name="material-symbols:location-on" class="text-sm" />
-                {albumMeta.location}
+                <LocalizedText zh={albumMeta.location} en={albumMeta.locationEn ?? albumMeta.location} />
               </span>
             )}
             <span class="inline-flex items-center gap-1">
               <Icon is:inline name="material-symbols:photo-library" class="text-sm" />
-              {photos.length} {i18n(I18nKey.galleryPhotos)}
+              {photos.length} <LocalizedText {...localizedI18n(I18nKey.galleryPhotos)} />
             </span>
           </div>
           {albumMeta.tags && albumMeta.tags.length > 0 && (
             <div class="flex flex-wrap gap-1.5 mt-2.5">
-              {albumMeta.tags.map((tag) => (
+              {albumMeta.tags.map((tag, index) => (
                 <span class="text-xs px-2 py-0.5 rounded bg-white/20 text-white/90 backdrop-blur-sm">
-                  {tag}
+                  <LocalizedText zh={tag} en={albumMeta.tagsEn?.[index] ?? tag} />
                 </span>
               ))}
             </div>
@@ -108,10 +109,10 @@ const coverLqipProps = cover
           class="inline-flex items-center gap-1 text-sm text-(--primary) hover:underline mb-3"
         >
           <Icon is:inline name="material-symbols:arrow-back" class="text-base" />
-          {i18n(I18nKey.galleryBackToAlbums)}
+          <LocalizedText {...localizedI18n(I18nKey.galleryBackToAlbums)} />
         </a>
         <div class="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-          {albumMeta.name}
+          <LocalizedText zh={albumMeta.name} en={albumMeta.nameEn ?? albumMeta.name} />
         </div>
         <div class="flex items-center gap-4 text-sm text-neutral-500 dark:text-neutral-400 mt-2 flex-wrap">
           {albumMeta.date && (
@@ -123,10 +124,10 @@ const coverLqipProps = cover
           {albumMeta.location && (
             <span class="inline-flex items-center gap-1">
               <Icon is:inline name="material-symbols:location-on" class="text-sm" />
-              {albumMeta.location}
+              <LocalizedText zh={albumMeta.location} en={albumMeta.locationEn ?? albumMeta.location} />
             </span>
           )}
-          <span>{photos.length} {i18n(I18nKey.galleryPhotos)}</span>
+          <span>{photos.length} <LocalizedText {...localizedI18n(I18nKey.galleryPhotos)} /></span>
         </div>
       </div>
     )}
@@ -160,7 +161,7 @@ const coverLqipProps = cover
       ) : (
         <div class="flex flex-col items-center justify-center py-16 text-neutral-400 dark:text-neutral-500">
           <Icon is:inline name="material-symbols:photo-library" class="text-6xl mb-4 opacity-50" />
-          <p class="text-lg">{i18n(I18nKey.galleryNoAlbums)}</p>
+          <p class="text-lg"><LocalizedText {...localizedI18n(I18nKey.galleryNoAlbums)} /></p>
         </div>
       )}
     </div>

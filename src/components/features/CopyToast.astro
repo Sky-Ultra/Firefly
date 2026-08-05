@@ -1,7 +1,8 @@
 ---
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
 
-const { message, visibleDuration, fadeDuration } =
+const { message, messageEn, visibleDuration, fadeDuration } =
 	visitorWidgetsConfig.copyToast;
 ---
 
@@ -13,7 +14,7 @@ const { message, visibleDuration, fadeDuration } =
 	aria-live="polite"
 	aria-atomic="true"
 >
-	<span>{message}</span>
+	<span><LocalizedText zh={message} en={messageEn} /></span>
 </copy-success-toast>
 
 <script>

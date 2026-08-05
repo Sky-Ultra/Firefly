@@ -1,0 +1,75 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	id: string;
+	class?: string;
+	showState?: boolean;
+}
+
+const { id, class: className, showState = true } = Astro.props;
+---
+
+<button
+	{id}
+	type="button"
+	class:list={[
+		"language-switch btn-plain scale-animation h-11 min-w-11 rounded-lg px-2 active:scale-90",
+		className,
+	]}
+	title="Switch to English"
+	aria-label="Switch to English"
+	data-language-switch
+>
+	<Icon is:inline name="material-symbols:translate-rounded" class="text-[1.25rem]" />
+	{showState && (
+		<span class="language-state text-[0.6rem] font-bold leading-none text-(--primary)" data-language-state>
+			中
+		</span>
+	)}
+</button>
+
+<script>
+	function initializeLanguageSwitches(): void {
+		const update = () => {
+			const language = window.fireflyLanguage?.get() ?? "zh-CN";
+			document.querySelectorAll<HTMLButtonElement>("[data-language-switch]").forEach((button) => {
+				const actionLabel = language === "en" ? "切换至中文" : "Switch to English";
+				button.title = actionLabel;
+				button.setAttribute("aria-label", actionLabel);
+				const state = button.querySelector<HTMLElement>("[data-language-state]");
+				if (state) state.textContent = language === "en" ? "EN" : "中";
+			});
+		};
+
+		document.querySelectorAll<HTMLButtonElement>("[data-language-switch]").forEach((button) => {
+			if (button.dataset.languageSwitchReady === "true") return;
+			button.dataset.languageSwitchReady = "true";
+			button.addEventListener("click", () => window.fireflyLanguage?.toggle());
+		});
+		update();
+	}
+
+	initializeLanguageSwitches();
+	document.addEventListener("astro:page-load", initializeLanguageSwitches);
+	document.addEventListener("swup:contentReplaced", initializeLanguageSwitches);
+	document.addEventListener("firefly:language-change", initializeLanguageSwitches);
+</script>
+
+<style>
+	.language-switch {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.18rem;
+	}
+
+	@media (max-width: 1023px) {
+		.language-switch {
+			width: 2.75rem;
+			padding-inline: 0.25rem;
+			flex-direction: column;
+			gap: 0.08rem;
+		}
+	}
+</style>

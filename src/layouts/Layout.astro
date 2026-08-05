@@ -6,6 +6,7 @@ import UmamiAnalytics from "@components/analytics/UmamiAnalytics.astro";
 import CopyToast from "@components/features/CopyToast.astro";
 import FancyboxManager from "@components/features/FancyboxManager.astro";
 import FontSetup from "@components/features/FontSetup.astro";
+import LanguageManager from "@components/features/LanguageManager.astro";
 import MusicManager from "@components/features/MusicManager.astro";
 import SakuraEffect from "@components/features/SakuraEffect.astro";
 import WelcomeToast from "@components/features/WelcomeToast.astro";
@@ -631,6 +632,7 @@ const siteLang = lang.replace("_", "-");
     )}
 
     <!-- Font Setup (Astro Font API) -->
+    <LanguageManager />
     <FontSetup />
   </head>
   <body

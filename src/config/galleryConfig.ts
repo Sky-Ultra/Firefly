@@ -18,10 +18,15 @@ export const galleryConfig: GalleryConfig = {
 		{
 			id: "firefly-2026",
 			name: "可爱流萤",
+			nameEn: "Lovely Firefly",
 			description: "飞萤之火自无梦的长夜亮起，绽放在终竟的明天。",
+			descriptionEn:
+				"A firefly's glow rises from a dreamless night and blooms into the tomorrow at journey's end.",
 			location: "崩坏：星穹铁道",
+			locationEn: "Honkai: Star Rail",
 			date: "2026-01-01",
 			tags: ["崩坏星穹铁道", "流萤"],
+			tagsEn: ["Honkai: Star Rail", "Firefly"],
 		},
 		{
 			id: "encrypted-test",

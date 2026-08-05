@@ -19,8 +19,8 @@ export type { GalleryAlbum, GalleryConfig } from "./galleryConfig";
 export type {
 	GameCategory,
 	GameItem,
-	GamesPageConfig,
 	GameStatus,
+	GamesPageConfig,
 } from "./gameConfig";
 export type { LicenseConfig } from "./licenseConfig";
 export type { MusicPlayerConfig } from "./musicConfig";

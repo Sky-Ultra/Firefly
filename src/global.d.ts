@@ -6,6 +6,12 @@ declare global {
 	}
 
 	interface Window {
+		fireflyLanguage?: {
+			get: () => import("@/i18n/runtime-language").SiteLanguage;
+			set: (language: import("@/i18n/runtime-language").SiteLanguage) => void;
+			toggle: () => void;
+			apply: (root?: ParentNode) => void;
+		};
 		// biome-ignore lint/suspicious/noExplicitAny: External library
 		swup: any;
 		spineModelInitialized?: boolean;

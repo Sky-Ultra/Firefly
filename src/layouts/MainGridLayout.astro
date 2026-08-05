@@ -770,7 +770,7 @@ const hasMultipleImages =
 
     <div id="banner-overlay-container" class="absolute inset-0 z-20 pointer-events-none transition-swup-fade">    <!-- Home page text overlay - 始终渲染以便切换模式时控制显示 -->
     {homeTextEnable && (
-        <div class={`banner-home-text-overlay absolute inset-0 z-20 flex items-center justify-center ${!showHomeText ? 'hidden' : ''}`}>
+        <div data-i18n-skip class={`banner-home-text-overlay absolute inset-0 z-20 flex items-center justify-center ${!showHomeText ? 'hidden' : ''}`}>
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
                 <div class="flex flex-col">
                     {backgroundWallpaper.common?.homeText?.title && (

@@ -1,5 +1,7 @@
 export type NavBarLink = {
 	name: string;
+	nameEn?: string;
+	nameEnMobile?: string;
 	url: string;
 	external?: boolean;
 	icon?: string; // 菜单项图标

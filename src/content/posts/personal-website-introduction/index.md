@@ -1,8 +1,10 @@
 ---
 title: 个人网站基础介绍
+titleEn: A Brief Introduction to My Website
 published: 2026-07-28T10:00:00+10:00
 updated: 2026-07-28T10:00:00+10:00
 description: 初次见面，请看看我呢
+descriptionEn: Nice to meet you—here is a quick look around.
 image: random
 tags: [指南]
 category: 指南

@@ -1,0 +1,17 @@
+---
+export interface Props {
+	zh: string;
+	en: string;
+	as?: keyof HTMLElementTagNameMap;
+	class?: string;
+}
+
+const { zh, en, as: Tag = "span", class: className } = Astro.props;
+---
+
+<Tag
+	class={className}
+	data-i18n-zh={zh}
+	data-i18n-en={en}
+	data-i18n-attr="content"
+>{zh}</Tag>

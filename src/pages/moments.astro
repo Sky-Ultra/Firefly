@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
 import SocialFeedCard from "@/components/pages/personal/SocialFeedCard.astro";
 import { personalPagesConfig, profileConfig } from "@/config";
@@ -18,13 +19,15 @@ const items = [...config.items].sort(
 			<PersonalPageHeader
 				title={config.title}
 				description={config.description}
+				titleEn={config.titleEn}
+				descriptionEn={config.descriptionEn}
 				icon="material-symbols:diversity-1-rounded"
 			/>
 			<div class="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
 				<Icon is:inline name="material-symbols:account-circle" class="text-lg text-(--primary)" />
-				<span>{profileConfig.name} 的近况</span>
+				<span><LocalizedText zh={`${profileConfig.name} 的近况`} en={`${profileConfig.name}'s updates`} /></span>
 				<span class="text-neutral-300 dark:text-neutral-600">·</span>
-				<span>{items.length} 条动态</span>
+				<span>{items.length} <LocalizedText zh="条动态" en="updates" /></span>
 			</div>
 		</div>
 	</section>
@@ -35,7 +38,7 @@ const items = [...config.items].sort(
 		) : (
 			<div class="card-base p-12 text-center text-neutral-400">
 				<Icon is:inline name="material-symbols:forum-outline-rounded" class="mb-3 text-5xl" />
-				<p>暂时还没有动态</p>
+				<p><LocalizedText zh="暂时还没有动态" en="No updates yet" /></p>
 			</div>
 		)}
 	</div>

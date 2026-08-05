@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
 import type { WidgetComponentConfig } from "@/types/config";
 
@@ -26,14 +27,14 @@ const config = visitorWidgetsConfig.weather;
 >
 	<div class="mb-3 ml-4 flex items-center gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 relative before:absolute before:left-[-16px] before:h-4 before:w-1 before:rounded-md before:bg-(--primary)">
 		<Icon is:inline name="material-symbols:location-on-outline-rounded" class="text-(--primary)" aria-hidden="true" />
-		<span>天气预报</span>
+		<span><LocalizedText zh="天气预报" en="Weather" /></span>
 	</div>
 	<div class="flex items-start justify-between gap-4">
 		<div class="min-w-0 flex-1">
 			<p class="mb-1 break-words text-sm font-semibold text-neutral-700 dark:text-neutral-200" data-weather-location>
-				正在获取所在地区…
+				<LocalizedText zh="正在获取所在地区…" en="Finding your location…" />
 			</p>
-			<p class="mb-3 text-xs text-neutral-400" data-weather-status>正在连接天气服务</p>
+			<p class="mb-3 text-xs text-neutral-400" data-weather-status><LocalizedText zh="正在连接天气服务" en="Connecting to the weather service" /></p>
 			<div class="flex items-end gap-3">
 				<div class="font-mono text-[2.6rem] font-bold leading-none text-neutral-950 dark:text-white">
 					<span data-weather-temperature>--</span><span class="ml-1 text-base font-medium">°C</span>
@@ -227,40 +228,53 @@ const config = visitorWidgetsConfig.weather;
 		return result;
 	}
 
-	function getWeatherPresentation(code: number, isDay: boolean) {
+	function getWeatherPresentation(code: number, isDay: boolean, english: boolean) {
 		if (code === 0) {
-			return { text: "晴天", icon: isDay ? "clear-day" : "clear-night" };
+			return { text: english ? "Clear" : "晴天", icon: isDay ? "clear-day" : "clear-night" };
 		}
 		if (code <= 2) {
 			return {
-				text: "多云",
+				text: english ? "Partly cloudy" : "多云",
 				icon: isDay ? "partly-cloudy-day" : "partly-cloudy-night",
 			};
 		}
-		if (code === 3) return { text: "阴天", icon: "cloudy" };
-		if (code === 45 || code === 48) return { text: "雾", icon: "fog" };
+		if (code === 3) return { text: english ? "Overcast" : "阴天", icon: "cloudy" };
+		if (code === 45 || code === 48) return { text: english ? "Fog" : "雾", icon: "fog" };
 		if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-			return { text: "有雨", icon: "rain" };
+			return { text: english ? "Rain" : "有雨", icon: "rain" };
 		}
 		if ((code >= 71 && code <= 77) || code === 85 || code === 86) {
-			return { text: "有雪", icon: "snow" };
+			return { text: english ? "Snow" : "有雪", icon: "snow" };
 		}
-		if (code >= 95) return { text: "雷暴", icon: "thunderstorm" };
-		return { text: "天气变化", icon: "cloudy" };
+		if (code >= 95) return { text: english ? "Thunderstorm" : "雷暴", icon: "thunderstorm" };
+		return { text: english ? "Variable weather" : "天气变化", icon: "cloudy" };
 	}
 
 	class WeatherWidget extends HTMLElement {
+		private weatherData?: WeatherData;
+		private readonly handleLanguageChange = () => {
+			if (this.weatherData) this.renderWeather(this.weatherData);
+		};
+
 		connectedCallback() {
+			document.addEventListener("firefly:language-change", this.handleLanguageChange);
 			weatherRuntime.__fireflyWeatherPromise ??= loadWeather(this);
 			weatherRuntime.__fireflyWeatherPromise
 				.then((data) => this.renderWeather(data))
 				.catch(() => this.renderError());
 		}
 
+		disconnectedCallback() {
+			document.removeEventListener("firefly:language-change", this.handleLanguageChange);
+		}
+
 		private renderWeather(data: WeatherData) {
+			this.weatherData = data;
+			const english = document.documentElement.dataset.language === "en";
 			const presentation = getWeatherPresentation(
 				data.weatherCode,
 				data.isDay,
+				english,
 			);
 			const location = this.querySelector<HTMLElement>("[data-weather-location]");
 			const status = this.querySelector<HTMLElement>("[data-weather-status]");
@@ -274,8 +288,8 @@ const config = visitorWidgetsConfig.weather;
 			if (location) location.textContent = data.name;
 			if (status) {
 				status.textContent = data.isFallback
-					? "定位不可用，已显示南极天气"
-					: "根据访问位置自动更新";
+					? english ? "Location unavailable; showing Antarctica" : "定位不可用，已显示南极天气"
+					: english ? "Updated for your location" : "根据访问位置自动更新";
 			}
 			if (temperature) temperature.textContent = data.temperature.toFixed(1);
 			if (description) description.textContent = presentation.text;
@@ -292,7 +306,9 @@ const config = visitorWidgetsConfig.weather;
 			const location = this.querySelector<HTMLElement>("[data-weather-location]");
 			const status = this.querySelector<HTMLElement>("[data-weather-status]");
 			if (location) location.textContent = fallbackName;
-			if (status) status.textContent = "天气服务暂时不可用，请稍后再试";
+			if (status) status.textContent = document.documentElement.dataset.language === "en"
+				? "Weather service unavailable. Please try again later."
+				: "天气服务暂时不可用，请稍后再试";
 		}
 	}
 

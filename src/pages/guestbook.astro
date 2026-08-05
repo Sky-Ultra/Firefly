@@ -3,8 +3,10 @@ import { getEntry, render } from "astro:content";
 import Comment from "@components/comment/index.astro";
 import Markdown from "@components/common/Markdown.astro";
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import { commentConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
+import { localizedI18n } from "@/i18n/localized-content";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
@@ -41,19 +43,28 @@ const description = i18n(I18nKey.guestbookDescription);
             <Icon is:inline name="material-symbols:chat" class="text-[1.5rem]"></Icon>
           </div>
           <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-            {title}
+			<LocalizedText {...localizedI18n(I18nKey.guestbook)} />
           </div>
         </div>
         {description && (
           <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4">
-            {description}
+			<LocalizedText {...localizedI18n(I18nKey.guestbookDescription)} />
           </p>
         )}
       </div>
       
-      <Markdown class="mt-2">
-        <Content />
-      </Markdown>
+	  <div data-language-only="zh-CN">
+		<Markdown class="mt-2">
+		  <Content />
+		</Markdown>
+	  </div>
+	  <div data-language-only="en" hidden>
+		<ul class="mt-2 list-disc space-y-2 pl-6 text-neutral-600 dark:text-neutral-400">
+		  <li>Please be kind and respectful so everyone can enjoy the conversation.</li>
+		  <li>Feel free to share your thoughts or suggest improvements to the site.</li>
+		  <li>Every message means a great deal to me. ✨</li>
+		</ul>
+	  </div>
     </div>
   </div>
 
@@ -86,9 +97,9 @@ const description = i18n(I18nKey.guestbookDescription);
         </div>
       </div>
     )}
-	<div class="guestbook-comment-mask absolute inset-0 z-20 flex items-center justify-center" aria-label="敬请期待">
+	<div class="guestbook-comment-mask absolute inset-0 z-20 flex items-center justify-center" aria-label="敬请期待" data-i18n-zh="敬请期待" data-i18n-en="Coming soon" data-i18n-attr="aria-label">
 		<span class="guestbook-comment-mask-text px-6 py-3 rounded-full font-bold text-lg text-(--primary)">
-			敬请期待
+			<LocalizedText zh="敬请期待" en="Coming soon" />
 		</span>
 	</div>
   </div>

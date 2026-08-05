@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import type { GameCategory } from "@/types/gameConfig";
 import GameCard from "./GameCard.astro";
 
@@ -19,15 +20,15 @@ const headingId = `game-category-${category.id}`;
 			</div>
 			<div class="min-w-0">
 				<h2 id={headingId} class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
-					{category.name}
+					<LocalizedText zh={category.name} en={category.nameEn ?? category.name} />
 				</h2>
 				<p class="truncate text-sm text-neutral-500 dark:text-neutral-400">
-					{category.description}
+					<LocalizedText zh={category.description} en={category.descriptionEn ?? category.description} />
 				</p>
 			</div>
 		</div>
 		<span class="shrink-0 rounded-full bg-(--primary)/10 px-3 py-1 text-xs font-medium text-(--primary)">
-			{category.items.length} 项
+			{category.items.length} <LocalizedText zh="项" en="games" />
 		</span>
 	</div>
 
@@ -47,7 +48,7 @@ const headingId = `game-category-${category.id}`;
 					<span class="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
 					<span class="h-1.5 w-1.5 rounded-full bg-current" />
 				</div>
-				<p class="mt-2 text-sm text-(--primary)">我的旅途未完待续</p>
+				<p class="mt-2 text-sm text-(--primary)"><LocalizedText zh="我的旅途未完待续" en="My journey continues" /></p>
 			</div>
 		)
 	}

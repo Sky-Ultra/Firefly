@@ -1,8 +1,10 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import AlbumCard from "@/components/pages/gallery/AlbumCard.astro";
 import { galleryConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
+import { localizedI18n } from "@/i18n/localized-content";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import { getAlbumCover, scanAlbumPhotos } from "@/utils/gallery-utils";
@@ -42,12 +44,12 @@ const allTags = [...new Set(albums.flatMap((a) => a.tags || []))].sort();
             <Icon is:inline name="material-symbols:photo-library" class="text-[1.5rem]" />
           </div>
           <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-            {title}
+            <LocalizedText {...localizedI18n(I18nKey.gallery)} />
           </div>
         </div>
         {description && (
           <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4">
-            {description}
+            <LocalizedText {...localizedI18n(I18nKey.galleryDescription)} />
           </p>
         )}
       </div>
@@ -74,7 +76,7 @@ const allTags = [...new Set(albums.flatMap((a) => a.tags || []))].sort();
                 class="category-pill px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-200"
                 data-active
               >
-                {i18n(I18nKey.all)}
+                <LocalizedText {...localizedI18n(I18nKey.all)} />
               </button>
               {allTags.map((tag) => (
                 <button
@@ -97,11 +99,15 @@ const allTags = [...new Set(albums.flatMap((a) => a.tags || []))].sort();
               <AlbumCard
                 id={album.id}
                 name={album.name}
+				nameEn={album.nameEn}
                 cover={album.cover}
                 description={album.description}
+				descriptionEn={album.descriptionEn}
                 date={album.date}
                 location={album.location}
+				locationEn={album.locationEn}
                 tags={album.tags}
+				tagsEn={album.tagsEn}
                 photoCount={album.photoCount}
                 encrypted={!!album.password}
               />
@@ -110,13 +116,13 @@ const allTags = [...new Set(albums.flatMap((a) => a.tags || []))].sort();
           {/* 搜索无结果提示 */}
           <div class="albums-empty hidden flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500">
             <Icon is:inline name="material-symbols:search-off-rounded" class="text-4xl mb-3" />
-            <div class="text-sm">{i18n(I18nKey.searchNoResults)}</div>
+            <div class="text-sm"><LocalizedText {...localizedI18n(I18nKey.searchNoResults)} /></div>
           </div>
         </>
       ) : (
         <div class="flex flex-col items-center justify-center py-16 text-neutral-400 dark:text-neutral-500">
           <Icon is:inline name="material-symbols:photo-library" class="text-6xl mb-4 opacity-50" />
-          <p class="text-lg">{i18n(I18nKey.galleryNoAlbums)}</p>
+          <p class="text-lg"><LocalizedText {...localizedI18n(I18nKey.galleryNoAlbums)} /></p>
         </div>
       )}
     </div>

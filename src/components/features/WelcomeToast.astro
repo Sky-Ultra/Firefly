@@ -1,4 +1,5 @@
 ---
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
 
 const config = visitorWidgetsConfig.welcomeToast;
@@ -13,6 +14,7 @@ const homePath = import.meta.env.BASE_URL || "/";
 			data-homepage-only={String(config.homepageOnly)}
 			data-location-api={config.locationApi}
 			data-fallback-message={config.fallbackMessage}
+			data-fallback-message-en={config.fallbackMessageEn}
 			data-visible-duration={config.visibleDuration}
 			data-fade-duration={config.fadeDuration}
 			role="status"
@@ -25,7 +27,7 @@ const homePath = import.meta.env.BASE_URL || "/";
 					<p class="welcome-toast-message" data-welcome-message>
 						{config.fallbackMessage}
 					</p>
-					<p class="welcome-toast-subtitle">{config.subtitle}</p>
+					<p class="welcome-toast-subtitle"><LocalizedText zh={config.subtitle} en={config.subtitleEn} /></p>
 				</div>
 				<button type="button" class="welcome-toast-close" aria-label="关闭欢迎提示" data-welcome-close>
 					<span aria-hidden="true">×</span>
@@ -56,14 +58,18 @@ const homePath = import.meta.env.BASE_URL || "/";
 		private hideTimer: number | undefined;
 		private removeTimer: number | undefined;
 		private controller: AbortController | undefined;
+		private location = "";
 
 		private readonly handleClose = () => this.close();
+		private readonly handleLanguageChange = () => this.renderMessage();
 
 		connectedCallback() {
 			this.querySelector("[data-welcome-close]")?.addEventListener(
 				"click",
 				this.handleClose,
 			);
+			document.addEventListener("firefly:language-change", this.handleLanguageChange);
+			this.renderMessage();
 
 			if (welcomeRuntime.__fireflyWelcomeToastInitialized) return;
 			welcomeRuntime.__fireflyWelcomeToastInitialized = true;
@@ -86,6 +92,7 @@ const homePath = import.meta.env.BASE_URL || "/";
 				"click",
 				this.handleClose,
 			);
+			document.removeEventListener("firefly:language-change", this.handleLanguageChange);
 			this.clearTimers();
 			this.controller?.abort();
 		}
@@ -152,14 +159,30 @@ const homePath = import.meta.env.BASE_URL || "/";
 					)
 					.join(" · ");
 				if (location && this.isConnected) {
-					message.textContent = `你好，来自${location}的朋友`;
+					this.location = location;
+					this.renderMessage();
 				}
 			} catch {
-				message.textContent =
-					this.dataset.fallbackMessage || "你好，欢迎来到我的博客";
+				this.location = "";
+				this.renderMessage();
 			} finally {
 				window.clearTimeout(timeout);
 			}
+		}
+
+		private renderMessage() {
+			const message = this.querySelector<HTMLElement>("[data-welcome-message]");
+			if (!message) return;
+			const english = document.documentElement.dataset.language === "en";
+			if (this.location) {
+				message.textContent = english
+					? `Hello, friend from ${this.location}`
+					: `你好，来自${this.location}的朋友`;
+				return;
+			}
+			message.textContent = english
+				? this.dataset.fallbackMessageEn || "Hello, welcome to my blog"
+				: this.dataset.fallbackMessage || "你好，欢迎来到我的博客";
 		}
 	}
 

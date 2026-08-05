@@ -19,6 +19,7 @@ import { Icon } from "astro-icon/components";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import CoverImage from "@/components/common/CoverImage.astro";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import RandomCoverProvider from "@/components/features/RandomCoverProvider.astro";
 import PostMetadata from "@/components/layout/PostMeta.astro";
 import RecommendedPost from "@/components/misc/RecommendedPost.astro";
@@ -27,6 +28,7 @@ import { coverImageConfig } from "@/config/coverImageConfig";
 import { licenseConfig } from "@/config/licenseConfig";
 import { profileConfig } from "@/config/profileConfig";
 import { siteConfig } from "@/config/siteConfig";
+import PersonalWebsiteIntroductionEn from "@/content/translations/personal-website-introduction-en.md";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
 import {
@@ -163,6 +165,8 @@ const relatedPosts = await getRelatedPosts(entry, 5);
   >
     <div
       id="post-container"
+	  data-document-title-zh={entry.data.titleEn ? `${entry.data.title} - ${siteConfig.title}` : undefined}
+	  data-document-title-en={entry.data.titleEn ? `${entry.data.titleEn} - ${siteConfig.title}` : undefined}
       class:list={[
         "card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
         {},
@@ -228,7 +232,9 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                     md:before:w-1 before:h-5 before:rounded-md before:bg-(--primary)
                     before:absolute before:top-3 before:-left-4.5"
         >
-          {entry.data.title}
+		  {entry.data.titleEn ? (
+			<LocalizedText zh={entry.data.title} en={entry.data.titleEn} />
+		  ) : entry.data.title}
         </div>
       </div>
 
@@ -269,9 +275,9 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
       {entry.data.password ? (
         <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint}>
-          <Markdown class="mb-6 markdown-content onload-animation">
-            <Content />
-          </Markdown>
+		  <Markdown class="mb-6 markdown-content onload-animation">
+			<Content />
+		  </Markdown>
 
           {/* 分享按钮 */}
           {
@@ -331,9 +337,24 @@ const relatedPosts = await getRelatedPosts(entry, 5);
         </EncryptedPost>
       ) : (
         <>
-          <Markdown class="mb-6 markdown-content onload-animation">
-            <Content />
-          </Markdown>
+		  {entry.id === "personal-website-introduction" ? (
+			<>
+			  <div data-language-only="zh-CN">
+				<Markdown class="mb-6 markdown-content onload-animation">
+				  <Content />
+				</Markdown>
+			  </div>
+			  <div data-language-only="en" hidden>
+				<Markdown class="mb-6 markdown-content onload-animation">
+				  <PersonalWebsiteIntroductionEn />
+				</Markdown>
+			  </div>
+			</>
+		  ) : (
+			<Markdown class="mb-6 markdown-content onload-animation">
+			  <Content />
+			</Markdown>
+		  )}
 
           {/* 分享按钮 */}
           {

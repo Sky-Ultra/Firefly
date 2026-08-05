@@ -1,5 +1,6 @@
 ---
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import { relationshipConfig } from "@/config";
 import type { WidgetComponentConfig } from "@/types/config";
@@ -25,6 +26,7 @@ const getInitial = (name: string): string =>
 <WidgetLayout
 	id={widgetId}
 	name={config.title || "恋爱计时"}
+	nameEn={config.titleEn || "Relationship Timer"}
 	showTitle={showTitle}
 	class={className}
 	style={style}
@@ -87,7 +89,7 @@ const getInitial = (name: string): string =>
 								class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-lg font-black text-(--primary) drop-shadow-sm"
 								aria-hidden="true"
 							>
-								未抵
+								<LocalizedText zh="未抵" en="Not Yet" />
 							</span>
 						</div>
 					) : (
@@ -108,21 +110,21 @@ const getInitial = (name: string): string =>
 				aria-live="off"
 			>
 				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="years">{config.frozen ? frozenDuration?.years ?? 99 : 0}</span>
-				<span class="shrink-0 rounded bg-red-400 px-1 py-0.5 text-[10px] font-medium text-white">年</span>
+				<span class="shrink-0 rounded bg-red-400 px-1 py-0.5 text-[10px] font-medium text-white"><LocalizedText zh="年" en="yr" /></span>
 				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="months">{config.frozen ? frozenDuration?.months ?? 99 : 0}</span>
-				<span class="shrink-0 rounded bg-red-300 px-1 py-0.5 text-[10px] font-medium text-white">月</span>
+				<span class="shrink-0 rounded bg-red-300 px-1 py-0.5 text-[10px] font-medium text-white"><LocalizedText zh="月" en="mo" /></span>
 				{showDaysUnit && (
 					<>
 						<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="days">{config.frozen ? frozenDuration?.days ?? 99 : 0}</span>
-						<span class="shrink-0 rounded bg-blue-400 px-1 py-0.5 text-[10px] font-medium text-white">天</span>
+						<span class="shrink-0 rounded bg-blue-400 px-1 py-0.5 text-[10px] font-medium text-white"><LocalizedText zh="天" en="d" /></span>
 					</>
 				)}
 				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="hours">{config.frozen ? frozenDuration?.hours ?? 99 : 0}</span>
-				<span class="shrink-0 rounded bg-orange-400 px-1 py-0.5 text-[10px] font-medium text-white">时</span>
+				<span class="shrink-0 rounded bg-orange-400 px-1 py-0.5 text-[10px] font-medium text-white"><LocalizedText zh="时" en="hr" /></span>
 				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="minutes">{config.frozen ? frozenDuration?.minutes ?? 99 : 0}</span>
-				<span class="shrink-0 rounded bg-blue-500 px-1 py-0.5 text-[10px] font-medium text-white">分</span>
+				<span class="shrink-0 rounded bg-blue-500 px-1 py-0.5 text-[10px] font-medium text-white"><LocalizedText zh="分" en="min" /></span>
 				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="seconds">{config.frozen ? frozenDuration?.seconds ?? 99 : "00"}</span>
-				<span class="shrink-0 rounded bg-purple-400 px-1 py-0.5 text-[10px] font-medium text-white">秒</span>
+				<span class="shrink-0 rounded bg-purple-400 px-1 py-0.5 text-[10px] font-medium text-white"><LocalizedText zh="秒" en="sec" /></span>
 			</div>
 			<span class="sr-only" data-timer-status></span>
 		</div>
