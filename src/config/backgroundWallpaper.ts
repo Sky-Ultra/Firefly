@@ -101,6 +101,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				"我会找到逆转时间的公式，然后回到你身边",
 				"江畔何人初见月，江月何年初照人",
 				"无奈盛景终休，万般缱绻尽付旧游",
+				"人面不知何处去，桃花依旧笑春风",
 			],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",
