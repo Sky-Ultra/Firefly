@@ -1,8 +1,12 @@
 ---
 title: 草稿示例
+titleEn: Draft Post Example
 published: 1970-01-01
 tags: [Markdown, 博客, 演示]
+descriptionEn: ""
+tagsEn: [Markdown, Blogging, Showcase]
 category: 展示
+categoryEn: Showcase
 draft: true
 image: random
 ---

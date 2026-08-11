@@ -1,11 +1,15 @@
 ---
 title: Firefly 简单使用指南
+titleEn: Firefly Quick Start Guide
 published: 1970-01-02
 pinned: false
 description: "如何使用 Firefly 博客模板。"
+descriptionEn: How to get started with the Firefly blog template.
 image: random
 tags: ["博客", "Markdown", "指南"]
+tagsEn: [Blogging, Markdown, Guides]
 category: 指南
+categoryEn: Guides
 draft: true
 ---
 

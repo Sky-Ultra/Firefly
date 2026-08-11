@@ -1,10 +1,14 @@
 ---
 title: 在文章中嵌入视频
+titleEn: Embedding Video in a Post
 published: 1970-01-01
 description: 这篇文章演示如何在博客文章中嵌入视频。
+descriptionEn: How to embed a video in a blog post.
 image: random
 tags: [示例, 视频]
+tagsEn: [Examples, Video]
 category: 展示
+categoryEn: Showcase
 draft: true
 ---
 

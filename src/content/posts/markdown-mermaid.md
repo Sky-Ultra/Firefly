@@ -1,11 +1,15 @@
 ---
 title: Markdown Mermaid 图表
+titleEn: Mermaid Diagrams in Markdown
 published: 2026-07-14T08:53:00+10:00
 pinned: false
 description: 一个包含 Mermaid 的 Markdown 博客文章简单示例。
+descriptionEn: A compact Markdown post showing how Mermaid diagrams are written and rendered.
 image: random
 tags: [Markdown, 博客, Mermaid]
+tagsEn: [Markdown, Blogging, Mermaid]
 category: 展示
+categoryEn: Showcase
 draft: false
 ---
 ## Markdown 中 Mermaid 图表完整指南

@@ -1,10 +1,14 @@
 ---
 title: Firefly 布局系统详解
+titleEn: Understanding Firefly's Layout System
 published: 1970-01-03
 description: 深入了解 Firefly 的布局系统，包括侧边栏布局（左侧/双侧）和文章列表布局（列表/网格），以及自适应网格列数。
+descriptionEn: An overview of Firefly's sidebar and post-list layouts, including responsive grid columns.
 image: random
 tags: [布局, 博客, 使用指南]
+tagsEn: [Layouts, Blogging, Guides]
 category: 指南
+categoryEn: Guides
 draft: true
 ---
 

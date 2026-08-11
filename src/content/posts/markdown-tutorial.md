@@ -1,11 +1,15 @@
 ---
 title: Markdown 教程
+titleEn: Markdown Tutorial
 published: 2026-07-12T10:14:00+10:00
 pinned: false
 description: 一个简明的 Markdown 博客示例。
+descriptionEn: A concise Markdown blog example.
 image: random
 tags: [Markdown, 文章示例]
+tagsEn: [Markdown, Article Examples]
 category: 展示
+categoryEn: Showcase
 licenseName: "未授权"
 author: emn178
 sourceLink: "https://github.com/emn178/markdown"

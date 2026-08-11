@@ -1,10 +1,14 @@
 ---
 title: Firefly 文章加密
+titleEn: Encrypted Firefly Posts
 published: 1970-01-02
 description: 这是一篇密码保护的示例文章，用于演示文章加密功能。
+descriptionEn: A password-protected sample post that demonstrates Firefly's article encryption.
 image: random
 tags: [示例, 密码保护]
+tagsEn: [Examples, Password Protection]
 category: 展示
+categoryEn: Showcase
 draft: true
 password: "123456"
 passwordHint: "示例文章密码123456"

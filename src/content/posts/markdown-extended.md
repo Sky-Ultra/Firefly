@@ -1,11 +1,15 @@
 ---
 title: Markdown 扩展功能
+titleEn: Extended Markdown Features
 published: 2026-07-15T20:06:00+10:00
 updated: 2026-07-16T07:42:00+10:00
 description: "了解我的网站中的 Markdown 功能"
+descriptionEn: A tour of the Markdown features available on this site.
 image: random
 tags: [演示, 示例, Markdown]
+tagsEn: [Showcase, Examples, Markdown]
 category: "展示"
+categoryEn: Showcase
 draft: true
 ---
 

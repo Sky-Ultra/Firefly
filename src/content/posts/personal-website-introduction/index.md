@@ -4,10 +4,12 @@ titleEn: A Brief Introduction to My Website
 published: 2026-07-28T10:00:00+10:00
 updated: 2026-07-28T10:00:00+10:00
 description: 初次见面，请看看我呢
-descriptionEn: Nice to meet you—here is a quick look around.
+descriptionEn: Nice to meet you—here's a quick look around my website.
 image: random
 tags: [指南]
+tagsEn: [Guides]
 category: 指南
+categoryEn: Guides
 pinned: true
 draft: false
 ---
@@ -39,7 +41,7 @@ draft: false
 
 本网站基于Cloudflare Workers项目直接构建，域名来自腾讯云。特别感谢GitHub提供源码托管和Cloudflare的项目服务器。  
 特别鸣谢CMLiussss提供的泛域名及泛域名解析使中国大陆可流畅访问（如在中国大陆仍然无法访问，请切换节点至中国香港、日本、澳大利亚等非大陆地区）  
-网站核心的魔改内容由GPT Codex完成，约占总修改工作的80%。目前消耗约5亿个Chat GPT 5.6 sol Token  
+网站核心的魔改内容由GPT Codex完成，约占总修改工作的60%。目前消耗约5亿个Chat GPT 5.6 sol Token  
 
 ---
 

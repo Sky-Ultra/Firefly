@@ -1,10 +1,14 @@
 ---
 title: 音乐模块的实现方式
+titleEn: How the Music Module Works
 published: 2026-07-15
 description: 介绍音乐播放器的组件结构、状态管理、歌单配置与歌词同步方式
+descriptionEn: How the music player is structured, how its state is managed, and how playlists and lyrics stay in sync.
 image: random
 tags: [Astro, 音乐, 组件, 使用指南]
+tagsEn: [Astro, Music, Components, Guides]
 category: 指南
+categoryEn: Guides
 draft: false
 ---
 

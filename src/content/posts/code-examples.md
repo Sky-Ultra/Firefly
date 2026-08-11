@@ -1,10 +1,14 @@
 ---
 title: 代码块展示
+titleEn: Code Block Showcase
 published: 2026-07-16T09:18:00+10:00
 pinned: false
 description: 在网站中使用表达性代码的代码块在 Markdown 中的外观。
+descriptionEn: How Expressive Code blocks look inside Markdown posts on this site.
 tags: [Markdown]
+tagsEn: [Markdown]
 category: 展示
+categoryEn: Showcase
 draft: false
 image: random
 ---

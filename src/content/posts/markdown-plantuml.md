@@ -1,10 +1,14 @@
 ---
 title: Markdown PlantUML 图表
+titleEn: PlantUML Diagrams in Markdown
 published: 2026-07-13T16:35:00+10:00
 description: 用于验证个人网站中 PlantUML 插件渲染、主题切换与交互能力的示例文章。
+descriptionEn: A sample post for checking PlantUML rendering, theme switching, and interaction on this site.
 image: random
 tags: [PlantUML, Markdown]
+tagsEn: [PlantUML, Markdown]
 category: 展示
+categoryEn: Showcase
 draft: false
 ---
 

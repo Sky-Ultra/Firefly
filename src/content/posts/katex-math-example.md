@@ -1,9 +1,13 @@
 ---
 title: KaTeX 数学公式渲染展示
+titleEn: KaTeX Formula Rendering Showcase
 published: 2026-07-16T14:42:00+10:00
 description: 展示对 KaTeX 数学公式的支持，包括行内公式、块级公式和复杂数学符号。
+descriptionEn: Examples of KaTeX rendering, from inline and block equations to more complex notation.
 tags: [KaTeX, Math, 示例]
+tagsEn: [KaTeX, Math, Examples]
 category: 展示
+categoryEn: Showcase
 draft: false
 image: random
 ---

@@ -1,10 +1,14 @@
 ---
 title: 恋爱计时组件的实现方式和原理
+titleEn: How the Relationship Timer Works
 published: 2026-07-17
 description: 丝丝线线牵连，春秋几声叹
+descriptionEn: Threads intertwined; the seasons pass with a few quiet sighs.
 image: random
 tags: [Astro, 组件, 使用指南]
+tagsEn: [Astro, Components, Guides]
 category: 指南
+categoryEn: Guides
 draft: false
 ---
 

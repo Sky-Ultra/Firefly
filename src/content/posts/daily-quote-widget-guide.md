@@ -1,10 +1,14 @@
 ---
 title: 每日一言组件的实现方式
+titleEn: How the Daily Quote Widget Works
 published: 2026-07-14
 description: 介绍每日一言组件的接口配置、缓存策略、请求复用与自动刷新方式
+descriptionEn: How the Daily Quote widget handles API configuration, caching, request reuse, and automatic refreshes.
 image: random
 tags: [Astro, 组件, 使用指南]
+tagsEn: [Astro, Components, Guides]
 category: 指南
+categoryEn: Guides
 draft: false
 ---
 
