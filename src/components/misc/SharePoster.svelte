@@ -2,12 +2,15 @@
 import QRCode from "qrcode";
 import { onMount } from "svelte";
 import Icon from "@/components/common/Icon.svelte";
+import { LANGUAGE_CHANGE_EVENT } from "@/i18n/runtime-language";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 
 export let title: string;
+export let titleEn = title;
 export let author: string;
 export let description = "";
+export let descriptionEn = description;
 export let pubDate: string;
 export let coverImage: string | null = null;
 export let url: string;
@@ -18,8 +21,17 @@ let showModal = false;
 let posterImage: string | null = null;
 let generating = false;
 let themeColor = "#558e88"; // Default blue
+let activeTitle = title;
+let activeDescription = description;
 
 onMount(() => {
+	const syncLanguage = () => {
+		const isEnglish = window.fireflyLanguage?.get() === "en";
+		activeTitle = isEnglish ? titleEn : title;
+		activeDescription = isEnglish ? descriptionEn : description;
+		posterImage = null;
+	};
+
 	// Get theme color from CSS variable
 	const temp = document.createElement("div");
 	temp.style.color = "var(--primary)";
@@ -31,6 +43,11 @@ onMount(() => {
 	if (computedColor) {
 		themeColor = computedColor;
 	}
+
+	syncLanguage();
+	document.addEventListener(LANGUAGE_CHANGE_EVENT, syncLanguage);
+	return () =>
+		document.removeEventListener(LANGUAGE_CHANGE_EVENT, syncLanguage);
 });
 
 function loadImage(src: string): Promise<HTMLImageElement | null> {
@@ -146,7 +163,7 @@ async function generatePoster() {
 
 		// Title
 		ctx.font = `700 ${24 * scale}px 'Roboto', sans-serif`;
-		const titleLines = getLines(ctx, title, contentWidth);
+		const titleLines = getLines(ctx, activeTitle, contentWidth);
 		const titleLineHeight = 30 * scale;
 		const titleHeight = titleLines.length * titleLineHeight;
 		currentY += titleHeight;
@@ -154,9 +171,13 @@ async function generatePoster() {
 
 		// Description
 		let descHeight = 0;
-		if (description) {
+		if (activeDescription) {
 			ctx.font = `${14 * scale}px 'Roboto', sans-serif`;
-			const descLines = getLines(ctx, description, contentWidth - 16 * scale); // minus border width and gap
+			const descLines = getLines(
+				ctx,
+				activeDescription,
+				contentWidth - 16 * scale,
+			); // minus border width and gap
 			// Limit to 6 lines
 			const maxDescLines = 6;
 			const displayDescLines = descLines.slice(0, maxDescLines);
@@ -308,7 +329,7 @@ async function generatePoster() {
 		drawY += 16 * scale - (titleLineHeight - 24 * scale); // Adjust for line-height diff
 
 		// Draw Description
-		if (description) {
+		if (activeDescription) {
 			// Draw vertical line
 			ctx.fillStyle = "#e5e7eb";
 			const descLineH = descHeight; // Approximate
@@ -325,7 +346,11 @@ async function generatePoster() {
 
 			ctx.font = `${14 * scale}px 'Roboto', sans-serif`;
 			ctx.fillStyle = "#4b5563";
-			const descLines = getLines(ctx, description, contentWidth - 16 * scale);
+			const descLines = getLines(
+				ctx,
+				activeDescription,
+				contentWidth - 16 * scale,
+			);
 			const maxDescLines = 6;
 
 			descLines.slice(0, maxDescLines).forEach((line) => {
@@ -448,7 +473,7 @@ function downloadPoster() {
 	if (posterImage) {
 		const a = document.createElement("a");
 		a.href = posterImage;
-		a.download = `poster-${title.replace(/\s+/g, "-")}.png`;
+		a.download = `poster-${activeTitle.replace(/\s+/g, "-")}.png`;
 		a.click();
 	}
 }

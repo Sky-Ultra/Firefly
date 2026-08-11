@@ -8,6 +8,7 @@ import SideBar from "@components/layout/SideBar.astro";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import FloatingControls from "@/components/controls/FloatingControls.astro";
 import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro";
 import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
@@ -55,12 +56,16 @@ interface Props {
 	postSlug?: string;
 	postCategory?: string;
 	headings?: MarkdownHeading[];
+	headingsEn?: MarkdownHeading[];
 	bannerPostMeta?: {
 		title: string;
+		titleEn: string;
 		published: Date;
 		updated?: Date;
 		words?: number;
+		wordsEn?: number;
 		minutes?: number;
+		minutesEn?: number;
 	};
 }
 
@@ -75,6 +80,7 @@ const {
 	postSlug,
 	postCategory,
 	headings = [],
+	headingsEn = [],
 	bannerPostMeta,
 } = Astro.props;
 
@@ -845,7 +851,7 @@ const hasMultipleImages =
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
                 <div class="flex flex-col items-center gap-3">
                     <div class="banner-post-title font-bold text-white leading-tight">
-                        {bannerPostMeta.title}
+                        <LocalizedText zh={bannerPostMeta.title} en={bannerPostMeta.titleEn} />
                     </div>
                     <div class="banner-post-meta-list flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-white/90 text-sm md:text-base">
                         <span class="inline-flex items-center gap-1.5">
@@ -863,7 +869,10 @@ const hasMultipleImages =
                             <span class="inline-flex items-center gap-1.5">
                                 <Icon is:inline name="material-symbols:ink-pen-outline-rounded" class="text-[1.05em]" />
                                 <span>
-                                    {bannerPostMeta.words} {i18n(bannerPostMeta.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}
+                                    <LocalizedText
+                                        zh={`${bannerPostMeta.words} ${i18n(bannerPostMeta.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}`}
+                                        en={`${bannerPostMeta.wordsEn ?? bannerPostMeta.words} ${(bannerPostMeta.wordsEn ?? bannerPostMeta.words) === 1 ? "word" : "words"}`}
+                                    />
                                 </span>
                             </span>
                         )}
@@ -871,7 +880,10 @@ const hasMultipleImages =
                             <span class="inline-flex items-center gap-1.5">
                                 <Icon is:inline name="material-symbols:schedule-outline-rounded" class="text-[1.05em]" />
                                 <span>
-                                    {bannerPostMeta.minutes} {i18n(bannerPostMeta.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)} · {i18n(I18nKey.readTime)}
+                                    <LocalizedText
+                                        zh={`${bannerPostMeta.minutes} ${i18n(bannerPostMeta.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)} · ${i18n(I18nKey.readTime)}`}
+                                        en={`${bannerPostMeta.minutesEn ?? bannerPostMeta.minutes} ${(bannerPostMeta.minutesEn ?? bannerPostMeta.minutes) === 1 ? "minute" : "minutes"} · reading time`}
+                                    />
                                 </span>
                             </span>
                         )}
@@ -983,6 +995,7 @@ const hasMultipleImages =
                                     side={effectiveIsBothSidebars ? "left" : undefined}
                                     class={sidebarClass}
                                     headings={headings}
+                                    headingsEn={headingsEn}
                                 />
                             )}
                         </div>
@@ -994,7 +1007,7 @@ const hasMultipleImages =
             ) : (
                 <div id="left-sidebar-dynamic" class="contents transition-swup-fade">
                     {effectiveIsBothSidebars && effectiveHasLeftComponents && (
-						<SideBar side="left" class={sidebarClass} headings={headings}></SideBar>
+						<SideBar side="left" class={sidebarClass} headings={headings} headingsEn={headingsEn}></SideBar>
                     )}
                 </div>
             )}
@@ -1031,7 +1044,7 @@ const hasMultipleImages =
                     {sidebarLayoutConfig.enable ? (
                         <div id="right-sidebar-static" class="contents" data-hide-sidebar-on-post={hideSidebarOnPostPage ? "true" : "false"}>
                             {(effectiveIsBothSidebars || sidebarLayoutConfig.position === "right") && effectiveHasRightComponents && (
-								<SideBar side="right" class={rightSidebarClass} headings={headings}></SideBar>
+								<SideBar side="right" class={rightSidebarClass} headings={headings} headingsEn={headingsEn}></SideBar>
                             )}
                         </div>
                     ) : (
@@ -1042,7 +1055,7 @@ const hasMultipleImages =
             ) : (
                 <div id="right-sidebar-dynamic" class="contents transition-swup-fade">
                     {effectiveIsBothSidebars && effectiveHasRightComponents && (
-						<SideBar side="right" class={rightSidebarClass} headings={headings}></SideBar>
+						<SideBar side="right" class={rightSidebarClass} headings={headings} headingsEn={headingsEn}></SideBar>
                     )}
                 </div>
             )}
@@ -1050,7 +1063,7 @@ const hasMultipleImages =
             {/* 移动端底部组件 - 768px及以下显示 */}
             {sidebarLayoutConfig.mobileBottomComponents && sidebarLayoutConfig.mobileBottomComponents.length > 0 && (
                 <div id="mobile-bottom-sidebar" class="col-span-1 block md:hidden mt-4">
-					<SideBar side="bottom" headings={headings}></SideBar>
+					<SideBar side="bottom" headings={headings} headingsEn={headingsEn}></SideBar>
                 </div>
             )}
 
@@ -1064,7 +1077,7 @@ const hasMultipleImages =
     </div>
 </div>
 
-<FloatingControls headings={headings} />
+<FloatingControls headings={headings} headingsEn={headingsEn} />
 
 
 </Layout>

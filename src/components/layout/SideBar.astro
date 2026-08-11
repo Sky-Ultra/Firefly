@@ -24,6 +24,7 @@ import type {
 interface Props {
 	class?: string;
 	headings?: MarkdownHeading[];
+	headingsEn?: MarkdownHeading[];
 	side?: "left" | "right" | "bottom";
 }
 
@@ -161,7 +162,11 @@ const getComponentProps = (
 
 	// 特殊处理 SidebarTOC 组件
 	if (config.type === "sidebarToc") {
-		return { ...baseProps, headings: Astro.props.headings || [] };
+		return {
+			...baseProps,
+			headings: Astro.props.headings || [],
+			headingsEn: Astro.props.headingsEn || [],
+		};
 	}
 
 	return baseProps;

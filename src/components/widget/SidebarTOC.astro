@@ -8,6 +8,7 @@ import type { WidgetComponentConfig } from "@/types/config";
 
 interface Props {
 	headings: MarkdownHeading[];
+	headingsEn?: MarkdownHeading[];
 	class?: string;
 	style?: string;
 	widgetConfig?: WidgetComponentConfig;
@@ -15,6 +16,7 @@ interface Props {
 
 const {
 	headings: _headings = [],
+	headingsEn: _headingsEn = [],
 	class: className,
 	style,
 	widgetConfig,
@@ -48,6 +50,7 @@ const showTitle = widgetConfig?.showTitle !== false;
 
 <script>
   import { TOCManager } from "@/utils/toc-utils";
+  import { LANGUAGE_CHANGE_EVENT } from "@/i18n/runtime-language";
 
   if (typeof window.SidebarTOC === "undefined") {
     window.SidebarTOC = {
@@ -115,5 +118,9 @@ const showTitle = widgetConfig?.showTitle !== false;
   // 密码解密后重新初始化 TOC
   document.addEventListener("password:decrypted", () => {
     setTimeout(initSidebarTOC, 200);
+  });
+
+  document.addEventListener(LANGUAGE_CHANGE_EVENT, () => {
+    setTimeout(initSidebarTOC, 0);
   });
 </script>

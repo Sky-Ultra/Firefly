@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import { licenseConfig } from "@/config/licenseConfig";
 import { profileConfig } from "@/config/profileConfig";
 import I18nKey from "@/i18n/i18nKey";
@@ -8,6 +9,7 @@ import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 
 interface Props {
 	title: string;
+	titleEn?: string;
 	id: string;
 	pubDate: Date;
 	class: string;
@@ -17,8 +19,15 @@ interface Props {
 	licenseUrl: string;
 }
 
-const { title, pubDate, author, sourceLink, licenseName, licenseUrl } =
-	Astro.props;
+const {
+	title,
+	titleEn = title,
+	pubDate,
+	author,
+	sourceLink,
+	licenseName,
+	licenseUrl,
+} = Astro.props;
 const className = Astro.props.class;
 const profileConf = profileConfig;
 const licenseConf = licenseConfig;
@@ -29,7 +38,7 @@ const postUrl = sourceLink || decodeURIComponent(Astro.url.toString());
   class={`relative transition overflow-hidden bg-(--license-block-bg) py-5 px-6 ${className}`}
 >
   <div class="transition font-bold text-black/75 dark:text-white/75">
-    {title}
+    <LocalizedText zh={title} en={titleEn} />
   </div>
   <a href={postUrl} class="link text-(--primary) break-all">
     {postUrl}

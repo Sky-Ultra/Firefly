@@ -35,6 +35,9 @@ export class TOCManager {
 	 */
 	private getContentContainer(): Element | null {
 		return (
+			document.querySelector(
+				"[data-language-only]:not([hidden]) .markdown-content",
+			) ||
 			document.querySelector(".custom-md") ||
 			document.querySelector(".prose") ||
 			document.querySelector(".markdown-content")

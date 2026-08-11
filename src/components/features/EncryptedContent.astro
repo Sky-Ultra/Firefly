@@ -93,6 +93,7 @@ const labels = {
 
   function showContent(html) {
     contentEl.innerHTML = html;
+    window.fireflyLanguage?.apply(contentEl);
     contentEl.classList.remove('hidden');
     ui.classList.add('hidden');
     // Scripts injected via innerHTML are inert — re-create them so they execute

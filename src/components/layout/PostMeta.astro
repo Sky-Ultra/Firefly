@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import { commentConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
@@ -10,7 +11,9 @@ export interface Props {
 	published: Date;
 	updated?: Date;
 	category?: string;
+	categoryEn?: string;
 	tags?: string[];
+	tagsEn?: string[];
 	hideUpdateDate?: boolean;
 	hideTagsForMobile?: boolean;
 	isHome?: boolean;
@@ -34,7 +37,9 @@ const {
 	published,
 	updated,
 	category,
+	categoryEn,
 	tags,
+	tagsEn,
 	hideUpdateDate,
 	hideTagsForMobile,
 	isHome,
@@ -56,6 +61,8 @@ const {
 const path = customPath || (id ? `/posts/${id}` : "");
 const visibleTags =
 	typeof maxTags === "number" ? tags?.slice(0, maxTags) : tags;
+const visibleTagsEn =
+	typeof maxTags === "number" ? tagsEn?.slice(0, maxTags) : tagsEn;
 ---
 
 <div
@@ -123,7 +130,10 @@ const visibleTags =
             class="link-lg transition text-50 text-sm font-medium
               hover:text-(--primary) dark:hover:text-(--primary) whitespace-nowrap"
           >
-            {category || i18n(I18nKey.uncategorized)}
+            <LocalizedText
+              zh={category || i18n(I18nKey.uncategorized)}
+              en={category ? categoryEn || category : "Uncategorized"}
+            />
           </a>
         </div>
       </div>
@@ -160,7 +170,10 @@ const visibleTags =
                   class="link-lg transition text-50 text-sm font-medium
                     hover:text-(--primary) dark:hover:text-(--primary) whitespace-nowrap"
                 >
-                  {tag.trim()}
+                  <LocalizedText
+                    zh={tag.trim()}
+                    en={visibleTagsEn?.[i]?.trim() || tag.trim()}
+                  />
                 </a>
               </>
             ))}

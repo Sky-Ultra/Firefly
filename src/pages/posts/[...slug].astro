@@ -28,9 +28,9 @@ import { coverImageConfig } from "@/config/coverImageConfig";
 import { licenseConfig } from "@/config/licenseConfig";
 import { profileConfig } from "@/config/profileConfig";
 import { siteConfig } from "@/config/siteConfig";
-import PersonalWebsiteIntroductionEn from "@/content/translations/personal-website-introduction-en.md";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
+import { getPostTranslation } from "@/utils/post-translations";
 import {
 	getRandomCoverImages,
 	isRandomCoverImage,
@@ -51,15 +51,19 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
-
 const { remarkPluginFrontmatter } = await render(entry);
+const translation = getPostTranslation(entry.id);
+const EnglishContent = translation.Content;
 
 const bannerPostMeta = {
 	title: entry.data.title,
+	titleEn: entry.data.titleEn,
 	published: entry.data.published,
 	updated: entry.data.updated,
 	words: remarkPluginFrontmatter.words,
+	wordsEn: translation.words,
 	minutes: remarkPluginFrontmatter.minutes,
+	minutesEn: translation.minutes,
 };
 
 const usesRandomCover = isRandomCoverImage(entry.data.image);
@@ -149,6 +153,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
   postSlug={entry.id}
   postCategory={entry.data.category || undefined}
   headings={headings}
+  headingsEn={translation.headings}
   bannerPostMeta={bannerPostMeta}
 >
   <!-- KaTeX 按需加载 - 仅在文章页面 -->
@@ -183,8 +188,14 @@ const relatedPosts = await getRelatedPosts(entry, 5);
             <Icon is:inline name="material-symbols:notes-rounded" />
           </div>
           <div class="text-sm">
-            {remarkPluginFrontmatter.words}
-            {" " + i18n(I18nKey.wordsCount)}
+            <LocalizedText
+              zh={`${remarkPluginFrontmatter.words} ${i18n(
+                remarkPluginFrontmatter.words === 1
+                  ? I18nKey.wordCount
+                  : I18nKey.wordsCount
+              )}`}
+              en={`${translation.words} ${translation.words === 1 ? "word" : "words"}`}
+            />
           </div>
         </div>
         <div class="flex flex-row items-center">
@@ -194,15 +205,14 @@ const relatedPosts = await getRelatedPosts(entry, 5);
             <Icon is:inline name="material-symbols:schedule-outline-rounded" />
           </div>
           <div class="text-sm">
-            {remarkPluginFrontmatter.minutes}
-            {
-              " " +
-                i18n(
-                  remarkPluginFrontmatter.minutes === 1
-                    ? I18nKey.minuteCount
-                    : I18nKey.minutesCount
-                )
-            }
+            <LocalizedText
+              zh={`${remarkPluginFrontmatter.minutes} ${i18n(
+                remarkPluginFrontmatter.minutes === 1
+                  ? I18nKey.minuteCount
+                  : I18nKey.minutesCount
+              )}`}
+              en={`${translation.minutes} ${translation.minutes === 1 ? "minute" : "minutes"}`}
+            />
           </div>
         </div>
         {entry.data.password && (
@@ -232,9 +242,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                     md:before:w-1 before:h-5 before:rounded-md before:bg-(--primary)
                     before:absolute before:top-3 before:-left-4.5"
         >
-		  {entry.data.titleEn ? (
-			<LocalizedText zh={entry.data.title} en={entry.data.titleEn} />
-		  ) : entry.data.title}
+		  <LocalizedText zh={entry.data.title} en={entry.data.titleEn} />
         </div>
       </div>
 
@@ -245,7 +253,9 @@ const relatedPosts = await getRelatedPosts(entry, 5);
           published={entry.data.published}
           updated={entry.data.updated}
           tags={entry.data.tags}
+          tagsEn={entry.data.tagsEn}
           category={entry.data.category || undefined}
+          categoryEn={entry.data.categoryEn}
           id={entry.id}
         />
         {
@@ -275,9 +285,16 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
       {entry.data.password ? (
         <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint}>
-		  <Markdown class="mb-6 markdown-content onload-animation">
-			<Content />
-		  </Markdown>
+		  <div data-language-only="zh-CN">
+			<Markdown class="mb-6 markdown-content onload-animation">
+			  <Content />
+			</Markdown>
+		  </div>
+		  <div data-language-only="en" hidden>
+			<Markdown class="mb-6 markdown-content onload-animation">
+			  <EnglishContent />
+			</Markdown>
+		  </div>
 
           {/* 分享按钮 */}
           {
@@ -305,8 +322,10 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                       <SharePoster
                         client:load
                         title={entry.data.title}
+                        titleEn={entry.data.titleEn}
                         author={profileConfig.name}
                         description={entry.data.description || entry.data.title}
+                        descriptionEn={entry.data.descriptionEn || entry.data.titleEn}
                         pubDate={formatDateToYYYYMMDD(entry.data.published)}
                         coverImage={posterCoverUrl}
                         url={Astro.url.href}
@@ -324,6 +343,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
             licenseConfig.enable && (
               <License
                 title={entry.data.title}
+                titleEn={entry.data.titleEn}
                 id={entry.id}
                 pubDate={entry.data.published}
                 author={entry.data.author}
@@ -337,24 +357,16 @@ const relatedPosts = await getRelatedPosts(entry, 5);
         </EncryptedPost>
       ) : (
         <>
-		  {entry.id === "personal-website-introduction" ? (
-			<>
-			  <div data-language-only="zh-CN">
-				<Markdown class="mb-6 markdown-content onload-animation">
-				  <Content />
-				</Markdown>
-			  </div>
-			  <div data-language-only="en" hidden>
-				<Markdown class="mb-6 markdown-content onload-animation">
-				  <PersonalWebsiteIntroductionEn />
-				</Markdown>
-			  </div>
-			</>
-		  ) : (
+		  <div data-language-only="zh-CN">
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <Content />
 			</Markdown>
-		  )}
+		  </div>
+		  <div data-language-only="en" hidden>
+			<Markdown class="mb-6 markdown-content onload-animation">
+			  <EnglishContent />
+			</Markdown>
+		  </div>
 
           {/* 分享按钮 */}
           {
@@ -382,8 +394,10 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                       <SharePoster
                         client:load
                         title={entry.data.title}
+                        titleEn={entry.data.titleEn}
                         author={profileConfig.name}
                         description={entry.data.description || entry.data.title}
+                        descriptionEn={entry.data.descriptionEn || entry.data.titleEn}
                         pubDate={formatDateToYYYYMMDD(entry.data.published)}
                         coverImage={posterCoverUrl}
                         url={Astro.url.href}
@@ -401,6 +415,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
             licenseConfig.enable && (
               <License
                 title={entry.data.title}
+                titleEn={entry.data.titleEn}
                 id={entry.id}
                 pubDate={entry.data.published}
                 author={entry.data.author}
