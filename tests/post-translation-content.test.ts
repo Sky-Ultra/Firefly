@@ -243,6 +243,15 @@ const exampleTranslationBatch = [
 	"video.md",
 ] as const;
 
+const guideTranslationBatch = [
+	"daily-quote-widget-guide.md",
+	"firefly-layout-system.md",
+	"guide/index.md",
+	"music-module-guide.md",
+	"personal-website-introduction/index.md",
+	"relationship-timer-guide.md",
+] as const;
+
 function translationPath(sourcePath: string): string {
 	return sourcePath.replace(/\.(md|mdx)$/, ".en.$1");
 }
@@ -270,6 +279,10 @@ function fenceLanguages(body: string): string[] {
 	return [...body.matchAll(/^```([^\s`]*)[^\n]*$/gm)].map((match) => match[1]);
 }
 
+function fencedBlocks(body: string): string[] {
+	return body.match(/^```[^\n]*\n[\s\S]*?^```$/gm) ?? [];
+}
+
 function destinations(body: string, images: boolean): string[] {
 	const pattern = images
 		? /!\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
@@ -293,6 +306,7 @@ for (const relativePath of exampleTranslationBatch) {
 		const englishBody = readTranslation(relativePath);
 		assert.deepEqual(headingLevels(englishBody), headingLevels(sourceBody));
 		assert.deepEqual(fenceLanguages(englishBody), fenceLanguages(sourceBody));
+		assert.deepEqual(fencedBlocks(englishBody), fencedBlocks(sourceBody));
 		assert.deepEqual(
 			destinations(englishBody, false),
 			destinations(sourceBody, false),
@@ -313,3 +327,41 @@ for (const relativePath of exampleTranslationBatch) {
 		}
 	});
 }
+
+for (const relativePath of guideTranslationBatch) {
+	test(`${relativePath} preserves its Markdown structure in English`, () => {
+		const sourceBody = splitDocument(relativePath).body;
+		const englishBody = readTranslation(relativePath);
+		assert.deepEqual(headingLevels(englishBody), headingLevels(sourceBody));
+		assert.deepEqual(fenceLanguages(englishBody), fenceLanguages(sourceBody));
+		assert.deepEqual(fencedBlocks(englishBody), fencedBlocks(sourceBody));
+		assert.deepEqual(
+			destinations(englishBody, false),
+			destinations(sourceBody, false),
+		);
+		assert.deepEqual(
+			destinations(englishBody, true),
+			destinations(sourceBody, true),
+		);
+	});
+}
+
+test("the English personal introduction keeps its dedicated images and corrected percentage", () => {
+	const englishBody = readTranslation("personal-website-introduction/index.md");
+	assert.match(englishBody, /\.\/about-me-tab\.png/);
+	assert.match(englishBody, /\.\/navbar-overview\.png/);
+	assert.match(englishBody, /roughly 60%/);
+	assert.doesNotMatch(englishBody, /80%/);
+});
+
+test("the obsolete flat personal introduction translation is removed", () => {
+	assert.equal(
+		existsSync(
+			new URL(
+				"../src/content/translations/personal-website-introduction-en.md",
+				import.meta.url,
+			),
+		),
+		false,
+	);
+});
