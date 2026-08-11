@@ -8,7 +8,7 @@ Welcome to my website. It is still in testing, so you may occasionally run into 
 ---
 
 For a little more information about me, start with the **About Me** tab in the navigation bar.
-![Where to find the About Me tab](./about-me-tab.png)
+![Where to find the About Me tab](../../posts/personal-website-introduction/about-me-tab.png)
 
 ---
 
@@ -24,7 +24,7 @@ Most of the site's features are available from the top navigation bar, shown bel
 **Home** returns to the page you are on now.  
 The **Activity** section is not fully open while it is being tested—or, more honestly, while I finish building it. The pages under **My Space** are mostly complete, though text may still shift on devices with unusually narrow or wide aspect ratios. That is something I still need to improve. **About Me** currently introduces my tech stack; a personal timeline and experience section are planned for later.
 
-![Desktop navigation and feature area](./navbar-overview.png)
+![Desktop navigation and feature area](../../posts/personal-website-introduction/navbar-overview.png)
 
 ---
 

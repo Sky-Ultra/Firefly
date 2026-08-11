@@ -18,7 +18,7 @@ If you can read this, the password was correct and the post was decrypted succes
 
 ## Image
 
-![Firefly](./images/1.avif)
+![Firefly](../posts/images/1.avif)
 
 ## GitHub repository card
 

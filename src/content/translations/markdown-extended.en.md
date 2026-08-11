@@ -39,7 +39,7 @@ Each theme supports a slightly different set of callout types and its own syntax
 
 GitHub provides five standard callout types.
 
-![GitHub](./images/github.avif)
+![GitHub](../posts/images/github.avif)
 
 **Basic syntax**
 
@@ -160,7 +160,7 @@ GitHub provides five standard callout types.
 ```
 </details>
 
-![Obsidian](./images/obsidian.avif)
+![Obsidian](../posts/images/obsidian.avif)
 
 ---
 
@@ -192,7 +192,7 @@ The [VitePress](https://vitepress.dev/) theme uses a clean, modern default style
 ```
 </details>
 
-![VitePress](./images/vitepress.avif)
+![VitePress](../posts/images/vitepress.avif)
 
 ---
 
@@ -233,7 +233,7 @@ The available callout types are `note`, `tip`, `info`, `warning`, and `danger`.
 
 </details>
 
-![Docusaurus](./images/docusaurus.avif)
+![Docusaurus](../posts/images/docusaurus.avif)
 
 ---
 
@@ -256,9 +256,9 @@ Wrap several images in `[grid]` and `[/grid]` to place them side by side. This i
 **Aligned captions:** Captions in the same row share a consistent baseline, regardless of the image dimensions above them.
 
 [grid]
-![Example image one](./images/firefly1.avif)
-![Example image two](./images/firefly2.avif)
-![Example image three](./images/firefly3.avif)
+![Example image one](../posts/images/firefly1.avif)
+![Example image two](../posts/images/firefly2.avif)
+![Example image three](../posts/images/firefly3.avif)
 [/grid]
 
 **Basic syntax**

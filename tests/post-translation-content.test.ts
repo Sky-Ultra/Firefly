@@ -284,10 +284,26 @@ function fencedBlocks(body: string): string[] {
 }
 
 function destinations(body: string, images: boolean): string[] {
+	const visibleBody = body
+		.replace(/^```[^\n]*\n[\s\S]*?^```$/gm, "")
+		.replace(/`[^`\n]*`/g, "");
 	const pattern = images
 		? /!\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
 		: /(?<!!)\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
-	return [...body.matchAll(pattern)].map((match) => match[1]);
+	return [...visibleBody.matchAll(pattern)].map((match) => match[1]);
+}
+
+function resolvedDestinations(
+	body: string,
+	images: boolean,
+	documentPath: string,
+): string[] {
+	return destinations(body, images).map((destination) => {
+		if (/^(?:[a-z]+:|\/|#)/i.test(destination)) return destination;
+		return path.posix.normalize(
+			path.posix.join(path.posix.dirname(documentPath), destination),
+		);
+	});
 }
 
 function mdxImports(body: string): string[] {
@@ -308,12 +324,20 @@ for (const relativePath of exampleTranslationBatch) {
 		assert.deepEqual(fenceLanguages(englishBody), fenceLanguages(sourceBody));
 		assert.deepEqual(fencedBlocks(englishBody), fencedBlocks(sourceBody));
 		assert.deepEqual(
-			destinations(englishBody, false),
-			destinations(sourceBody, false),
+			resolvedDestinations(
+				englishBody,
+				false,
+				`translations/${translationPath(relativePath)}`,
+			),
+			resolvedDestinations(sourceBody, false, `posts/${relativePath}`),
 		);
 		assert.deepEqual(
-			destinations(englishBody, true),
-			destinations(sourceBody, true),
+			resolvedDestinations(
+				englishBody,
+				true,
+				`translations/${translationPath(relativePath)}`,
+			),
+			resolvedDestinations(sourceBody, true, `posts/${relativePath}`),
 		);
 		if (relativePath === "katex-math-example.md") {
 			assert.equal(
@@ -336,20 +360,34 @@ for (const relativePath of guideTranslationBatch) {
 		assert.deepEqual(fenceLanguages(englishBody), fenceLanguages(sourceBody));
 		assert.deepEqual(fencedBlocks(englishBody), fencedBlocks(sourceBody));
 		assert.deepEqual(
-			destinations(englishBody, false),
-			destinations(sourceBody, false),
+			resolvedDestinations(
+				englishBody,
+				false,
+				`translations/${translationPath(relativePath)}`,
+			),
+			resolvedDestinations(sourceBody, false, `posts/${relativePath}`),
 		);
 		assert.deepEqual(
-			destinations(englishBody, true),
-			destinations(sourceBody, true),
+			resolvedDestinations(
+				englishBody,
+				true,
+				`translations/${translationPath(relativePath)}`,
+			),
+			resolvedDestinations(sourceBody, true, `posts/${relativePath}`),
 		);
 	});
 }
 
 test("the English personal introduction keeps its dedicated images and corrected percentage", () => {
 	const englishBody = readTranslation("personal-website-introduction/index.md");
-	assert.match(englishBody, /\.\/about-me-tab\.png/);
-	assert.match(englishBody, /\.\/navbar-overview\.png/);
+	assert.match(
+		englishBody,
+		/\.\.\/\.\.\/posts\/personal-website-introduction\/about-me-tab\.png/,
+	);
+	assert.match(
+		englishBody,
+		/\.\.\/\.\.\/posts\/personal-website-introduction\/navbar-overview\.png/,
+	);
 	assert.match(englishBody, /roughly 60%/);
 	assert.doesNotMatch(englishBody, /80%/);
 });

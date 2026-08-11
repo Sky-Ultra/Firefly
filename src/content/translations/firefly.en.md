@@ -22,7 +22,7 @@ sourceHash: sha256:1265b7af9065a7aa79f8a23bcc1968067109c7a57f0f6270ee0968f58b96f
 
 ::github{repo="saicaca/fuwari"}
 
-![Firefly](./images/1.avif)
+![Firefly](../posts/images/1.avif)
 
 
 ## 🚀 Technical architecture

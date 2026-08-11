@@ -12,15 +12,15 @@ This guide covers each layout mode, where it works well, and what to expect from
 ---
 
 [grid]
-![Left sidebar with list layout](./images/left-list.avif)
-![Right sidebar with grid layout](./images/right-grid2.avif)
-![Left sidebar with a three-column grid](./images/left-grid3.avif)
+![Left sidebar with list layout](../posts/images/left-list.avif)
+![Right sidebar with grid layout](../posts/images/right-grid2.avif)
+![Left sidebar with a three-column grid](../posts/images/left-grid3.avif)
 [/grid]
 
 [grid]
-![Two sidebars with list layout](./images/both-list.avif)
-![Two sidebars with grid layout](./images/both-grid.avif)
-![Two sidebars with masonry grid](./images/masonry.avif)
+![Two sidebars with list layout](../posts/images/both-list.avif)
+![Two sidebars with grid layout](../posts/images/both-grid.avif)
+![Two sidebars with masonry grid](../posts/images/masonry.avif)
 [/grid]
 
 
@@ -32,11 +32,11 @@ Sidebars hold navigation, categories, tags, statistics, and other supporting inf
 
 #### Left Sidebar (`position: "left"`)
 
-![Left-sidebar layout](./images/left-list.avif)
+![Left-sidebar layout](../posts/images/left-list.avif)
 
 #### Right Sidebar (`position: "right"`)
 
-![Right-sidebar layout](./images/right-grid2.avif)
+![Right-sidebar layout](../posts/images/right-grid2.avif)
 
 #### Characteristics
 
@@ -85,9 +85,9 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
 #### Layout Structure
 
-![Two sidebars with list layout](./images/both-list.avif)
+![Two sidebars with list layout](../posts/images/both-list.avif)
 
-![Two sidebars with grid layout](./images/both-grid.avif)
+![Two sidebars with grid layout](../posts/images/both-grid.avif)
 #### Good For
 
 - Browsing on wide desktop screens
@@ -122,7 +122,7 @@ The post list is the centre of the homepage and archive pages. Firefly offers tw
 
 #### List Structure
 
-![List-mode layout](./images/left-list.avif)
+![List-mode layout](../posts/images/left-list.avif)
 
 #### Advantages
 
@@ -158,7 +158,7 @@ export const siteConfig: SiteConfig = {
 
 In grid mode, `columnWidth` sets the minimum card width in pixels. The browser then calculates how many columns fit inside the container.
 
-![Grid layout](./images/left-grid3.avif)
+![Grid layout](../posts/images/left-grid3.avif)
 
 #### Configuration Example
 
@@ -182,7 +182,7 @@ export const siteConfig: SiteConfig = {
 
 Firefly's grid mode includes a masonry option for feeds where mixed image and text lengths produce cards of different heights. It removes the empty bands that a conventional row-based grid would leave behind.
 
-![Masonry layout](./images/masonry.avif)
+![Masonry layout](../posts/images/masonry.avif)
 
 - **Balanced placement:** Each card is placed into the shortest current column, making better use of vertical space.
 - **No row gaps:** Absolute positioning calculates each card's exact location so it sits directly below the card above it.
