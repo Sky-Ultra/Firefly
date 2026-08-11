@@ -29,8 +29,10 @@ const postsCollection = defineCollection({
 
 		/* For internal use */
 		prevTitle: z.string().default(""),
+		prevTitleEn: z.string().default(""),
 		prevSlug: z.string().default(""),
 		nextTitle: z.string().default(""),
+		nextTitleEn: z.string().default(""),
 		nextSlug: z.string().default(""),
 	}),
 });

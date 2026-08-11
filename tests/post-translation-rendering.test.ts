@@ -36,7 +36,7 @@ test("article title, metrics, metadata, and body have English values", () => {
 	assert.match(postPage, /categoryEn=\{entry\.data\.categoryEn\}/);
 	assert.match(
 		postPage,
-		/<div data-language-only="zh-CN">[\s\S]*?<Content \/>[\s\S]*?<div data-language-only="en" hidden>[\s\S]*?<EnglishContent \/>/,
+		/<div data-language-only="zh-CN"[^>]*>[\s\S]*?<Content \/>[\s\S]*?<div data-language-only="en"[^>]*>[\s\S]*?<EnglishContent \/>/,
 	);
 	assert.match(postMeta, /tagsEn\?: string\[\]/);
 	assert.match(postMeta, /categoryEn\?: string/);

@@ -285,12 +285,12 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
       {entry.data.password ? (
         <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint}>
-		  <div data-language-only="zh-CN">
+		  <div data-language-only="zh-CN" data-pagefind-body>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <Content />
 			</Markdown>
 		  </div>
-		  <div data-language-only="en" hidden>
+		  <div data-language-only="en" data-pagefind-body hidden>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <EnglishContent />
 			</Markdown>
@@ -357,12 +357,12 @@ const relatedPosts = await getRelatedPosts(entry, 5);
         </EncryptedPost>
       ) : (
         <>
-		  <div data-language-only="zh-CN">
+		  <div data-language-only="zh-CN" data-pagefind-body>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <Content />
 			</Markdown>
 		  </div>
-		  <div data-language-only="en" hidden>
+		  <div data-language-only="en" data-pagefind-body hidden>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <EnglishContent />
 			</Markdown>
@@ -512,7 +512,10 @@ const relatedPosts = await getRelatedPosts(entry, 5);
           class="text-[2rem] text-(--primary)"
         />
         <div class="overflow-hidden transition text-ellipsis whitespace-nowrap max-w-[calc(100%-3rem)] text-black/75 dark:text-white/75">
-          {entry.data.nextTitle || i18n(I18nKey.home)}
+		  <LocalizedText
+			zh={entry.data.nextTitle || i18n(I18nKey.home)}
+			en={entry.data.nextTitleEn || "Home"}
+		  />
         </div>
       </div>
     </a>
@@ -523,7 +526,10 @@ const relatedPosts = await getRelatedPosts(entry, 5);
     >
       <div class="btn-card rounded-2xl w-full h-15 max-w-full px-4 flex items-center justify-end! gap-4">
         <div class="overflow-hidden transition text-ellipsis whitespace-nowrap max-w-[calc(100%-3rem)] text-black/75 dark:text-white/75">
-          {entry.data.prevTitle || i18n(I18nKey.home)}
+		  <LocalizedText
+			zh={entry.data.prevTitle || i18n(I18nKey.home)}
+			en={entry.data.prevTitleEn || "Home"}
+		  />
         </div>
         <Icon is:inline
           name="material-symbols:chevron-right-rounded"

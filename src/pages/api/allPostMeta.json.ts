@@ -7,9 +7,12 @@ export async function GET() {
 		.map((post) => ({
 			id: post.id,
 			title: post.data.title,
+			titleEn: post.data.titleEn,
 			description: post.data.description,
+			descriptionEn: post.data.descriptionEn,
 			published: post.data.published.getTime(),
 			category: post.data.category || "",
+			categoryEn: post.data.categoryEn,
 			password: !!post.data.password,
 		}))
 		// 日历按纯日期排序，忽略置顶

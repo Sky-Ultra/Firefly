@@ -20,7 +20,9 @@ interface Props {
 	published: Date;
 	updated?: Date;
 	tags: string[];
+	tagsEn: string[];
 	category: string | null;
+	categoryEn: string;
 	image: string;
 	description: string;
 	descriptionEn?: string;
@@ -38,7 +40,9 @@ const {
 	url,
 	published,
 	tags,
+	tagsEn,
 	category,
+	categoryEn,
 	image,
 	description,
 	descriptionEn = description,
@@ -146,6 +150,7 @@ const minutes = remarkPluginFrontmatter.minutes;
     <PostMetadata
       published={published}
       tags={tags}
+	  tagsEn={tagsEn}
       showPublished={metaShowPublished}
       showCategory={showCategory}
       showTags={showTagsInMeta}
@@ -153,6 +158,7 @@ const minutes = remarkPluginFrontmatter.minutes;
       showNoTags={true}
       hideUpdateDate={true}
       category={category || undefined}
+	  categoryEn={categoryEn}
       pinned={pinned}
       password={password}
       words={words}
@@ -176,7 +182,7 @@ const minutes = remarkPluginFrontmatter.minutes;
     <!-- bottom tags（与 stats 二选一） -->
     {showTagsAtBottom && tags && tags.length > 0 && (
       <div class="post-card-bottom-tags flex flex-wrap items-center gap-1.5 mt-auto pt-3">
-        {(metaTagCount > 0 ? tags.slice(0, metaTagCount) : tags).map((tag) => (
+        {(metaTagCount > 0 ? tags.slice(0, metaTagCount) : tags).map((tag, index) => (
           <a
             href={getTagUrl(tag)}
             aria-label={`View all posts with the ${tag.trim()} tag`}
@@ -184,7 +190,10 @@ const minutes = remarkPluginFrontmatter.minutes;
               bg-black/5 dark:bg-white/10 text-neutral-500 dark:text-neutral-400
               hover:bg-(--btn-regular-bg) hover:text-(--btn-content)"
           >
-            {tag.trim()}
+			<LocalizedText
+			  zh={tag.trim()}
+			  en={tagsEn?.[index]?.trim() || tag.trim()}
+			/>
           </a>
         ))}
       </div>

@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import type { PostForList } from "@/utils/content-utils";
@@ -48,15 +49,23 @@ const noRandomPostsText = i18n(I18nKey.noRandomPosts);
           </div>
           <div class="flex-1 min-w-0">
             <div class="font-bold text-sm text-black/75 dark:text-white/75 truncate transition group-hover:text-(--primary)">
-              {post.data.title}
+			  <LocalizedText zh={post.data.title} en={post.data.titleEn} />
             </div>
             <div class="flex items-center gap-1.5 text-xs text-black/30 dark:text-white/30 transition mt-0.5">
               {post.data.category && (
                 <span class="shrink-0 px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-black/40 dark:text-white/40">
-                  {post.data.category}
+				  <LocalizedText
+					zh={post.data.category}
+					en={post.data.categoryEn}
+				  />
                 </span>
               )}
-              <span class="truncate">{post.data.description || formatDateToYYYYMMDD(post.data.published)}</span>
+			  <span class="truncate">
+				<LocalizedText
+				  zh={post.data.description || formatDateToYYYYMMDD(post.data.published)}
+				  en={post.data.descriptionEn || formatDateToYYYYMMDD(post.data.published)}
+				/>
+			  </span>
             </div>
           </div>
           <Icon is:inline
@@ -103,7 +112,7 @@ const noRandomPostsText = i18n(I18nKey.noRandomPosts);
 </div>
 
 <script is:inline>
-function renderRandomPosts() {
+function renderRandomPosts(preserveSelection) {
   var container = document.getElementById('random-posts-list');
   if (!container) return;
 
@@ -121,15 +130,24 @@ function renderRandomPosts() {
       return !excludeSet[p.id] && !p.password;
     });
 
-    // Fisher-Yates shuffle
-    for (var i = candidates.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = candidates[i];
-      candidates[i] = candidates[j];
-      candidates[j] = tmp;
+    var picked = [];
+    if (preserveSelection && container.dataset.selectedIds) {
+      var selectedIds = JSON.parse(container.dataset.selectedIds);
+      picked = selectedIds
+        .map(function(id) { return candidates.find(function(post) { return post.id === id; }); })
+        .filter(Boolean);
     }
-
-    var picked = candidates.slice(0, 5);
+    if (picked.length === 0) {
+      // Fisher-Yates shuffle
+      for (var i = candidates.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = candidates[i];
+        candidates[i] = candidates[j];
+        candidates[j] = tmp;
+      }
+      picked = candidates.slice(0, 5);
+      container.dataset.selectedIds = JSON.stringify(picked.map(function(post) { return post.id; }));
+    }
 
     if (picked.length === 0) {
       container.className = 'flex-1 flex items-center justify-center';
@@ -163,21 +181,24 @@ function renderRandomPosts() {
 
       var title = document.createElement('div');
       title.className = 'font-bold text-sm text-black/75 dark:text-white/75 truncate transition group-hover:text-(--primary)';
-      title.textContent = post.title;
+      var isEnglish = window.fireflyLanguage?.get() === 'en';
+      title.textContent = isEnglish ? post.titleEn : post.title;
 
       var meta = document.createElement('div');
       meta.className = 'flex items-center gap-1.5 text-xs text-black/30 dark:text-white/30 transition mt-0.5';
 
-      if (post.category) {
+      var category = isEnglish ? post.categoryEn : post.category;
+      if (category) {
         var cat = document.createElement('span');
         cat.className = 'shrink-0 px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-black/40 dark:text-white/40';
-        cat.textContent = post.category;
+        cat.textContent = category;
         meta.appendChild(cat);
       }
 
       var desc = document.createElement('span');
       desc.className = 'truncate';
-      desc.textContent = post.description || new Date(post.published).toISOString().substring(0, 10);
+      var description = isEnglish ? post.descriptionEn : post.description;
+      desc.textContent = description || new Date(post.published).toISOString().substring(0, 10);
       meta.appendChild(desc);
 
       content.appendChild(title);
@@ -217,4 +238,7 @@ function renderRandomPosts() {
 
 renderRandomPosts();
 document.addEventListener('swup:contentReplaced', renderRandomPosts);
+document.addEventListener('firefly:language-change', function() {
+  renderRandomPosts(true);
+});
 </script>

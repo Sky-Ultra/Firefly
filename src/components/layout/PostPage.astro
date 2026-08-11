@@ -71,7 +71,9 @@ const getRandomCoverFallback = (entry: PostEntry): string | undefined => {
         title={entry.data.title}
 		titleEn={entry.data.titleEn}
         tags={entry.data.tags}
+		tagsEn={entry.data.tagsEn}
         category={entry.data.category}
+		categoryEn={entry.data.categoryEn}
         published={entry.data.published}
         updated={entry.data.updated}
         url={getPostUrlBySlug(entry.id)}
