@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import test from "node:test";
 
 type ExpectedMetadata = {
@@ -227,3 +228,88 @@ test("the personal introduction uses the requested 60 percent figure", () => {
 	assert.match(body, /总修改工作的60%/);
 	assert.doesNotMatch(body, /总修改工作的80%/);
 });
+
+const exampleTranslationBatch = [
+	"code-examples.md",
+	"draft.md",
+	"encrypted-demo.md",
+	"firefly.md",
+	"katex-math-example.md",
+	"markdown-extended.md",
+	"markdown-mermaid.md",
+	"markdown-plantuml.md",
+	"markdown-tutorial.md",
+	"mdx-example.mdx",
+	"video.md",
+] as const;
+
+function translationPath(sourcePath: string): string {
+	return sourcePath.replace(/\.(md|mdx)$/, ".en.$1");
+}
+
+function readTranslation(relativePath: string): string {
+	const absolutePath = new URL(
+		`../src/content/translations/${translationPath(relativePath)}`,
+		import.meta.url,
+	);
+	assert.ok(
+		existsSync(absolutePath),
+		`${relativePath} needs a paired English translation`,
+	);
+	const content = readFileSync(absolutePath, "utf8").replaceAll("\r\n", "\n");
+	const end = content.indexOf("\n---", 4);
+	assert.ok(content.startsWith("---\n") && end >= 4);
+	return content.slice(end + 4).replace(/^\n+/, "");
+}
+
+function headingLevels(body: string): number[] {
+	return [...body.matchAll(/^(#{1,6})\s+/gm)].map((match) => match[1].length);
+}
+
+function fenceLanguages(body: string): string[] {
+	return [...body.matchAll(/^```([^\s`]*)[^\n]*$/gm)].map((match) => match[1]);
+}
+
+function destinations(body: string, images: boolean): string[] {
+	const pattern = images
+		? /!\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
+		: /(?<!!)\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
+	return [...body.matchAll(pattern)].map((match) => match[1]);
+}
+
+function mdxImports(body: string): string[] {
+	return body.match(/^import\s+.*$/gm) ?? [];
+}
+
+function componentTags(body: string): string[] {
+	return [...body.matchAll(/<([A-Z][A-Za-z0-9.]*)\b/g)].map(
+		(match) => match[1],
+	);
+}
+
+for (const relativePath of exampleTranslationBatch) {
+	test(`${relativePath} preserves its Markdown and MDX structure in English`, () => {
+		const sourceBody = splitDocument(relativePath).body;
+		const englishBody = readTranslation(relativePath);
+		assert.deepEqual(headingLevels(englishBody), headingLevels(sourceBody));
+		assert.deepEqual(fenceLanguages(englishBody), fenceLanguages(sourceBody));
+		assert.deepEqual(
+			destinations(englishBody, false),
+			destinations(sourceBody, false),
+		);
+		assert.deepEqual(
+			destinations(englishBody, true),
+			destinations(sourceBody, true),
+		);
+		if (relativePath === "katex-math-example.md") {
+			assert.equal(
+				(englishBody.match(/(?<!\\)\$/g) ?? []).length,
+				(sourceBody.match(/(?<!\\)\$/g) ?? []).length,
+			);
+		}
+		if (path.extname(relativePath) === ".mdx") {
+			assert.deepEqual(mdxImports(englishBody), mdxImports(sourceBody));
+			assert.deepEqual(componentTags(englishBody), componentTags(sourceBody));
+		}
+	});
+}

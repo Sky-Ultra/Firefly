@@ -1,0 +1,64 @@
+---
+translationOf: mdx-example.mdx
+sourceHash: sha256:691dc7e6327fa96568d31daa50cc53836208fe4fa67f3647508ae2f6325b27ec
+---
+
+import { Icon } from 'astro-icon/components'
+
+:::tip
+The site accepts both `MDX` and `Markdown` posts. MDX can mix Markdown with components, though plain Markdown is usually enough unless a post needs more involved behaviour.
+:::
+
+## How Markdown and MDX differ
+- Markdown (MD) is a lightweight markup language for writing formatted documents in plain text. Its small, readable syntax works especially well for documentation and blog posts.
+- MDX extends Markdown with JSX. It can import and embed components, which makes interactive or data-driven sections possible inside an article.
+
+| Feature | Markdown | MDX |
+| :--- | :--- | :--- |
+| Basic syntax | Supported (CommonMark) | Supported (CommonMark) |
+| HTML tags | Supported | Supported (as JSX) |
+| Component imports | Not supported | Supported (`import`) |
+| Dynamic data | Not supported | Supported (JS expressions) |
+| Styling | Limited (`class`/`style`) | Flexible (`className`/CSS-in-JS) |
+
+## Using a component
+
+Here is an icon component:
+```
+import { Icon } from 'astro-icon/components'
+
+<div class="flex items-center gap-2 my-4">
+  <Icon name="fa7-solid:rocket" class="text-4xl text-red-500" />
+  <span>火箭发射！</span>
+</div>
+```
+<div class="flex items-center gap-2 my-4">
+  <Icon name="fa7-solid:rocket" class="text-4xl text-red-500" />
+  <span>Rocket launch!</span>
+</div>
+
+
+## Writing JSX directly
+
+HTML or JSX can also be written in place:
+```
+<div className="p-4 bg-blue-100 dark:bg-blue-900 rounded-lg my-4">
+  这是一个自定义样式的 div 块，使用了 Tailwind CSS 类。
+</div>
+```
+<div className="p-4 bg-blue-100 dark:bg-blue-900 rounded-lg my-4">
+  This custom-styled div uses Tailwind CSS classes.
+</div>
+
+## Exporting a simple variable
+```
+export const year = new Date().getFullYear()
+
+今年是 {year} 年。
+```
+export const year = new Date().getFullYear()
+
+The year is {year}.
+
+
+Read the [MDX documentation](https://mdxjs.com/) for more details.
