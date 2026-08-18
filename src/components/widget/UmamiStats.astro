@@ -1,4 +1,5 @@
 ---
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import { analyticsConfig } from "@/config";
 import type { WidgetComponentConfig } from "@/types/config";
@@ -26,6 +27,7 @@ const fallbackVisitors = config?.fallback?.visitors;
 <WidgetLayout
 	id={widgetId}
 	name={config?.title || "统计"}
+	nameEn={config?.titleEn || "Analytics"}
 	showTitle={showTitle}
 	class:list={[
 		"umami-stats-container transition-opacity",
@@ -70,7 +72,9 @@ const fallbackVisitors = config?.fallback?.visitors;
 				>
 					—
 				</div>
-				<div class="text-sm text-neutral-500 dark:text-neutral-400">总浏览量</div>
+				<div class="text-sm text-neutral-500 dark:text-neutral-400">
+					<LocalizedText zh="总浏览量" en="Total views" />
+				</div>
 			</div>
 			<div class="grid grid-cols-2 divide-x divide-neutral-200 pt-2 text-center dark:divide-neutral-700">
 				<div class="px-2">
@@ -80,7 +84,9 @@ const fallbackVisitors = config?.fallback?.visitors;
 					>
 						—
 					</div>
-					<div class="text-sm text-neutral-500 dark:text-neutral-400">访问数</div>
+					<div class="text-sm text-neutral-500 dark:text-neutral-400">
+						<LocalizedText zh="访问数" en="Visits" />
+					</div>
 				</div>
 				<div class="px-2">
 					<div
@@ -89,12 +95,21 @@ const fallbackVisitors = config?.fallback?.visitors;
 					>
 						—
 					</div>
-					<div class="text-sm text-neutral-500 dark:text-neutral-400">游客数</div>
+					<div class="text-sm text-neutral-500 dark:text-neutral-400">
+						<LocalizedText zh="游客数" en="Visitors" />
+					</div>
 				</div>
 			</div>
 		</a>
-		<span class="sr-only" data-umami-status aria-live="polite">
-			{hasDataSource ? "正在载入访问统计" : "尚未配置 Umami 公开统计链接"}
+		<span
+			class="sr-only"
+			data-umami-status
+			data-i18n-zh={hasDataSource ? "正在载入访问统计" : "尚未配置 Umami 统计"}
+			data-i18n-en={hasDataSource ? "Loading analytics" : "Umami analytics is not configured"}
+			data-i18n-attr="content"
+			aria-live="polite"
+		>
+			{hasDataSource ? "正在载入访问统计" : "尚未配置 Umami 统计"}
 		</span>
 	</umami-stats-card>
 </WidgetLayout>
@@ -115,13 +130,13 @@ const fallbackVisitors = config?.fallback?.visitors;
 	};
 
 	const requestCache = new Map<string, CachedRequest>();
-	const compactNumberFormatter = new Intl.NumberFormat("zh-CN", {
-		notation: "compact",
-		maximumFractionDigits: 1,
-	});
-
-	const formatStat = (value: number): string =>
-		compactNumberFormatter.format(Math.max(0, Math.round(value)));
+	const formatStat = (value: number): string => {
+		const locale = document.documentElement.dataset.language === "en" ? "en" : "zh-CN";
+		return new Intl.NumberFormat(locale, {
+			notation: "compact",
+			maximumFractionDigits: 1,
+		}).format(Math.max(0, Math.round(value)));
+	};
 
 	const readStatValue = (value: unknown): number => {
 		const raw =
@@ -258,8 +273,13 @@ const fallbackVisitors = config?.fallback?.visitors;
 		private observer?: IntersectionObserver;
 		private animationFrames: number[] = [];
 		private started = false;
+		private currentStats?: Stats;
+		private readonly handleLanguageChange = (): void => {
+			if (this.currentStats) this.render(this.currentStats, false);
+		};
 
 		connectedCallback(): void {
+			document.addEventListener("firefly:language-change", this.handleLanguageChange);
 			const config = this.getSourceConfig();
 			if (!config.shareUrl && !config.apiEndpoint) {
 				this.setAttribute("aria-busy", "false");
@@ -287,6 +307,7 @@ const fallbackVisitors = config?.fallback?.visitors;
 
 		disconnectedCallback(): void {
 			this.observer?.disconnect();
+			document.removeEventListener("firefly:language-change", this.handleLanguageChange);
 			this.animationFrames.forEach((id) => cancelAnimationFrame(id));
 			this.animationFrames = [];
 		}
@@ -314,17 +335,23 @@ const fallbackVisitors = config?.fallback?.visitors;
 				if (!this.isConnected) return;
 				this.render(stats, true);
 				this.dataset.state = "ready";
-				this.updateStatus("访问统计已更新");
+				this.updateStatus("访问统计已更新", "Analytics updated");
 			} catch (error) {
 				if (!this.isConnected) return;
 				const fallback = this.getFallbackStats();
 				if (fallback) {
 					this.render(fallback, false);
 					this.dataset.state = "fallback";
-					this.updateStatus("访问统计暂时不可用，当前显示备用数据");
+					this.updateStatus(
+						"访问统计暂时不可用，当前显示备用数据",
+						"Analytics is temporarily unavailable; fallback data is shown",
+					);
 				} else {
 					this.dataset.state = "error";
-					this.updateStatus("访问统计暂时不可用");
+					this.updateStatus(
+						"访问统计暂时不可用",
+						"Analytics is temporarily unavailable",
+					);
 				}
 				console.warn("[UmamiStats] 获取公开统计失败", error);
 			} finally {
@@ -344,6 +371,7 @@ const fallbackVisitors = config?.fallback?.visitors;
 		}
 
 		private render(stats: Stats, animate: boolean): void {
+			this.currentStats = stats;
 			const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 			(Object.entries(stats) as [StatKey, number][]).forEach(([key, value]) => {
 				const element = this.querySelector<HTMLElement>(`[data-umami-stat="${key}"]`);
@@ -367,9 +395,13 @@ const fallbackVisitors = config?.fallback?.visitors;
 			});
 		}
 
-		private updateStatus(message: string): void {
+		private updateStatus(zh: string, en: string): void {
 			const status = this.querySelector<HTMLElement>("[data-umami-status]");
-			if (status) status.textContent = message;
+			if (!status) return;
+			status.dataset.i18nZh = zh;
+			status.dataset.i18nEn = en;
+			status.textContent =
+				document.documentElement.dataset.language === "en" ? en : zh;
 		}
 	}
 

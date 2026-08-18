@@ -4,6 +4,7 @@ export type UmamiPublicStatsConfig = {
 	/** 可选的同源公开统计接口，返回 pageviews、visits、visitors */
 	apiEndpoint?: string;
 	title?: string;
+	titleEn?: string;
 	timezone?: string;
 	cacheTtlMs?: number;
 	timeoutMs?: number;

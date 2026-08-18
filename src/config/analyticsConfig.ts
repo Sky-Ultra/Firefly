@@ -7,10 +7,12 @@ export const analyticsConfig: AnalyticsConfig = {
 	microsoftClarityId: "",
 	// Umami 统计配置
 	umamiAnalytics: {
-		// Umami Website ID
-		websiteId: "",
+		// Umami Website ID。推荐在部署平台设置 PUBLIC_UMAMI_WEBSITE_ID。
+		websiteId: import.meta.env?.PUBLIC_UMAMI_WEBSITE_ID?.trim() || "",
 		// Umami JS地址，支持使用自建
-		scriptUrl: "https://cloud.umami.is/script.js",
+		scriptUrl:
+			import.meta.env?.PUBLIC_UMAMI_SCRIPT_URL?.trim() ||
+			"https://cloud.umami.is/script.js",
 		// Umami 会话回放脚本地址，支持使用自建
 		replaysScriptUrl: "https://cloud.umami.is/recorder.js",
 		// 是否追踪出站链接
@@ -19,11 +21,12 @@ export const analyticsConfig: AnalyticsConfig = {
 		collectWebVitals: false,
 		// 侧栏 Umami 访问统计卡片；仅填写公开分享链接，不要填写私密 API Token
 		publicStats: {
-			// 后续请替换为你的 Umami Share URL，留空时卡片显示占位符且不会发起请求
-			shareUrl: "",
+			// Umami 公开分享链接。推荐在部署平台设置 PUBLIC_UMAMI_SHARE_URL。
+			shareUrl: import.meta.env?.PUBLIC_UMAMI_SHARE_URL?.trim() || "",
 			// 如果你使用自己的只读代理，可在这里填写直接返回三项统计的公开接口
-			apiEndpoint: "",
+			apiEndpoint: import.meta.env?.PUBLIC_UMAMI_STATS_ENDPOINT?.trim() || "",
 			title: "统计",
+			titleEn: "Analytics",
 			timezone: "Australia/Sydney",
 			cacheTtlMs: 10 * 60 * 1000,
 			timeoutMs: 8000,
