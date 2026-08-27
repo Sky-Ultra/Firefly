@@ -15,8 +15,12 @@ const config = analyticsConfig.umamiAnalytics?.publicStats;
 const showTitle = widgetConfig?.showTitle !== false;
 const shareUrl = config?.shareUrl?.trim() || "";
 const apiEndpoint = config?.apiEndpoint?.trim() || "";
-const hasLink = Boolean(shareUrl);
-const hasDataSource = Boolean(shareUrl || apiEndpoint);
+const fixedDisplayEnabled = config?.fixedDisplay?.enabled === true;
+const fixedPageviews = config?.fixedDisplay?.pageviews?.trim() || "—";
+const fixedVisits = config?.fixedDisplay?.visits?.trim() || "—";
+const fixedVisitors = config?.fixedDisplay?.visitors?.trim() || "—";
+const hasLink = Boolean(shareUrl) && !fixedDisplayEnabled;
+const hasDataSource = Boolean(shareUrl || apiEndpoint) && !fixedDisplayEnabled;
 const widgetId = `umami-stats-${Math.random().toString(36).slice(2, 9)}`;
 
 const fallbackPageviews = config?.fallback?.pageviews;
@@ -38,8 +42,8 @@ const fallbackVisitors = config?.fallback?.visitors;
 >
 	<umami-stats-card
 		class="block"
-		data-share-url={shareUrl || undefined}
-		data-api-endpoint={apiEndpoint || undefined}
+		data-share-url={hasDataSource ? shareUrl || undefined : undefined}
+		data-api-endpoint={hasDataSource ? apiEndpoint || undefined : undefined}
 		data-timezone={config?.timezone || "UTC"}
 		data-cache-ttl-ms={String(config?.cacheTtlMs ?? 600_000)}
 		data-timeout-ms={String(config?.timeoutMs ?? 8000)}
@@ -70,7 +74,7 @@ const fallbackVisitors = config?.fallback?.visitors;
 					class="text-3xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100"
 					data-umami-stat="pageviews"
 				>
-					—
+					{fixedDisplayEnabled ? fixedPageviews : "—"}
 				</div>
 				<div class="text-sm text-neutral-500 dark:text-neutral-400">
 					<LocalizedText zh="总浏览量" en="Total views" />
@@ -82,7 +86,7 @@ const fallbackVisitors = config?.fallback?.visitors;
 						class="text-xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100"
 						data-umami-stat="visits"
 					>
-						—
+						{fixedDisplayEnabled ? fixedVisits : "—"}
 					</div>
 					<div class="text-sm text-neutral-500 dark:text-neutral-400">
 						<LocalizedText zh="访问数" en="Visits" />
@@ -93,7 +97,7 @@ const fallbackVisitors = config?.fallback?.visitors;
 						class="text-xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100"
 						data-umami-stat="visitors"
 					>
-						—
+						{fixedDisplayEnabled ? fixedVisitors : "—"}
 					</div>
 					<div class="text-sm text-neutral-500 dark:text-neutral-400">
 						<LocalizedText zh="游客数" en="Visitors" />
@@ -104,12 +108,24 @@ const fallbackVisitors = config?.fallback?.visitors;
 		<span
 			class="sr-only"
 			data-umami-status
-			data-i18n-zh={hasDataSource ? "正在载入访问统计" : "尚未配置 Umami 统计"}
-			data-i18n-en={hasDataSource ? "Loading analytics" : "Umami analytics is not configured"}
+			data-i18n-zh={hasDataSource
+				? "正在载入访问统计"
+				: fixedDisplayEnabled
+					? "当前显示临时固定统计"
+					: "尚未配置 Umami 统计"}
+			data-i18n-en={hasDataSource
+				? "Loading analytics"
+				: fixedDisplayEnabled
+					? "Temporary fixed analytics are shown"
+					: "Umami analytics is not configured"}
 			data-i18n-attr="content"
 			aria-live="polite"
 		>
-			{hasDataSource ? "正在载入访问统计" : "尚未配置 Umami 统计"}
+			{hasDataSource
+				? "正在载入访问统计"
+				: fixedDisplayEnabled
+					? "当前显示临时固定统计"
+					: "尚未配置 Umami 统计"}
 		</span>
 	</umami-stats-card>
 </WidgetLayout>

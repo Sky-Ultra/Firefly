@@ -25,6 +25,14 @@ test("the analytics card provides Chinese and English interface copy", () => {
 	assert.match(statsCard, /firefly:language-change/);
 });
 
+test("the analytics card can temporarily show fixed public values", () => {
+	assert.match(analyticsConfig, /fixedDisplay:\s*\{/);
+	assert.match(analyticsConfig, /pageviews:\s*"3k\+"/);
+	assert.match(analyticsConfig, /visits:\s*"3k\+"/);
+	assert.match(statsCard, /fixedDisplayEnabled/);
+	assert.match(statsCard, /Temporary fixed analytics are shown/);
+});
+
 test("the analytics card keeps Umami share credentials out of source", () => {
 	assert.match(statsCard, /x-umami-share-context/);
 	assert.match(statsCard, /x-umami-share-token/);

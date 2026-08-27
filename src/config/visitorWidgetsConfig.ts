@@ -96,6 +96,10 @@ export const visitorWidgetsConfig: VisitorWidgetsConfig = {
 		fallbackAuthor: "本站",
 	},
 	festivalCountdown: {
+		birthday: {
+			month: 4,
+			day: 27,
+		},
 		festivals: [
 			{
 				name: "元旦",

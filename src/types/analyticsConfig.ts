@@ -8,6 +8,13 @@ export type UmamiPublicStatsConfig = {
 	timezone?: string;
 	cacheTtlMs?: number;
 	timeoutMs?: number;
+	fixedDisplay?: {
+		/** 临时固定展示；关闭后会恢复使用公开统计数据源 */
+		enabled?: boolean;
+		pageviews?: string;
+		visits?: string;
+		visitors?: string;
+	};
 	fallback?: {
 		pageviews?: number | null;
 		visits?: number | null;

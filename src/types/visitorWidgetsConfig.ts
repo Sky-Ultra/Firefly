@@ -60,6 +60,10 @@ export type VisitorWidgetsConfig = {
 		fallbackAuthor: string;
 	};
 	festivalCountdown: {
+		birthday: {
+			month: number;
+			day: number;
+		};
 		festivals: FestivalRule[];
 	};
 };

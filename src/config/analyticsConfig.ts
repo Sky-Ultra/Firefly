@@ -30,6 +30,12 @@ export const analyticsConfig: AnalyticsConfig = {
 			timezone: "Australia/Sydney",
 			cacheTtlMs: 10 * 60 * 1000,
 			timeoutMs: 8000,
+			// 暂时无法读取统计数据时启用；关闭后自动恢复上方 Umami 数据源
+			fixedDisplay: {
+				enabled: true,
+				pageviews: "3k+",
+				visits: "3k+",
+			},
 			fallback: {
 				pageviews: null,
 				visits: null,
