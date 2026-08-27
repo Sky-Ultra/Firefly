@@ -12,7 +12,9 @@ const widget = source("src/components/widget/FestivalCountdown.astro");
 test("the countdown includes Sky's annual birthday", () => {
 	assert.match(config, /birthday:\s*\{\s*month:\s*4,\s*day:\s*27,/s);
 	assert.match(widget, /data-birthday-days/);
-	assert.match(widget, /getDaysUntilBirthday/);
+	assert.match(widget, /data-birthday-percent/);
+	assert.match(widget, /data-birthday-bar/);
+	assert.match(widget, /getBirthdayProgress/);
 	assert.match(widget, /距离我的生日还剩/);
 	assert.match(widget, /My birthday is in/);
 });

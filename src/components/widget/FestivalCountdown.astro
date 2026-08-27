@@ -19,12 +19,20 @@ const { birthday, festivals } = visitorWidgetsConfig.festivalCountdown;
 	data-birthday-month={birthday.month}
 	data-birthday-day={birthday.day}
 >
-	<p class="mb-4 flex items-baseline justify-center gap-1 text-sm font-medium text-neutral-700 dark:text-neutral-200">
-		<span data-birthday-prefix>距离我的生日还剩</span>
-		<strong class="text-base tabular-nums text-(--primary)" data-birthday-days>--</strong>
-		<span data-birthday-unit>天</span>
-	</p>
 	<div class="space-y-3" aria-label="时间进度">
+		<div class="grid grid-cols-[3.4rem_1fr] items-center gap-3" data-birthday-progress>
+			<strong class="text-sm text-(--primary)" data-birthday-percent>--%</strong>
+			<div>
+				<div class="mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-200">
+					<span data-birthday-prefix>距离我的生日还剩</span>
+					<span data-birthday-days>--</span>
+					<span data-birthday-unit>天</span>
+				</div>
+				<div class="h-2 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
+					<div class="h-full rounded-full bg-(--primary) transition-[width] duration-500" data-birthday-bar style="width: 0%"></div>
+				</div>
+			</div>
+		</div>
 		{["year", "month", "week"].map((range) => (
 			<div class="grid grid-cols-[3.4rem_1fr] items-center gap-3" data-progress-range={range}>
 				<strong class="text-sm text-(--primary)" data-progress-percent>--%</strong>
@@ -112,7 +120,7 @@ const { birthday, festivals } = visitorWidgetsConfig.festivalCountdown;
 		};
 	}
 
-	function getDaysUntilBirthday(now: Date, month: number, day: number) {
+	function getBirthdayProgress(now: Date, month: number, day: number) {
 		const todayUtc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
 		let birthdayYear = now.getFullYear();
 		let birthdayUtc = Date.UTC(birthdayYear, month - 1, day);
@@ -120,7 +128,15 @@ const { birthday, festivals } = visitorWidgetsConfig.festivalCountdown;
 			birthdayYear += 1;
 			birthdayUtc = Date.UTC(birthdayYear, month - 1, day);
 		}
-		return Math.round((birthdayUtc - todayUtc) / DAY_MS);
+		const previousBirthdayUtc = Date.UTC(birthdayYear - 1, month - 1, day);
+		return {
+			percent: clampPercent(
+				((todayUtc - previousBirthdayUtc) /
+					(birthdayUtc - previousBirthdayUtc)) *
+					100,
+			),
+			remainingDays: Math.round((birthdayUtc - todayUtc) / DAY_MS),
+		};
 	}
 
 	function getChineseMonthDay(
@@ -199,6 +215,8 @@ const { birthday, festivals } = visitorWidgetsConfig.festivalCountdown;
 			const birthdayMonth = Number(this.dataset.birthdayMonth);
 			const birthdayDay = Number(this.dataset.birthdayDay);
 			const birthdayDays = this.querySelector<HTMLElement>("[data-birthday-days]");
+			const birthdayPercent = this.querySelector<HTMLElement>("[data-birthday-percent]");
+			const birthdayBar = this.querySelector<HTMLElement>("[data-birthday-bar]");
 			const birthdayPrefix = this.querySelector<HTMLElement>("[data-birthday-prefix]");
 			const birthdayUnit = this.querySelector<HTMLElement>("[data-birthday-unit]");
 			if (
@@ -210,9 +228,16 @@ const { birthday, festivals } = visitorWidgetsConfig.festivalCountdown;
 				birthdayDay >= 1 &&
 				birthdayDay <= 31
 			) {
-				birthdayDays.textContent = String(
-					getDaysUntilBirthday(now, birthdayMonth, birthdayDay),
+				const birthdayProgress = getBirthdayProgress(
+					now,
+					birthdayMonth,
+					birthdayDay,
 				);
+				birthdayDays.textContent = String(birthdayProgress.remainingDays);
+				if (birthdayPercent) {
+					birthdayPercent.textContent = `${birthdayProgress.percent.toFixed(1)}%`;
+				}
+				if (birthdayBar) birthdayBar.style.width = `${birthdayProgress.percent}%`;
 			}
 			if (birthdayPrefix) {
 				birthdayPrefix.textContent = english
