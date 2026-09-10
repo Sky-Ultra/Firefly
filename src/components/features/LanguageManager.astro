@@ -19,23 +19,48 @@ const automaticTranslations = Object.fromEntries(
 <script is:inline>
 	(() => {
 		const storageKey = "firefly-language";
-		let language = "zh-CN";
+		let storedLanguage = null;
 		try {
-			language = localStorage.getItem(storageKey) === "en" ? "en" : "zh-CN";
+			storedLanguage = localStorage.getItem(storageKey);
 		} catch {
-			language = "zh-CN";
+			storedLanguage = null;
+		}
+
+		let language;
+		if (storedLanguage === "zh-CN" || storedLanguage === "en") {
+			language = storedLanguage;
+		} else {
+			let browserLanguage = "";
+			try {
+				browserLanguage = navigator.languages?.[0] || navigator.language || "";
+			} catch {
+				browserLanguage = "";
+			}
+			language = /^zh(?:[-_]|$)/i.test(browserLanguage.trim()) ? "zh-CN" : "en";
+			try {
+				localStorage.setItem(storageKey, language);
+			} catch {
+				// The detected language still applies for this page when storage is blocked.
+			}
 		}
 		document.documentElement.lang = language;
 		document.documentElement.dataset.language = language;
+		if (language === "en") document.documentElement.dataset.languagePending = "true";
 	})();
 </script>
+
+<style is:inline>
+	html[data-language-pending="true"] body {
+		visibility: hidden;
+	}
+</style>
 
 <script>
 	import {
 		DEFAULT_LANGUAGE,
 		LANGUAGE_CHANGE_EVENT,
 		normalizeLanguage,
-		readStoredLanguage,
+		resolveInitialLanguage,
 		writeStoredLanguage,
 		type SiteLanguage,
 	} from "@/i18n/runtime-language";
@@ -159,6 +184,7 @@ const automaticTranslations = Object.fromEntries(
 	function initializeLanguageManager(): void {
 		if (window.fireflyLanguage) {
 			window.fireflyLanguage.apply();
+			delete document.documentElement.dataset.languagePending;
 			return;
 		}
 
@@ -169,10 +195,17 @@ const automaticTranslations = Object.fromEntries(
 			apply: applyLanguage,
 		};
 
-		const stored = readStoredLanguage(window.localStorage);
-		document.documentElement.lang = stored;
-		document.documentElement.dataset.language = stored;
+		const browserLanguages = navigator.languages?.length
+			? navigator.languages
+			: [navigator.language];
+		const initialLanguage = resolveInitialLanguage(
+			window.localStorage,
+			browserLanguages,
+		);
+		document.documentElement.lang = initialLanguage;
+		document.documentElement.dataset.language = initialLanguage;
 		applyLanguage();
+		delete document.documentElement.dataset.languagePending;
 
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
