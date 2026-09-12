@@ -96,6 +96,9 @@ const showTagsInMeta = metaShowTags && tagsPosition === "meta";
 const showTagsAtBottom = metaShowTags && tagsPosition === "bottom";
 const descriptionClampLines = String(descriptionLines);
 const shouldClampDescription = descriptionLines > 0;
+const usesPrimaryTitleColor =
+	entry.id === "personal-website-introduction" ||
+	entry.id === "personal-website-changelog";
 
 const { remarkPluginFrontmatter } = await render(entry);
 const descriptionText = description || remarkPluginFrontmatter.excerpt || "";
@@ -126,7 +129,7 @@ const minutes = remarkPluginFrontmatter.minutes;
   >
     <a
       href={url}
-      style={entry.id === "personal-website-introduction" ? "color: var(--primary);" : undefined}
+      style={usesPrimaryTitleColor ? "color: var(--primary);" : undefined}
       class="post-card-title transition group w-full block font-bold mb-3 text-3xl text-90
         hover:text-(--primary) dark:hover:text-(--primary)
         active:text-(--title-active) dark:active:text-(--title-active)

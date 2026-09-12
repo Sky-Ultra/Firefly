@@ -3,6 +3,16 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils";
 
+const PINNED_POST_ORDER = [
+	"personal-website-introduction",
+	"personal-website-changelog",
+];
+
+function getPinnedPostOrder(id: string) {
+	const index = PINNED_POST_ORDER.indexOf(id);
+	return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+}
+
 // // Retrieve posts and sort them by publication date
 async function getRawSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
@@ -13,6 +23,10 @@ async function getRawSortedPosts() {
 		// 首先按置顶状态排序，置顶文章在前
 		if (a.data.pinned && !b.data.pinned) return -1;
 		if (!a.data.pinned && b.data.pinned) return 1;
+		if (a.data.pinned && b.data.pinned) {
+			const pinnedOrder = getPinnedPostOrder(a.id) - getPinnedPostOrder(b.id);
+			if (pinnedOrder !== 0) return pinnedOrder;
+		}
 
 		// 如果置顶状态相同，则按发布日期排序
 		const dateA = new Date(a.data.published);

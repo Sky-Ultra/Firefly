@@ -51,6 +51,9 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+const usesPrimaryTitleColor =
+	entry.id === "personal-website-introduction" ||
+	entry.id === "personal-website-changelog";
 const { Content, headings } = await render(entry);
 const { remarkPluginFrontmatter } = await render(entry);
 const translation = getPostTranslation(entry.id);
@@ -236,7 +239,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
           data-pagefind-body
           data-pagefind-weight="10"
           data-pagefind-meta="title"
-          style={entry.id === "personal-website-introduction" ? "color: var(--primary);" : undefined}
+          style={usesPrimaryTitleColor ? "color: var(--primary);" : undefined}
           class="transition w-full block font-bold mb-3
                     text-3xl md:text-[2.25rem]/[2.75rem]
                     text-black/90 dark:text-white/90
