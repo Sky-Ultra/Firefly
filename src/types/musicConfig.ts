@@ -42,6 +42,9 @@ export type MusicPlayerConfig = {
 		// 认证 token（可选）
 		auth?: string;
 
+		// 单个 API 请求的最长等待时间（毫秒）
+		requestTimeoutMs?: number;
+
 		// 备用 API 配置（当主 API 失败时使用）
 		fallbackApis?: string[];
 

@@ -168,6 +168,21 @@ const managerConfigStr = JSON.stringify({
             .concat(basePlaylist.slice(headCount));
     }
 
+    async function fetchJsonWithTimeout(fetchUrl, timeoutMs) {
+        var controller = new AbortController();
+        var timeoutId = setTimeout(function () {
+            controller.abort();
+        }, timeoutMs);
+
+        try {
+            var res = await fetch(fetchUrl, { signal: controller.signal });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return await res.json();
+        } finally {
+            clearTimeout(timeoutId);
+        }
+    }
+
     async function fetchMetingData() {
         if (!config.meting) return;
         var m = config.meting;
@@ -184,9 +199,10 @@ const managerConfigStr = JSON.stringify({
                     .replace(':r', Math.random());
                 if (m.auth) fetchUrl += '&auth=' + m.auth;
 
-                var res = await fetch(fetchUrl);
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                var data = await res.json();
+                var data = await fetchJsonWithTimeout(
+                    fetchUrl,
+                    Number(m.requestTimeoutMs) || 8000
+                );
 
                 if (Array.isArray(data) && data.length > 0) {
                     var basePlaylist = data.map(function (item) {

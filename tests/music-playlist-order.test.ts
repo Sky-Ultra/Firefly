@@ -55,3 +55,20 @@ test("the player composes pinned, original head, inserted, and original tail son
 		/return pinned\s*\.concat\(basePlaylist\.slice\(0, headCount\)\)\s*\.concat\(inserted\)\s*\.concat\(basePlaylist\.slice\(headCount\)\)/s,
 	);
 });
+
+test("the player times out stalled APIs and starts with a responsive source", () => {
+	const meting = musicPlayerConfig.meting;
+	assert.ok(meting);
+	assert.equal(meting.requestTimeoutMs, 8000);
+	assert.match(meting.api ?? "", /api\.injahow\.cn/);
+	assert.match(meting.fallbackApis?.[0] ?? "", /api\.moeyao\.cn/);
+
+	const manager = readFileSync(
+		new URL("../src/components/features/MusicManager.astro", import.meta.url),
+		"utf8",
+	);
+	assert.match(manager, /new AbortController\(\)/);
+	assert.match(manager, /controller\.abort\(\)/);
+	assert.match(manager, /fetch\(fetchUrl, \{ signal: controller\.signal \}\)/);
+	assert.match(manager, /clearTimeout\(timeoutId\)/);
+});
