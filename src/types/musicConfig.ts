@@ -1,3 +1,13 @@
+type MetingServer = "netease" | "tencent" | "kugou" | "xiami" | "baidu";
+
+type MetingSongReference = {
+	name: string;
+	artist: string;
+	server: MetingServer;
+	id: string;
+	picId?: string;
+};
+
 // 音乐播放器配置
 export type MusicPlayerConfig = {
 	// 使用方式：'meting' 或 'local'
@@ -21,7 +31,7 @@ export type MusicPlayerConfig = {
 		api?: string;
 
 		// 音乐平台：netease=网易云音乐, tencent=QQ音乐, kugou=酷狗音乐, xiami=虾米音乐, baidu=百度音乐
-		server?: "netease" | "tencent" | "kugou" | "xiami" | "baidu";
+		server?: MetingServer;
 
 		// 类型：song=单曲, playlist=歌单, album=专辑, search=搜索, artist=艺术家
 		type?: "song" | "playlist" | "album" | "search" | "artist";
@@ -34,6 +44,21 @@ export type MusicPlayerConfig = {
 
 		// 备用 API 配置（当主 API 失败时使用）
 		fallbackApis?: string[];
+
+		// 将指定单曲与远程歌单组合成最终播放顺序
+		playlistOrder?: {
+			// 单曲音源、封面和歌词解析地址
+			songApi: string;
+
+			// 保留远程歌单开头的歌曲数量
+			baseHeadCount: number;
+
+			// 固定在整个播放列表最前面的歌曲
+			pinnedSongs?: MetingSongReference[];
+
+			// 插入在远程歌单开头歌曲之后的歌曲
+			insertedSongs?: MetingSongReference[];
+		};
 	};
 
 	// 本地音乐配置（当 mode 为 'local' 时使用）

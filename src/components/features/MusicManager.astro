@@ -129,6 +129,45 @@ const managerConfigStr = JSON.stringify({
     }
 
     // ── Meting fetch ─────────────────────────────────────────
+    function createConfiguredTrack(song, api) {
+        function endpoint(type, id) {
+            return api
+                .replace(':server', song.server)
+                .replace(':type', type)
+                .replace(':id', id)
+                .replace(':r', Math.random());
+        }
+
+        return {
+            name: song.name,
+            artist: song.artist,
+            url: endpoint('url', song.id),
+            pic: song.picId ? endpoint('pic', song.picId) : '',
+            lrc: endpoint('lrc', song.id)
+        };
+    }
+
+    function applyConfiguredPlaylistOrder(basePlaylist, meting) {
+        var order = meting.playlistOrder;
+        if (!order || !order.songApi) return basePlaylist;
+
+        var headCount = Math.max(0, Math.min(
+            Number(order.baseHeadCount) || 0,
+            basePlaylist.length
+        ));
+        var pinned = (order.pinnedSongs || []).map(function (song) {
+            return createConfiguredTrack(song, order.songApi);
+        });
+        var inserted = (order.insertedSongs || []).map(function (song) {
+            return createConfiguredTrack(song, order.songApi);
+        });
+
+        return pinned
+            .concat(basePlaylist.slice(0, headCount))
+            .concat(inserted)
+            .concat(basePlaylist.slice(headCount));
+    }
+
     async function fetchMetingData() {
         if (!config.meting) return;
         var m = config.meting;
@@ -150,7 +189,7 @@ const managerConfigStr = JSON.stringify({
                 var data = await res.json();
 
                 if (Array.isArray(data) && data.length > 0) {
-                    state.playlist = data.map(function (item) {
+                    var basePlaylist = data.map(function (item) {
                         return {
                             name: item.title || item.name || 'Unknown',
                             artist: item.author || item.artist || 'Unknown',
@@ -159,6 +198,7 @@ const managerConfigStr = JSON.stringify({
                             lrc: item.lrc
                         };
                     });
+                    state.playlist = applyConfiguredPlaylistOrder(basePlaylist, m);
                     return;
                 }
             } catch (e) {
