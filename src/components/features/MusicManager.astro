@@ -62,6 +62,8 @@ const managerConfigStr = JSON.stringify({
     if (window.__fireflyMusic) return;
 
     var config = JSON.parse(managerConfigStr);
+    var PLAYBACK_MEMORY_KEY = 'firefly-music-playback-v1';
+    var MEMORY_WRITE_INTERVAL_MS = 2000;
 
     // ── Helpers ──────────────────────────────────────────────
     function formatTime(seconds) {
@@ -94,6 +96,38 @@ const managerConfigStr = JSON.stringify({
         return result.sort(function (a, b) { return a.time - b.time; });
     }
 
+    function normalizeTrackIdentityPart(value) {
+        return String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+    }
+
+    function getTrackKey(track) {
+        if (!track) return '';
+        return normalizeTrackIdentityPart(track.name)
+            + '\n'
+            + normalizeTrackIdentityPart(track.artist);
+    }
+
+    function readPlaybackMemory() {
+        try {
+            var raw = localStorage.getItem(PLAYBACK_MEMORY_KEY);
+            if (!raw) return null;
+
+            var memory = JSON.parse(raw);
+            if (!memory || memory.version !== 1 || typeof memory.trackKey !== 'string') {
+                return null;
+            }
+
+            var currentTime = Number(memory.currentTime);
+            return {
+                trackKey: memory.trackKey,
+                currentTime: Number.isFinite(currentTime) && currentTime > 0 ? currentTime : 0
+            };
+        } catch (e) {
+            console.warn('Unable to read music playback memory:', e);
+            return null;
+        }
+    }
+
     // ── Audio element (persistent, attached to body) ────────
     var audio = document.createElement('audio');
     audio.crossOrigin = 'anonymous';
@@ -102,6 +136,8 @@ const managerConfigStr = JSON.stringify({
 
     // ── State ────────────────────────────────────────────────
     var loadVersion = 0; // incremented on each loadTrack to discard stale play() results
+    var lastMemoryWriteAt = 0;
+    var pendingResume = null;
     var state = {
         playlist: [],
         currentIndex: 0,
@@ -117,6 +153,57 @@ const managerConfigStr = JSON.stringify({
         initializing: false,
         error: null
     };
+
+    function persistPlaybackMemory(force, timeOverride) {
+        if (state.playlist.length === 0) return;
+
+        var now = Date.now();
+        if (!force && now - lastMemoryWriteAt < MEMORY_WRITE_INTERVAL_MS) return;
+
+        var track = state.playlist[state.currentIndex];
+        if (!track) return;
+
+        var rememberedTime = Number.isFinite(timeOverride)
+            ? timeOverride
+            : audio.currentTime;
+        if (pendingResume && pendingResume.version === loadVersion) {
+            rememberedTime = pendingResume.time;
+        }
+        if (!Number.isFinite(rememberedTime) || rememberedTime < 0) {
+            rememberedTime = 0;
+        }
+
+        try {
+            localStorage.setItem(PLAYBACK_MEMORY_KEY, JSON.stringify({
+                version: 1,
+                trackKey: getTrackKey(track),
+                currentTime: rememberedTime,
+                updatedAt: now
+            }));
+            lastMemoryWriteAt = now;
+        } catch (e) {
+            console.warn('Unable to save music playback memory:', e);
+        }
+    }
+
+    function scheduleResumeTime(time, version) {
+        var resumeTime = Number(time);
+        if (!Number.isFinite(resumeTime) || resumeTime <= 0) return;
+
+        pendingResume = { version: version, time: resumeTime };
+
+        function restore() {
+            if (version !== loadVersion || !pendingResume) return;
+            if (audio.readyState < 1 || !Number.isFinite(audio.duration)) return;
+
+            audio.currentTime = Math.max(0, Math.min(resumeTime, audio.duration));
+            pendingResume = null;
+            persistPlaybackMemory(true);
+        }
+
+        if (audio.readyState >= 1) restore();
+        else audio.addEventListener('loadedmetadata', restore, { once: true });
+    }
 
     // Map config playMode string to number
     if (config.playMode === 'random') state.playMode = 2;
@@ -147,6 +234,28 @@ const managerConfigStr = JSON.stringify({
         };
     }
 
+    function applyBaseHeadOrder(baseHead, preferredNames) {
+        if (!Array.isArray(preferredNames) || preferredNames.length === 0) {
+            return baseHead;
+        }
+
+        var remaining = baseHead.slice();
+        var preferred = preferredNames.reduce(function (tracks, preferredName) {
+            var normalizedName = String(preferredName || '').trim();
+            var matchIndex = remaining.findIndex(function (track) {
+                return String(track.name || '').trim() === normalizedName;
+            });
+
+            if (matchIndex >= 0) {
+                tracks.push(remaining.splice(matchIndex, 1)[0]);
+            }
+
+            return tracks;
+        }, []);
+
+        return preferred.concat(remaining);
+    }
+
     function applyConfiguredPlaylistOrder(basePlaylist, meting) {
         var order = meting.playlistOrder;
         if (!order || !order.songApi) return basePlaylist;
@@ -161,9 +270,13 @@ const managerConfigStr = JSON.stringify({
         var inserted = (order.insertedSongs || []).map(function (song) {
             return createConfiguredTrack(song, order.songApi);
         });
+        var baseHead = applyBaseHeadOrder(
+            basePlaylist.slice(0, headCount),
+            order.baseHeadOrder
+        );
 
         return pinned
-            .concat(basePlaylist.slice(0, headCount))
+            .concat(baseHead)
             .concat(inserted)
             .concat(basePlaylist.slice(headCount));
     }
@@ -257,17 +370,26 @@ const managerConfigStr = JSON.stringify({
     }
 
     // ── Track loading ────────────────────────────────────────
-    function loadTrack(index, autoPlay) {
+    function loadTrack(index, autoPlay, resumeTime) {
         if (index < 0 || index >= state.playlist.length) return;
         state.currentIndex = index;
         var track = state.playlist[index];
         var ver = ++loadVersion;
+        pendingResume = null;
 
         audio.src = track.url;
+        scheduleResumeTime(resumeTime, ver);
 
         loadLyrics(track);
 
         emit('fm:track', { index: index, track: track, autoPlay: !!autoPlay });
+        var initialRememberedTime = Number(resumeTime);
+        persistPlaybackMemory(
+            true,
+            Number.isFinite(initialRememberedTime) && initialRememberedTime > 0
+                ? initialRememberedTime
+                : 0
+        );
 
         if (autoPlay) {
             audio.play().then(function () {
@@ -382,6 +504,8 @@ const managerConfigStr = JSON.stringify({
             durationStr: formatTime(dur)
         });
 
+        persistPlaybackMemory(false);
+
         // Lyrics sync
         if (state.lyrics.length > 0) {
             var idx = -1;
@@ -398,6 +522,24 @@ const managerConfigStr = JSON.stringify({
 
     audio.addEventListener('ended', function () {
         playNext(true);
+    });
+
+    audio.addEventListener('pause', function () {
+        persistPlaybackMemory(true);
+    });
+
+    audio.addEventListener('seeked', function () {
+        persistPlaybackMemory(true);
+    });
+
+    window.addEventListener('pagehide', function () {
+        persistPlaybackMemory(true);
+    });
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') {
+            persistPlaybackMemory(true);
+        }
     });
 
     audio.addEventListener('error', function () {
@@ -422,7 +564,17 @@ const managerConfigStr = JSON.stringify({
                 audio.volume = state.volume;
 
                 var startIndex = 0;
-                if (state.playMode === 2) {
+                var resumeTime = 0;
+                var playbackMemory = readPlaybackMemory();
+                if (playbackMemory) {
+                    var rememberedIndex = state.playlist.findIndex(function (track) {
+                        return getTrackKey(track) === playbackMemory.trackKey;
+                    });
+                    if (rememberedIndex >= 0) {
+                        startIndex = rememberedIndex;
+                        resumeTime = playbackMemory.currentTime;
+                    }
+                } else if (state.playMode === 2) {
                     startIndex = Math.floor(Math.random() * state.playlist.length);
                 }
 
@@ -435,7 +587,7 @@ const managerConfigStr = JSON.stringify({
                     isMuted: state.isMuted
                 });
 
-                loadTrack(startIndex, false);
+                loadTrack(startIndex, false, resumeTime);
             } else {
                 state.initialized = true;
                 emit('fm:init', {

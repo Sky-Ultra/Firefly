@@ -30,6 +30,7 @@ const { Content } = await render(friendsPost);
 const isCommentEnabled =
 	commentConfig?.type &&
 	commentConfig.type !== "none" &&
+	commentConfig.enabledOn?.friends !== false &&
 	friendsPageConfig.showComment !== false;
 
 // 使用配置文件中的友链数据，按权重排序

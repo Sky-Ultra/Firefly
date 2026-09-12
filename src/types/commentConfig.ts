@@ -4,6 +4,12 @@ export type CommentConfig = {
 	 * "none" | "twikoo" | "waline" | "giscus" | "disqus" | 'artalk'
 	 */
 	type: "none" | "twikoo" | "waline" | "giscus" | "disqus" | "artalk";
+	/** 控制评论系统在哪些页面显示；未设置时保持模板原有的全局启用行为。 */
+	enabledOn?: {
+		guestbook?: boolean;
+		posts?: boolean;
+		friends?: boolean;
+	};
 	twikoo?: {
 		envId: string;
 		region?: string;

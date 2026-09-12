@@ -47,6 +47,12 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 			songApi:
 				"https://api.injahow.cn/meting/?server=:server&type=:type&id=:id",
 			baseHeadCount: 4,
+			baseHeadOrder: [
+				"希望有羽毛和翅膀",
+				"使一颗心免于哀伤",
+				"在银河中孤独摇摆",
+				"若我不曾见过太阳",
+			],
 			pinnedSongs: [
 				{
 					name: "星炬不熄",

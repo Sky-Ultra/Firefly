@@ -34,6 +34,7 @@ const getInitial = (name: string): string =>
 	<relationship-timer
 		data-start-at={config.startAt}
 		data-frozen={config.frozen ? "true" : undefined}
+		data-heart={config.heart || "❤️"}
 		class="block"
 	>
 		<div class="flex flex-col items-center p-2">
@@ -64,12 +65,26 @@ const getInitial = (name: string): string =>
 						</div>
 					)
 				}
-				<span
-					class="cursor-default text-2xl text-red-500 transition-transform motion-safe:hover:rotate-12 motion-safe:hover:scale-125"
-					aria-hidden="true"
-				>
-					{config.heart || "❤️"}
-				</span>
+				<div class="relative flex h-16 w-10 items-center justify-center">
+					<div
+						class="pointer-events-none absolute left-1/2 top-1/2 z-20 h-0 w-0 -translate-x-1/2 -translate-y-1/2 overflow-visible"
+						data-heart-burst-layer
+						aria-hidden="true"
+					></div>
+					<button
+						type="button"
+						class="relative z-10 flex h-10 w-10 touch-manipulation select-none items-center justify-center rounded-full text-2xl text-red-500 transition-transform duration-150 active:scale-90 motion-safe:hover:rotate-6 motion-safe:hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary)"
+						data-heart-trigger
+						data-i18n-zh="点击爱心"
+						data-i18n-en="Tap the heart"
+						data-i18n-attr="aria-label"
+						aria-label="点击爱心"
+					>
+						<span class="pointer-events-none drop-shadow-sm" aria-hidden="true">
+							{config.heart || "❤️"}
+						</span>
+					</button>
+				</div>
 				{
 					config.people[1].avatar ? (
 						<div class="relative h-16 w-16 overflow-hidden rounded-full border-2 border-white shadow-md dark:border-neutral-800">
@@ -218,9 +233,25 @@ const getInitial = (name: string): string =>
 	};
 
 	class RelationshipTimerElement extends HTMLElement {
+		private static readonly MAX_FLOATING_HEARTS = 28;
 		private timeoutId?: number;
+		private heartInteractionReady = false;
+		private heartButtonAnimation?: Animation;
+
+		private readonly handleHeartClick = (event: MouseEvent): void => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+
+			const trigger = target.closest<HTMLElement>("[data-heart-trigger]");
+			if (!trigger || !this.contains(trigger)) return;
+			this.releaseHeart(trigger);
+		};
 
 		connectedCallback(): void {
+			if (!this.heartInteractionReady) {
+				this.addEventListener("click", this.handleHeartClick);
+				this.heartInteractionReady = true;
+			}
 			if (this.timeoutId !== undefined) return;
 			if (this.dataset.frozen === "true") {
 				const status = this.querySelector<HTMLElement>("[data-timer-status]");
@@ -234,6 +265,98 @@ const getInitial = (name: string): string =>
 		disconnectedCallback(): void {
 			if (this.timeoutId !== undefined) window.clearTimeout(this.timeoutId);
 			this.timeoutId = undefined;
+			if (this.heartInteractionReady) {
+				this.removeEventListener("click", this.handleHeartClick);
+				this.heartInteractionReady = false;
+			}
+			this.heartButtonAnimation?.cancel();
+			this.heartButtonAnimation = undefined;
+			this.querySelectorAll<HTMLElement>("[data-floating-heart]").forEach(
+				(heart) => {
+					heart.getAnimations().forEach((animation) => animation.cancel());
+					heart.remove();
+				},
+			);
+		}
+
+		private releaseHeart(trigger: HTMLElement): void {
+			const layer = this.querySelector<HTMLElement>("[data-heart-burst-layer]");
+			if (!layer) return;
+
+			const existingHearts = layer.querySelectorAll<HTMLElement>(
+				"[data-floating-heart]",
+			);
+			if (existingHearts.length >= RelationshipTimerElement.MAX_FLOATING_HEARTS) {
+				existingHearts[0].getAnimations().forEach((animation) => animation.cancel());
+				existingHearts[0].remove();
+			}
+
+			const prefersReducedMotion = window.matchMedia(
+				"(prefers-reduced-motion: reduce)",
+			).matches;
+			const floatingHeart = document.createElement("span");
+			floatingHeart.dataset.floatingHeart = "true";
+			floatingHeart.className =
+				"pointer-events-none absolute left-0 top-0 select-none text-xl leading-none drop-shadow-sm";
+			floatingHeart.style.willChange = "transform, opacity";
+			floatingHeart.textContent = this.dataset.heart || "❤️";
+			layer.appendChild(floatingHeart);
+
+			const drift = prefersReducedMotion ? 0 : Math.round((Math.random() - 0.5) * 56);
+			const rise = prefersReducedMotion ? 18 : Math.round(68 + Math.random() * 34);
+			const rotation = prefersReducedMotion
+				? 0
+				: Math.round((Math.random() - 0.5) * 34);
+			const duration = prefersReducedMotion
+				? 260
+				: Math.round(900 + Math.random() * 420);
+			const origin = "translate3d(-50%, -50%, 0)";
+			const heartAnimation = floatingHeart.animate(
+				[
+					{
+						opacity: 0,
+						transform: `${origin} translate3d(0, 6px, 0) scale(0.55) rotate(${-rotation}deg)`,
+					},
+					{
+						offset: 0.16,
+						opacity: 1,
+						transform: `${origin} translate3d(${Math.round(drift * 0.12)}px, -10px, 0) scale(1.14) rotate(0deg)`,
+					},
+					{
+						offset: 0.62,
+						opacity: 0.9,
+						transform: `${origin} translate3d(${Math.round(drift * 0.62)}px, -${Math.round(rise * 0.58)}px, 0) scale(1) rotate(${Math.round(rotation * 0.6)}deg)`,
+					},
+					{
+						opacity: 0,
+						transform: `${origin} translate3d(${drift}px, -${rise}px, 0) scale(0.78) rotate(${rotation}deg)`,
+					},
+				],
+				{
+					duration,
+					easing: "cubic-bezier(0.22, 0.78, 0.26, 1)",
+					fill: "forwards",
+				},
+			);
+			const removeFloatingHeart = (): void => floatingHeart.remove();
+			heartAnimation.addEventListener("finish", removeFloatingHeart, { once: true });
+			heartAnimation.addEventListener("cancel", removeFloatingHeart, { once: true });
+
+			this.heartButtonAnimation?.cancel();
+			if (!prefersReducedMotion) {
+				this.heartButtonAnimation = trigger.animate(
+					[
+						{ transform: "scale(1)" },
+						{ transform: "scale(0.82)", offset: 0.28 },
+						{ transform: "scale(1.18)", offset: 0.62 },
+						{ transform: "scale(1)" },
+					],
+					{
+						duration: 280,
+						easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+					},
+				);
+			}
 		}
 
 		private scheduleNextTick(): void {

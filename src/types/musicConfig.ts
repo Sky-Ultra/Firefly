@@ -56,6 +56,9 @@ export type MusicPlayerConfig = {
 			// 保留远程歌单开头的歌曲数量
 			baseHeadCount: number;
 
+			// 按歌曲名称指定远程歌单开头歌曲的显示顺序
+			baseHeadOrder?: string[];
+
 			// 固定在整个播放列表最前面的歌曲
 			pinnedSongs?: MetingSongReference[];
 

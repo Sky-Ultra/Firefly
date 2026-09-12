@@ -25,6 +25,7 @@ import PostMetadata from "@/components/layout/PostMeta.astro";
 import RecommendedPost from "@/components/misc/RecommendedPost.astro";
 import SharePoster from "@/components/misc/SharePoster.svelte";
 import { coverImageConfig } from "@/config/coverImageConfig";
+import { commentConfig } from "@/config/commentConfig";
 import { licenseConfig } from "@/config/licenseConfig";
 import { profileConfig } from "@/config/profileConfig";
 import { siteConfig } from "@/config/siteConfig";
@@ -549,5 +550,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
   )}
 
   <!-- 评论 -->
-  {entry.data.comment && !entry.data.password && <Comment post={entry} />}
+  {commentConfig.enabledOn?.posts !== false && entry.data.comment && !entry.data.password && (
+    <Comment post={entry} />
+  )}
 </MainGridLayout>

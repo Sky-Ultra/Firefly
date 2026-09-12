@@ -30,10 +30,18 @@ const expectedInsertedSongs = [
 	"权御天下",
 ];
 
+const expectedBaseHeadSongs = [
+	"希望有羽毛和翅膀",
+	"使一颗心免于哀伤",
+	"在银河中孤独摇摆",
+	"若我不曾见过太阳",
+];
+
 test("the screenshot songs keep their requested playlist order", () => {
 	const order = musicPlayerConfig.meting?.playlistOrder;
 	assert.ok(order);
 	assert.equal(order.baseHeadCount, 4);
+	assert.deepEqual(order.baseHeadOrder, expectedBaseHeadSongs);
 	assert.deepEqual(
 		order.pinnedSongs?.map((song) => song.name),
 		["星炬不熄"],
@@ -52,7 +60,11 @@ test("the player composes pinned, original head, inserted, and original tail son
 
 	assert.match(
 		manager,
-		/return pinned\s*\.concat\(basePlaylist\.slice\(0, headCount\)\)\s*\.concat\(inserted\)\s*\.concat\(basePlaylist\.slice\(headCount\)\)/s,
+		/var baseHead = applyBaseHeadOrder\(\s*basePlaylist\.slice\(0, headCount\),\s*order\.baseHeadOrder\s*\)/s,
+	);
+	assert.match(
+		manager,
+		/return pinned\s*\.concat\(baseHead\)\s*\.concat\(inserted\)\s*\.concat\(basePlaylist\.slice\(headCount\)\)/s,
 	);
 });
 
