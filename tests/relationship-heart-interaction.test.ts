@@ -27,3 +27,10 @@ test("clicked hearts float with varied motion and respect reduced motion", () =>
 	assert.match(component, /prefers-reduced-motion: reduce/);
 	assert.match(component, /heartButtonAnimation = trigger\.animate/);
 });
+
+test("the relationship card has extra vertical space and themed verses", () => {
+	assert.match(component, /px-2 pb-5 pt-3/);
+	assert.match(component, /晓看天色暮看云，行也思君，坐也思君/);
+	assert.match(component, /愿我如星君如月，夜夜流光相皎洁/);
+	assert.match(component, /mt-5 space-y-1\.5 text-center text-xs leading-5 text-\(--primary\)/);
+});

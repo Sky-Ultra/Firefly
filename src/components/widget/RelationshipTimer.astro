@@ -37,7 +37,7 @@ const getInitial = (name: string): string =>
 		data-heart={config.heart || "❤️"}
 		class="block"
 	>
-		<div class="flex flex-col items-center p-2">
+		<div class="flex flex-col items-center px-2 pb-5 pt-3">
 			<div class="mb-4 flex items-center justify-center gap-2 text-sm font-medium text-neutral-600 dark:text-neutral-400">
 				<span>{config.people[0].name}</span>
 				<span class="text-red-500 motion-safe:animate-pulse" aria-hidden="true">
@@ -140,6 +140,11 @@ const getInitial = (name: string): string =>
 				<span class="shrink-0 rounded bg-blue-500 px-1 py-0.5 text-[10px] font-medium text-white"><LocalizedText zh="分" en="min" /></span>
 				<span class="min-w-0 text-center font-bold tabular-nums text-(--primary)" data-timer-unit="seconds">{config.frozen ? frozenDuration?.seconds ?? 99 : "00"}</span>
 				<span class="shrink-0 rounded bg-purple-400 px-1 py-0.5 text-[10px] font-medium text-white"><LocalizedText zh="秒" en="sec" /></span>
+			</div>
+
+			<div class="mt-5 space-y-1.5 text-center text-xs leading-5 text-(--primary)">
+				<p>晓看天色暮看云，行也思君，坐也思君</p>
+				<p>愿我如星君如月，夜夜流光相皎洁</p>
 			</div>
 			<span class="sr-only" data-timer-status></span>
 		</div>
