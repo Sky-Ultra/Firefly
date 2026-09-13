@@ -1,9 +1,10 @@
 import type { CommentConfig } from "../types/commentConfig";
 
 export const commentConfig: CommentConfig = {
-	// 评论系统类型: none, twikoo, waline, giscus, disqus, artalk，默认为none，即不启用评论系统
-	// 需要临时关闭留言时，将此处改回 "none" 即可；历史留言仍保留在 GitHub Discussions。
-	type: "giscus",
+	// 留言系统只需修改 type 即可切换：
+	// "twikoo" 允许访客填写昵称和邮箱留言；"giscus" 使用 GitHub Discussions；"none" 临时关闭留言。
+	// 切换或关闭不会删除 Twikoo 与 Giscus 各自保存的历史留言。
+	type: "twikoo",
 	// 当前只开放留言板，避免同时开启文章评论和友链评论。
 	enabledOn: {
 		guestbook: true,
@@ -13,7 +14,7 @@ export const commentConfig: CommentConfig = {
 
 	//twikoo评论系统配置
 	twikoo: {
-		envId: "https://twikoo.vercel.app",
+		envId: "https://firefly-twikoo.netlify.app/.netlify/functions/twikoo",
 		// 设置 Twikoo 评论系统语言
 		lang: "zh-CN",
 		// 是否启用文章访问量统计功能
