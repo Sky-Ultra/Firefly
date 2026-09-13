@@ -1,6 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
+import ImageWrapper from "@/components/common/ImageWrapper.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
+import { profileConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -114,26 +116,98 @@ const skillGroups = [
 
 <MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
 	<section class="card-base w-full overflow-hidden p-5 sm:p-7 lg:p-9">
-		<header class="mb-9 border-b border-(--line-divider) pb-7">
-			<div class="mb-4 flex items-center gap-3">
-				<div
-					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--primary) text-white shadow-sm dark:text-black/70"
-				>
-					<Icon
-						is:inline
-						name="material-symbols:person-rounded"
-						class="text-[1.65rem]"
+		<section class="about-profile mb-10 border-b border-(--line-divider) pb-9" aria-labelledby="about-profile-title">
+			<h1 id="about-profile-title" class="mb-8 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+				<LocalizedText zh="关于我？" en="About Me?" />
+			</h1>
+
+			<div class="mb-7 flex justify-center">
+				<div class="rounded-[1.45rem] bg-linear-to-br from-(--primary)/25 to-(--primary)/5 p-1.5 shadow-lg shadow-(--primary)/10">
+					<ImageWrapper
+						src={profileConfig.avatar || "assets/images/avatar.avif"}
+						alt="Sky 的头像"
+						position="30% 44%"
+						class="h-24 w-24 rounded-[1.15rem] ring-1 ring-white/70 sm:h-28 sm:w-28"
+						widths={[96, 112, 192, 224]}
+						sizes="(min-width: 640px) 112px, 96px"
+						loading="eager"
+						fetchpriority="high"
 					/>
 				</div>
-				<h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-					<LocalizedText zh="关于我" en="About Me" /> <span class="text-(--primary)">/ <LocalizedText zh="About Me" en="关于我" /></span>
-				</h1>
 			</div>
 
-			<p class="about-intro text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
-				<LocalizedText zh="你好！我是 Sky，一个在数字世界中默默无闻的一片叶子。" en="Hi! I'm Sky, a quiet leaf drifting through the digital world." />
-			</p>
-		</header>
+			<div class="mx-auto max-w-3xl text-center text-[0.95rem] font-medium leading-8 text-neutral-700 dark:text-neutral-300 sm:text-base">
+				<LocalizedText
+					zh="Hi，你好呀！欢迎访问我的个人网站……我是 Sky，喜欢折腾各种数码产品和电脑周边，喜欢 AI，拥抱 Agent。"
+					en="Hi, welcome to my personal website! I'm Sky. I enjoy tinkering with digital products and computer gear, exploring AI, and embracing agents."
+				/>
+				<br />
+				<LocalizedText zh="目前坐标悉尼，在上学……" en="I'm currently studying in Sydney." />
+				<br />
+				<LocalizedText
+					zh="“小小菠萝（xiaoxiaoboluo）”是我初中的外号吧，以此用作我的域名。"
+					en="Xiaoxiaoboluo was a nickname from middle school, so I made it my domain name."
+				/>
+				<br />
+				<LocalizedText
+					zh="欢迎通过 GitHub、邮箱、微信、QQ 与我交流。"
+					en="You're welcome to reach me through GitHub, email, WeChat, or QQ."
+				/>
+			</div>
+
+			<ul class="mx-auto mt-8 grid max-w-3xl gap-3 text-[0.95rem] leading-relaxed text-neutral-700 dark:text-neutral-300">
+				<li class="about-detail-item">
+					<span aria-hidden="true">🖥️</span>
+					<span><strong><LocalizedText zh="兴趣爱好：" en="Interests: " /></strong><LocalizedText zh="折腾电脑、打游戏、玩 AI" en="Tinkering with computers, gaming, and exploring AI" /></span>
+				</li>
+				<li class="about-detail-item">
+					<span aria-hidden="true">🎨</span>
+					<span><strong><LocalizedText zh="最爱颜色：" en="Favourite colours: " /></strong><LocalizedText zh="天蓝色和软 fufu 的樱花粉色系喵～" en="Sky blue and soft, fluffy cherry-blossom pink" /></span>
+				</li>
+				<li class="about-detail-item">
+					<span aria-hidden="true">🎵</span>
+					<span><strong><LocalizedText zh="喜爱音乐：" en="Favourite music: " /></strong>ACG Music</span>
+				</li>
+				<li class="about-detail-item">
+					<span aria-hidden="true">🎮</span>
+					<span>
+						<strong><LocalizedText zh="喜欢游戏：" en="Games: " /></strong>
+						<LocalizedText zh="请详见 " en="See the " />
+						<a class="about-link" href="/games/"><LocalizedText zh="我的－游戏" en="My - Games" /></a>
+						<LocalizedText zh=" 板块" en=" section" />
+					</span>
+				</li>
+				<li class="about-detail-item">
+					<span aria-hidden="true">💗</span>
+					<span><strong><LocalizedText zh="喜欢的人：" en="Someone special: " /></strong><LocalizedText zh="“ / ”详见左下角恋爱计时模块喵" en="“ / ” — see the relationship timer in the lower-left corner" /></span>
+				</li>
+			</ul>
+
+			<div class="mx-auto mt-10 max-w-3xl">
+				<h2 class="mb-4 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+					<LocalizedText zh="社交账号：" en="Social Accounts:" />
+				</h2>
+				<ul class="grid gap-3 text-[0.95rem] text-neutral-700 dark:text-neutral-300">
+					<li class="about-social-item">
+						<span aria-hidden="true">•</span>
+						<span>GitHub（<a class="about-link" href="https://github.com/Sky-Ultra" target="_blank" rel="noopener noreferrer"><LocalizedText zh="详见主页" en="profile" /></a>）</span>
+					</li>
+					<li class="about-social-item">
+						<span aria-hidden="true">•</span>
+						<span>BiliBili：<a class="about-link" href="https://space.bilibili.com/474735243" target="_blank" rel="noopener noreferrer">菠萝龘龘</a></span>
+					</li>
+				</ul>
+			</div>
+
+			<div class="mx-auto mt-10 max-w-3xl">
+				<h2 class="mb-3 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+					<LocalizedText zh="为什么建站？" en="Why this website?" />
+				</h2>
+				<p class="text-base font-medium text-neutral-700 dark:text-neutral-300">
+					<LocalizedText zh="因为这里是我的地盘喵" en="Because this is my little corner of the internet." />
+				</p>
+			</div>
+		</section>
 
 		<div class="mb-7 flex items-center gap-3">
 			<span class="h-7 w-1 rounded-full bg-(--primary)" aria-hidden="true"></span>
@@ -200,7 +274,32 @@ const skillGroups = [
 </MainGridLayout>
 
 <style>
-	:global(.about-intro p) {
-		margin: 0;
+	.about-detail-item,
+	.about-social-item {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+	}
+
+	.about-detail-item::marker,
+	.about-social-item::marker {
+		content: "";
+	}
+
+	.about-social-item > :first-child {
+		color: var(--primary);
+		font-size: 1.25rem;
+		line-height: 1.15rem;
+	}
+
+	.about-link {
+		color: var(--primary);
+		font-weight: 700;
+		text-decoration: none;
+		text-underline-offset: 0.2em;
+	}
+
+	.about-link:hover {
+		text-decoration: underline;
 	}
 </style>
