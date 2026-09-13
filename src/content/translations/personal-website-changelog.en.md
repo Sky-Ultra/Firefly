@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:597512bb9c8dd8dba44600bb0c73f05d1429a603c26e13db7222d3bf3f9f40a3
+sourceHash: sha256:dce5cbd755fe5846f8d5b69235271cedbc5e5827db7fa8869b2aa7686e2fc4dc
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -18,3 +18,6 @@ This article provides a brief record of updates to my personal website, beginnin
 - Improved music module loading speed and added fallback APIs
 - Added playback memory to the music module, stored in the browser cache
 - Fixed and improved several known issues
+- Major update: Completely rebuilt the guestbook. Visitors no longer need to sign in with GitHub and can comment by entering an email address. Powered by Twikoo (if you do not have an email address, a placeholder such as `xxx@xx.com` also works)
+- Updated the relationship timer widget text
+- Updated image assets and removed low-resolution images
