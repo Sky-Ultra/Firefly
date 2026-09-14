@@ -93,6 +93,13 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "firefly-glow",
+				date: "2026-09-14T22:33:00+10:00",
+				content: "飞萤之火自无梦的长夜亮起，绽放在终竟的明天",
+				contentEn:
+					"May the firefly's glow illuminate the long, dreamless night and bloom in the tomorrow at journey's end.",
+			},
+			{
 				id: "welcome",
 				date: "2026-07-15T09:00:00+10:00",
 				content: "我想留在大家身边，从过去...一同迈向明天。",
