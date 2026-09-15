@@ -443,17 +443,17 @@ const finalNotes = [
 		font-style: normal;
 	}
 
-	.about-secret:hover::after,
-	.about-secret:focus-visible::after,
-	.about-secret[aria-expanded="true"]::after {
+	.about-secret-list:hover .about-secret::after,
+	.about-secret-list:has(.about-secret:focus-visible) .about-secret::after,
+	.about-secret-list[data-revealed="true"] .about-secret::after {
 		opacity: 0;
 		transform: scale(0.985);
 		pointer-events: none;
 	}
 
-	.about-secret:hover .about-secret-content,
-	.about-secret:focus-visible .about-secret-content,
-	.about-secret[aria-expanded="true"] .about-secret-content {
+	.about-secret-list:hover .about-secret-content,
+	.about-secret-list:has(.about-secret:focus-visible) .about-secret-content,
+	.about-secret-list[data-revealed="true"] .about-secret-content {
 		opacity: 1;
 		filter: blur(0);
 		transform: translateY(0);
@@ -478,13 +478,20 @@ const finalNotes = [
 
 <script>
 	function initAboutSecrets() {
-		document.querySelectorAll<HTMLButtonElement>("[data-about-secret]").forEach((secret) => {
-			if (secret.dataset.secretReady === "true") return;
+		document.querySelectorAll<HTMLElement>(".about-secret-list").forEach((list) => {
+			if (list.dataset.secretReady === "true") return;
 
-			secret.dataset.secretReady = "true";
-			secret.addEventListener("click", () => {
-				const isRevealed = secret.getAttribute("aria-expanded") === "true";
-				secret.setAttribute("aria-expanded", String(!isRevealed));
+			list.dataset.secretReady = "true";
+			const secrets = Array.from(list.querySelectorAll<HTMLButtonElement>("[data-about-secret]"));
+			const setRevealed = (isRevealed: boolean) => {
+				list.dataset.revealed = String(isRevealed);
+				secrets.forEach(secret => secret.setAttribute("aria-expanded", String(isRevealed)));
+			};
+
+			secrets.forEach((secret) => {
+				secret.addEventListener("click", () => {
+					setRevealed(list.dataset.revealed !== "true");
+				});
 			});
 		});
 	}
