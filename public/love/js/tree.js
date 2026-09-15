@@ -391,7 +391,7 @@ class Tree {
     return new Bloom(this, new Point(width / 2, height / 2), figure);
   }
 
-  canFlower() { return this.bloomsCache.length > 0; }
+  canFlower() { return this.bloomsCache.length > 0 || this.blooms.length > 0; }
 
   flower(num) {
     this.blooms.push(...this.bloomsCache.splice(0, num));

@@ -7,16 +7,18 @@ async function startApp() {
 	const dynamicCanvas = initCanvas("canvas");
 	const tree = new Tree(staticCanvas, dynamicCanvas, groundCanvas,
 		StageConfig.width, StageConfig.height, TreeShape, CONFIG);
+	const { seed, footer } = tree;
 	const button = document.getElementById("start-button");
 	await new Promise(resolve => {
-		button.addEventListener("click", () => {
-			button.hidden = true;
+		button.addEventListener("click", async () => {
+			button.disabled = true;
 			startMusic();
+			await animateOpening(button, seed, staticCanvas);
+			button.hidden = true;
 			resolve();
 		}, { once: true });
 	});
 
-	const { seed, footer } = tree;
 	seed.drawHeart();
 	await animateSeedShrink(seed);
 	await animateSeedMove(seed, footer);

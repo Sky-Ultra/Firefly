@@ -63,7 +63,18 @@ canvas {
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
 }
-.intro-heart { flex-shrink: 0; }
+.intro-heart {
+	flex-shrink: 0;
+	transform-origin: center;
+	animation: heartbeat 2.4s ease-in-out infinite;
+}
+#start-button.opening .intro-heart { animation: none; }
+@keyframes heartbeat {
+	0%, 36%, 100% { transform: scale(1); }
+	12% { transform: scale(1.035); }
+	21% { transform: scale(1); }
+	28% { transform: scale(1.018); }
+}
 .intro-caption {
 	position: relative;
 	border-bottom: 2px solid currentColor;
@@ -141,5 +152,5 @@ canvas {
 
 @media (prefers-reduced-motion: reduce) {
 	#static-canvas { transition: none; }
-	.typewriter-cursor { animation: none; }
+	.intro-heart, .typewriter-cursor { animation: none; }
 }

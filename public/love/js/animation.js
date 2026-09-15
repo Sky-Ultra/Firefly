@@ -10,9 +10,19 @@ function wait(duration) {
   return new Promise((resolve) => setTimeout(resolve, duration));
 }
 
+const MotionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function prefersReducedMotion() {
+  return MotionPreference.matches;
+}
+
 async function runUntil(isDone, step, interval = 16) {
   let last = 0;
   while (!isDone()) {
+    if (prefersReducedMotion()) {
+      step();
+      continue;
+    }
     const now = await nextFrame();
     if (now - last >= interval) {
       step();
@@ -56,13 +66,30 @@ const AnimationConfig = {
   TREE_SHIFT_X: 260,
   TREE_MOVE_DURATION: 1600,
   HEART_JUMP_INTERVAL: 25,
-  MAX_FALLING_HEARTS: 4,
-  FALLING_SPAWN_CHANCE: 0.22
+  MAX_FALLING_HEARTS: 6,
+  FALLING_SPAWN_CHANCE: 0.26
 };
 
 // ===========================
 // Animation Phase Functions
 // ===========================
+
+async function animateOpening(button, seed, canvas) {
+  if (prefersReducedMotion()) return;
+  button.classList.add("opening");
+  const heart = button.querySelector(".intro-heart");
+  const caption = button.querySelector(".intro-caption");
+  const heartRect = heart.getBoundingClientRect();
+  const canvasRect = canvas.getBoundingClientRect();
+  const scale = canvasRect.width / StageConfig.width;
+  const x = canvasRect.left + seed.heart.point.x * scale - heartRect.left - heartRect.width / 2;
+  const y = canvasRect.top + seed.heart.point.y * scale - heartRect.top - heartRect.height / 2;
+  caption.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: "forwards" });
+  await heart.animate([
+    { transform: "translate(0, 0) scale(1)" },
+    { transform: `translate(${x}px, ${y}px) scale(${scale})` }
+  ], { duration: 420, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).finished;
+}
 
 function animateSeedShrink(seed) {
   return runUntil(
@@ -101,7 +128,7 @@ function animateFlowerBloom(tree) {
 
 async function animateTreeMove(staticCanvas) {
   staticCanvas.classList.add("shifted");
-  await wait(AnimationConfig.TREE_MOVE_DURATION);
+  if (!prefersReducedMotion()) await wait(AnimationConfig.TREE_MOVE_DURATION);
 }
 
 function startHeartJumpAnimation(tree) {
@@ -115,11 +142,12 @@ function startHeartJumpAnimation(tree) {
     tree.jump(dt);
   }
 
-  let stop = startFrameLoop(render, AnimationConfig.HEART_JUMP_INTERVAL);
+  let stop = () => {};
 
   function handleVisibilityChange() {
-    if (document.hidden) {
-      stop();
+    stop();
+    if (document.hidden || prefersReducedMotion()) {
+      dynamicCtx.clearRect(0, 0, width, height);
     } else {
       lastTime = 0;
       stop = startFrameLoop(render, AnimationConfig.HEART_JUMP_INTERVAL);
@@ -127,6 +155,8 @@ function startHeartJumpAnimation(tree) {
   }
 
   document.addEventListener("visibilitychange", handleVisibilityChange);
+  MotionPreference.addEventListener("change", handleVisibilityChange);
+  handleVisibilityChange();
 }
 
 // ===========================
@@ -142,6 +172,7 @@ function charDelay(char, base) {
 
 async function typewriter(el, speed = 100) {
   el.style.display = "block";
+  if (prefersReducedMotion()) return;
 
   const cursor = document.createElement("span");
   cursor.className = "typewriter-cursor";
@@ -161,6 +192,11 @@ async function typewriter(el, speed = 100) {
     line.p.appendChild(cursor);
 
     for (const char of line.text) {
+      if (prefersReducedMotion()) {
+        for (const { p, text } of lines) p.textContent = text;
+        cursor.remove();
+        return;
+      }
       textNode.textContent += char;
       await wait(charDelay(char, speed));
     }
