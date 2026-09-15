@@ -128,26 +128,18 @@ canvas {
 }
 #tree-caption p {
 	margin: 0;
-	background: linear-gradient(90deg, #ff3f8e 0%, #ff814a 18%, #ffd33d 36%, #ff6c76 56%, #ef4ccc 76%, #ff3f8e 100%);
-	background-size: 240% 100%;
-	background-clip: text;
-	-webkit-background-clip: text;
-	color: transparent;
-	-webkit-text-fill-color: transparent;
-	filter: drop-shadow(0 0 0.25rem rgb(255 105 145 / 18%));
+	color: #ee9eb8;
+	filter: drop-shadow(0 0 0.25rem rgb(238 158 184 / 18%));
 	font-size: clamp(0.875rem, 0.55rem + 0.75vw, 1.125rem);
 	font-weight: 600;
 	letter-spacing: 0.06em;
 	line-height: 1.6;
-	animation: leaf-color-flow 24s linear infinite;
 }
-#tree-caption .typewriter-cursor {
-	color: #ff5c84;
-	-webkit-text-fill-color: #ff5c84;
-	filter: none;
-}
-@keyframes leaf-color-flow {
-	to { background-position: -240% 0; }
+#tree-caption .tree-caption-cursor {
+	margin-left: 0.08em;
+	color: #e88eac;
+	font-weight: 400;
+	animation: blink 1s step-end infinite;
 }
 
 #heart-petal-field {
@@ -221,14 +213,12 @@ canvas {
 
 @media (prefers-reduced-motion: reduce) {
 	#static-canvas { transition: none; }
-	.intro-heart, .typewriter-cursor, #tree-caption p { animation: none; }
+	.intro-heart, .typewriter-cursor, .tree-caption-cursor { animation: none; }
 	#heart-petal-field { display: none; }
 }
 
 @media (forced-colors: active) {
 	#tree-caption p {
-		background: none;
 		color: CanvasText;
-		-webkit-text-fill-color: CanvasText;
 	}
 }

@@ -34,7 +34,7 @@ async function startApp() {
 	typewriter(letter);
 	const treeCaption = document.getElementById("tree-caption");
 	treeCaption.hidden = false;
-	typewriter(treeCaption, 115);
+	startTreeCaptionCarousel(treeCaption, CONFIG.treeCaptions, CONFIG.treeCaptionInterval);
 	startHeartJumpAnimation(tree);
 }
 

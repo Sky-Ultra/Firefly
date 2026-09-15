@@ -316,3 +316,77 @@ async function typewriter(el, speed = 100) {
   await wait(3600);
   cursor.remove();
 }
+
+function startTreeCaptionCarousel(el, texts, cycleDuration = 10000) {
+  if (!Array.isArray(texts) || texts.length === 0) return;
+  const paragraph = el.querySelector("p");
+  const typeSpeed = 100;
+  const deleteSpeed = 50;
+  let currentTextIndex = 0;
+  let randomQueue = shuffleIndexes(Array.from({ length: texts.length - 1 }, (_, index) => index + 1));
+
+  function segmentText(text) {
+    if (typeof Intl.Segmenter !== "function") return Array.from(text);
+    const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+    return Array.from(segmenter.segment(text), segment => segment.segment);
+  }
+
+  function shuffleIndexes(indexes) {
+    const shuffled = [...indexes];
+    for (let index = shuffled.length - 1; index > 0; index--) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+    }
+    return shuffled;
+  }
+
+  function getNextTextIndex() {
+    if (randomQueue.length === 0) {
+      randomQueue = shuffleIndexes(Array.from({ length: texts.length }, (_, index) => index));
+      if (randomQueue[0] === currentTextIndex) {
+        const differentIndex = randomQueue.findIndex(index => index !== currentTextIndex);
+        if (differentIndex > 0) {
+          [randomQueue[0], randomQueue[differentIndex]] = [randomQueue[differentIndex], randomQueue[0]];
+        }
+      }
+    }
+    return randomQueue.shift() ?? 0;
+  }
+
+  async function run() {
+    el.style.display = "block";
+
+    while (!prefersReducedMotion()) {
+      const segments = segmentText(texts[currentTextIndex]);
+      const cursor = document.createElement("span");
+      cursor.className = "tree-caption-cursor";
+      cursor.textContent = "|";
+      paragraph.replaceChildren(cursor);
+      const textNode = document.createTextNode("");
+      paragraph.prepend(textNode);
+
+      for (const segment of segments) {
+        if (prefersReducedMotion()) break;
+        textNode.textContent += segment;
+        await wait(typeSpeed);
+      }
+
+      if (prefersReducedMotion()) break;
+      const typingDuration = segments.length * typeSpeed;
+      const deletingDuration = segments.length * deleteSpeed;
+      await wait(Math.max(0, cycleDuration - typingDuration - deletingDuration));
+
+      for (let index = segments.length - 1; index >= 0; index--) {
+        if (prefersReducedMotion()) break;
+        textNode.textContent = segments.slice(0, index).join("");
+        await wait(deleteSpeed);
+      }
+
+      currentTextIndex = getNextTextIndex();
+    }
+
+    paragraph.textContent = texts[currentTextIndex];
+  }
+
+  run();
+}
