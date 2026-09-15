@@ -139,7 +139,7 @@ canvas {
 	font-weight: 600;
 	letter-spacing: 0.06em;
 	line-height: 1.6;
-	animation: leaf-color-flow 5.5s linear infinite;
+	animation: leaf-color-flow 24s linear infinite;
 }
 #tree-caption .typewriter-cursor {
 	color: #ff5c84;
@@ -148,6 +148,34 @@ canvas {
 }
 @keyframes leaf-color-flow {
 	to { background-position: -240% 0; }
+}
+
+#heart-petal-field {
+	position: fixed;
+	inset: 0;
+	z-index: 4;
+	overflow: hidden;
+	pointer-events: none;
+	contain: strict;
+}
+.heart-petal {
+	position: absolute;
+	top: 0;
+	left: 0;
+	color: var(--petal-color);
+	font-size: var(--petal-size);
+	line-height: 1;
+	opacity: var(--petal-opacity);
+	filter: drop-shadow(0 0 0.18em color-mix(in srgb, var(--petal-color) 34%, transparent));
+	will-change: transform, opacity;
+	animation: heart-petal-drift var(--petal-duration) linear var(--petal-delay) forwards;
+}
+@keyframes heart-petal-drift {
+	0% { transform: translate3d(var(--start-x), var(--start-y), 0) rotate(var(--start-rotate)) scale(0.82); opacity: 0; }
+	8% { opacity: var(--petal-opacity); }
+	48% { transform: translate3d(var(--mid-x), var(--mid-y), 0) rotate(var(--mid-rotate)) scale(1); }
+	90% { opacity: var(--petal-opacity); }
+	100% { transform: translate3d(var(--end-x), var(--end-y), 0) rotate(var(--end-rotate)) scale(0.88); opacity: 0; }
 }
 
 #music-toggle {
@@ -194,6 +222,7 @@ canvas {
 @media (prefers-reduced-motion: reduce) {
 	#static-canvas { transition: none; }
 	.intro-heart, .typewriter-cursor, #tree-caption p { animation: none; }
+	#heart-petal-field { display: none; }
 }
 
 @media (forced-colors: active) {

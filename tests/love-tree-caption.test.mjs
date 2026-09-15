@@ -23,7 +23,7 @@ test("the tree caption types after the tree finishes moving", () => {
 
 test("the caption uses a leaf-colored flowing gradient with accessible fallbacks", () => {
 	assert.match(styles, /#tree-caption p \{[\s\S]*linear-gradient\(90deg,[\s\S]*#ff3f8e[\s\S]*#ffd33d/);
-	assert.match(styles, /animation: leaf-color-flow 5\.5s linear infinite/);
+	assert.match(styles, /animation: leaf-color-flow 24s linear infinite/);
 	assert.match(styles, /prefers-reduced-motion: reduce[\s\S]*#tree-caption p \{ animation: none/);
 	assert.match(styles, /forced-colors: active/);
 });

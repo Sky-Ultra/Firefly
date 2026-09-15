@@ -15,6 +15,7 @@ async function startApp() {
 			startMusic();
 			await animateOpening(button, seed, staticCanvas);
 			button.hidden = true;
+			startAmbientHeartPetals();
 			resolve();
 		}, { once: true });
 	});

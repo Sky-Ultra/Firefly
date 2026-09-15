@@ -70,6 +70,8 @@ const AnimationConfig = {
   FALLING_SPAWN_CHANCE: 0.26
 };
 
+const HeartPetalColors = ["#ff3f8e", "#ff6c76", "#ff814a", "#ffb347", "#ffd33d", "#ef4ccc"];
+
 // ===========================
 // Animation Phase Functions
 // ===========================
@@ -194,6 +196,73 @@ function startHeartJumpAnimation(tree) {
   document.addEventListener("visibilitychange", handleVisibilityChange);
   MotionPreference.addEventListener("change", handleVisibilityChange);
   handleVisibilityChange();
+}
+
+function startAmbientHeartPetals() {
+  const field = document.getElementById("heart-petal-field");
+  const maxPetals = 16;
+  let spawnTimer = 0;
+
+  function randomBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function createPetal(isInitial = false) {
+    if (field.childElementCount >= maxPetals || document.hidden || prefersReducedMotion()) return;
+
+    const petal = document.createElement("span");
+    const duration = randomBetween(16, 25);
+    const startX = randomBetween(82, 112);
+    const startY = randomBetween(-16, 24);
+    const endX = randomBetween(-24, 18);
+    const endY = randomBetween(92, 122);
+    const sway = randomBetween(-8, 8);
+    const size = randomBetween(11, 24);
+
+    petal.className = "heart-petal";
+    petal.textContent = "♥";
+    petal.style.setProperty("--petal-color", HeartPetalColors[Math.floor(Math.random() * HeartPetalColors.length)]);
+    petal.style.setProperty("--petal-size", `${size.toFixed(1)}px`);
+    petal.style.setProperty("--petal-opacity", randomBetween(0.38, 0.72).toFixed(2));
+    petal.style.setProperty("--petal-duration", `${duration.toFixed(1)}s`);
+    petal.style.setProperty("--petal-delay", isInitial ? `${(-duration * Math.random()).toFixed(1)}s` : "0s");
+    petal.style.setProperty("--start-x", `${startX.toFixed(1)}vw`);
+    petal.style.setProperty("--start-y", `${startY.toFixed(1)}vh`);
+    petal.style.setProperty("--mid-x", `${(startX * 0.53 + endX * 0.47 + sway).toFixed(1)}vw`);
+    petal.style.setProperty("--mid-y", `${(startY * 0.47 + endY * 0.53).toFixed(1)}vh`);
+    petal.style.setProperty("--end-x", `${endX.toFixed(1)}vw`);
+    petal.style.setProperty("--end-y", `${endY.toFixed(1)}vh`);
+    petal.style.setProperty("--start-rotate", `${randomBetween(-55, 55).toFixed(0)}deg`);
+    petal.style.setProperty("--mid-rotate", `${randomBetween(70, 230).toFixed(0)}deg`);
+    petal.style.setProperty("--end-rotate", `${randomBetween(250, 620).toFixed(0)}deg`);
+    petal.addEventListener("animationend", () => petal.remove(), { once: true });
+    field.appendChild(petal);
+  }
+
+  function scheduleNextPetal() {
+    window.clearTimeout(spawnTimer);
+    if (document.hidden || prefersReducedMotion()) return;
+    spawnTimer = window.setTimeout(() => {
+      createPetal();
+      scheduleNextPetal();
+    }, randomBetween(1050, 1750));
+  }
+
+  function syncPetalsWithPage() {
+    window.clearTimeout(spawnTimer);
+    if (document.hidden || prefersReducedMotion()) {
+      field.replaceChildren();
+      return;
+    }
+    scheduleNextPetal();
+  }
+
+  if (!prefersReducedMotion()) {
+    for (let i = 0; i < Math.ceil(maxPetals * 0.55); i++) createPetal(true);
+    scheduleNextPetal();
+  }
+  document.addEventListener("visibilitychange", syncPetalsWithPage);
+  MotionPreference.addEventListener("change", syncPetalsWithPage);
 }
 
 // ===========================
