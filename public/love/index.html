@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="robots" content="noindex, nofollow, noarchive">
+	<meta name="referrer" content="no-referrer">
+	<meta name="theme-color" content="#ffffee">
+	<title>Falling for you</title>
+	<link rel="stylesheet" href="/love/styles.css?v=1">
+	<link rel="icon" type="image/svg+xml" href="/love/favicon.svg">
+	<script defer src="/love/config.js?v=1"></script>
+	<script defer src="/love/js/geometry.js?v=1"></script>
+	<script defer src="/love/js/animation.js?v=1"></script>
+	<script defer src="/love/js/tree.js?v=1"></script>
+	<script defer src="/love/js/ui.js?v=1"></script>
+	<script defer src="/love/js/main.js?v=1"></script>
+</head>
+<body data-pagefind-ignore="all">
+	<audio loop id="bgm" preload="none" src="/love/bgm.mp3"></audio>
+	<main id="viewport">
+		<div id="scene">
+			<div id="main">
+				<canvas id="ground-canvas" aria-hidden="true"></canvas>
+				<canvas id="static-canvas" aria-hidden="true"></canvas>
+				<canvas id="canvas" aria-hidden="true"></canvas>
+			</div>
+			<button id="start-button" type="button" aria-label="Falling for you，点击爱心开启情书">
+				<svg class="intro-heart" viewBox="0 0 64 60" width="64" height="60" aria-hidden="true">
+					<path d="M32 56C27 46 2 33 2 18C2 0 26-5 32 14C38-5 62 0 62 18C62 33 37 46 32 56Z" fill="currentColor"/>
+				</svg>
+				<span class="intro-caption">Falling for you</span>
+			</button>
+		</div>
+		<article id="letter" aria-label="写给 sy 的信" hidden></article>
+	</main>
+	<button id="music-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false" hidden>
+		<span aria-hidden="true">♪</span>
+	</button>
+	<noscript><p class="fallback">请启用 JavaScript，轻触爱心，展开这封信。</p></noscript>
+</body>
+</html>
