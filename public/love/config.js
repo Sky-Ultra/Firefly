@@ -1,5 +1,6 @@
 const CONFIG = {
 	seedText: "Falling for you",
+	treeCaption: "陪你看日升月潜，陪你看沧海变迁~",
 	letter: {
 		salutation: "sy：",
 		paragraphs: [

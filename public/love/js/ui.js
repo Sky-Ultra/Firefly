@@ -26,6 +26,7 @@ function initContent(config) {
 	}
 	addLine(letter, config.letter.closing, "closing");
 	document.querySelector(".intro-caption").textContent = config.seedText;
+	document.querySelector("#tree-caption p").textContent = config.treeCaption;
 }
 
 function initCanvas(id) {

@@ -23,7 +23,7 @@ body {
 #viewport { position: relative; width: min(1100px, 100%); }
 #scene {
 	position: relative;
-	height: calc(680px * var(--scene-scale));
+	height: calc(760px * var(--scene-scale));
 	overflow: hidden;
 }
 #main {
@@ -116,6 +116,40 @@ canvas {
 .typewriter-cursor--done { animation: blink 0.6s step-end 6 forwards; opacity: 0; }
 @keyframes blink { 50% { opacity: 0; } }
 
+#tree-caption {
+	position: absolute;
+	z-index: 3;
+	top: 92.5%;
+	left: 72.27%;
+	width: min(32.5rem, 80%);
+	transform: translateX(-50%);
+	text-align: center;
+	white-space: nowrap;
+}
+#tree-caption p {
+	margin: 0;
+	background: linear-gradient(90deg, #ff3f8e 0%, #ff814a 18%, #ffd33d 36%, #ff6c76 56%, #ef4ccc 76%, #ff3f8e 100%);
+	background-size: 240% 100%;
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(0 0 0.25rem rgb(255 105 145 / 18%));
+	font-size: clamp(0.875rem, 0.55rem + 0.75vw, 1.125rem);
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	line-height: 1.6;
+	animation: leaf-color-flow 5.5s linear infinite;
+}
+#tree-caption .typewriter-cursor {
+	color: #ff5c84;
+	-webkit-text-fill-color: #ff5c84;
+	filter: none;
+}
+@keyframes leaf-color-flow {
+	to { background-position: -240% 0; }
+}
+
 #music-toggle {
 	position: fixed;
 	right: max(1rem, env(safe-area-inset-right));
@@ -139,6 +173,7 @@ canvas {
 	#viewport { display: flex; flex-direction: column; }
 	body.letter-open #viewport { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
 	#scene { order: 2; flex-shrink: 0; transform-origin: top left; }
+	#tree-caption { left: 48.64%; width: 86%; }
 	#scene.mobile-repositioning { will-change: transform; overflow-anchor: none; }
 	#letter {
 		order: 1;
@@ -158,5 +193,13 @@ canvas {
 
 @media (prefers-reduced-motion: reduce) {
 	#static-canvas { transition: none; }
-	.intro-heart, .typewriter-cursor { animation: none; }
+	.intro-heart, .typewriter-cursor, #tree-caption p { animation: none; }
+}
+
+@media (forced-colors: active) {
+	#tree-caption p {
+		background: none;
+		color: CanvasText;
+		-webkit-text-fill-color: CanvasText;
+	}
 }
