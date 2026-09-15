@@ -24,7 +24,10 @@ function initContent(config) {
 		for (const text of lines) addLine(stanza, text);
 		letter.appendChild(stanza);
 	}
-	addLine(letter, config.letter.closing, "closing");
+	const closing = document.createElement("div");
+	closing.className = "closing";
+	for (const text of config.letter.closing) addLine(closing, text);
+	letter.appendChild(closing);
 	document.querySelector(".intro-caption").textContent = config.seedText;
 	document.querySelector("#tree-caption p").textContent = config.treeCaptions[0];
 }

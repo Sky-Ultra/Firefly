@@ -14,6 +14,14 @@ test("the tree caption has its own exact phrase pool and a dedicated region", ()
 		"陪你看日升月潜，陪你看沧海变迁~",
 		"我愿将心向明月",
 		"此时相望不相闻，愿逐月华流照君",
+		"南风知我意，吹梦到西洲",
+		"海上月是天上月，眼前人是心上人",
+		"白茶清欢无别事，我在等风也等你",
+		"我喜欢你",
+	]);
+	assert.deepEqual(Array.from(config.letter.closing), [
+		"晓看天色暮看云，行也思君，坐也思君❤",
+		"我喜欢你",
 	]);
 	assert.equal(config.treeCaptionInterval, 10000);
 	assert.match(html, /id="tree-caption" aria-label="树下寄语" hidden/);
