@@ -136,18 +136,24 @@ canvas {
 @media (max-width: 700px) {
 	:root { --tree-shift-x: 0px; }
 	body.letter-open { align-items: flex-start; }
+	#viewport { display: flex; flex-direction: column; }
+	body.letter-open #viewport { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+	#scene { order: 2; flex-shrink: 0; transform-origin: top left; }
+	#scene.mobile-repositioning { will-change: transform; overflow-anchor: none; }
 	#letter {
+		order: 1;
 		position: relative;
 		left: auto;
 		top: auto;
 		width: calc(100% - 3rem);
-		margin: 1.75rem auto 0;
-		padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+		margin: 1.75rem auto;
+		min-height: var(--mobile-letter-height, 0px);
 		font-size: 16px;
 		line-height: 1.85;
 	}
 	#letter p { min-height: 1.85em; }
 	#letter .stanza { margin-bottom: 1.5em; }
+	#letter.mobile-letter-staging { visibility: hidden; }
 }
 
 @media (prefers-reduced-motion: reduce) {

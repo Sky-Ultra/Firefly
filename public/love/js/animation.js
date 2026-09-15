@@ -127,8 +127,45 @@ function animateFlowerBloom(tree) {
 }
 
 async function animateTreeMove(staticCanvas) {
+  if (window.matchMedia("(max-width: 700px)").matches) {
+    await animateMobileTreeMove();
+    staticCanvas.classList.add("shifted");
+    return;
+  }
   staticCanvas.classList.add("shifted");
   if (!prefersReducedMotion()) await wait(AnimationConfig.TREE_MOVE_DURATION);
+}
+
+async function animateMobileTreeMove() {
+  const viewport = document.getElementById("viewport");
+  const scene = document.getElementById("scene");
+  const letter = document.getElementById("letter");
+  const before = scene.getBoundingClientRect();
+
+  // Lay out the complete letter invisibly, reserving its height during typing.
+  letter.classList.add("mobile-letter-staging");
+  letter.hidden = false;
+  document.body.classList.add("letter-open");
+  viewport.style.setProperty("--scene-scale", String(Math.min(viewport.clientWidth / StageConfig.width, 1)));
+  letter.style.setProperty("--mobile-letter-height", `${letter.getBoundingClientRect().height}px`);
+  const after = scene.getBoundingClientRect();
+
+  if (!prefersReducedMotion()) {
+    scene.classList.add("mobile-repositioning");
+    const animation = scene.animate([
+      { transform: `translate(${before.left - after.left}px, ${before.top - after.top}px) scale(${before.width / after.width})` },
+      { transform: "translate(0, 0) scale(1)" }
+    ], { duration: AnimationConfig.TREE_MOVE_DURATION, easing: "cubic-bezier(0.42, 0, 0.58, 1)" });
+    const finishImmediately = () => animation.finish();
+    MotionPreference.addEventListener("change", finishImmediately, { once: true });
+    try {
+      await animation.finished;
+    } finally {
+      MotionPreference.removeEventListener("change", finishImmediately);
+      scene.classList.remove("mobile-repositioning");
+    }
+  }
+  letter.classList.remove("mobile-letter-staging");
 }
 
 function startHeartJumpAnimation(tree) {
