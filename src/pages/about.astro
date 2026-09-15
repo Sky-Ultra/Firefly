@@ -112,6 +112,29 @@ const skillGroups = [
 		],
 	},
 ] as const;
+
+const finalNotes = [
+	{
+		zh: "谢谢你可以看到这里，我喜欢你喵~",
+		en: "Thank you for making it all the way here. I like you, meow~",
+	},
+	{
+		zh: "沃是优良少年喵，没有嗜好喵~",
+		en: "I'm a well-behaved youngster with no bad habits, meow~",
+	},
+	{
+		zh: "沃不抽烟，不喝酒，不赌博，不打牌，不去酒吧，不飙车，不钓鱼喵~",
+		en: "I don't smoke, drink, gamble, play cards, go to bars, street race, or fish, meow~",
+	},
+	{
+		zh: "我愿将心向明月喵~",
+		en: "I offer my heart to the bright moon, meow~",
+	},
+	{
+		zh: "唯愿此行，终抵群星~",
+		en: "May this journey reach the stars at last~",
+	},
+] as const;
 ---
 
 <MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
@@ -295,32 +318,32 @@ const skillGroups = [
 			<h2 id="about-final-closing-title" class="mb-5 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
 				<LocalizedText zh="最后的最后" en="The Very End" />
 			</h2>
-			<button
-				type="button"
-				class="about-secret"
-				aria-expanded="false"
-				data-about-secret
-			>
-				<span class="sr-only">
-					<LocalizedText zh="隐藏文字，悬停或轻触后显示：" en="Hidden text. Hover or tap to reveal: " />
-				</span>
-				<span class="about-secret-content text-neutral-700 dark:text-neutral-300">
-					<LocalizedText
-						zh={`谢谢你可以看到这里，我喜欢你喵~
-沃是优良少年喵，没有嗜好喵~
-沃不抽烟，不喝酒，不赌博，不打牌，不去酒吧，不飙车，不钓鱼喵~
-我愿将心向明月喵~
-
-唯愿此行，终抵群星~`}
-						en={`Thank you for making it all the way here. I like you, meow~
-I'm a well-behaved youngster with no bad habits, meow~
-I don't smoke, drink, gamble, play cards, go to bars, street race, or fish, meow~
-I offer my heart to the bright moon, meow~
-
-May this journey reach the stars at last~`}
-					/>
-				</span>
-			</button>
+			<div class="about-secret-list">
+				{finalNotes.map((note, index) => (
+					<>
+						{index === finalNotes.length - 1 && (
+							<div class="about-secret-separator" aria-hidden="true">
+								<span></span>
+								<i>✦</i>
+								<span></span>
+							</div>
+						)}
+						<button
+							type="button"
+							class="about-secret"
+							aria-expanded="false"
+							data-about-secret
+						>
+							<span class="sr-only">
+								<LocalizedText zh="隐藏文字，悬停或轻触后显示：" en="Hidden text. Hover or tap to reveal: " />
+							</span>
+							<span class="about-secret-content text-neutral-700 dark:text-neutral-300">
+								<LocalizedText zh={note.zh} en={note.en} />
+							</span>
+						</button>
+					</>
+				))}
+			</div>
 		</section>
 	</section>
 </MainGridLayout>
@@ -355,16 +378,22 @@ May this journey reach the stars at last~`}
 		text-decoration: underline;
 	}
 
+	.about-secret-list {
+		display: flex;
+		max-width: 48rem;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.65rem;
+	}
+
 	.about-secret {
 		position: relative;
-		display: block;
-		width: 100%;
-		max-width: 48rem;
-		min-height: 10.5rem;
+		display: inline-block;
+		max-width: 100%;
 		overflow: hidden;
-		border-radius: 0.85rem;
-		background: color-mix(in oklch, var(--primary) 7%, transparent);
-		padding: 1.25rem 1.4rem;
+		border-radius: 0.55rem;
+		background: color-mix(in oklch, var(--primary) 6%, transparent);
+		padding: 0.35rem 0.75rem;
 		text-align: left;
 		cursor: pointer;
 	}
@@ -381,14 +410,37 @@ May this journey reach the stars at last~`}
 
 	.about-secret-content {
 		display: block;
-		white-space: pre-line;
 		font-size: 1rem;
 		font-weight: 500;
-		line-height: 1.9;
+		line-height: 1.65;
 		opacity: 0;
-		filter: blur(0.4rem);
-		transform: translateY(0.25rem);
+		filter: blur(0.3rem);
+		transform: translateY(0.15rem);
 		transition: opacity 300ms ease, filter 300ms ease, transform 300ms ease;
+	}
+
+	.about-secret-separator {
+		display: flex;
+		width: min(100%, 20rem);
+		align-items: center;
+		gap: 0.65rem;
+		padding: 0.45rem 0.15rem 0.15rem;
+		color: color-mix(in oklch, var(--primary) 68%, transparent);
+	}
+
+	.about-secret-separator span {
+		height: 1px;
+		flex: 1;
+		background: linear-gradient(90deg, transparent, color-mix(in oklch, var(--primary) 32%, transparent));
+	}
+
+	.about-secret-separator span:last-child {
+		background: linear-gradient(90deg, color-mix(in oklch, var(--primary) 32%, transparent), transparent);
+	}
+
+	.about-secret-separator i {
+		font-size: 0.7rem;
+		font-style: normal;
 	}
 
 	.about-secret:hover::after,
