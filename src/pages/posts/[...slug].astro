@@ -101,6 +101,12 @@ if (processedImage) {
 	}
 }
 
+const posterCoverImages = usesRandomCover
+	? randomCoverImages.map((image) => image.originalUrl).filter(Boolean)
+	: posterCoverUrl
+		? [posterCoverUrl]
+		: [];
+
 // 处理头像URL
 let posterAvatarUrl: string | null = profileConfig.avatar || null;
 if (posterAvatarUrl) {
@@ -332,6 +338,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                         descriptionEn={entry.data.descriptionEn || entry.data.titleEn}
                         pubDate={formatDateToYYYYMMDD(entry.data.published)}
                         coverImage={posterCoverUrl}
+                        coverImages={posterCoverImages}
                         url={Astro.url.href}
                         siteTitle={siteConfig.title}
                         avatar={posterAvatarUrl}
@@ -404,6 +411,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                         descriptionEn={entry.data.descriptionEn || entry.data.titleEn}
                         pubDate={formatDateToYYYYMMDD(entry.data.published)}
                         coverImage={posterCoverUrl}
+                        coverImages={posterCoverImages}
                         url={Astro.url.href}
                         siteTitle={siteConfig.title}
                         avatar={posterAvatarUrl}

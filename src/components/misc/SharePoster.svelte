@@ -13,6 +13,7 @@ export let description = "";
 export let descriptionEn = description;
 export let pubDate: string;
 export let coverImage: string | null = null;
+export let coverImages: string[] = [];
 export let url: string;
 export let siteTitle: string;
 export let avatar: string | null = null;
@@ -78,24 +79,37 @@ function getLines(
 	text: string,
 	maxWidth: number,
 ): string[] {
-	const chars = text.split("");
 	const lines: string[] = [];
-	let currentLine = "";
 
-	for (let i = 0; i < chars.length; i++) {
-		const char = chars[i];
-		const width = ctx.measureText(currentLine + char).width;
-		if (width < maxWidth) {
-			currentLine += char;
-		} else {
+	for (const paragraph of text.split(/\r?\n/)) {
+		if (!paragraph) {
+			lines.push("");
+			continue;
+		}
+
+		let currentLine = "";
+		for (const char of paragraph) {
+			const width = ctx.measureText(currentLine + char).width;
+			if (currentLine && width >= maxWidth) {
+				lines.push(currentLine);
+				currentLine = char;
+			} else {
+				currentLine += char;
+			}
+		}
+		if (currentLine) {
 			lines.push(currentLine);
-			currentLine = char;
 		}
 	}
-	if (currentLine) {
-		lines.push(currentLine);
-	}
 	return lines;
+}
+
+function selectPosterCoverImage(): string | null {
+	const candidates = [...new Set(coverImages.filter(Boolean))];
+	if (candidates.length === 0) return coverImage;
+	return (
+		candidates[Math.floor(Math.random() * candidates.length)] ?? coverImage
+	);
 }
 
 function drawRoundedRect(
@@ -128,6 +142,7 @@ async function generatePoster() {
 		const scale = 2;
 		const width = 425 * scale;
 		const padding = 24 * scale;
+		const selectedCoverImage = selectPosterCoverImage();
 
 		// 1. Prepare resources
 		const qrCodeUrl = await QRCode.toDataURL(url, {
@@ -137,7 +152,9 @@ async function generatePoster() {
 		});
 		const [qrImg, coverImg, avatarImg] = await Promise.all([
 			loadImage(qrCodeUrl),
-			coverImage ? loadImage(coverImage) : Promise.resolve(null),
+			selectedCoverImage
+				? loadImage(selectedCoverImage)
+				: Promise.resolve(null),
 			avatar ? loadImage(avatar) : Promise.resolve(null),
 		]);
 
@@ -155,7 +172,7 @@ async function generatePoster() {
 		let currentY = 0;
 
 		// Cover
-		const coverHeight = (coverImage ? 200 : 120) * scale;
+		const coverHeight = (selectedCoverImage ? 200 : 120) * scale;
 		currentY += coverHeight;
 		currentY += padding; // Gap after cover
 
