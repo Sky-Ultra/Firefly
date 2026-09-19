@@ -5,10 +5,10 @@ export const commentConfig: CommentConfig = {
 	// "twikoo" 允许访客填写昵称和邮箱留言；"giscus" 使用 GitHub Discussions；"none" 临时关闭留言。
 	// 切换或关闭不会删除 Twikoo 与 Giscus 各自保存的历史留言。
 	type: "twikoo",
-	// 当前只开放留言板，避免同时开启文章评论和友链评论。
+	// 留言板保持开放；文章评论由每篇文章的 comment 字段单独选择是否开放。
 	enabledOn: {
 		guestbook: true,
-		posts: false,
+		posts: true,
 		friends: false,
 	},
 

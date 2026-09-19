@@ -1,6 +1,6 @@
 ---
 translationOf: summer-is-still-there.md
-sourceHash: sha256:4832c472c32a3641ce43853c7932c6e96052e3b99a96c275d2d448739242a678
+sourceHash: sha256:2457b55c9578fc5e0f50e94a30318bc72bce126f662e11fcdd2a311125791c22
 ---
 
 I hate summer.
@@ -42,6 +42,8 @@ But summer rain stops too easily. Before the puddles recede, the sun peeks out f
 I look at it and still think it is beautiful.
 
 That annoys me a little. I cannot turn cold toward the whole of summer because of you. The evening wind still feels good against my skin. The first bite of iced watermelon is still so sweet I am reluctant to swallow it. When my headphones suddenly play a song I love, my steps still grow lighter. I am not deeply sad, at least not most of the time. But whenever these good things reach me, they arrive with an old habit: the wish to share them with you. My hand has already reached out before I remember to lower it slowly to my side.
+
+To have met at all is already the finest fortune; why insist that everything be made complete?
 
 Dusk spreads inch by inch, and summer changes its appearance again. The sky is a deep blue; the streetlights are on, yet beneath the trees people's faces are still clear. Young faces hold both sweat and light. Everyone looks as though they have just run out of a long wait and are hurrying toward some solemn appointment. The wind lifts the hem of a shirt. A white sneaker swings gently from the back of a bicycle. Somewhere in the distance, someone calls another person's name with such ease. The person being called turns around, and before the smile reaches their lips, it is already bright in their eyes.
 

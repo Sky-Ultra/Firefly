@@ -19,6 +19,7 @@ test("publishes the summer essay with the requested metadata", () => {
 	assert.match(article, /^title: 夏天还在那里$/m);
 	assert.match(article, /^published: 2026-09-16$/m);
 	assert.match(article, /^image: random$/m);
+	assert.match(article, /^comment: true$/m);
 	assert.match(
 		article,
 		/description: \|-\n {2}我讨厌夏天\n {2}明年，夏天依旧如期而至/,
@@ -27,6 +28,7 @@ test("publishes the summer essay with the requested metadata", () => {
 
 test("preserves the source essay from its opening to its closing", () => {
 	assert.match(article, /我讨厌夏天。/);
+	assert.match(article, /相逢已是上上签，何必执着事事圆。/);
 	assert.match(
 		article,
 		/此时相望不相闻，愿逐月华流照君。鸿雁长飞光不度，鱼龙潜跃水成文。/,

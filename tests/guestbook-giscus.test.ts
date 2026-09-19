@@ -3,26 +3,17 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { commentConfig } from "../src/config/commentConfig";
 
-test("guestbook uses the site repository's Giscus configuration", () => {
-	assert.equal(commentConfig.type, "giscus");
+test("guestbook and opted-in posts use the deployed Twikoo service", () => {
+	assert.equal(commentConfig.type, "twikoo");
 	assert.deepEqual(commentConfig.enabledOn, {
 		guestbook: true,
-		posts: false,
+		posts: true,
 		friends: false,
 	});
-	assert.deepEqual(commentConfig.giscus, {
-		repo: "Sky-Ultra/Firefly",
-		repoId: "R_kgDOTTmvEA",
-		category: "Announcements",
-		categoryId: "DIC_kwDOTTmvEM4DFbqx",
-		mapping: "pathname",
-		strict: "0",
-		reactionsEnabled: "1",
-		emitMetadata: "0",
-		inputPosition: "top",
-		lang: "zh-CN",
-		loading: "lazy",
-	});
+	assert.equal(
+		commentConfig.twikoo?.envId,
+		"https://firefly-twikoo.netlify.app/.netlify/functions/twikoo",
+	);
 });
 
 test("guestbook shows the Giscus credit without the coming-soon mask", () => {
@@ -36,9 +27,17 @@ test("guestbook shows the Giscus credit without the coming-soon mask", () => {
 	assert.doesNotMatch(guestbook, /guestbook-comment-mask/);
 });
 
-test("article and friends comments remain outside the enabled scope", () => {
+test("articles opt in individually while friends comments remain disabled", () => {
 	const posts = readFileSync(
 		new URL("../src/pages/posts/[...slug].astro", import.meta.url),
+		"utf8",
+	);
+	const schema = readFileSync(
+		new URL("../src/content.config.ts", import.meta.url),
+		"utf8",
+	);
+	const summerArticle = readFileSync(
+		new URL("../src/content/posts/summer-is-still-there.md", import.meta.url),
 		"utf8",
 	);
 	const friends = readFileSync(
@@ -47,5 +46,11 @@ test("article and friends comments remain outside the enabled scope", () => {
 	);
 
 	assert.match(posts, /commentConfig\.enabledOn\?\.posts !== false/);
+	assert.match(posts, /entry\.data\.comment/);
+	assert.match(
+		schema,
+		/comment: z\.boolean\(\)\.optional\(\)\.default\(false\)/,
+	);
+	assert.match(summerArticle, /^comment: true$/m);
 	assert.match(friends, /commentConfig\.enabledOn\?\.friends !== false/);
 });
