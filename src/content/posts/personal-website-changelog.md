@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-09-13T18:30:00+10:00
+updated: 2026-09-22T23:30:00+10:00
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -36,3 +36,20 @@ draft: false
 - 恋爱计时组件更新文字
 - 更新了图片素材，删除了低清素材
 - 完全重构“关于我？”标签页，有更多细化内容展示：[点击访问](/about/)
+
+## 2026.9.16
+
+- 更新随笔[《夏天还在那里》](/posts/summer-is-still-there/)，欢迎阅读！
+
+## 2026.9.18
+
+- 为随笔[《夏天还在那里》](/posts/summer-is-still-there/)新增评论模块，欢迎互动！
+
+## 2026.9.20
+
+- 修改了部分页面的 Bug，优化访问体验与流畅性
+- 新增欢迎词。新增部分图片素材
+
+## 2026.9.22
+
+- 更新指南[《安装并激活 Microsoft Office》](/posts/install-and-activate-microsoft-office/)，欢迎阅读

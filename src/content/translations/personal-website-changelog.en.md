@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:315960030af8fc5ec205dd55d820226902144e2d64088510cdb450c4f9ef0c11
+sourceHash: sha256:a1c5b07a8adaf4d0886b60e28c6b3e5d60290e4d300c5884449ee7fcbaa31d73
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -25,3 +25,20 @@ This article provides a brief record of updates to my personal website, beginnin
 - Updated the relationship timer widget text
 - Updated image assets and removed low-resolution images
 - Completely rebuilt the “About Me?” page with more detailed information: [Visit the page](/en/about/)
+
+## September 16, 2026
+
+- Updated the essay [“Summer Is Still There”](/posts/summer-is-still-there/). You’re welcome to read it!
+
+## September 18, 2026
+
+- Added comments to the essay [“Summer Is Still There”](/posts/summer-is-still-there/). You’re welcome to join the conversation!
+
+## September 20, 2026
+
+- Fixed bugs on several pages and improved the browsing experience and smoothness
+- Added new welcome messages. Added more image assets
+
+## September 22, 2026
+
+- Published the guide [“Install and Activate Microsoft Office”](/posts/install-and-activate-microsoft-office/). You’re welcome to read it

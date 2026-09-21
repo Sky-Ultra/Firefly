@@ -33,6 +33,14 @@ test("the personal website changelog is published and pinned", () => {
 	assert.match(changelog, /^pinned: true$/m);
 	assert.match(changelog, /^## 2026\.9\.12$/m);
 	assert.match(changelog, /新增音乐模块播放记忆功能，数据形式为浏览器缓存/);
+	assert.match(changelog, /^## 2026\.9\.16$/m);
+	assert.match(changelog, /^## 2026\.9\.18$/m);
+	assert.match(changelog, /^## 2026\.9\.20$/m);
+	assert.match(changelog, /^## 2026\.9\.22$/m);
+	assert.match(
+		changelog,
+		/\[《安装并激活 Microsoft Office》\]\(\/posts\/install-and-activate-microsoft-office\/\)/,
+	);
 });
 
 test("the changelog has a current English translation", () => {
@@ -43,6 +51,7 @@ test("the changelog has a current English translation", () => {
 	);
 	assert.match(changelogTranslation, new RegExp(`^sourceHash: sha256:${sourceHash}$`, "m"));
 	assert.match(changelogTranslation, /^## September 12, 2026$/m);
+	assert.match(changelogTranslation, /^## September 22, 2026$/m);
 });
 
 test("the introduction remains first and the changelog is pinned second", () => {
