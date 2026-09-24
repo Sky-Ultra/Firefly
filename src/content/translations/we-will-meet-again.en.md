@@ -1,6 +1,6 @@
 ---
 translationOf: we-will-meet-again.md
-sourceHash: sha256:910512d9ae84b9bf7e3f5804a94b28f48655b1cb9e8ce90bb1df00bf1d688204
+sourceHash: sha256:4518742bd1827ceaaaf9583476f4189a172167f2b1ad56e6c15904430b5ebbe3
 ---
 
 The flowers on the hillside were blooming almost excessively.

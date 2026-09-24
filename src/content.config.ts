@@ -2,7 +2,39 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-const postsCollection = defineCollection({
+type PostData = {
+	title: string;
+	titleEn: string;
+	published: Date;
+	updated?: Date;
+	draft: boolean;
+	description: string;
+	descriptionEn: string;
+	image: string;
+	tags: string[];
+	tagsEn: string[];
+	category: string | null;
+	categoryEn: string;
+	lang: string;
+	pinned: boolean;
+	author: string;
+	sourceLink: string;
+	licenseName: string;
+	licenseUrl: string;
+	comment: boolean;
+	password: string;
+	passwordHint: string;
+	prevTitle: string;
+	prevTitleEn: string;
+	prevSlug: string;
+	nextTitle: string;
+	nextTitleEn: string;
+	nextSlug: string;
+};
+
+const postsCollection: ReturnType<
+	typeof defineCollection<z.ZodType<PostData>>
+> = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
 	schema: z.object({
 		title: z.string(),
@@ -37,12 +69,17 @@ const postsCollection = defineCollection({
 	}),
 });
 
-const specCollection = defineCollection({
+const specCollection: ReturnType<
+	typeof defineCollection<z.ZodType<Record<string, unknown>>>
+> = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/spec" }),
 	schema: z.object({}),
 });
 
-export const collections = {
+export const collections: {
+	posts: typeof postsCollection;
+	spec: typeof specCollection;
+} = {
 	posts: postsCollection,
 	spec: specCollection,
 };

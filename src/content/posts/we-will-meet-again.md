@@ -10,6 +10,7 @@ tagsEn: [Essay, Reunion]
 category: 随笔
 categoryEn: Essay
 draft: false
+comment: true
 ---
 
 坡上的花开得有些过分。

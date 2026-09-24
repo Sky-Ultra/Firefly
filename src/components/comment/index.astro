@@ -29,7 +29,10 @@ const path = customPath
 			: `/${slug}`
 		: `/${slug}`;
 const url = `${Astro.site?.href}${path}`;
-const postTitle = post && "title" in post.data ? post.data.title : undefined;
+const postTitle =
+	post && "title" in post.data && typeof post.data.title === "string"
+		? post.data.title
+		: undefined;
 
 // 强制commentService类型为string，避免类型不兼容警告
 let commentService: string = commentConfig?.type || "none";
