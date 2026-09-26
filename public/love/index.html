@@ -7,35 +7,140 @@
 	<meta name="referrer" content="no-referrer">
 	<meta name="theme-color" content="#ffffee">
 	<title>Falling for you</title>
-	<link rel="stylesheet" href="/love/styles.css?v=4">
+	<link rel="stylesheet" href="/love/styles.css?v=6">
 	<link rel="icon" type="image/svg+xml" href="/love/favicon.svg">
 	<script defer src="/love/config.js?v=6"></script>
 	<script defer src="/love/js/geometry.js?v=1"></script>
-	<script defer src="/love/js/animation.js?v=4"></script>
+	<script defer src="/love/js/animation.js?v=5"></script>
 	<script defer src="/love/js/tree.js?v=1"></script>
 	<script defer src="/love/js/ui.js?v=4"></script>
-	<script defer src="/love/js/main.js?v=4"></script>
+	<script defer src="/love/js/afterword.js?v=2"></script>
+	<script defer src="/love/js/main.js?v=5"></script>
 </head>
 <body data-pagefind-ignore="all">
 	<audio loop id="bgm" preload="none" src="/love/bgm.mp3"></audio>
 	<div id="heart-petal-field" aria-hidden="true"></div>
-	<main id="viewport">
-		<div id="scene">
-			<div id="main">
-				<canvas id="ground-canvas" aria-hidden="true"></canvas>
-				<canvas id="static-canvas" aria-hidden="true"></canvas>
-				<canvas id="canvas" aria-hidden="true"></canvas>
+	<main>
+		<section id="love-first-page" aria-label="爱情树">
+			<div id="viewport">
+				<div id="scene">
+					<div id="main">
+						<canvas id="ground-canvas" aria-hidden="true"></canvas>
+						<canvas id="static-canvas" aria-hidden="true"></canvas>
+						<canvas id="canvas" aria-hidden="true"></canvas>
+					</div>
+					<button id="start-button" type="button" aria-label="Falling for you，点击爱心开启情书">
+						<svg class="intro-heart" viewBox="0 0 64 60" width="64" height="60" aria-hidden="true">
+							<path d="M32 56C27 46 2 33 2 18C2 0 26-5 32 14C38-5 62 0 62 18C62 33 37 46 32 56Z" fill="currentColor"/>
+						</svg>
+						<span class="intro-caption">Falling for you</span>
+					</button>
+					<div id="tree-caption" aria-label="树下寄语" hidden><p></p></div>
+				</div>
+				<article id="letter" aria-label="写给 sy 的信" hidden></article>
 			</div>
-			<button id="start-button" type="button" aria-label="Falling for you，点击爱心开启情书">
-				<svg class="intro-heart" viewBox="0 0 64 60" width="64" height="60" aria-hidden="true">
-					<path d="M32 56C27 46 2 33 2 18C2 0 26-5 32 14C38-5 62 0 62 18C62 33 37 46 32 56Z" fill="currentColor"/>
-				</svg>
-				<span class="intro-caption">Falling for you</span>
-			</button>
-			<div id="tree-caption" aria-label="树下寄语" hidden><p></p></div>
-		</div>
-		<article id="letter" aria-label="写给 sy 的信" hidden></article>
+		</section>
+		<section id="afterword" aria-label="写在树后的话" hidden>
+			<article class="afterword-content">
+				<div class="afterword-stanza afterword-opening">
+					<p>如果你看到了这里，大概你已经拒绝我了很长一段时间，所以我制作且启动了彩蛋</p>
+					<p>不过你大约永远看不见这里吧</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>我喜欢你，是因为你身上有吸引我的光，说不上来具体是什么，却总能轻易吸引我，这份心动和欣赏，最先暖到的是我自己，不管是偶然看见你，还是闲下来想起你，心里就会莫名舒服，所有坏情绪都能慢慢散掉，这份感觉真的很珍贵，我不想让喜欢变成绑住你的绳子，更不想让它变成为难自己的枷锁，我对你的喜欢，只是我自己的心意流动，是我人生里一段特别的体验，它本身就有意义，不用非得等你也喜欢我，才能证明它的价值</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>再喜欢你，但无所谓了。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>至少，我知道过你的名字，听过你的声音，陪你聊过天，感受过你的温柔。</p>
+				<p>你说的每一句话，我都记得。每一句话，我都认真在听。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>为何喜欢，这个问题我也问了自己无数遍，可是无论我怎么想，都想不出是为什么，我只知道我给你发消息我就会很心安，你不理我，我就会很难过，因为我知道遇见你不容易，圣遗物会好好珍惜，因为我只想要对你好，把自己全部的爱都留给你。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>其实我真的很多次因为你给我发信息而高兴，也因为你不理我而伤心</p>
+				<p>其实我真的很想你。想你想到半夜睡不着...</p>
+				<p>真的不会有人因为“不困”可以撑到五六点的...</p>
+				<p>我是真的会在被子里哭...</p>
+				<p>我也无数次想忘记，但是我忘不掉</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>我曾以为我只是生理喜欢，几个月就忘了，就淡了。</p>
+				<p>但是我记得你四年。</p>
+				<p>我忘不掉。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>我曾无数次想过，有你真好</p>
+				<p>也想过“如果最后是和你在一起，就算晚点也没关系”</p>
+				<p>甚至想过养你一辈子</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>如果爱也能被量化，那我大概早已超出定义域</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>但是我不想内耗我自己了。你似乎完全不喜欢我</p>
+				<p>我知道我不会追人，关于感情的话也不会说</p>
+				<p>不过似乎你对我，真的爱答不理...我很喜欢你，但是我很难受...</p>
+				<p>对不起，这段时间给你添麻烦了...</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>到最后，我看透了许多，也看淡了很多。</p>
+				<p>想说的话越来越少，心里装下的世界却越来越多。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>总觉得自己的生活一片模糊，我看不清自己，也看不清你。</p>
+				<p>为你着迷的人有很多，我心里很清楚，我随时可以被任何人替代。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>该怎么去诉说我心底那份绝望又无助的崩溃？</p>
+				<p>红了眼眶，却还要强颜欢笑。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>我们都不曾懂得时间的重量。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>也许，我永远不会再喜欢上别人了吧...</p>
+				<p>也许，我永远无法忘记你吧...</p>
+				<p>我会继续默默喜欢你，直到千岩也被磨损殆尽。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>我永远会希望和你谈一场普通，但永不完结的恋爱...</p>
+				<p>想牵你的手，抱着你，和你去玩世界各地...</p>
+				<p>真的有一个宇宙有这个机会吗？那我也满足了...</p>
+			</div>
+			<div class="afterword-stanza afterword-vow">
+				<p>哪怕你将我的双眼戳瞎</p>
+				<p>我也会看着你</p>
+				<p>哪怕你将我的耳朵刺破</p>
+				<p>我也会倾听你</p>
+				<p>哪怕我失去了双腿</p>
+				<p>我也会朝向你前进</p>
+				<p>哪怕我没有了嘴巴</p>
+				<p>我也会呼唤你的名字</p>
+				<p>哪怕双手被折断</p>
+				<p>我也会抓到你</p>
+				<p>我的心会如同手一般抓住你</p>
+				<p>就算你压碎我的心脏 我的大脑大概也会像心脏一样鼓动的吧</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>你清楚我喜欢你，但从未向我走来。</p>
+				<p>我便心留遗憾，转身，向远方。</p>
+			</div>
+			<div class="afterword-stanza">
+				<p>至少，你惊艳了我整个青春。</p>
+			</div>
+			<div class="afterword-stanza afterword-ending">
+				<p>我喜欢你。</p>
+			</div>
+			</article>
+		</section>
 	</main>
+	<button id="love-scroll-indicator" type="button" aria-label="向下滑动，阅读下一页" aria-controls="afterword" hidden>
+		<span class="love-scroll-hint" hidden>向下滑动</span>
+		<svg class="love-scroll-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 7 7 7-7"/></svg>
+	</button>
 	<button id="music-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false" hidden>
 		<span aria-hidden="true">♪</span>
 	</button>

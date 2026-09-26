@@ -58,9 +58,10 @@ function startFrameLoop(step, interval = 16) {
 // ===========================
 
 const AnimationConfig = {
-  SCALE_FACTOR: 0.95,
-  SEED_MOVE_SPEED: 2,
+  SCALE_FACTOR: 0.94,
+  SEED_MOVE_SPEED: 2.4,
   TREE_GROW_DELAY: 10,
+  TREE_GROW_EXTRA_STEP_EVERY: 5,
   FLOWER_BLOOM_COUNT: 2,
   FLOWER_BLOOM_DELAY: 10,
   TREE_SHIFT_X: 260,
@@ -113,9 +114,14 @@ function animateSeedMove(seed, footer) {
 }
 
 function animateTreeGrow(tree) {
+  let frame = 0;
   return runUntil(
     () => !tree.canGrow(),
-    () => tree.grow(),
+    () => {
+      tree.grow();
+      frame++;
+      if (frame % AnimationConfig.TREE_GROW_EXTRA_STEP_EVERY === 0 && tree.canGrow()) tree.grow();
+    },
     AnimationConfig.TREE_GROW_DELAY
   );
 }

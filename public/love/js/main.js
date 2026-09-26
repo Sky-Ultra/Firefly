@@ -1,5 +1,6 @@
 async function startApp() {
 	initContent(CONFIG);
+	const afterword = initAfterword();
 	scaleContent();
 	const startMusic = initMusic();
 	const staticCanvas = initCanvas("static-canvas");
@@ -12,6 +13,7 @@ async function startApp() {
 	await new Promise(resolve => {
 		button.addEventListener("click", async () => {
 			button.disabled = true;
+			afterword.revealAfterword();
 			startMusic();
 			await animateOpening(button, seed, staticCanvas);
 			button.hidden = true;
@@ -32,6 +34,7 @@ async function startApp() {
 	const letter = document.getElementById("letter");
 	letter.hidden = false;
 	typewriter(letter);
+	afterword.showScrollHintWhenSecondLineStarts();
 	const treeCaption = document.getElementById("tree-caption");
 	treeCaption.hidden = false;
 	startTreeCaptionCarousel(treeCaption, CONFIG.treeCaptions, CONFIG.treeCaptionInterval);
