@@ -93,6 +93,36 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "love-and-domain",
+				date: "2026-09-20T20:03:00+10:00",
+				content: "“如果爱也能被量化，我的心早已超出定义域”",
+				contentEn:
+					"“If love could be quantified, my heart would have long since exceeded its domain.”",
+			},
+			{
+				id: "ten-thousand-winters-and-springs",
+				date: "2026-09-22T18:57:00+10:00",
+				content:
+					"一万个冬天以后是一万个春天，一万次离别后是一万次相见；或许过往已无可溯洄，好在还有可以与你相遇的明天。",
+				contentEn:
+					"After ten thousand winters come ten thousand springs, and after ten thousand farewells come ten thousand reunions; perhaps the past can no longer be retraced, but there is still a tomorrow in which I can meet you again.",
+			},
+			{
+				id: "autumn-moon-poem",
+				date: "2026-09-25T19:47:00+10:00",
+				content:
+					"桂子浮香秋水静，疏烟淡处玉轮低。\n若有人兮云之际，舞袂翩兮扬玉霓。\n欲寄幽芳无片语，一襟秋意不须题。\n天上月华人如愿，清辉偏向小窗西。\n既见君兮予所欢，愿随风兮鸣银鸾。",
+				contentEn:
+					"Osmanthus fragrance drifts above still autumn waters; beyond the thinning mist, the jade moon hangs low.\nThere you are among the clouds, your dancing sleeves lifting a rainbow of light.\nI would send you these quiet flowers, but have no words; this heart full of autumn needs no inscription.\nMay the moon above grant our wish, its clear glow turning toward the little western window.\nNow that I have met the one I cherish, may I follow the wind and hear the silver phoenix sing.",
+			},
+			{
+				id: "love-leaves-regret",
+				date: "2026-09-26T16:23:00+10:00",
+				content: "自古多情空余恨...",
+				contentEn:
+					"Since ancient times, deep affection has left only regret...",
+			},
+			{
 				id: "firefly-glow",
 				date: "2026-09-14T22:33:00+10:00",
 				content: "飞萤之火自无梦的长夜亮起，绽放在终竟的明天",
