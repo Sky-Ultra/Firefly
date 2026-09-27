@@ -131,11 +131,18 @@ const managerConfigStr = JSON.stringify({
     // ── Audio element (persistent, attached to body) ────────
     var audio = document.createElement('audio');
     audio.crossOrigin = 'anonymous';
+    audio.preload = 'metadata';
     audio.style.display = 'none';
     document.body.appendChild(audio);
 
     // ── State ────────────────────────────────────────────────
     var loadVersion = 0; // incremented on each loadTrack to discard stale play() results
+    var sourceAttempt = 0;
+    var sourceIndex = 0;
+    var sourceTimeoutId = null;
+    var sourceFailureHandled = false;
+    var failedTrackIndices = new Set();
+    var wantPlayback = false;
     var lastMemoryWriteAt = 0;
     var pendingResume = null;
     var state = {
@@ -216,19 +223,59 @@ const managerConfigStr = JSON.stringify({
     }
 
     // ── Meting fetch ─────────────────────────────────────────
+    function metingEndpoint(api, server, type, id) {
+        return api
+            .replace(':server', server)
+            .replace(':type', type)
+            .replace(':id', id)
+            .replace(':r', Math.random());
+    }
+
+    function sourceCandidates(server, id, preferredUrl) {
+        var urls = preferredUrl ? [preferredUrl] : [];
+        var m = config.meting || {};
+        var apis = [m.api].concat(m.fallbackApis || []);
+        apis.forEach(function (api) {
+            if (!api) return;
+            urls.push(metingEndpoint(api, server, 'url', id));
+        });
+        var seen = new Set();
+        return urls.filter(function (candidate) {
+            var normalized = new URL(candidate);
+            normalized.searchParams.delete('r');
+            var key = normalized.toString();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+    }
+
+    function playlistItemSources(item, meting) {
+        if (!item.url) return [];
+        try {
+            var parsed = new URL(item.url);
+            var id = parsed.searchParams.get('id');
+            var server = parsed.searchParams.get('server') || meting.server;
+            if (id && parsed.searchParams.get('type') === 'url') {
+                return sourceCandidates(server, id, item.url);
+            }
+        } catch (e) {
+            // A direct or local audio URL is still a valid single source.
+        }
+        return [item.url];
+    }
+
     function createConfiguredTrack(song, api) {
         function endpoint(type, id) {
-            return api
-                .replace(':server', song.server)
-                .replace(':type', type)
-                .replace(':id', id)
-                .replace(':r', Math.random());
+            return metingEndpoint(api, song.server, type, id);
         }
 
+        var primaryUrl = endpoint('url', song.id);
         return {
             name: song.name,
             artist: song.artist,
-            url: endpoint('url', song.id),
+            url: primaryUrl,
+            sources: sourceCandidates(song.server, song.id, primaryUrl),
             pic: song.picId ? endpoint('pic', song.picId) : '',
             lrc: endpoint('lrc', song.id)
         };
@@ -323,6 +370,7 @@ const managerConfigStr = JSON.stringify({
                             name: item.title || item.name || 'Unknown',
                             artist: item.author || item.artist || 'Unknown',
                             url: item.url,
+                            sources: playlistItemSources(item, m),
                             pic: item.pic || item.cover || '',
                             lrc: item.lrc
                         };
@@ -339,6 +387,7 @@ const managerConfigStr = JSON.stringify({
 
     // ── Lyrics ───────────────────────────────────────────────
     function loadLyrics(track) {
+        var lyricVersion = loadVersion;
         state.lyrics = [];
         state.currentLrcIndex = -1;
 
@@ -356,10 +405,12 @@ const managerConfigStr = JSON.stringify({
             fetch(track.lrc)
                 .then(function (r) { return r.text(); })
                 .then(function (text) {
+                    if (lyricVersion !== loadVersion) return;
                     state.lyrics = parseLRC(text);
                     emit('fm:lyrics', { lyrics: state.lyrics, status: 'loaded' });
                 })
                 .catch(function () {
+                    if (lyricVersion !== loadVersion) return;
                     state.lyrics = [];
                     emit('fm:lyrics', { lyrics: [], status: 'failed' });
                 });
@@ -370,15 +421,108 @@ const managerConfigStr = JSON.stringify({
     }
 
     // ── Track loading ────────────────────────────────────────
-    function loadTrack(index, autoPlay, resumeTime) {
+    function clearSourceTimeout() {
+        if (sourceTimeoutId !== null) {
+            clearTimeout(sourceTimeoutId);
+            sourceTimeoutId = null;
+        }
+    }
+
+    function armSourceTimeout(attempt) {
+        clearSourceTimeout();
+        sourceTimeoutId = setTimeout(function () {
+            failCurrentSource(attempt);
+        }, 12000);
+    }
+
+    function getSources(track) {
+        if (Array.isArray(track.sources) && track.sources.length > 0) return track.sources;
+        return track.url ? [track.url] : [];
+    }
+
+    function requestPlayback() {
+        var ver = loadVersion;
+        var attempt = sourceAttempt;
+        audio.play().then(function () {
+            if (ver !== loadVersion || attempt !== sourceAttempt) return;
+            clearSourceTimeout();
+            state.isPlaying = true;
+            state.error = null;
+            emit('fm:play-state', { isPlaying: true });
+        }).catch(function (e) {
+            if (ver !== loadVersion || attempt !== sourceAttempt) return;
+            if (e.name === 'AbortError') return;
+            if (e.name === 'NotAllowedError') {
+                clearSourceTimeout();
+                wantPlayback = false;
+                state.isPlaying = false;
+                emit('fm:play-state', { isPlaying: false });
+                return;
+            }
+            failCurrentSource(attempt);
+        });
+    }
+
+    function startSource(resumeTime) {
+        var track = state.playlist[state.currentIndex];
+        var sources = getSources(track);
+        var attempt = ++sourceAttempt;
+        sourceFailureHandled = false;
+        clearSourceTimeout();
+
+        if (!sources[sourceIndex]) {
+            failCurrentSource(attempt);
+            return;
+        }
+
+        audio.src = sources[sourceIndex];
+        scheduleResumeTime(resumeTime, loadVersion);
+        if (wantPlayback) armSourceTimeout(attempt);
+        audio.load();
+        if (wantPlayback) requestPlayback();
+    }
+
+    function failCurrentSource(attempt) {
+        if (attempt !== sourceAttempt || sourceFailureHandled) return;
+        var track = state.playlist[state.currentIndex];
+        if (!track) return;
+        sourceFailureHandled = true;
+        clearSourceTimeout();
+        state.isPlaying = false;
+        emit('fm:play-state', { isPlaying: false });
+
+        sourceIndex++;
+        if (sourceIndex < getSources(track).length) {
+            startSource(audio.currentTime);
+            return;
+        }
+
+        failedTrackIndices.add(state.currentIndex);
+        if (failedTrackIndices.size < state.playlist.length) {
+            loadTrack(
+                (state.currentIndex + 1) % state.playlist.length,
+                wantPlayback,
+                0,
+                failedTrackIndices
+            );
+            return;
+        }
+
+        wantPlayback = false;
+        state.error = config.i18n.error;
+        emit('fm:error', { message: state.error });
+    }
+
+    function loadTrack(index, autoPlay, resumeTime, alreadyFailed) {
         if (index < 0 || index >= state.playlist.length) return;
         state.currentIndex = index;
         var track = state.playlist[index];
-        var ver = ++loadVersion;
+        ++loadVersion;
+        sourceIndex = 0;
+        failedTrackIndices = alreadyFailed || new Set();
+        wantPlayback = !!autoPlay;
+        state.error = null;
         pendingResume = null;
-
-        audio.src = track.url;
-        scheduleResumeTime(resumeTime, ver);
 
         loadLyrics(track);
 
@@ -391,30 +535,24 @@ const managerConfigStr = JSON.stringify({
                 : 0
         );
 
-        if (autoPlay) {
-            audio.play().then(function () {
-                if (ver !== loadVersion) return; // stale, discard
-                state.isPlaying = true;
-                emit('fm:play-state', { isPlaying: true });
-            }).catch(function (e) {
-                if (ver !== loadVersion) return; // stale, discard
-                if (e.name === 'AbortError') return; // interrupted by new load
-                console.warn('Autoplay blocked:', e);
-            });
-        } else {
-            state.isPlaying = false;
-            emit('fm:play-state', { isPlaying: false });
-        }
+        state.isPlaying = false;
+        emit('fm:play-state', { isPlaying: false });
+        startSource(resumeTime);
     }
 
     // ── Playback controls ────────────────────────────────────
     function togglePlay() {
         if (audio.paused) {
-            audio.play().then(function () {
-                state.isPlaying = true;
-                emit('fm:play-state', { isPlaying: true });
-            });
+            if (state.error) {
+                loadTrack(state.currentIndex, true);
+                return;
+            }
+            wantPlayback = true;
+            armSourceTimeout(sourceAttempt);
+            requestPlayback();
         } else {
+            wantPlayback = false;
+            clearSourceTimeout();
             audio.pause();
             state.isPlaying = false;
             emit('fm:play-state', { isPlaying: false });
@@ -424,7 +562,8 @@ const managerConfigStr = JSON.stringify({
     function playNext(auto) {
         if (state.playMode === 1 && auto) {
             audio.currentTime = 0;
-            audio.play();
+            wantPlayback = true;
+            requestPlayback();
             return;
         }
         var nextIndex;
@@ -524,6 +663,11 @@ const managerConfigStr = JSON.stringify({
         playNext(true);
     });
 
+    audio.addEventListener('playing', clearSourceTimeout);
+    audio.addEventListener('waiting', function () {
+        if (wantPlayback) armSourceTimeout(sourceAttempt);
+    });
+
     audio.addEventListener('pause', function () {
         persistPlaybackMemory(true);
     });
@@ -543,8 +687,7 @@ const managerConfigStr = JSON.stringify({
     });
 
     audio.addEventListener('error', function () {
-        state.error = 'Audio playback error';
-        emit('fm:error', { message: state.error });
+        failCurrentSource(sourceAttempt);
     });
 
     // ── Init (idempotent) ────────────────────────────────────

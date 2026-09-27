@@ -602,6 +602,7 @@ const widgetId =
 
         renderPlaylist(s.playlist, s.currentIndex);
         if (s.track) updateTrackUI(s.track);
+        if (s.error) ui.artist.innerText = s.error;
         updatePlayStateUI(s.isPlaying);
         updateModeUI(s.playMode);
         updateVolumeUI(s.volume, s.isMuted);
@@ -683,7 +684,13 @@ const widgetId =
     });
 
     on('fm:error', function (e) {
-        ui.title.innerText = e.detail.message || cfg.i18n.error;
+        var track = mgr.getState().track;
+        if (track) {
+            ui.title.innerText = track.name;
+            ui.artist.innerText = e.detail.message || cfg.i18n.error;
+        } else {
+            ui.title.innerText = e.detail.message || cfg.i18n.error;
+        }
     });
 
     // ── Button click delegates ───────────────────────────────
