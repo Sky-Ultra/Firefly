@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-09-22T23:30:00+10:00
+updated: 2026-09-29T16:10:00+10:00
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -53,3 +53,11 @@ draft: false
 ## 2026.9.22
 
 - 更新指南[《安装并激活 Microsoft Office》](/posts/install-and-activate-microsoft-office/)，欢迎阅读
+
+## 2026.9.24
+
+- 更新文章：[我们终将重逢](/posts/we-will-meet-again/)
+
+## 2026.9.25
+
+- 更新文章：[⌈致以无瑕之人⌋](/posts/to-the-flawless-one/)

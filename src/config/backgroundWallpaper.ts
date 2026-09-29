@@ -107,6 +107,8 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				"此情可待成追忆，只是当时已惘然",
 				"相见时难别亦难，东风无力百花残",
 				"雄关漫道真如铁，而今迈步从头越",
+				"若有人兮云之际，舞袂翩兮扬玉霓",
+				"既见君兮予所欢，愿随风兮鸣银鸾",
 			],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",

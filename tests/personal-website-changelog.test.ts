@@ -4,7 +4,10 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const changelog = readFileSync(
-	new URL("../src/content/posts/personal-website-changelog.md", import.meta.url),
+	new URL(
+		"../src/content/posts/personal-website-changelog.md",
+		import.meta.url,
+	),
 	"utf8",
 );
 const changelogTranslation = readFileSync(
@@ -37,6 +40,13 @@ test("the personal website changelog is published and pinned", () => {
 	assert.match(changelog, /^## 2026\.9\.18$/m);
 	assert.match(changelog, /^## 2026\.9\.20$/m);
 	assert.match(changelog, /^## 2026\.9\.22$/m);
+	assert.match(changelog, /^## 2026\.9\.24$/m);
+	assert.match(changelog, /\[我们终将重逢\]\(\/posts\/we-will-meet-again\/\)/);
+	assert.match(changelog, /^## 2026\.9\.25$/m);
+	assert.match(
+		changelog,
+		/\[⌈致以无瑕之人⌋\]\(\/posts\/to-the-flawless-one\/\)/,
+	);
 	assert.match(
 		changelog,
 		/\[《安装并激活 Microsoft Office》\]\(\/posts\/install-and-activate-microsoft-office\/\)/,
@@ -44,14 +54,21 @@ test("the personal website changelog is published and pinned", () => {
 });
 
 test("the changelog has a current English translation", () => {
-	const sourceHash = createHash("sha256").update(changelog, "utf8").digest("hex");
+	const sourceHash = createHash("sha256")
+		.update(changelog, "utf8")
+		.digest("hex");
 	assert.match(
 		changelogTranslation,
 		/^translationOf: personal-website-changelog\.md$/m,
 	);
-	assert.match(changelogTranslation, new RegExp(`^sourceHash: sha256:${sourceHash}$`, "m"));
+	assert.match(
+		changelogTranslation,
+		new RegExp(`^sourceHash: sha256:${sourceHash}$`, "m"),
+	);
 	assert.match(changelogTranslation, /^## September 12, 2026$/m);
 	assert.match(changelogTranslation, /^## September 22, 2026$/m);
+	assert.match(changelogTranslation, /^## September 24, 2026$/m);
+	assert.match(changelogTranslation, /^## September 25, 2026$/m);
 });
 
 test("the introduction remains first and the changelog is pinned second", () => {
@@ -59,7 +76,10 @@ test("the introduction remains first and the changelog is pinned second", () => 
 	const updateLog = contentUtils.indexOf('"personal-website-changelog"');
 	assert.ok(introduction >= 0);
 	assert.ok(updateLog > introduction);
-	assert.match(contentUtils, /getPinnedPostOrder\(a\.id\) - getPinnedPostOrder\(b\.id\)/);
+	assert.match(
+		contentUtils,
+		/getPinnedPostOrder\(a\.id\) - getPinnedPostOrder\(b\.id\)/,
+	);
 });
 
 test("the changelog title uses the same primary color as the introduction", () => {

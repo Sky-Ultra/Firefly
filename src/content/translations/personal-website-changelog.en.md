@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:a1c5b07a8adaf4d0886b60e28c6b3e5d60290e4d300c5884449ee7fcbaa31d73
+sourceHash: sha256:de257a945696f49e5ab2a6cf87624ed51edce2e7ffa0fdaeae020351ae9f91ec
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -42,3 +42,11 @@ This article provides a brief record of updates to my personal website, beginnin
 ## September 22, 2026
 
 - Published the guide [“Install and Activate Microsoft Office”](/posts/install-and-activate-microsoft-office/). You’re welcome to read it
+
+## September 24, 2026
+
+- Published the article [“We Will Meet Again”](/posts/we-will-meet-again/)
+
+## September 25, 2026
+
+- Published the article [“To the Flawless One”](/posts/to-the-flawless-one/)
