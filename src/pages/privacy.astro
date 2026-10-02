@@ -1,0 +1,105 @@
+---
+import { getEntry, render } from "astro:content";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import Markdown from "@/components/common/Markdown.astro";
+import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
+import { analyticsConfig } from "@/config";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const [policyZh, policyEn] = await Promise.all([
+	getEntry("spec", "privacy"),
+	getEntry("spec", "privacy-en"),
+]);
+
+if (!policyZh || !policyEn) {
+	throw new Error("Privacy policy content not found");
+}
+
+const [renderedZh, renderedEn] = await Promise.all([
+	render(policyZh),
+	render(policyEn),
+]);
+const { Content: PolicyZh, headings } = renderedZh;
+const { Content: PolicyEn, headings: headingsEn } = renderedEn;
+const title = "隐私政策和用户协议";
+const titleEn = "Privacy Policy & Terms of Use";
+const updated = "2026-10-03";
+const analyticsEnabled = Boolean(analyticsConfig.umamiAnalytics?.websiteId);
+const replaysEnabled =
+	analyticsEnabled && Boolean(analyticsConfig.umamiAnalytics?.replays?.enabled);
+const sections = headings.filter((heading) => heading.depth === 2);
+const sectionsEn = headingsEn.filter((heading) => heading.depth === 2);
+---
+
+<MainGridLayout
+	title={title}
+	description="了解 Sky 的个人网站如何处理访问数据，以及内容使用与留言规则。"
+	headings={headings}
+	headingsEn={headingsEn}
+>
+	<article
+		class="card-base w-full p-5 sm:p-7 lg:p-9"
+		data-document-title-zh={`${title} - Sky`}
+		data-document-title-en={`${titleEn} - Sky`}
+	>
+		<PersonalPageHeader
+			title={title}
+			titleEn={titleEn}
+			description="在这里，了解你的数据去向，也了解我们共同遵守的小小约定。"
+			descriptionEn="Understand how your data is handled, and the ground rules for this little corner of the internet."
+			icon="material-symbols:privacy-tip-rounded"
+		/>
+
+		<p class="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-neutral-500 dark:text-neutral-400">
+			<span><LocalizedText zh="更新日期：" en="Last updated: " /><time datetime={updated}>{updated}</time></span>
+			<span aria-hidden="true">·</span>
+			<a href="https://xiaoxiaoboluo.cn" class="text-(--primary) hover:underline">xiaoxiaoboluo.cn</a>
+		</p>
+
+		<aside class="mb-7 rounded-xl border border-(--primary)/15 bg-(--primary)/5 p-4 text-sm leading-7 text-neutral-700 dark:text-neutral-300">
+			<p class="mb-1 font-semibold text-(--primary)"><LocalizedText zh="先说几个重点" en="The essentials" /></p>
+			<p><LocalizedText zh="浏览文章无需注册；留言由 Twikoo 提供支持；主题偏好和音乐播放进度保存在你的浏览器中。" en="Reading requires no account. Comments use Twikoo. Theme preferences and music playback progress are stored in your browser." /></p>
+			<p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+				<LocalizedText zh="本次部署的 Umami 访问统计：" en="Umami analytics in this deployment: " />
+				<LocalizedText zh={analyticsEnabled ? "已启用" : "未启用"} en={analyticsEnabled ? "enabled" : "disabled"} />
+				<span aria-hidden="true"> · </span>
+				<LocalizedText zh="会话回放：" en="session replay: " />
+				<LocalizedText zh={replaysEnabled ? "已启用" : "未启用"} en={replaysEnabled ? "enabled" : "disabled"} />
+			</p>
+		</aside>
+
+		<nav class="mb-8 border-b border-(--line-divider) pb-6" aria-label="协议章节" data-i18n-zh="协议章节" data-i18n-en="Policy sections" data-i18n-attr="aria-label">
+			<div data-language-only="zh-CN" class="flex flex-wrap gap-3">
+				{sections.map((section) => <a href={`#${section.slug}`} class="rounded-lg bg-(--btn-regular-bg) px-4 py-2 text-sm font-medium text-(--primary) hover:bg-(--btn-regular-bg-hover)">{section.text.replace(/#$/, "").trim()}</a>)}
+			</div>
+			<div data-language-only="en" class="flex flex-wrap gap-3" hidden>
+				{sectionsEn.map((section) => <a href={`#${section.slug}`} class="rounded-lg bg-(--btn-regular-bg) px-4 py-2 text-sm font-medium text-(--primary) hover:bg-(--btn-regular-bg-hover)">{section.text.replace(/#$/, "").trim()}</a>)}
+			</div>
+		</nav>
+
+		<div data-language-only="zh-CN" lang="zh-CN">
+			<Markdown class="markdown-content privacy-content"><PolicyZh /></Markdown>
+		</div>
+		<div data-language-only="en" lang="en" hidden>
+			<Markdown class="markdown-content privacy-content"><PolicyEn /></Markdown>
+		</div>
+	</article>
+</MainGridLayout>
+
+<style>
+	:global(.privacy-content) {
+		overflow-wrap: anywhere;
+		line-height: 1.85;
+	}
+
+	:global(.privacy-content h2) {
+		border-bottom: 1px solid var(--line-divider);
+		padding-bottom: 0.65rem;
+		color: var(--primary);
+	}
+
+	:global(.privacy-content h2),
+	:global(.privacy-content h3) {
+		scroll-margin-top: 6rem;
+	}
+</style>

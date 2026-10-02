@@ -32,6 +32,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 			// 标签
 			LinkPresets.Tags,
+
+			// 用户协议与隐私政策
+			LinkPresets.Privacy,
 		],
 	});
 
@@ -129,6 +132,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		nameEn: "Tags",
 		url: "/tags/",
 		icon: "material-symbols:tag-rounded",
+	},
+	Privacy: {
+		name: "用户协议",
+		nameEn: "Terms & Privacy",
+		url: "/privacy/",
+		icon: "material-symbols:privacy-tip-rounded",
 	},
 	Friends: {
 		name: "友链",
