@@ -75,6 +75,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 			// 音乐
 			LinkPresets.Music,
+
+			// 足迹
+			LinkPresets.Places,
 		],
 	});
 
@@ -199,6 +202,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		nameEn: "Music",
 		url: "/music/",
 		icon: "material-symbols:music-note-rounded",
+	},
+	Places: {
+		name: "足迹",
+		nameEn: "Footprints",
+		url: "/places/",
+		icon: "material-symbols:explore-rounded",
 	},
 };
 

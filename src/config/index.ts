@@ -19,6 +19,10 @@ export type {
 	LicenseConfig,
 	MusicPlayerConfig,
 	NavBarConfig,
+	PlaceItem,
+	PlacePhoto,
+	PlacesPageConfig,
+	PlaceVisit,
 	PlantUMLConfig,
 	ProfileConfig,
 	RelationshipConfig,
@@ -61,6 +65,7 @@ export { musicPlayerConfig } from "./musicConfig"; // 音乐播放器配置
 export { navBarConfig, navBarSearchConfig } from "./navBarConfig"; // 导航栏配置与搜索配置
 export { personalPagesConfig } from "./personalPagesConfig"; // 设备、朋友圈与日记页面配置
 export { live2dWidgetConfig, spineModelConfig } from "./pioConfig"; // 看板娘配置
+export { placesConfig } from "./placesConfig"; // 足迹地图与旅行记录配置
 export { plantumlConfig } from "./plantumlConfig"; // PlantUML 图表配置
 export { profileConfig } from "./profileConfig"; // 用户资料配置
 export { relationshipConfig } from "./relationshipConfig"; // 恋爱计时配置

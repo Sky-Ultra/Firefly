@@ -1,6 +1,6 @@
 ---
 translationOf: to-the-flawless-one.md
-sourceHash: sha256:2ca152eb009027021ac60c38c4027d0b426cbe26bc7407dd2f7b92ef639a92ca
+sourceHash: sha256:157006eb3414c0a3b6f764313d53c1c7e703a62c3364fa25c5905d836902cbaa
 ---
 
 If only that banquet could have ended a little later, I would have sat as far from the door as possible.

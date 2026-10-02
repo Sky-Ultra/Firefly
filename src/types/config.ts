@@ -38,6 +38,12 @@ export type {
 	SocialImage,
 } from "./personalPagesConfig";
 export type { Live2DWidgetConfig, SpineModelConfig } from "./pioConfig";
+export type {
+	PlaceItem,
+	PlacePhoto,
+	PlacesPageConfig,
+	PlaceVisit,
+} from "./placesConfig";
 export type { PlantUMLConfig } from "./plantumlConfig";
 export type { ProfileConfig } from "./profileConfig";
 export type {

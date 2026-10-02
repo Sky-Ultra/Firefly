@@ -13,6 +13,7 @@ tags: [随笔, 爱莉希雅]
 tagsEn: [Essay, Elysia]
 category: 随笔
 categoryEn: Essay
+comment: true
 draft: false
 ---
 
