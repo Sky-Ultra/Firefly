@@ -1,0 +1,430 @@
+{
+	"note": "Game cover artwork retrieved from Steam and Bangumi. Artwork copyrights remain with the respective game developers and publishers; no ownership or open licence is claimed.",
+	"checkedOn": "2026-10-04",
+	"covers": [
+		{
+			"id": "plants-vs-zombies-battle-for-neighborville",
+			"file": "/assets/games/plants-vs-zombies-battle-for-neighborville.webp",
+			"title": "Plants vs. Zombies: Battle for Neighborville™",
+			"developers": [
+				"PopCap"
+			],
+			"publishers": [
+				"Electronic Arts"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1262240/library_600x900_2x.jpg?t=1779987594",
+			"store": "https://store.steampowered.com/app/1262240/"
+		},
+		{
+			"id": "battlefield-2042",
+			"file": "/assets/games/battlefield-2042.webp",
+			"title": "Battlefield™ 2042",
+			"developers": [
+				"DICE"
+			],
+			"publishers": [
+				"Electronic Arts"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1517290/e68a8598b5c60d8188968f2da0da941f4834d5b2/library_600x900_2x.jpg?t=1777324359",
+			"store": "https://store.steampowered.com/app/1517290/"
+		},
+		{
+			"id": "battlefield-v",
+			"file": "/assets/games/battlefield-v.webp",
+			"title": "Battlefield™ V",
+			"developers": [
+				"DICE"
+			],
+			"publishers": [
+				"Electronic Arts"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1238810/library_600x900_2x.jpg?t=1772707365",
+			"store": "https://store.steampowered.com/app/1238810/"
+		},
+		{
+			"id": "war-thunder",
+			"file": "/assets/games/war-thunder.webp",
+			"title": "War Thunder",
+			"developers": [
+				"Gaijin Entertainment"
+			],
+			"publishers": [
+				"Gaijin Network Ltd"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/236390/44a7800c8a2e665325739b15d6be13ff4fcd68d6/library_capsule_2x.jpg?t=1790873564",
+			"store": "https://store.steampowered.com/app/236390/"
+		},
+		{
+			"id": "left-4-dead",
+			"file": "/assets/games/left-4-dead.webp",
+			"title": "Left 4 Dead",
+			"developers": [
+				"Valve"
+			],
+			"publishers": [
+				"Valve"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/500/library_600x900_2x.jpg?t=1745368560",
+			"store": "https://store.steampowered.com/app/500/"
+		},
+		{
+			"id": "left-4-dead-2",
+			"file": "/assets/games/left-4-dead-2.webp",
+			"title": "Left 4 Dead 2",
+			"developers": [
+				"Valve"
+			],
+			"publishers": [
+				"Valve"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/550/library_600x900_2x.jpg?t=1772742214",
+			"store": "https://store.steampowered.com/app/550/"
+		},
+		{
+			"id": "overcooked",
+			"file": "/assets/games/overcooked.webp",
+			"title": "Overcooked",
+			"developers": [
+				"Ghost Town Games Ltd."
+			],
+			"publishers": [
+				"Team17 Digital Ltd"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/448510/library_600x900_2x.jpg?t=1788969012",
+			"store": "https://store.steampowered.com/app/448510/"
+		},
+		{
+			"id": "palworld",
+			"file": "/assets/games/palworld.webp",
+			"title": "Palworld",
+			"developers": [
+				"Pocketpair"
+			],
+			"publishers": [
+				"Pocketpair"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1623730/f85c38b444047c686d44eea5f649c9ae761fd06a/library_capsule_2x.jpg?t=1790336367",
+			"store": "https://store.steampowered.com/app/1623730/"
+		},
+		{
+			"id": "payday-2",
+			"file": "/assets/games/payday-2.webp",
+			"title": "PAYDAY 2",
+			"developers": [
+				"OVERKILL - a Starbreeze Studio.",
+				"Sidetrack Games"
+			],
+			"publishers": [
+				"Starbreeze Entertainment"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/218620/e7aba53917eb9c188f83f1df103bc96f657a4b53/library_capsule_2x.jpg?t=1789555107",
+			"store": "https://store.steampowered.com/app/218620/"
+		},
+		{
+			"id": "repo",
+			"file": "/assets/games/repo.webp",
+			"title": "R.E.P.O.",
+			"developers": [
+				"semiwork"
+			],
+			"publishers": [
+				"semiwork"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3241660/46b4813ef1cd20664299c9e5de847f3579b44f2e/library_600x900_2x.jpg?t=1778158882",
+			"store": "https://store.steampowered.com/app/3241660/"
+		},
+		{
+			"id": "red-dead-redemption-2",
+			"file": "/assets/games/red-dead-redemption-2.webp",
+			"title": "Red Dead Redemption 2",
+			"developers": [
+				"Rockstar Games"
+			],
+			"publishers": [
+				"Rockstar Games"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1174180/library_600x900_2x.jpg?t=1759502961",
+			"store": "https://store.steampowered.com/app/1174180/"
+		},
+		{
+			"id": "titanfall-2",
+			"file": "/assets/games/titanfall-2.webp",
+			"title": "Titanfall® 2",
+			"developers": [
+				"Respawn Entertainment"
+			],
+			"publishers": [
+				"Electronic Arts"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1237970/library_600x900_2x.jpg?t=1779987598",
+			"store": "https://store.steampowered.com/app/1237970/"
+		},
+		{
+			"id": "tmodloader",
+			"file": "/assets/games/tmodloader.webp",
+			"title": "tModLoader",
+			"developers": [
+				"TML Team"
+			],
+			"publishers": [
+				"Re-Logic",
+				"TML Team"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1281930/library_600x900_2x.jpg?t=1788369465",
+			"store": "https://store.steampowered.com/app/1281930/"
+		},
+		{
+			"id": "war-robots",
+			"file": "/assets/games/war-robots.webp",
+			"title": "War Robots",
+			"developers": [
+				"MY.GAMES"
+			],
+			"publishers": [
+				"MY.GAMES"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/767560/a2c6e0c5525ce23afb8a08f25c681a2923f90987/library_capsule_2x.jpg?t=1790758165",
+			"store": "https://store.steampowered.com/app/767560/"
+		},
+		{
+			"id": "watch-dogs-2",
+			"file": "/assets/games/watch-dogs-2.webp",
+			"title": "Watch_Dogs® 2",
+			"developers": [
+				"Ubisoft"
+			],
+			"publishers": [
+				"Ubisoft"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/447040/library_600x900_2x.jpg?t=1751986887",
+			"store": "https://store.steampowered.com/app/447040/"
+		},
+		{
+			"id": "the-binding-of-isaac-rebirth",
+			"file": "/assets/games/the-binding-of-isaac-rebirth.webp",
+			"title": "The Binding of Isaac: Rebirth",
+			"developers": [
+				"Nicalis, Inc.",
+				"Edmund McMillen"
+			],
+			"publishers": [
+				"Nicalis, Inc."
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/250900/library_600x900_2x.jpg?t=1731977365",
+			"store": "https://store.steampowered.com/app/250900/"
+		},
+		{
+			"id": "rainbow-six-siege",
+			"file": "/assets/games/rainbow-six-siege.webp",
+			"title": "Tom Clancy's Rainbow Six Siege",
+			"developers": [
+				"Ubisoft Montreal"
+			],
+			"publishers": [
+				"Ubisoft"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/359550/5878a9291aaf2334e08424c6db8e9635d9fa05b4/library_capsule_2x.jpg?t=1790952963",
+			"store": "https://store.steampowered.com/app/359550/"
+		},
+		{
+			"id": "dyson-sphere-program",
+			"file": "/assets/games/dyson-sphere-program.webp",
+			"title": "Dyson Sphere Program",
+			"developers": [
+				"Youthcat Studio"
+			],
+			"publishers": [
+				"Gamirror Games"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1366540/library_600x900_2x.jpg?t=1776523171",
+			"store": "https://store.steampowered.com/app/1366540/"
+		},
+		{
+			"id": "metro-2033-redux",
+			"file": "/assets/games/metro-2033-redux.webp",
+			"title": "Metro 2033 Redux",
+			"developers": [
+				"4A Games"
+			],
+			"publishers": [
+				"Deep Silver"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/286690/library_600x900_2x.jpg?t=1741110084",
+			"store": "https://store.steampowered.com/app/286690/"
+		},
+		{
+			"id": "hellslave",
+			"file": "/assets/games/hellslave.webp",
+			"title": "Hellslave",
+			"developers": [
+				"Ars Goetia"
+			],
+			"publishers": [
+				"Dear Villagers",
+				"Gamersky Games"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1608450/library_600x900_2x.jpg?t=1756893030",
+			"store": "https://store.steampowered.com/app/1608450/"
+		},
+		{
+			"id": "detroit-become-human",
+			"file": "/assets/games/detroit-become-human.webp",
+			"title": "Detroit: Become Human",
+			"developers": [
+				"Quantic Dream"
+			],
+			"publishers": [
+				"Quantic Dream"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1222140/library_600x900_2x.jpg?t=1667468479",
+			"store": "https://store.steampowered.com/app/1222140/"
+		},
+		{
+			"id": "breakout-13",
+			"file": "/assets/games/breakout-13.webp",
+			"title": "Breakout 13",
+			"developers": [
+				"ALT Lab"
+			],
+			"publishers": [
+				"ALT Lab"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2095300/library_600x900_2x.jpg?t=1735374248",
+			"store": "https://store.steampowered.com/app/2095300/"
+		},
+		{
+			"id": "death-stranding-2-on-the-beach",
+			"file": "/assets/games/death-stranding-2-on-the-beach.webp",
+			"title": "DEATH STRANDING 2: ON THE BEACH",
+			"developers": [
+				"KOJIMA PRODUCTIONS",
+				"Nixxes Software "
+			],
+			"publishers": [
+				"PlayStation Publishing LLC",
+				"KOJIMA PRODUCTIONS"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3280350/9b523fd411eeaefe80f238489745325a1cd2317f/library_capsule_2x.jpg?t=1774022345",
+			"store": "https://store.steampowered.com/app/3280350/"
+		},
+		{
+			"id": "counter-strike-global-offensive",
+			"file": "/assets/games/counter-strike-global-offensive.webp",
+			"title": "Counter-Strike 2",
+			"developers": [
+				"Valve"
+			],
+			"publishers": [
+				"Valve"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/730/library_600x900_2x.jpg?t=1789251637",
+			"store": "https://store.steampowered.com/app/730/"
+		},
+		{
+			"id": "counter-strike-condition-zero",
+			"file": "/assets/games/counter-strike-condition-zero.webp",
+			"title": "Counter-Strike: Condition Zero",
+			"developers": [
+				"Valve"
+			],
+			"publishers": [
+				"Valve"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/80/library_600x900_2x.jpg?t=1745368574",
+			"store": "https://store.steampowered.com/app/80/"
+		},
+		{
+			"id": "dead-cells",
+			"file": "/assets/games/dead-cells.webp",
+			"title": "Dead Cells",
+			"developers": [
+				"Motion Twin"
+			],
+			"publishers": [
+				"Motion Twin"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/588650/library_600x900_2x.jpg?t=1779086887",
+			"store": "https://store.steampowered.com/app/588650/"
+		},
+		{
+			"id": "death-stranding-directors-cut",
+			"file": "/assets/games/death-stranding-directors-cut.webp",
+			"title": "DEATH STRANDING DIRECTOR'S CUT",
+			"developers": [
+				"KOJIMA PRODUCTIONS"
+			],
+			"publishers": [
+				" 505 Games"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1850570/library_600x900_2x.jpg?t=1773400635",
+			"store": "https://store.steampowered.com/app/1850570/"
+		},
+		{
+			"id": "deathmatch-classic",
+			"file": "/assets/games/deathmatch-classic.webp",
+			"title": "Deathmatch Classic",
+			"developers": [
+				"Valve"
+			],
+			"publishers": [
+				"Valve"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/40/library_600x900_2x.jpg?t=1745368570",
+			"store": "https://store.steampowered.com/app/40/"
+		},
+		{
+			"id": "muse-dash",
+			"file": "/assets/games/muse-dash.webp",
+			"title": "Muse Dash",
+			"developers": [
+				"peropero"
+			],
+			"publishers": [
+				"hasuhasu"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/774171/library_600x900_2x.jpg?t=1790329816",
+			"store": "https://store.steampowered.com/app/774171/"
+		},
+		{
+			"id": "need-for-speed-heat",
+			"file": "/assets/games/need-for-speed-heat.webp",
+			"title": "Need for Speed™ Heat",
+			"developers": [
+				"Ghost Games"
+			],
+			"publishers": [
+				"Electronic Arts"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1222680/library_600x900_2x.jpg?t=1777414224",
+			"store": "https://store.steampowered.com/app/1222680/"
+		},
+		{
+			"id": "nier-automata",
+			"file": "/assets/games/nier-automata.webp",
+			"title": "NieR:Automata™",
+			"developers": [
+				"Square Enix",
+				"PlatinumGames Inc."
+			],
+			"publishers": [
+				"Square Enix"
+			],
+			"source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/524220/library_600x900_2x.jpg?t=1785182957",
+			"store": "https://store.steampowered.com/app/524220/"
+		},
+		{
+			"id": "honkai-impact-3rd",
+			"file": "/assets/games/honkai-impact-3rd.webp",
+			"title": "Honkai Impact 3rd",
+			"developers": [
+				"COGNOSPHERE PTE. LTD."
+			],
+			"publishers": [
+				"COGNOSPHERE PTE. LTD."
+			],
+			"source": "https://lain.bgm.tv/pic/cover/l/40/ae/172168_Al7K6.jpg",
+			"catalogue": "https://bgm.tv/subject/172168",
+			"store": "https://store.steampowered.com/app/1671200/"
+		}
+	]
+}
