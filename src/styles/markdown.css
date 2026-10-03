@@ -3,6 +3,15 @@
 .custom-md {
   overflow-wrap: break-word;
 
+  mark.theme-highlight {
+    background-color: var(--selection-bg);
+    color: inherit;
+    padding: 0.1em 0.2em;
+    border-radius: 0.2em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
   body.sticky-navbar & {
     [id] {
       scroll-margin-top: 5.5rem;
