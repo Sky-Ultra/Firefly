@@ -1,11 +1,11 @@
 ---
 translationOf: why-the-poor-stay-poor.md
-sourceHash: sha256:efdb998ad75c9308362408739f71aede75604dcb932479a5629fb4cec01cf17f
+sourceHash: sha256:fa639b11d7f4899b7f6f6aade71218a61b9d6fb05800bad5ad2de85e66b50208
 ---
 
 > **Disclaimer:**
 >
-> First of all, I am personally easygoing and not particularly temperamental. But because of my tuning parameters, the writing in this article is rather aggressive. Its tone does not represent my personal manner. That said, I am not always so accommodating toward certain people either.
+> First of all, I am fairly easygoing and emotionally very stable. But because of my tuning parameters, the writing in this article is rather aggressive. Its tone does not represent my personal manner. That said, I am not always so accommodating toward certain people either.
 >
 > If you want lyrical writing, please go to the website's homepage and look for my essays.
 >
@@ -15,7 +15,7 @@ sourceHash: sha256:efdb998ad75c9308362408739f71aede75604dcb932479a5629fb4cec01cf
 >
 > <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 >
-> <mark class="theme-highlight">I am a guy myself, I have a girl I like, and I also deeply understand the risks women face in marriage.</mark>
+> <mark class="theme-highlight">I am a guy myself, I have a girl I like, and I also deeply understand the risks women face in marriage.</mark> [About Me](/about/)
 >
 > <mark class="theme-highlight">Secondly, this article represents only opinions and some superficial reflections. I certainly do not count myself among the people described here, and I will take their example as a warning.</mark>
 >

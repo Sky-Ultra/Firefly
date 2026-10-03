@@ -15,7 +15,7 @@ draft: false
 
 > **免责声明：**
 >
-> 首先我个人性格很随和也没啥脾气。但是因为我的参数调教，这篇文章行文比较激进。行文风格不代表我的个人风格。但是对于部分人群我同样没那么好说话。
+> 首先我个人性格比较随和且情绪很稳定。但是因为我的参数调教，这篇文章行文比较激进。行文风格不代表我的个人风格。但是对于部分人群我同样没那么好说话。
 >
 > 想看抒情的请去网站主页找随笔。
 >
@@ -25,7 +25,7 @@ draft: false
 >
 > <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 >
-> <mark class="theme-highlight">我自己是个男生，有喜欢的女孩，也深刻明白女性结婚的风险</mark>
+> <mark class="theme-highlight">我自己是个男生，有喜欢的女孩，也深刻明白女性结婚的风险</mark> [关于我](/about/)
 >
 > <mark class="theme-highlight">其次文章仅代表观点以及一些浅薄的思考。我自身定不在此列且会引以为戒</mark>
 >

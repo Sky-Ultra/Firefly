@@ -37,17 +37,17 @@ test("article pages show the desktop relationship timer without duplicating the 
 	assert.equal(mobileBottom?.showOnPostPage, false);
 });
 
-test("mobile articles order comments, relationship timer and recommendations while preserving desktop order", () => {
+test("comments precede recommendations on both devices with the mobile timer between them", () => {
 	const article = readFileSync(
 		new URL("../src/pages/posts/[...slug].astro", import.meta.url),
 		"utf8",
 	);
-	assert.match(article, /data-post-comments class="order-1 md:order-3"/);
+	assert.match(article, /data-post-comments class="order-1"/);
 	assert.match(
 		article,
 		/data-mobile-post-relationship class="order-2 mb-4 md:hidden"/,
 	);
-	assert.match(article, /data-post-recommendations class="order-3 md:order-1"/);
+	assert.match(article, /data-post-recommendations class="order-3"/);
 	assert.equal(article.match(/<Comment post=\{entry\}/g)?.length, 1);
 	assert.match(article, /<RelationshipTimer class="block"/);
 	assert.match(article, /mobileRelationshipConfig\?\.enable/);

@@ -20,7 +20,7 @@ const styles = readFileSync(
 );
 
 test("publishes the poverty essay with the requested date and description", () => {
-	assert.match(article, /^title: 穷人如何保持贫穷？穷人为何保持贫穷？$/m);
+	assert.match(article, /^title: 为何穷人会一直保持他们的贫穷？$/m);
 	assert.match(article, /^published: 2026-10-03$/m);
 	assert.match(article, /^description: 一些简单浅薄的思考$/m);
 	assert.match(article, /^category: 随笔$/m);
@@ -76,6 +76,20 @@ test("groups the disclaimer in the site's left-bordered quote style", () => {
 			3,
 		);
 	}
+});
+
+test("updates the opening and links to About Me immediately after the highlighted personal statement", () => {
+	assert.match(article, /^> 首先我个人性格比较随和且情绪很稳定。/m);
+	assert.doesNotMatch(article, /首先我个人性格很随和也没啥脾气/);
+	assert.match(
+		article,
+		/我自己是个男生，有喜欢的女孩，也深刻明白女性结婚的风险<\/mark> \[关于我\]\(\/about\/\)/,
+	);
+	assert.match(
+		translation,
+		/^> First of all, I am fairly easygoing and emotionally very stable\./m,
+	);
+	assert.match(translation, /marriage\.<\/mark> \[About Me\]\(\/about\/\)/);
 });
 
 test("keeps the paired English translation current", () => {

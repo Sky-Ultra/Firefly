@@ -558,7 +558,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
   <div data-post-footer class="flex flex-col">
     {commentConfig.enabledOn?.posts !== false && entry.data.comment && !entry.data.password && (
-      <div data-post-comments class="order-1 md:order-3">
+      <div data-post-comments class="order-1">
         <Comment post={entry} />
       </div>
     )}
@@ -569,7 +569,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
       </div>
     )}
 
-    <div data-post-recommendations class="order-3 md:order-1">
+    <div data-post-recommendations class="order-3">
       <RecommendedPost relatedPosts={relatedPosts} currentPostId={entry.id} />
     </div>
   </div>
