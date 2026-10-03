@@ -19,10 +19,25 @@ export interface ProjectedPlace {
 }
 
 function validDate(value: string): boolean {
+	if (/^\d{4}-\d{2}$/.test(value)) return validDate(`${value}-01`);
 	if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
 	const date = new Date(`${value}T00:00:00Z`);
 	return (
 		Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value
+	);
+}
+
+/** 月份与旬仅用于排序，内部比较值不作为实际到访日展示或保存。 */
+function visitSortKey(visit: PlaceVisit): string {
+	if (visit.start.length !== 7) return visit.start;
+	const day =
+		visit.period === "late" ? "21" : visit.period === "mid" ? "11" : "01";
+	return `${visit.start}-${day}`;
+}
+
+export function sortVisits(visits: PlaceVisit[]): PlaceVisit[] {
+	return [...visits].sort((a, b) =>
+		visitSortKey(b).localeCompare(visitSortKey(a)),
 	);
 }
 
@@ -41,11 +56,26 @@ export function validatePlaces(places: PlaceItem[]): void {
 		) {
 			throw new Error(`足迹坐标无效：${place.id}（需要 WGS84 [纬度, 经度]）`);
 		}
-		if (!place.visits.length) throw new Error(`足迹缺少到访日期：${place.id}`);
+		if (!place.visits.length && !place.currentLocation)
+			throw new Error(`足迹缺少到访日期：${place.id}`);
+		if (
+			place.mapZoom !== undefined &&
+			(!Number.isFinite(place.mapZoom) ||
+				place.mapZoom < 2 ||
+				place.mapZoom > 18)
+		)
+			throw new Error(`足迹地图缩放无效：${place.id}`);
 		for (const visit of place.visits) {
 			if (
 				!validDate(visit.start) ||
-				(visit.end && (!validDate(visit.end) || visit.end < visit.start))
+				(visit.end &&
+					(!validDate(visit.end) ||
+						(visit.end.length === 7 ? `${visit.end}-31` : visit.end) <
+							visitSortKey({ start: visit.start }))) ||
+				(visit.period !== undefined &&
+					(visit.start.length !== 7 ||
+						visit.end !== undefined ||
+						!["early", "mid", "late"].includes(visit.period)))
 			) {
 				throw new Error(`足迹日期无效：${place.id}`);
 			}
@@ -68,8 +98,8 @@ export function validatePlaces(places: PlaceItem[]): void {
 
 export function visitInYear(visit: PlaceVisit, year: string): boolean {
 	return (
-		visit.start <= `${year}-12-31` &&
-		(visit.end ?? visit.start) >= `${year}-01-01`
+		visit.start.slice(0, 4) <= year &&
+		(visit.end ?? visit.start).slice(0, 4) >= year
 	);
 }
 
@@ -118,21 +148,42 @@ export function summarizePlaces(
 	};
 }
 
-export function latestVisit(place: PlaceItem): PlaceVisit {
-	return [...place.visits].sort((a, b) => b.start.localeCompare(a.start))[0];
+export function latestVisit(place: PlaceItem): PlaceVisit | undefined {
+	return sortVisits(place.visits)[0];
 }
 
 export function sortPlaces(places: PlaceItem[]): PlaceItem[] {
-	return [...places].sort((a, b) =>
-		latestVisit(b).start.localeCompare(latestVisit(a).start),
-	);
+	return [...places].sort((a, b) => {
+		const visitA = latestVisit(a);
+		const visitB = latestVisit(b);
+		return (visitB ? visitSortKey(visitB) : "").localeCompare(
+			visitA ? visitSortKey(visitA) : "",
+		);
+	});
 }
 
-export function formatPlaceDates(visit: PlaceVisit): string {
+export function formatPlaceDates(
+	visit: PlaceVisit | undefined,
+	english = false,
+): string {
+	if (!visit) return "";
 	const start = visit.start.replaceAll("-", ".");
+	if (visit.period) {
+		const labels = english
+			? { early: "early month", mid: "mid-month", late: "late month" }
+			: { early: "上旬", mid: "中旬", late: "下旬" };
+		return `${start} · ${labels[visit.period]}`;
+	}
 	return visit.end && visit.end !== visit.start
 		? `${start} — ${visit.end.replaceAll("-", ".")}`
 		: start;
+}
+
+export function formatPlaceLocation(place: PlaceItem, english = false): string {
+	const country = english ? (place.countryEn ?? place.country) : place.country;
+	const region = english ? (place.regionEn ?? place.region) : place.region;
+	const city = english ? (place.cityEn ?? place.city) : place.city;
+	return `${region === city ? country : region} · ${city}`;
 }
 
 /** 按屏幕距离聚合；缩放后重新计算，不把不同缩放级别的相邻地点永久合并。 */

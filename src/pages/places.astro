@@ -6,8 +6,10 @@ import { placesConfig } from "@/config";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import {
 	formatPlaceDates,
+	formatPlaceLocation,
 	latestVisit,
 	sortPlaces,
+	sortVisits,
 	summarizePlaces,
 	validatePlaces,
 } from "@/utils/places-utils";
@@ -41,11 +43,11 @@ const payload = JSON.stringify(placesConfig).replaceAll("<", "\\u003c");
 			<PersonalPageHeader title={placesConfig.title} titleEn={placesConfig.titleEn} description={placesConfig.description} descriptionEn={placesConfig.descriptionEn} icon="material-symbols:explore-rounded" />
 			<div class="places-region-pill"><Icon is:inline name="material-symbols:flag-rounded" /><LocalizedText zh="已到访地区" en="Regions visited" /><strong data-stat="regions">{stats.regions}</strong></div>
 		</div>
-		<div class="places-preview-notice" data-preview-notice hidden={!demo}>
+		{placesConfig.examples.length > 0 && <div class="places-preview-notice" data-preview-notice hidden={!demo}>
 			<Icon is:inline name="material-symbols:info-outline-rounded" />
 			<p><strong><LocalizedText zh="示例预览" en="Example preview" /></strong><LocalizedText zh=" · 下方地点、日期和插画仅用于展示效果，并非 Sky 的真实足迹。" en=" · Places, dates and illustrations below are examples, not Sky's actual travels." /></p>
 			<button type="button" data-action="mode"><LocalizedText zh="只看真实足迹" en="Show real places" /></button>
-		</div>
+		</div>}
 		<div class="places-stats" aria-live="polite" aria-atomic="true">
 			<div class="places-stat"><Icon is:inline name="material-symbols:location-on-rounded" /><strong data-stat="places">{stats.places}</strong><LocalizedText zh="地点" en="Places" /></div>
 			<div class="places-stat"><Icon is:inline name="material-symbols:explore-rounded" /><strong data-stat="visits">{stats.visits}</strong><LocalizedText zh="到访次数" en="Visits" /></div>
@@ -77,6 +79,7 @@ const payload = JSON.stringify(placesConfig).replaceAll("<", "\\u003c");
 		</div>
 		<p class="places-map-caption"><span><LocalizedText zh="地图由" en="Map by" /> <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · Leaflet</span><span><LocalizedText zh="支持拖动、缩放与点选" en="Drag, zoom and explore" /></span></p>
 		<div class="places-section-title places-list-title"><h2><LocalizedText zh="地点列表" en="Places & memories" /></h2><p data-results aria-live="polite"></p></div>
+		<p class="places-data-note"><LocalizedText zh="时间按记忆保留到日、月份或旬；地区坐标仅作范围示意。封面为网络风景配图，不代表本人拍摄或到访了图中每个景点。" en="Dates keep their original day, month or approximate period. Regional pins are indicative. Covers are sourced scenery, not personal photos or evidence of visiting every pictured landmark." /></p>
 		<div class="places-grid">
 			{allCards.map(({ place, source }) => (
 				<article class="places-place-card" data-place-card={place.id} data-source={source} hidden={source !== (demo ? "demo" : "real")}>
@@ -88,12 +91,14 @@ const payload = JSON.stringify(placesConfig).replaceAll("<", "\\u003c");
 						{(place.photos?.length ?? 0) > 1 && <div class="places-photo-controls"><button type="button" data-photo-step="-1" aria-label="上一张照片"><Icon is:inline name="material-symbols:chevron-left-rounded" /></button><span data-photo-count>1 / {place.photos?.length}</span><button type="button" data-photo-step="1" aria-label="下一张照片"><Icon is:inline name="material-symbols:chevron-right-rounded" /></button></div>}
 					</div>
 					<div class="places-place-content">
-						<div class="places-place-location"><Icon is:inline name="material-symbols:location-on-rounded" /><LocalizedText zh={`${place.region} · ${place.city}`} en={`${place.regionEn ?? place.region} · ${place.cityEn ?? place.city}`} /></div>
+						<div class="places-place-location"><Icon is:inline name="material-symbols:location-on-rounded" /><LocalizedText zh={formatPlaceLocation(place)} en={formatPlaceLocation(place, true)} /></div>
 						<h3><LocalizedText zh={place.name} en={place.nameEn ?? place.name} /></h3>
-						<time data-card-dates>{formatPlaceDates(latestVisit(place))}</time>
+						<span data-card-dates hidden={place.currentLocation || place.visits.length > 1}>{formatPlaceDates(latestVisit(place))}</span>
+						{place.visits.length > 1 && <ul class="places-visit-history">{sortVisits(place.visits).map((visit, index) => <li data-visit={index} data-visit-start={visit.start}><time>{formatPlaceDates(visit)}</time></li>)}</ul>}
 						<div class="places-card-tags">{place.tags.map((tag) => <span class="places-tag"><LocalizedText zh={tag.name} en={tag.nameEn ?? tag.name} /></span>)}</div>
 						<p class="places-place-note"><LocalizedText zh={place.note ?? "把风景留在这里。"} en={place.noteEn ?? place.note ?? "Keep a little memory here."} /></p>
-						<div class="places-card-bottom"><span data-card-visits><LocalizedText zh={`到访 ${place.visits.length} 次`} en={`${place.visits.length} visit${place.visits.length === 1 ? "" : "s"}`} /></span><button type="button" data-locate={place.id}><LocalizedText zh="在地图上查看" en="View on map" /><Icon is:inline name="material-symbols:arrow-outward-rounded" /></button></div>
+						<div class="places-card-bottom"><span data-card-visits><LocalizedText zh={place.currentLocation ? "当前所在地 · 社区范围" : `到访 ${place.visits.length} 次`} en={place.currentLocation ? "Current location · suburb only" : `${place.visits.length} visit${place.visits.length === 1 ? "" : "s"}`} /></span><button type="button" data-locate={place.id}><LocalizedText zh="在地图上查看" en="View on map" /><Icon is:inline name="material-symbols:arrow-outward-rounded" /></button></div>
+						{place.photos?.filter(photo => photo.credit).map(photo => photo.credit && <p class="places-photo-credit"><LocalizedText zh="风景配图" en="Scenery cover" /> · <a href={photo.credit.sourceUrl} target="_blank" rel="noopener noreferrer">{photo.credit.author}</a> · <a href={photo.credit.licenseUrl} target="_blank" rel="noopener noreferrer">{photo.credit.license}</a><span> · <LocalizedText zh="缩小／裁切展示" en="Resized / cropped display" /></span></p>)}
 					</div>
 				</article>
 			))}
@@ -102,7 +107,7 @@ const payload = JSON.stringify(placesConfig).replaceAll("<", "\\u003c");
 			<Icon is:inline name="material-symbols:travel-explore-rounded" />
 			<h3 data-empty-title><LocalizedText zh="下一站，慢慢记录" en="One journey at a time" /></h3>
 			<p data-empty-description><LocalizedText zh="真实足迹还未填写，等你把走过的地方分享给我。" en="Real places haven't been added yet. Your journeys will appear here." /></p>
-			<button type="button" data-action="mode" class="places-filter-chip"><LocalizedText zh="预览示例" en="Preview examples" /></button>
+			{placesConfig.examples.length > 0 && <button type="button" data-action="mode" class="places-filter-chip"><LocalizedText zh="预览示例" en="Preview examples" /></button>}
 		</div>
 		<p class="places-closing"><LocalizedText zh="山河远阔，步履不停。" en="A world to wander, a story to keep." /></p>
 		<noscript><p class="places-preview-notice">地图与筛选需要启用 JavaScript；地点列表仍可阅读。</p></noscript>

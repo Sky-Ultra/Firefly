@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
 import { placesConfig } from "../src/config/placesConfig";
@@ -9,7 +9,9 @@ import {
 	filterPlaces,
 	formatPlaceDates,
 	getPlacesYears,
+	latestVisit,
 	sortPlaces,
+	sortVisits,
 	summarizePlaces,
 	validatePlaces,
 	visitInYear,
@@ -28,10 +30,102 @@ function place(id: string, start: string, end?: string): PlaceItem {
 	};
 }
 
-test("真实足迹不冒用示例数据，示例和未来真实数据均接受校验", () => {
-	assert.equal(placesConfig.places.length, 0);
+test("真实足迹全部录入，示例不再展示或下发", () => {
+	assert.equal(placesConfig.places.length, 17);
+	assert.equal(placesConfig.examples.length, 0);
+	assert.equal(placesConfig.previewWithExamples, false);
 	assert.doesNotThrow(() => validatePlaces(placesConfig.places));
 	assert.doesNotThrow(() => validatePlaces(placesConfig.examples));
+	assert.deepEqual(summarizePlaces(placesConfig.places, {}, 2026), {
+		places: 17,
+		visits: 17,
+		thisYear: 7,
+		regions: 12,
+	});
+	assert.deepEqual(getPlacesYears(placesConfig.places), [
+		"2026",
+		"2025",
+		"2023",
+	]);
+	assert.equal(
+		summarizePlaces(placesConfig.places, { year: "2025" }, 2026).visits,
+		9,
+	);
+	assert.equal(
+		summarizePlaces(placesConfig.places, { year: "2023" }, 2026).visits,
+		1,
+	);
+	assert.deepEqual(
+		placesConfig.places.find((p) => p.id === "chengdu")?.visits,
+		[{ start: "2026-04-10" }, { start: "2025-05", period: "early" }],
+	);
+});
+
+test("按月和旬保留原始时间精度，年筛选与同月排序正确", () => {
+	const january = place("january", "2026-01");
+	assert.doesNotThrow(() => validatePlaces([january]));
+	assert.equal(visitInYear(january.visits[0], "2026"), true);
+	assert.equal(visitInYear(january.visits[0], "2025"), false);
+	assert.equal(formatPlaceDates({ start: "2026-05" }), "2026.05");
+	assert.equal(
+		formatPlaceDates({ start: "2026-03", period: "mid" }),
+		"2026.03 · 中旬",
+	);
+	assert.equal(
+		formatPlaceDates({ start: "2026-03", period: "mid" }, true),
+		"2026.03 · mid-month",
+	);
+	assert.deepEqual(
+		sortVisits([
+			{ start: "2026-03", period: "early" },
+			{ start: "2026-03", period: "late" },
+			{ start: "2026-03-15" },
+		]).map((v) => v.period ?? v.start),
+		["late", "2026-03-15", "early"],
+	);
+	assert.throws(() => validatePlaces([place("bad", "2026-13")]), /日期/);
+	const badPeriod = place("bad-period", "2026-03-15");
+	badPeriod.visits[0].period = "early";
+	assert.throws(() => validatePlaces([badPeriod]), /日期/);
+});
+
+test("肯辛顿只记录社区级现居点，不虚构旅行日期；九江替代江西省级点", () => {
+	const home = placesConfig.places.find((p) => p.id === "kensington");
+	assert.ok(home?.currentLocation);
+	assert.deepEqual(home.visits, []);
+	assert.ok((home.mapZoom ?? 12) <= 13);
+	assert.equal(latestVisit(home), undefined);
+	assert.equal(summarizePlaces([home], {}, 2026).visits, 0);
+	assert.equal(filterPlaces([home], { year: "2026" }).length, 0);
+	assert.ok(
+		placesConfig.places.some((p) => p.id === "jiujiang" && p.city === "九江"),
+	);
+	assert.ok(!placesConfig.places.some((p) => p.id.startsWith("demo-")));
+});
+
+test("足迹封面托管在本地，逐张保留作者、来源与许可", () => {
+	for (const entry of placesConfig.places) {
+		assert.ok(entry.photos?.length, entry.id);
+		for (const photo of entry.photos) {
+			assert.ok(
+				existsSync(new URL(`../public${photo.src}`, import.meta.url)),
+				photo.src,
+			);
+			assert.ok(photo.credit?.author, entry.id);
+			assert.match(
+				photo.credit?.sourceUrl ?? "",
+				/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/,
+			);
+			assert.match(
+				photo.credit?.license ?? "",
+				/^(CC BY(?:-SA)? [234]\.0|CC0)$/,
+			);
+			assert.match(
+				photo.credit?.licenseUrl ?? "",
+				/^https:\/\/creativecommons\.org\//,
+			);
+		}
+	}
 });
 
 test("地点数、到访数与地区按独立记录统计，不把重复到访算成新地点", () => {

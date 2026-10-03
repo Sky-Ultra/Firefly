@@ -10,9 +10,11 @@ import {
 	clusterPlaces,
 	filterPlaces,
 	formatPlaceDates,
+	formatPlaceLocation,
 	getPlacesYears,
 	latestVisit,
 	sortPlaces,
+	sortVisits,
 	summarizePlaces,
 	visitInYear,
 } from "./places-utils";
@@ -153,27 +155,41 @@ class PlacesExplorer extends HTMLElement {
 			const visits = place.visits.filter(
 				(visit) => !this.year || visitInYear(visit, this.year),
 			);
-			const latest = [...visits].sort((a, b) =>
-				b.start.localeCompare(a.start),
-			)[0];
+			const latest = sortVisits(visits)[0];
 			const date = card.querySelector("[data-card-dates]");
-			if (date) date.textContent = formatPlaceDates(latest);
+			if (date)
+				date.textContent = place.currentLocation
+					? this.text("现居", "Currently based here")
+					: formatPlaceDates(latest, this.english);
+			card.querySelectorAll<HTMLElement>("[data-visit]").forEach((item) => {
+				const visit = sortVisits(place.visits)[Number(item.dataset.visit)];
+				item.hidden = !visit || (!!this.year && !visitInYear(visit, this.year));
+				const time = item.querySelector("time");
+				if (time) time.textContent = formatPlaceDates(visit, this.english);
+			});
 			const count = card.querySelector("[data-card-visits]");
 			if (count)
-				count.textContent = this.text(
-					`到访 ${visits.length} 次`,
-					`${visits.length} visit${visits.length === 1 ? "" : "s"}`,
-				);
+				count.textContent = place.currentLocation
+					? this.text("当前所在地 · 社区范围", "Current location · suburb only")
+					: this.text(
+							`到访 ${visits.length} 次`,
+							`${visits.length} visit${visits.length === 1 ? "" : "s"}`,
+						);
 		});
-		const recent = sortPlaces(this.items)[0];
+		const recent = sortPlaces(
+			this.items.filter((place) => place.visits.length > 0),
+		)[0];
 		this.setHidden("[data-recent]", !recent);
 		if (recent) {
 			this.setText(
 				"[data-recent-city]",
-				`${this.field(recent, "region")} · ${this.field(recent, "city")}`,
+				formatPlaceLocation(recent, this.english),
 			);
 			this.setText("[data-recent-name]", this.field(recent, "name"));
-			this.setText("[data-recent-date]", formatPlaceDates(latestVisit(recent)));
+			this.setText(
+				"[data-recent-date]",
+				formatPlaceDates(latestVisit(recent), this.english),
+			);
 			this.setText(
 				"[data-recent-tag]",
 				this.english
@@ -348,9 +364,11 @@ class PlacesExplorer extends HTMLElement {
 		const heading = document.createElement("h3");
 		heading.textContent = this.field(place, "name");
 		const location = document.createElement("p");
-		location.textContent = `${this.field(place, "region")} · ${this.field(place, "city")}`;
+		location.textContent = formatPlaceLocation(place, this.english);
 		const date = document.createElement("p");
-		date.textContent = formatPlaceDates(latestVisit(place));
+		date.textContent = place.currentLocation
+			? this.text("现居 · 仅标注社区范围", "Current location · suburb only")
+			: formatPlaceDates(latestVisit(place), this.english);
 		const button = document.createElement("button");
 		button.type = "button";
 		button.dataset.record = place.id;
@@ -491,7 +509,7 @@ class PlacesExplorer extends HTMLElement {
 				behavior: "smooth",
 				block: "center",
 			});
-			this.map.flyTo(place.coordinates, 12, { duration: 1 });
+			this.map.flyTo(place.coordinates, place.mapZoom ?? 12, { duration: 1 });
 			this.renderMarkers();
 			return;
 		}

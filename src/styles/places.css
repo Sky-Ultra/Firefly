@@ -70,6 +70,12 @@
 .places-place-location { display: flex; align-items: center; gap: .3rem; font-size: .8rem; color: var(--primary); margin-bottom: .3rem; }
 .places-place-content h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: .3rem; }
 .places-place-content time { font-size: .78rem; opacity: .55; }
+.places-place-content [data-card-dates] { font-size: .78rem; opacity: .65; }
+.places-data-note { margin-bottom: 1.1rem; font-size: .75rem; line-height: 1.75; opacity: .65; }
+.places-visit-history { display: flex; flex-wrap: wrap; gap: .35rem .75rem; margin-top: .4rem; }
+.places-visit-history li::before { content: "· "; color: var(--primary); }
+.places-photo-credit { margin-top: .85rem; font-size: .65rem; line-height: 1.7; opacity: .65; overflow-wrap: anywhere; }
+.places-photo-credit a { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; }
 .places-card-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .7rem; }
 .places-place-note { margin-top: .8rem; font-size: .85rem; line-height: 1.75; opacity: .65; min-height: 3rem; }
 .places-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: 1rem; padding-top: .8rem; border-top: 1px dashed var(--line-divider); font-size: .75rem; }
