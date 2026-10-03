@@ -178,6 +178,7 @@ export type SiteConfig = {
 
 	// 分页配置
 	pagination: {
+		enable?: boolean; // false 时在首页展示全部文章，默认启用分页
 		postsPerPage: number; // 每页显示的文章数量
 	};
 

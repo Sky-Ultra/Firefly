@@ -110,7 +110,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			type: "relationship",
 			enable: true,
 			position: "sticky",
-			showOnPostPage: false,
+			showOnPostPage: true,
 		},
 	],
 
@@ -235,6 +235,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			// 组件类型：恋爱计时组件（移动端紧跟音乐播放器）
 			type: "relationship",
 			enable: true,
+			// 文章页单独放在评论区之后，不在底部侧栏重复展示
 			showOnPostPage: false,
 		},
 		{

@@ -1,6 +1,6 @@
 ---
 translationOf: why-the-poor-stay-poor.md
-sourceHash: sha256:6bf276f69f77befca542b90c4e13f1beec612d6259b91c73e633f5ec6029d62a
+sourceHash: sha256:efdb998ad75c9308362408739f71aede75604dcb932479a5629fb4cec01cf17f
 ---
 
 > **Disclaimer:**
@@ -25,13 +25,13 @@ sourceHash: sha256:6bf276f69f77befca542b90c4e13f1beec612d6259b91c73e633f5ec6029d
 
 Because there are too many poor people in today's society. Far, far too many.
 
-I am a Chinese international student in Australia. I consider my thinking, cultural knowledge, and professional competence to be at a relatively high level, and I certainly would not call myself poor. Recently, I have watched quite a few videos and read quite a few texts on this subject. Together with my conversations with Astra, they have made me want to talk about it.
+I am a Chinese international student in Australia. I consider my thinking, cultural knowledge, and professional competence to be at a relatively high level, and I certainly would not call myself poor. Recently, I have watched quite a few videos on this subject on Bilibili. Although they seem somewhat similar, after discussing the topic with GPT-Astra and developing and summarizing those ideas, I wanted to talk about it. Thanks to Bilibili for the openly shared material.
 
 <div class="word-paragraph-gap" data-empty-paragraphs="2" style="--empty-paragraphs: 2" aria-hidden="true"></div>
 
 What can poor people do to stay poor? The secret is to have children indiscriminately.
 
-Many younger readers may be puzzled: why do poorer families tend to have children so indiscriminately? Some will say it is because the poor are playing a genetic lottery. Not at all; that explanation has not even reached the right stage. When poor people have children, they are not betting on the future. They are betting on the here and now.
+The first question: why do poorer families tend to have children so indiscriminately? Some will say it is because the poor are playing a genetic lottery. Not at all; that explanation has not even reached the right stage. When poor people have children, they are not betting on the future. They are betting on the here and now.
 
 Economics assumes that everyone is a rational actor who weighs the pros and cons under constraints and tries to choose what benefits them more. The "indiscriminate" part is the outcome, not the intention. The reason this kind of childbearing keeps happening is that it actually serves the initial interests of each person in a disadvantaged household, even though the outcome develops into people at the bottom harming one another.
 
@@ -121,4 +121,4 @@ Attacking me will not help. I will not take down the article or the website. I a
 
 <div class="word-paragraph-gap" data-empty-paragraphs="3" style="--empty-paragraphs: 3" aria-hidden="true"></div>
 
-I like you! You are welcome to keep wandering around my website, meow~
+I like you! You are welcome to keep wandering around my website, meow~~ There is plenty more to explore.

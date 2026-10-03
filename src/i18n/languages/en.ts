@@ -49,7 +49,8 @@ export const en: Translation = {
 
 	[Key.comments]: "Comments",
 	[Key.commentSection]: "Comments",
-	[Key.commentSubtitle]: "Share your thoughts and discuss with everyone",
+	[Key.commentSubtitle]:
+		"No sign-up needed; just enter an email address.\nUse a QQ email address to load your QQ avatar automatically.",
 	[Key.commentNotConfigured]: "Comment system not configured",
 	[Key.guestbookCommentHint]:
 		"You have not enabled the comment system in the configuration file yet. After enabling it, visitors will be able to leave messages here",

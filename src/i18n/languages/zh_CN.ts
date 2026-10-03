@@ -49,7 +49,8 @@ export const zh_CN: Translation = {
 
 	[Key.comments]: "评论",
 	[Key.commentSection]: "此情可待成追忆",
-	[Key.commentSubtitle]: "若使用QQ邮箱可以自动获取头像",
+	[Key.commentSubtitle]:
+		"无需注册，只需填写邮箱\n若使用QQ邮箱可以自动拉取QQ头像",
 	[Key.commentNotConfigured]: "评论系统暂未配置",
 	[Key.guestbookCommentHint]:
 		"您还未在配置文件中启用评论系统，启用后访客才可在此留言",

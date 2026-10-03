@@ -24,10 +24,12 @@ import RandomCoverProvider from "@/components/features/RandomCoverProvider.astro
 import PostMetadata from "@/components/layout/PostMeta.astro";
 import RecommendedPost from "@/components/misc/RecommendedPost.astro";
 import SharePoster from "@/components/misc/SharePoster.svelte";
+import RelationshipTimer from "@/components/widget/RelationshipTimer.astro";
 import { commentConfig } from "@/config/commentConfig";
 import { coverImageConfig } from "@/config/coverImageConfig";
 import { licenseConfig } from "@/config/licenseConfig";
 import { profileConfig } from "@/config/profileConfig";
+import { sidebarLayoutConfig } from "@/config/sidebarConfig";
 import { siteConfig } from "@/config/siteConfig";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
@@ -51,6 +53,9 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+const mobileRelationshipConfig = sidebarLayoutConfig.mobileBottomComponents.find(
+	(widget) => widget.type === "relationship",
+);
 const usesPrimaryTitleColor =
 	entry.id === "personal-website-introduction" ||
 	entry.id === "personal-website-changelog";
@@ -551,7 +556,23 @@ const relatedPosts = await getRelatedPosts(entry, 5);
     </a>
   </div>
 
-  <RecommendedPost relatedPosts={relatedPosts} currentPostId={entry.id} />
+  <div data-post-footer class="flex flex-col">
+    {commentConfig.enabledOn?.posts !== false && entry.data.comment && !entry.data.password && (
+      <div data-post-comments class="order-1 md:order-3">
+        <Comment post={entry} />
+      </div>
+    )}
+
+    {mobileRelationshipConfig?.enable && (
+      <div data-mobile-post-relationship class="order-2 mb-4 md:hidden">
+        <RelationshipTimer class="block" widgetConfig={{ ...mobileRelationshipConfig, position: "sticky" }} />
+      </div>
+    )}
+
+    <div data-post-recommendations class="order-3 md:order-1">
+      <RecommendedPost relatedPosts={relatedPosts} currentPostId={entry.id} />
+    </div>
+  </div>
 
   {usesRandomCover && (
 	<RandomCoverProvider
@@ -560,8 +581,4 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 	/>
   )}
 
-  <!-- 评论 -->
-  {commentConfig.enabledOn?.posts !== false && entry.data.comment && !entry.data.password && (
-    <Comment post={entry} />
-  )}
 </MainGridLayout>

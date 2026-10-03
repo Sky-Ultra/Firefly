@@ -249,6 +249,8 @@ export const siteConfig: SiteConfig = {
 
 	// 分页配置
 	pagination: {
+		// 暂停分页；需要恢复时改为 true，沿用下方每页数量
+		enable: false,
 		// 每页显示的文章数量
 		postsPerPage: 15,
 	},
