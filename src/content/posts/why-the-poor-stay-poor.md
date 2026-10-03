@@ -1,9 +1,9 @@
 ---
-title: 为何穷人会一直保持他们的贫穷？
-titleEn: How Do the Poor Stay Poor? Why Do the Poor Stay Poor?
+title: 为何部分“穷人”会一直保持他们的贫穷？
+titleEn: Why Do Some “Poor People” Remain Poor?
 published: 2026-10-03
-description: 一些简单浅薄的思考，也关于婚姻
-descriptionEn: Some simple, superficial reflections. Also China
+description: 一些简单浅薄的文字，也是关于“婚姻”的思考
+descriptionEn: Some simple, superficial thoughts, also on “marriage”.
 image: random
 tags: [随笔]
 tagsEn: [Essay]
@@ -25,9 +25,9 @@ draft: false
 >
 > <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 >
-> <mark class="theme-highlight">我自己是个男生，有喜欢的女孩，也深刻明白女性结婚的风险</mark> [关于我](/about/)
+> <mark class="theme-highlight">我自己是个男生，有喜欢的女孩，也深刻明白现在女性结婚的一些“风险”</mark> [关于我](/about/)
 >
-> <mark class="theme-highlight">其次文章仅代表观点以及一些浅薄的思考。我自身定不在此列且会引以为戒</mark>
+> <mark class="theme-highlight">其次文章仅代表观点以及一些浅薄的思考。我自身定不在此列，且会引以为戒</mark>
 >
 > <mark class="theme-highlight">这意味着我不代表任何立场，不代表男女也不制造对立。我仅作为我自己以及网站xiaoxiaoboluo.cn 进行</mark>
 

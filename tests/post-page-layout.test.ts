@@ -16,7 +16,7 @@ test("pagination is disabled and all posts fit on the homepage", () => {
 	);
 	assert.match(
 		homepage,
-		/getPostListPageSize\(allBlogPosts\.length, siteConfig\.pagination\)/,
+		/getPostListPageSize\(\s*allBlogPosts\.length,\s*siteConfig\.pagination,?\s*\)/,
 	);
 });
 

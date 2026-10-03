@@ -35,8 +35,8 @@ test("highlights all paragraphs of the two requested statements", () => {
 		(match) => match[1],
 	);
 	assert.deepEqual(highlights, [
-		"我自己是个男生，有喜欢的女孩，也深刻明白女性结婚的风险",
-		"其次文章仅代表观点以及一些浅薄的思考。我自身定不在此列且会引以为戒",
+		"我自己是个男生，有喜欢的女孩，也深刻明白现在女性结婚的一些“风险”",
+		"其次文章仅代表观点以及一些浅薄的思考。我自身定不在此列，且会引以为戒",
 		"这意味着我不代表任何立场，不代表男女也不制造对立。我仅作为我自己以及网站xiaoxiaoboluo.cn 进行",
 	]);
 	assert.equal(
@@ -83,13 +83,16 @@ test("updates the opening and links to About Me immediately after the highlighte
 	assert.doesNotMatch(article, /首先我个人性格很随和也没啥脾气/);
 	assert.match(
 		article,
-		/我自己是个男生，有喜欢的女孩，也深刻明白女性结婚的风险<\/mark> \[关于我\]\(\/about\/\)/,
+		/我自己是个男生，有喜欢的女孩，也深刻明白现在女性结婚的一些“风险”<\/mark> \[关于我\]\(\/about\/\)/,
 	);
 	assert.match(
 		translation,
 		/^> First of all, I am fairly easygoing and emotionally very stable\./m,
 	);
-	assert.match(translation, /marriage\.<\/mark> \[About Me\]\(\/about\/\)/);
+	assert.match(
+		translation,
+		/some of the “risks” women face in marriage today\.<\/mark> \[About Me\]\(\/about\/\)/,
+	);
 });
 
 test("keeps the paired English translation current", () => {

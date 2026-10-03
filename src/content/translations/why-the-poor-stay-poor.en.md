@@ -1,6 +1,6 @@
 ---
 translationOf: why-the-poor-stay-poor.md
-sourceHash: sha256:ec2a1e435cf260471e109dfdb50ba9f4e9e5a50358839dbd0984688013766761
+sourceHash: sha256:4f68b74e6c135a1d9bba0c19682dc22cda436be2f3e26a9f7a10559ff3bcd8c9
 ---
 
 > **Disclaimer:**
@@ -15,7 +15,7 @@ sourceHash: sha256:ec2a1e435cf260471e109dfdb50ba9f4e9e5a50358839dbd0984688013766
 >
 > <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 >
-> <mark class="theme-highlight">I am a guy myself, I have a girl I like, and I also deeply understand the risks women face in marriage.</mark> [About Me](/about/)
+> <mark class="theme-highlight">I am a guy myself, I have a girl I like, and I also deeply understand some of the “risks” women face in marriage today.</mark> [About Me](/about/)
 >
 > <mark class="theme-highlight">Secondly, this article represents only opinions and some superficial reflections. I certainly do not count myself among the people described here, and I will take their example as a warning.</mark>
 >

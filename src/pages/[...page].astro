@@ -8,7 +8,10 @@ import { getSortedPosts } from "@/utils/content-utils";
 import { getPostListPageSize } from "@/utils/pagination-utils";
 export const getStaticPaths = (async ({ paginate }) => {
 	const allBlogPosts = await getSortedPosts();
-	const pageSize = getPostListPageSize(allBlogPosts.length, siteConfig.pagination);
+	const pageSize = getPostListPageSize(
+		allBlogPosts.length,
+		siteConfig.pagination,
+	);
 	return paginate(allBlogPosts, { pageSize });
 }) satisfies GetStaticPaths;
 // https://github.com/withastro/astro/issues/6507#issuecomment-1489916992

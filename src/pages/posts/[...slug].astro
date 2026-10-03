@@ -53,9 +53,10 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const mobileRelationshipConfig = sidebarLayoutConfig.mobileBottomComponents.find(
-	(widget) => widget.type === "relationship",
-);
+const mobileRelationshipConfig =
+	sidebarLayoutConfig.mobileBottomComponents.find(
+		(widget) => widget.type === "relationship",
+	);
 const usesPrimaryTitleColor =
 	entry.id === "personal-website-introduction" ||
 	entry.id === "personal-website-changelog";
