@@ -2,8 +2,8 @@
 title: 为何穷人会一直保持他们的贫穷？
 titleEn: How Do the Poor Stay Poor? Why Do the Poor Stay Poor?
 published: 2026-10-03
-description: 一些简单浅薄的思考
-descriptionEn: Some simple, superficial reflections.
+description: 一些简单浅薄的思考，也关于婚姻
+descriptionEn: Some simple, superficial reflections. Also China
 image: random
 tags: [随笔]
 tagsEn: [Essay]
