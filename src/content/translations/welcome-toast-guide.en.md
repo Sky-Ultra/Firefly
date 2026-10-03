@@ -1,6 +1,6 @@
 ---
 translationOf: welcome-toast-guide.md
-sourceHash: sha256:26c9ad3a2ad5719092ddf916a27582de5acf4f0dcd3b565925077a425b7f2e46
+sourceHash: sha256:4f96bc853c0e09b2811c3356c6476ef26b898004c461cc6d4a2cc80e3b3da22b
 ---
 
 This card stays on screen for only a few seconds. In that time, it has to recognise the homepage, look up an approximate location, deal with a timeout, and keep up when the site language changes.

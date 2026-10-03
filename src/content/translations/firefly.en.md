@@ -1,6 +1,6 @@
 ---
 translationOf: firefly.md
-sourceHash: sha256:1265b7af9065a7aa79f8a23bcc1968067109c7a57f0f6270ee0968f58b96f6ef
+sourceHash: sha256:d9f6956b19c004f1a0bc50d293022e4f1da0f1622ab0aa18d21da8a6b51a72f6
 ---
 
 ## 🌟 Project overview

@@ -68,6 +68,74 @@ test("creates a prefixed, deterministic SHA-256 hash", () => {
 	assert.notEqual(computeSourceHash("hello"), computeSourceHash("hello!"));
 });
 
+test("allows frontmatter-only edits without making the English body stale", () => {
+	const fixture = createFixture();
+	try {
+		const original =
+			"---\ntitle: Original\ndescription: Old summary\ntags: [Essay]\n---\n\n正文第一段。\n\n第二段。\n";
+		const revised =
+			"---\ntitle: Updated\ntitleEn: Updated title\ndescription: New summary\ndescriptionEn: New English summary\npublished: 2026-10-04\nupdated: 2026-10-05\ntags: [随笔, 思考]\ntagsEn: [Essay, Thoughts]\ncategory: 随笔\ncategoryEn: Essay\nimage: random\ncomment: true\ndraft: false\n---\n\n正文第一段。\n\n第二段。\n";
+		fixture.writeTranslation("post.en.md", translation("post.md", original));
+		fixture.writePost("post.md", revised);
+		assert.deepEqual(validatePostTranslations(fixture), []);
+	} finally {
+		fixture.cleanup();
+	}
+});
+
+test("hashes only the body after the frontmatter closing line", () => {
+	const body = "\n正文。\n\n---\n\n结尾。\n";
+	assert.equal(
+		computeSourceHash(`---\ntitle: Example\n---\n${body}`),
+		computeSourceHash(body),
+	);
+	assert.equal(
+		computeSourceHash(`---\ndescription: |-\n  第一行\n  第二行\n---\n${body}`),
+		computeSourceHash(body),
+	);
+	assert.equal(computeSourceHash(`---\n---\n${body}`), computeSourceHash(body));
+});
+
+test("normalizes Windows line endings and the file BOM", () => {
+	const source = "---\ntitle: Example\n---\n\n正文。\n\n下一段。\n";
+	assert.equal(
+		computeSourceHash(`\uFEFF${source.replaceAll("\n", "\r\n")}`),
+		computeSourceHash(source),
+	);
+});
+
+test("still rejects changed body text and paragraph spacing", () => {
+	const original = "---\ntitle: Original\n---\n\n正文第一段。\n\n第二段。\n";
+	for (const revised of [
+		original.replace("第一段", "改过的段落"),
+		original.replace("\n\n第二段", "\n\n\n第二段"),
+	]) {
+		const fixture = createFixture();
+		try {
+			fixture.writeTranslation("post.en.md", translation("post.md", original));
+			fixture.writePost("post.md", revised);
+			assert.deepEqual(
+				validatePostTranslations(fixture).map((issue) => issue.code),
+				["stale-source-hash"],
+			);
+		} finally {
+			fixture.cleanup();
+		}
+	}
+});
+
+test("does not mistake delimiter-like body text for frontmatter", () => {
+	for (const source of [
+		"---\ntitle: Unclosed\n---not a delimiter\n正文。",
+		"正文。\n---\ntitle: Body text\n---\n结尾。",
+	]) {
+		assert.notEqual(
+			computeSourceHash(source),
+			computeSourceHash(source.replace("title:", "changed:")),
+		);
+	}
+});
+
 test("accepts valid Markdown, MDX, and nested pairs", () => {
 	const fixture = createFixture();
 	try {

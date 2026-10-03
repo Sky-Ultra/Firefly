@@ -1,6 +1,6 @@
 ---
 translationOf: relationship-timer-guide.md
-sourceHash: sha256:b0bcc74cdf24f42836b1a12019971561ec3146a02f6179e3f035a120da608be2
+sourceHash: sha256:b5b61647c4230ade720608d73bed83d1ad0c7db76e601f09f8b37ad9f718197e
 ---
 
 This post records how the Relationship Timer card was built.  

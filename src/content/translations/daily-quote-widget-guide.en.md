@@ -1,6 +1,6 @@
 ---
 translationOf: daily-quote-widget-guide.md
-sourceHash: sha256:76d27602f2ab2465037ff8835ffb3a47479dd0420cf26026df030fa314c94a9f
+sourceHash: sha256:ddfd018be36bba0146caaeb150614cdd4d69fdd1355e259c9d5d18ecf641609d
 ---
 
 This post records how the Daily Quote card in the sidebar is put together. It fetches a line from the Hitokoto API and caches it against the visitor's local date. If the request fails, the card falls back to a line stored in the site configuration.

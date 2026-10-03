@@ -54,22 +54,34 @@ function listMarkdownFiles(root: string): string[] {
 	return result.sort((left, right) => left.localeCompare(right));
 }
 
+function splitDocument(content: string): {
+	frontmatter: string;
+	body: string;
+} {
+	const normalized = content.replace(/^\uFEFF/, "").replaceAll("\r\n", "\n");
+	const opening = normalized.match(/^---[ \t]*\n/);
+	if (!opening) {
+		return { frontmatter: "", body: normalized };
+	}
+
+	const closingDelimiter = /^---[ \t]*(?:\n|$)/gm;
+	closingDelimiter.lastIndex = opening[0].length;
+	const closing = closingDelimiter.exec(normalized);
+	if (!closing) {
+		return { frontmatter: "", body: normalized };
+	}
+
+	return {
+		frontmatter: normalized.slice(opening[0].length, closing.index),
+		body: normalized.slice(closing.index + closing[0].length),
+	};
+}
+
 function parseTranslationFile(content: string): {
 	frontmatter: TranslationFrontmatter;
 	body: string;
 } {
-	const normalized = content.replace(/^\uFEFF/, "").replaceAll("\r\n", "\n");
-	if (!normalized.startsWith("---\n")) {
-		return { frontmatter: {}, body: normalized };
-	}
-
-	const closingIndex = normalized.indexOf("\n---", 4);
-	if (closingIndex === -1) {
-		return { frontmatter: {}, body: normalized };
-	}
-
-	const frontmatterText = normalized.slice(4, closingIndex);
-	const body = normalized.slice(closingIndex + 4).replace(/^\n+/, "");
+	const { frontmatter: frontmatterText, body } = splitDocument(content);
 	const frontmatter: TranslationFrontmatter = {};
 
 	for (const line of frontmatterText.split("\n")) {
@@ -106,7 +118,10 @@ export function getTranslationRelativePath(sourceRelativePath: string): string {
 }
 
 export function computeSourceHash(source: string): string {
-	return `sha256:${createHash("sha256").update(source, "utf8").digest("hex")}`;
+	// Metadata is independently maintained in the source frontmatter. Only the
+	// body needs a matching English revision; retain its paragraph spacing.
+	const { body } = splitDocument(source);
+	return `sha256:${createHash("sha256").update(body, "utf8").digest("hex")}`;
 }
 
 export function validatePostTranslations(
@@ -161,7 +176,7 @@ export function validatePostTranslations(
 				code: "stale-source-hash",
 				sourcePath,
 				translationPath,
-				message: `${translationPath} is stale because ${sourcePath} has changed.`,
+				message: `${translationPath} is stale because the body of ${sourcePath} has changed. Synchronize the English body, then update sourceHash. Frontmatter-only edits do not require a new hash.`,
 			});
 		}
 

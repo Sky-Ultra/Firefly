@@ -1,6 +1,6 @@
 ---
 translationOf: code-examples.md
-sourceHash: sha256:537e59e0d3bc8e18eba1875d82e7ce423e6331a8faed40b285053dd968c40ea1
+sourceHash: sha256:f3ba43a01631c86bd7770703b3a6c75564e0871feddb2fb9ff734b59e1a855ff
 ---
 
 This page explores the code-block features provided by [Expressive Code](https://expressive-code.com/).

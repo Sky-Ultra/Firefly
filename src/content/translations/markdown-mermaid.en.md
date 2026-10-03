@@ -1,6 +1,6 @@
 ---
 translationOf: markdown-mermaid.md
-sourceHash: sha256:a852bad9963930115f4166c47362085787defbf74577a19748da0665af995081
+sourceHash: sha256:943a6d4683a2ed80ff4e8309373b4caf64799ce014912e97648979ff294b31f3
 ---
 ## A Practical Guide to Mermaid Diagrams in Markdown
 

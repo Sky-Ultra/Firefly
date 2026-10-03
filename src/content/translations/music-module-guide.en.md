@@ -1,6 +1,6 @@
 ---
 translationOf: music-module-guide.md
-sourceHash: sha256:720b3f87074708f2ae673358f22b22dc3797ff5782835ec1303133cfe91401c9
+sourceHash: sha256:36cbae65c9acdece04f1e8968de30fe409e8fc357fb89ba7f6afb75269a1a278
 ---
 
 This post explains the design behind the site's music module. The player can appear in both the sidebar and the navigation bar, with playlist loading, playback controls, synchronised lyrics, and support for local audio files.

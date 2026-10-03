@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { computeSourceHash } from "../scripts/lib/post-translation-validator";
 
 const article = readFileSync(
 	new URL("../src/content/posts/summer-is-still-there.md", import.meta.url),
@@ -37,10 +37,7 @@ test("preserves the source essay from its opening to its closing", () => {
 });
 
 test("keeps the paired English translation current", () => {
-	const sourceHash = createHash("sha256").update(article, "utf8").digest("hex");
+	const sourceHash = computeSourceHash(article);
 	assert.match(translation, /^translationOf: summer-is-still-there\.md$/m);
-	assert.match(
-		translation,
-		new RegExp(`^sourceHash: sha256:${sourceHash}$`, "m"),
-	);
+	assert.match(translation, new RegExp(`^sourceHash: ${sourceHash}$`, "m"));
 });

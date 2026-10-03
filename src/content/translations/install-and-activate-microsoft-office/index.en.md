@@ -1,6 +1,6 @@
 ---
 translationOf: install-and-activate-microsoft-office/index.md
-sourceHash: sha256:ae998c552cf16e72e6ca4b4f6a69fc623152a881c46096dcdbcbb1e764448376
+sourceHash: sha256:0b6e1fe79efcfca8a16feea9094240b7acc990df774212d3e364b861c69cc8f6
 ---
 
 ![Office Tool Plus home](../../posts/install-and-activate-microsoft-office/office-tool-plus-home.png)

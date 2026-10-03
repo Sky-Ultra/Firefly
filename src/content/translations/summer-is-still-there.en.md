@@ -1,6 +1,6 @@
 ---
 translationOf: summer-is-still-there.md
-sourceHash: sha256:2457b55c9578fc5e0f50e94a30318bc72bce126f662e11fcdd2a311125791c22
+sourceHash: sha256:ef5b0a5041a32290921da962b9110d0c2d2de37fe902eea6b0c1ebbf64c37cf2
 ---
 
 I hate summer.

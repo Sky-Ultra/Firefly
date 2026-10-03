@@ -1,6 +1,6 @@
 ---
 translationOf: homepage-welcome-messages.md
-sourceHash: sha256:10bcb5b5d94ccca34f2d76c725205a2c70c28ef5ce6ea9162b02ee2016e3f952
+sourceHash: sha256:095adfe4d4bc40d85e0eca54873e20d335d80fd5d5fbd6dfebe7d505f60deb20
 ---
 
 As time passes, the collection of welcome messages on the homepage keeps growing. The code displays them in a random order without repeating a message before the current round ends, but most visitors probably will not stay long enough to see them all. Here, then, are all the homepage welcome messages collected before October 1, 2026.

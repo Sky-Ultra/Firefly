@@ -1,6 +1,6 @@
 ---
 translationOf: bangumi-guide.md
-sourceHash: sha256:d30d694652bc7826795023c8d62460ed53ed9595e4b47d251b34ea21652a4d25
+sourceHash: sha256:6e45af548c45b2e16ee3b8ebb175b408996d7f804ece95002f2d80f39587a272
 ---
 
 I call this page the “Bangumi Tracker,” but it is not a broadcast timetable in the usual sense. It is closer to an open shelf: what I have watched, which book I am still reading, and what I have set aside all move with my Bangumi collection.

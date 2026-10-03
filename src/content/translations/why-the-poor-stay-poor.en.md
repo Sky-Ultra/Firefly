@@ -1,6 +1,6 @@
 ---
 translationOf: why-the-poor-stay-poor.md
-sourceHash: sha256:fa639b11d7f4899b7f6f6aade71218a61b9d6fb05800bad5ad2de85e66b50208
+sourceHash: sha256:ec2a1e435cf260471e109dfdb50ba9f4e9e5a50358839dbd0984688013766761
 ---
 
 > **Disclaimer:**

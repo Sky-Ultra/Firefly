@@ -1,6 +1,6 @@
 ---
 translationOf: katex-math-example.md
-sourceHash: sha256:f349d341faac3e9f097761565a2161d35f28b4c12a2253252a08d3c927e5ee39
+sourceHash: sha256:6cddda4851ba582569fd6b236a550fb09045ab2c92c3e77961ec92299fdf9cac
 ---
 
 This post shows how the site renders mathematical notation with KaTeX.

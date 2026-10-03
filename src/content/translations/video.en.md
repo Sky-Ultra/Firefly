@@ -1,6 +1,6 @@
 ---
 translationOf: video.md
-sourceHash: sha256:37093eedd503b7f72a6a47e8df555aa1a255332142284ea4d68a517a83b622d7
+sourceHash: sha256:8313c8d9f2e365a60f41e189aaf7fb06d6cd58dc4354d6a51f4e3146a901d8c0
 ---
 
 Copy the embed code from YouTube or another video platform, then paste it into the Markdown file.

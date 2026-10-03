@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { computeSourceHash } from "../scripts/lib/post-translation-validator";
 
 const changelog = readFileSync(
 	new URL(
@@ -54,16 +54,14 @@ test("the personal website changelog is published and pinned", () => {
 });
 
 test("the changelog has a current English translation", () => {
-	const sourceHash = createHash("sha256")
-		.update(changelog, "utf8")
-		.digest("hex");
+	const sourceHash = computeSourceHash(changelog);
 	assert.match(
 		changelogTranslation,
 		/^translationOf: personal-website-changelog\.md$/m,
 	);
 	assert.match(
 		changelogTranslation,
-		new RegExp(`^sourceHash: sha256:${sourceHash}$`, "m"),
+		new RegExp(`^sourceHash: ${sourceHash}$`, "m"),
 	);
 	assert.match(changelogTranslation, /^## September 12, 2026$/m);
 	assert.match(changelogTranslation, /^## September 22, 2026$/m);

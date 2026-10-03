@@ -1,6 +1,6 @@
 ---
 translationOf: firefly-layout-system.md
-sourceHash: sha256:16464e6ae71e34b55b28415658426eb621ddfaf5da83eece11cb1440d2f8058c
+sourceHash: sha256:126c62acfc30ca21f89bbaf8216af45dcea755c4f62028bd8ef53ccc1febcc41
 ---
 
 ## 📖 Overview

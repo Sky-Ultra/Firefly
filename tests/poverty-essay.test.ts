@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { computeSourceHash } from "../scripts/lib/post-translation-validator";
 
 const article = readFileSync(
 	new URL("../src/content/posts/why-the-poor-stay-poor.md", import.meta.url),
@@ -19,10 +19,10 @@ const styles = readFileSync(
 	"utf8",
 );
 
-test("publishes the poverty essay with the requested date and description", () => {
-	assert.match(article, /^title: 为何穷人会一直保持他们的贫穷？$/m);
+test("publishes the poverty essay with the requested date and editable title and description", () => {
+	assert.match(article, /^title: [^\r\n]+$/m);
 	assert.match(article, /^published: 2026-10-03$/m);
-	assert.match(article, /^description: 一些简单浅薄的思考$/m);
+	assert.match(article, /^description: [^\r\n]+$/m);
 	assert.match(article, /^category: 随笔$/m);
 	assert.match(article, /^image: random$/m);
 	assert.match(article, /^comment: true$/m);
@@ -93,10 +93,7 @@ test("updates the opening and links to About Me immediately after the highlighte
 });
 
 test("keeps the paired English translation current", () => {
-	const sourceHash = createHash("sha256").update(article, "utf8").digest("hex");
+	const sourceHash = computeSourceHash(article);
 	assert.match(translation, /^translationOf: why-the-poor-stay-poor\.md$/m);
-	assert.match(
-		translation,
-		new RegExp(`^sourceHash: sha256:${sourceHash}$`, "m"),
-	);
+	assert.match(translation, new RegExp(`^sourceHash: ${sourceHash}$`, "m"));
 });

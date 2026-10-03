@@ -85,7 +85,7 @@ categoryEn: Guides
 ```yaml
 ---
 translationOf: code-examples.md
-sourceHash: sha256:<中文原稿完整文件的 SHA-256>
+sourceHash: sha256:<中文原稿正文的 SHA-256>
 ---
 ```
 
@@ -94,13 +94,15 @@ sourceHash: sha256:<中文原稿完整文件的 SHA-256>
 1. 枚举 `src/content/posts` 下所有 `.md` 和 `.mdx` 文件，包括草稿。
 2. 按相对路径寻找唯一匹配的 `.en.md` 或 `.en.mdx`。
 3. 检查 `translationOf` 是否指向正确中文原稿。
-4. 对中文原稿完整文件计算 SHA-256，并与英文稿的 `sourceHash` 比较。
+4. 对中文原稿正文计算 SHA-256，并与英文稿的 `sourceHash` 比较。正文不包含开头的 Frontmatter；文件 BOM 和 CRLF 换行会统一规范化，正文空行和其他字符保留。
 5. 检查英文正文不是空白或占位内容。
 6. 检查没有多余、找不到中文来源的孤立英文稿。
 
-任何缺失、重复、孤立或指纹过期都会使检查以非零状态退出，并打印具体文章路径。完整中文文件参与哈希，因此日期或其他 Frontmatter 的修改也会触发同步检查；这属于有意采用的严格策略，宁可要求确认一次，也不允许漏掉可能影响英文展示的改动。
+任何缺失、孤立或指纹过期都会使检查以非零状态退出，并打印具体文章路径。2026-10-04 起仅正文参与哈希：修改标题、简介、日期、标签、分类、封面或评论开关等 Frontmatter 字段，不再因英文正文指纹过期而阻断构建。中文元数据与其 `*En` 字段仍应由编辑者同步维护；字段完整性与 Markdown/MDX 语法仍沿用原有构建检查。
 
-`package.json` 的 `check`/`build` 工作流在 Astro 检查或构建前运行此脚本。更新一篇中文文章时，必须同步检查英文稿，然后更新该英文稿的 `sourceHash`。
+`package.json` 的 `check`/`build` 工作流在 Astro 检查或构建前运行此脚本。修改中文正文时，必须先同步英文正文，再使用 `scripts/lib/post-translation-validator.ts` 的 `computeSourceHash` 计算并更新该英文稿的 `sourceHash`；不能只更新指纹来跳过翻译。仅修改 Frontmatter 时不需要更新指纹。
+
+手动提交前可运行 `pnpm check:translations`。出现 `stale-source-hash` 时表示正文已变化，需要同步对应英文稿；出现其他语法或缺失字段错误时，按照构建日志定位处理。本次规则迁移只更新现有英文稿的 `sourceHash`，不修改中英文正文。
 
 ## 构建期配对与页面渲染
 

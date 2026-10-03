@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-introduction/index.md
-sourceHash: sha256:e0d221abf13b5950032ab5f4998f251dddd176367afc0c5d62a7e1b4d71db759
+sourceHash: sha256:84213bfd34bc1b58657644657bbbb089ae9a7ad5d9e75f019e3766ddef73dc0c
 ---
 
 Welcome to my website. It is still in testing, so you may occasionally run into stability issues or slow-loading elements. If you have a suggestion, you can find the Firefly project on my GitHub profile and open a pull request. You can also reach me by email, WeChat, Instagram, or WhatsApp whenever those channels are available.

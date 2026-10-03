@@ -1,6 +1,6 @@
 ---
 translationOf: markdown-extended.md
-sourceHash: sha256:1986adaebd13b6665b6349fa85ced6013e87d61cf0ed1536a5b88323712a6b96
+sourceHash: sha256:87183ba5ac0d0f8fad552083495a7c6f6ef8cdf18c733300b50c2e8876231708
 ---
 
 ## GitHub Repository Cards

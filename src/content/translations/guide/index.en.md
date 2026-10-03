@@ -1,6 +1,6 @@
 ---
 translationOf: guide/index.md
-sourceHash: sha256:01446e6e0a782fcb4ad441f3b2c2512ab562d8c791afaefe98bbc6f097ababf8
+sourceHash: sha256:6864d52c296b926d02683016e9b0e6eb14b77ade081860fa892d41654b28d6d5
 ---
 
 

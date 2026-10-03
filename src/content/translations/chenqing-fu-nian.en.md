@@ -1,6 +1,6 @@
 ---
 translationOf: chenqing-fu-nian.md
-sourceHash: sha256:63c216730570a2cc6ad67b44cfe280355cfa5d1665da7abefac14d7ad38d3db3
+sourceHash: sha256:2ed2a520e25cb2c46927f8a15c2b32000498b36611499dd5df93e7697e4d1648
 ---
 
 In my youth, I once loved someone, though I never dared to speak of it fully. Because of that love, even the grass, trees, clouds, and evening colors felt dear to me. Later, your face and voice grew distant, while the world remained fresh. Whenever I came upon a lovely scene, delight was followed by a sense of loss. I wanted to forget the sadness, yet treasured the happiness; so I let both come and go within me, and stopped trying to drive them away. Now the gardenia blooms again, and its clear fragrance enters through the window. Remembering those days, I find much that I could write, though I can no longer recall all the words I wanted to say then. Only the flowers we never saw together and the paths we never walked still seem close before my eyes. I gather these scattered threads into this piece, to keep a little sunlight and preserve a trace of fragrance. Thus I write:

@@ -1,6 +1,6 @@
 ---
 translationOf: markdown-tutorial.md
-sourceHash: sha256:7f1384d4d6d13e03026d21f1d1399e942086706d2f306d7ab7fe6346b61c3adc
+sourceHash: sha256:56c9cdeb846f370bdcaac5bc815791370a7ea5ac6e0cc4eaccf04960bfac3aee
 ---
 
 This is a practical example of how to write a Markdown file. It covers the core syntax together with the most common GitHub Flavored Markdown extensions.

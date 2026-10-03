@@ -1,6 +1,6 @@
 ---
 translationOf: markdown-plantuml.md
-sourceHash: sha256:644cf2699e8d6a27429064cd8507620414e6f494281c7940072ba17bc153763e
+sourceHash: sha256:517a8d16fb34b3bf9514705f0d380def5bbe6923dd6b01779f4be787dc1c17bd
 ---
 
 ## A Guide to PlantUML Diagrams in Markdown

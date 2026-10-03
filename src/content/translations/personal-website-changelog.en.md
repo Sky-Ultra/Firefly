@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:de257a945696f49e5ab2a6cf87624ed51edce2e7ffa0fdaeae020351ae9f91ec
+sourceHash: sha256:c56b229cfa8f08472f368ab1c9a6c64412b85907909c65cece07498af06257ba
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
