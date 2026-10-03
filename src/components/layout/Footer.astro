@@ -1,6 +1,7 @@
 ---
 import fs from "node:fs";
 import path from "node:path";
+import SiteUptime from "@/components/layout/SiteUptime.astro";
 import { footerConfig, profileConfig, siteConfig } from "@/config";
 import { url } from "@/utils/url-utils";
 
@@ -61,5 +62,6 @@ if (footerConfig.enable) {
         href={url("/about/")}>Power by xiaoxiaoboluo</a
       >
     </div>
+    <SiteUptime />
   </div>
 </div>

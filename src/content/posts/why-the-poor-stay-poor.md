@@ -13,25 +13,31 @@ comment: true
 draft: false
 ---
 
-**免责声明：**
+> **免责声明：**
+>
+> 首先我个人性格很随和也没啥脾气。但是因为我的调教参数，这篇文章行文比较激进。行文风格不代表我的个人风格。但是对于部分人群我同样没那么好说话。
+>
+> 想看抒情的请去网站主页找随笔。
+>
+> 如果你发现这篇内容的信息伤害到了你，或者与你的价值观不符，证明你是该题材受害者，请你立即关闭此网站并且当作此内容为AI生成。我对产生的任何影响不负任何责任。
+>
+> 如果你看完文章有一些不同见解，请在文章下评论区交流。如果您有我的个人联系方式欢迎与我交流。我基本不接受陌生人单独交流，无论性别，除非你是沃尔玛购物袋或者武装直升机。感谢理解。
+>
+> <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
+>
+> <mark class="theme-highlight">我自己是个男生，有喜欢的女孩，也深刻明白女性结婚的风险</mark>
+>
+> <mark class="theme-highlight">其次文章仅代表观点以及一些浅薄的思考。我自身定不在此列且会引以为戒</mark>
+>
+> <mark class="theme-highlight">这意味着我不代表任何立场，不代表男女也不制造对立。我仅作为我自己以及网站xiaoxiaoboluo.cn 进行</mark>
 
-首先我个人性格很随和也没啥脾气。但是因为我的调教参数，这篇文章行文比较激进。行文风格不代表我的个人风格。但是对于部分人群我同样没那么好说话。
-
-想看抒情的请去网站主页找随笔。
-
-如果你发现这篇内容的信息伤害到了你，或者与你的价值观不符，证明你是该题材受害者，请你立即关闭此网站并且当作此内容为AI生成。我对产生的任何影响不负任何责任。
-
-如果你看完文章有一些不同见解，请在文章下评论区交流。如果您有我的个人联系方式欢迎与我交流。我基本不接受陌生人单独交流，无论性别，除非你是沃尔玛购物袋或者武装直升机。感谢理解。
-
-<mark class="theme-highlight">我自己是个男生，有喜欢的女孩，也深刻明白女性结婚的风险</mark>
-
-<mark class="theme-highlight">其次文章仅代表观点以及一些浅薄的思考。我自身定不在此列且会引以为戒</mark>
-
-<mark class="theme-highlight">这意味着我不代表任何立场，不代表男女也不制造对立。我仅作为我自己以及网站xiaoxiaoboluo.cn 进行</mark>
+<div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
 因为当今社会穷人太多了。太多太多了。
 
 我是一个澳留，自认为思想文化以及个人专业水平都在较高的水准，也绝对谈不上贫穷。最近看到了不少这个题材的视频以及文献，结合与Astra的交流，想说说这个。
+
+<div class="word-paragraph-gap" data-empty-paragraphs="2" style="--empty-paragraphs: 2" aria-hidden="true"></div>
 
 穷人怎么做才能保持贫穷？秘诀就是瞎生孩子。
 
@@ -117,8 +123,12 @@ draft: false
 
 那么生个孩子来调解一下家庭氛围，也是有必要的。于是刚才说的一切顺理成章地发生，世界线在这里开始收束。
 
+<div class="word-paragraph-gap" data-empty-paragraphs="2" style="--empty-paragraphs: 2" aria-hidden="true"></div>
+
 全篇完。如果你是个正常人但是还是想喷我，请考虑你是不是文中的受众，换句话说是不是所谓底层家庭。你没有看到过的事情，不代表它不在这个世界发生。
 
 你喷我也没用，我不会下架文章和网站，我在国外服务器也在国外，你也找不到我hehehehe。洗洗睡吧孩子。
+
+<div class="word-paragraph-gap" data-empty-paragraphs="3" style="--empty-paragraphs: 3" aria-hidden="true"></div>
 
 我喜欢你！欢迎继续漫游我的网站喵~

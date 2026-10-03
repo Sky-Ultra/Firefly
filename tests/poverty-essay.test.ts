@@ -53,6 +53,31 @@ test("uses a theme-aware highlighter that stays readable and wraps with each lin
 	assert.match(highlighter, /box-decoration-break:\s*clone/);
 });
 
+test("preserves the Word document's one, two and three empty paragraphs", () => {
+	const emptyParagraphs = (content: string): number[] =>
+		Array.from(content.matchAll(/data-empty-paragraphs="(\d+)"/g), (match) =>
+			Number(match[1]),
+		);
+	assert.deepEqual(emptyParagraphs(article), [1, 1, 2, 2, 3]);
+	assert.deepEqual(emptyParagraphs(translation), [1, 1, 2, 2, 3]);
+	assert.match(styles, /\.word-paragraph-gap\s*\{/);
+	assert.match(
+		styles,
+		/height:\s*calc\(var\(--empty-paragraphs\)\s*\*\s*1lh\)/,
+	);
+});
+
+test("groups the disclaimer in the site's left-bordered quote style", () => {
+	assert.match(article, /^> \*\*免责声明：\*\*$/m);
+	assert.match(translation, /^> \*\*Disclaimer:\*\*$/m);
+	for (const content of [article, translation]) {
+		assert.equal(
+			(content.match(/^> <mark class="theme-highlight">/gm) ?? []).length,
+			3,
+		);
+	}
+});
+
 test("keeps the paired English translation current", () => {
 	const sourceHash = createHash("sha256").update(article, "utf8").digest("hex");
 	assert.match(translation, /^translationOf: why-the-poor-stay-poor\.md$/m);

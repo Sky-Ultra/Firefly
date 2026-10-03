@@ -1,27 +1,33 @@
 ---
 translationOf: why-the-poor-stay-poor.md
-sourceHash: sha256:5c9771acd4cc3e25afd5ea4bec414e0c2a6a77cd198a1ce7bec28942610595d2
+sourceHash: sha256:6bf276f69f77befca542b90c4e13f1beec612d6259b91c73e633f5ec6029d62a
 ---
 
-**Disclaimer:**
+> **Disclaimer:**
+>
+> First of all, I am personally easygoing and not particularly temperamental. But because of my tuning parameters, the writing in this article is rather aggressive. Its tone does not represent my personal manner. That said, I am not always so accommodating toward certain people either.
+>
+> If you want lyrical writing, please go to the website's homepage and look for my essays.
+>
+> If you find the information in this piece hurtful, or at odds with your values, that proves you are a victim of the subject being discussed. Please close this website immediately and regard this content as AI-generated. I take no responsibility for any effects it may have.
+>
+> If you have different views after reading the article, please discuss them in the comments below. If you have my personal contact details, you are welcome to get in touch. I generally do not accept one-to-one conversations with strangers, regardless of gender, unless you are a Walmart shopping bag or an armed helicopter. Thank you for understanding.
+>
+> <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
+>
+> <mark class="theme-highlight">I am a guy myself, I have a girl I like, and I also deeply understand the risks women face in marriage.</mark>
+>
+> <mark class="theme-highlight">Secondly, this article represents only opinions and some superficial reflections. I certainly do not count myself among the people described here, and I will take their example as a warning.</mark>
+>
+> <mark class="theme-highlight">This means I represent no position, speak for neither men nor women, and do not seek to create antagonism. I speak only as myself and on behalf of my website, xiaoxiaoboluo.cn.</mark>
 
-First of all, I am personally easygoing and not particularly temperamental. But because of my tuning parameters, the writing in this article is rather aggressive. Its tone does not represent my personal manner. That said, I am not always so accommodating toward certain people either.
-
-If you want lyrical writing, please go to the website's homepage and look for my essays.
-
-If you find the information in this piece hurtful, or at odds with your values, that proves you are a victim of the subject being discussed. Please close this website immediately and regard this content as AI-generated. I take no responsibility for any effects it may have.
-
-If you have different views after reading the article, please discuss them in the comments below. If you have my personal contact details, you are welcome to get in touch. I generally do not accept one-to-one conversations with strangers, regardless of gender, unless you are a Walmart shopping bag or an armed helicopter. Thank you for understanding.
-
-<mark class="theme-highlight">I am a guy myself, I have a girl I like, and I also deeply understand the risks women face in marriage.</mark>
-
-<mark class="theme-highlight">Secondly, this article represents only opinions and some superficial reflections. I certainly do not count myself among the people described here, and I will take their example as a warning.</mark>
-
-<mark class="theme-highlight">This means I represent no position, speak for neither men nor women, and do not seek to create antagonism. I speak only as myself and on behalf of my website, xiaoxiaoboluo.cn.</mark>
+<div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
 Because there are too many poor people in today's society. Far, far too many.
 
 I am a Chinese international student in Australia. I consider my thinking, cultural knowledge, and professional competence to be at a relatively high level, and I certainly would not call myself poor. Recently, I have watched quite a few videos and read quite a few texts on this subject. Together with my conversations with Astra, they have made me want to talk about it.
+
+<div class="word-paragraph-gap" data-empty-paragraphs="2" style="--empty-paragraphs: 2" aria-hidden="true"></div>
 
 What can poor people do to stay poor? The secret is to have children indiscriminately.
 
@@ -107,8 +113,12 @@ Soon after marrying, the couple's life first acquires the illusory bubble of own
 
 Then having a child to improve the atmosphere at home also seems necessary. Everything described above follows naturally, and the timeline begins to converge here.
 
+<div class="word-paragraph-gap" data-empty-paragraphs="2" style="--empty-paragraphs: 2" aria-hidden="true"></div>
+
 That is the end of the piece. If you are a normal person but still want to attack me, consider whether you are among the people described here—in other words, part of a so-called disadvantaged household. Just because you have not seen something does not mean it does not happen in this world.
 
 Attacking me will not help. I will not take down the article or the website. I am overseas, and so are the servers, and you cannot find me anyway, hehehehe. Go wash up and get some sleep, kid.
+
+<div class="word-paragraph-gap" data-empty-paragraphs="3" style="--empty-paragraphs: 3" aria-hidden="true"></div>
 
 I like you! You are welcome to keep wandering around my website, meow~

@@ -1,0 +1,75 @@
+---
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import { siteConfig } from "@/config";
+import { getSiteStartTimestamp, getSiteUptime } from "@/utils/site-uptime";
+
+const start = getSiteStartTimestamp(siteConfig.siteStartDate);
+const uptime = getSiteUptime(start);
+const pad = (value: number): string => value.toString().padStart(2, "0");
+---
+
+<site-uptime
+	class="mt-2 flex flex-wrap items-center justify-center gap-x-1 gap-y-1 text-xs font-medium text-(--primary)"
+	data-start-time={start}
+	role="timer"
+	aria-label="网站运行时长"
+	data-i18n-zh="网站运行时长"
+	data-i18n-en="Site uptime"
+	data-i18n-attr="aria-label"
+	aria-live="off"
+>
+	<span aria-hidden="true">⌛️</span>
+	<LocalizedText zh="小破站已运行" en="This little site has been running for" />
+	<span class="whitespace-nowrap text-amber-500 dark:text-amber-400">
+		<span class="tabular-nums" data-uptime-unit="days">{uptime.days}</span><LocalizedText zh="天" en="d" />
+	</span>
+	<span class="whitespace-nowrap text-emerald-500 dark:text-emerald-400">
+		<span class="inline-block min-w-[2ch] tabular-nums" data-uptime-unit="hours">{pad(uptime.hours)}</span><LocalizedText zh="时" en="h" />
+	</span>
+	<span class="whitespace-nowrap text-violet-500 dark:text-violet-400">
+		<span class="inline-block min-w-[2ch] tabular-nums" data-uptime-unit="minutes">{pad(uptime.minutes)}</span><LocalizedText zh="分" en="min" />
+	</span>
+	<span class="whitespace-nowrap">
+		<span class="inline-block min-w-[2ch] tabular-nums" data-uptime-unit="seconds">{pad(uptime.seconds)}</span><LocalizedText zh="秒" en="s" />
+	</span>
+	<span aria-hidden="true">(●'◡'●)</span>
+</site-uptime>
+
+<script>
+	import { getSiteUptime } from "@/utils/site-uptime";
+
+	class SiteUptimeElement extends HTMLElement {
+		private timeoutId?: number;
+
+		connectedCallback(): void {
+			if (this.timeoutId !== undefined) return;
+			this.tick();
+		}
+
+		disconnectedCallback(): void {
+			if (this.timeoutId !== undefined) window.clearTimeout(this.timeoutId);
+			this.timeoutId = undefined;
+		}
+
+		private tick(): void {
+			const uptime = getSiteUptime(Number(this.dataset.startTime));
+			for (const [unit, value] of Object.entries(uptime)) {
+				const element = this.querySelector<HTMLElement>(
+					`[data-uptime-unit="${unit}"]`,
+				);
+				if (element) {
+					element.textContent =
+						unit === "days" ? value.toString() : value.toString().padStart(2, "0");
+				}
+			}
+			this.timeoutId = window.setTimeout(
+				() => this.tick(),
+				1000 - (Date.now() % 1000) + 20,
+			);
+		}
+	}
+
+	if (!customElements.get("site-uptime")) {
+		customElements.define("site-uptime", SiteUptimeElement);
+	}
+</script>

@@ -3,6 +3,11 @@
 .custom-md {
   overflow-wrap: break-word;
 
+  .word-paragraph-gap {
+    height: calc(var(--empty-paragraphs) * 1lh);
+    margin: 0;
+  }
+
   mark.theme-highlight {
     background-color: var(--selection-bg);
     color: inherit;
