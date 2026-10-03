@@ -1,5 +1,5 @@
 ---
-title: 穷人如何保持贫穷？穷人为何保持贫穷？
+title: 为何穷人会一直保持他们的贫穷？
 titleEn: How Do the Poor Stay Poor? Why Do the Poor Stay Poor?
 published: 2026-10-03
 description: 一些简单浅薄的思考
