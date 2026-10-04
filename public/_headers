@@ -1,0 +1,41 @@
+/RhineGenshin/*
+  X-Robots-Tag: noindex, nofollow
+
+/RhineGenshin/
+  Cache-Control: no-cache, must-revalidate
+
+/RhineGenshin/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/RhineGenshin/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/RhineGenshin/manifest.webmanifest
+  Cache-Control: no-cache, must-revalidate
+
+/RhineGenshin/update*
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/RhineGenshin/pwa-build.json
+  Cache-Control: no-cache, must-revalidate
+
+/RhineStarRail/*
+  X-Robots-Tag: noindex, nofollow
+
+/RhineStarRail/
+  Cache-Control: no-cache, must-revalidate
+
+/RhineStarRail/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/RhineStarRail/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/RhineStarRail/manifest.webmanifest
+  Cache-Control: no-cache, must-revalidate
+
+/RhineStarRail/update*
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/RhineStarRail/pwa-build.json
+  Cache-Control: no-cache, must-revalidate

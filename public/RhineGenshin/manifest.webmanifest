@@ -1,0 +1,32 @@
+{
+  "id": "/RhineGenshin/",
+  "name": "TEYVAT LOG · 提瓦特旅途档案",
+  "short_name": "TEYVAT LOG",
+  "description": "原神旅途档案非官方选编：任务、人物、典籍与摘句",
+  "lang": "zh-CN",
+  "start_url": "/RhineGenshin/?source=pwa",
+  "scope": "/RhineGenshin/",
+  "display": "standalone",
+  "background_color": "#e8e5e1",
+  "theme_color": "#e8e5e1",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
