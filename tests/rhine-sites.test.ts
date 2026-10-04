@@ -9,6 +9,16 @@ const sites = [
 	{ directory: "RhineStarRail", title: "星穹", prefix: "ASTRAL-EXPRESS" },
 ];
 
+test("prebuilt Rhine releases retain exact bytes when uploaded through Git", () => {
+	const attributes = readFileSync(resolve(root, ".gitattributes"), "utf8");
+	for (const site of sites) {
+		assert.ok(
+			attributes.split(/\r?\n/).includes(`/public/${site.directory}/** -text`),
+			`${site.directory} must bypass text normalization`,
+		);
+	}
+});
+
 for (const site of sites) {
 	const base = `/${site.directory}/`;
 	const directory = resolve(root, "public", site.directory);
@@ -27,7 +37,7 @@ for (const site of sites) {
 			html,
 			/id="(?:navbar|swup-container|left-sidebar|right-sidebar)"/,
 		);
-		for (const match of html.matchAll(/(?:src|href)="(\/[^\"]+)"/g)) {
+		for (const match of html.matchAll(/(?:src|href)="(\/[^"]+)"/g)) {
 			assert.ok(
 				match[1].startsWith(base),
 				`HTML URL escaped ${base}: ${match[1]}`,

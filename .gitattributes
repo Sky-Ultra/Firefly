@@ -1,2 +1,6 @@
 *.js linguist-language=astro
 * text=auto eol=lf
+
+# Preserve the exact bytes of prebuilt, versioned standalone releases.
+/public/RhineGenshin/** -text
+/public/RhineStarRail/** -text
