@@ -1,0 +1,108 @@
+---
+import { Icon } from "astro-icon/components";
+import { analyticsConfig, commentConfig, licenseConfig } from "@/config";
+import { getFooterBadges } from "@/utils/footer-badges";
+
+const badges = getFooterBadges({
+	commentService: commentConfig.type,
+	umamiEnabled: Boolean(analyticsConfig.umamiAnalytics?.websiteId),
+	license: licenseConfig,
+});
+---
+
+<div
+	class="footer-badges"
+	role="list"
+	aria-label="网站技术与服务"
+	data-i18n-zh="网站技术与服务"
+	data-i18n-en="Site technology and services"
+	data-i18n-attr="aria-label"
+	data-i18n-skip
+	data-pagefind-ignore
+>
+	{badges.map((badge) => (
+		<div
+			class="footer-badge"
+			role="listitem"
+			style={`--badge-color: ${badge.color}; --badge-icon-color: ${badge.iconColor}`}
+		>
+			<span class="badge-label">
+				<Icon is:inline name={badge.icon} class="badge-icon" aria-hidden="true" />
+				{badge.label}
+			</span>
+			{badge.href ? (
+				<a class="badge-value" href={badge.href} target="_blank" rel="noopener noreferrer">
+					{badge.value}
+				</a>
+			) : (
+				<span class="badge-value">{badge.value}</span>
+			)}
+		</div>
+	))}
+</div>
+
+<style>
+	.footer-badges {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		max-width: 100%;
+		margin-top: 12px;
+		margin-bottom: 10px;
+	}
+
+	.footer-badge {
+		display: inline-flex;
+		align-items: stretch;
+		overflow: hidden;
+		border-radius: 3px;
+		background: #555;
+		color: #fff;
+		font-size: 11px;
+		font-weight: 500;
+		line-height: 14px;
+		white-space: nowrap;
+	}
+
+	.badge-label,
+	.badge-value {
+		display: inline-flex;
+		align-items: center;
+		padding: 4px 6px;
+	}
+
+	.badge-label {
+		gap: 4px;
+	}
+
+	.badge-icon {
+		width: 13px;
+		height: 13px;
+		color: var(--badge-icon-color);
+	}
+
+	.badge-value {
+		background: var(--badge-color);
+		color: #fff;
+		text-decoration: none;
+	}
+
+	a.badge-value:hover {
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	a.badge-value:focus-visible {
+		outline: 2px solid #fff;
+		outline-offset: -3px;
+	}
+
+	@media (max-width: 640px) {
+		.footer-badges {
+			max-width: min(100%, 280px);
+			margin-inline: auto;
+		}
+	}
+</style>
