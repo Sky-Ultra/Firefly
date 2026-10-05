@@ -245,15 +245,16 @@ canvas {
 	background: #e9a1b7;
 	content: "";
 }
-.afterword-stanza { margin-bottom: 2.25rem; }
+.afterword-stanza { margin-bottom: 1.5lh; }
 .afterword-stanza p { margin: 0; overflow-wrap: anywhere; }
+.afterword-stanza p + p { margin-top: 0.5lh; }
 .afterword-opening { color: #b8758f; font-weight: 500; }
 .afterword-vow {
 	padding-left: clamp(1rem, 3vw, 2rem);
 	border-left: 2px solid rgb(233 161 183 / 55%);
 }
 .afterword-ending {
-	margin: 4rem 0 0;
+	margin: 0;
 	color: #db7d9c;
 	font-size: 1.25em;
 	font-weight: 600;
@@ -311,7 +312,6 @@ canvas {
 	#letter.mobile-letter-staging { visibility: hidden; }
 	#afterword { padding: 3.5rem 1.4rem 6rem; }
 	.afterword-content { font-size: 1rem; line-height: 1.95; }
-	.afterword-stanza { margin-bottom: 2rem; }
 	.afterword-content::before { margin-bottom: 2.5rem; }
 	#love-scroll-indicator {
 		left: max(0.25rem, env(safe-area-inset-left));
