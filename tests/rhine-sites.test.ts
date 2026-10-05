@@ -5,8 +5,18 @@ import { test } from "node:test";
 
 const root = resolve(import.meta.dirname, "..");
 const sites = [
-	{ directory: "RhineGenshin", title: "提瓦特旅途档案", prefix: "TEYVAT" },
-	{ directory: "RhineStarRail", title: "星穹", prefix: "ASTRAL-EXPRESS" },
+	{
+		directory: "RhineGenshin",
+		title: "提瓦特旅途档案",
+		prefix: "TEYVAT",
+		downloads: 169,
+	},
+	{
+		directory: "RhineStarRail",
+		title: "星穹",
+		prefix: "ASTRAL-EXPRESS",
+		downloads: 40,
+	},
 ];
 
 test("prebuilt Rhine releases retain exact bytes when uploaded through Git", () => {
@@ -64,7 +74,7 @@ for (const site of sites) {
 		assert.doesNotMatch(worker, /__CACHE_VERSION__|__PRECACHE_FILES__/);
 	});
 
-	test(`${site.directory} contains a complete runtime release and forty downloads`, () => {
+	test(`${site.directory} contains a complete runtime release and ${site.downloads} downloads`, () => {
 		assert.ok(
 			existsSync(resolve(directory, "pwa-build.json")),
 			"runtime manifest must exist",
@@ -74,7 +84,7 @@ for (const site of sites) {
 		const downloads = metadata.files.filter((file: string) =>
 			file.startsWith("archives/"),
 		);
-		assert.equal(downloads.length, 40);
+		assert.equal(downloads.length, site.downloads);
 		assert.ok(
 			downloads.every((file: string) =>
 				file.startsWith(`archives/${site.prefix}-X-`),
