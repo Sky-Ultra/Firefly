@@ -25,7 +25,7 @@ draft: false
 >
 > <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 >
-> <mark class="theme-highlight">我自己是个男生，有喜欢的女孩，也深刻明白现在女性结婚的一些“风险”</mark> [关于我](/about/)
+> <mark class="theme-highlight">我自己是个男生，亦有非常喜欢的女孩，也深刻明白现在女性结婚的一些“风险”</mark> [关于我](/about/)
 >
 > <mark class="theme-highlight">其次文章仅代表观点以及一些浅薄的思考。我自身定不在此列，且会引以为戒</mark>
 >
