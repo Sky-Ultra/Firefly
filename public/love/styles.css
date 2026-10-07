@@ -55,37 +55,55 @@ canvas {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	display: flex;
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
 	align-items: center;
-	gap: 0.5rem;
+	column-gap: 0.75rem;
+	row-gap: 0.15rem;
+	width: max-content;
+	max-width: calc(100% - 2rem);
 	border: 0;
 	border-radius: 1rem;
 	padding: 1rem;
 	background: transparent;
 	color: #be1a25;
+	font-size: clamp(22px, 3vw, 30px);
 	white-space: nowrap;
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
 }
 .intro-heart {
 	flex-shrink: 0;
+	width: clamp(72px, 8vw, 80px);
+	height: auto;
 	transform-origin: center;
 	animation: heartbeat 2.4s ease-in-out infinite;
 }
 #start-button.opening .intro-heart { animation: none; }
 @keyframes heartbeat {
 	0%, 36%, 100% { transform: scale(1); }
-	12% { transform: scale(1.035); }
+	12% { transform: scale(1.085); }
 	21% { transform: scale(1); }
-	28% { transform: scale(1.018); }
+	28% { transform: scale(1.045); }
 }
 .intro-caption {
 	position: relative;
 	border-bottom: 2px solid currentColor;
 	padding: 0 0.8rem 0.7rem 0.2rem;
-	font-size: clamp(20px, 3vw, 24px);
+	font-size: inherit;
 	font-weight: 400;
+	text-align: center;
 }
+.intro-updated {
+	grid-column: 2;
+	margin-top: -0.4rem;
+	font-size: 0.75em;
+	line-height: 1.5;
+	text-align: center;
+	white-space: normal;
+	word-break: keep-all;
+}
+.intro-updated time { display: inline-block; white-space: nowrap; }
 .intro-caption::before {
 	position: absolute;
 	bottom: -2px;

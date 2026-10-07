@@ -81,16 +81,18 @@ async function animateOpening(button, seed, canvas) {
   if (prefersReducedMotion()) return;
   button.classList.add("opening");
   const heart = button.querySelector(".intro-heart");
-  const caption = button.querySelector(".intro-caption");
   const heartRect = heart.getBoundingClientRect();
   const canvasRect = canvas.getBoundingClientRect();
   const scale = canvasRect.width / StageConfig.width;
+  const seedScale = scale * heart.viewBox.baseVal.width / heartRect.width;
   const x = canvasRect.left + seed.heart.point.x * scale - heartRect.left - heartRect.width / 2;
   const y = canvasRect.top + seed.heart.point.y * scale - heartRect.top - heartRect.height / 2;
-  caption.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: "forwards" });
+  for (const text of button.querySelectorAll(".intro-caption, .intro-updated")) {
+    text.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: "forwards" });
+  }
   await heart.animate([
     { transform: "translate(0, 0) scale(1)" },
-    { transform: `translate(${x}px, ${y}px) scale(${scale})` }
+    { transform: `translate(${x}px, ${y}px) scale(${seedScale})` }
   ], { duration: 420, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).finished;
 }
 
