@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { test } from "node:test";
+import sharp from "sharp";
 
 const source = (file: string) => {
 	const location = new URL(`../${file}`, import.meta.url);
@@ -19,17 +21,31 @@ test("the nine-character banner row and its exclusive artwork are removed", () =
 test("one uploaded sticker anchors to the homepage title and reuses dragging", () => {
 	const sticker = source("src/components/features/HomeTitleSticker.astro");
 	assert.equal((sticker.match(/<DraggableSticker\b/g) || []).length, 1);
-	assert.match(sticker, /\/images\/stickers\/youre-absolutely-right\.jpg/);
+	assert.match(sticker, /\/images\/stickers\/youre-absolutely-right\.png/);
 	assert.match(sticker, /<slot/);
 	assert.match(sticker, /position: relative/);
 	assert.match(sticker, /position: absolute/);
 	const layout = source("src/layouts/MainGridLayout.astro");
 	assert.match(layout, /<HomeTitleSticker>/);
 	assert.match(layout, /id="banner-overlay-container" data-drag-boundary/);
-	assert.ok(existsSync(new URL("../public/images/stickers/youre-absolutely-right.jpg", import.meta.url)));
+	assert.ok(existsSync(new URL("../public/images/stickers/youre-absolutely-right.png", import.meta.url)));
 });
 
-test("the initial sticker sits above the title companions without covering them", () => {
+test("the uploaded sticker has real alpha transparency without a card frame or shadow", async () => {
+	const artwork = new URL("../public/images/stickers/youre-absolutely-right.png", import.meta.url);
+	assert.ok(existsSync(artwork), "transparent artwork exists");
+	const image = sharp(fileURLToPath(artwork));
+	const metadata = await image.metadata();
+	assert.equal(metadata.hasAlpha, true);
+	const stats = await image.stats();
+	assert.equal(stats.channels[3].min, 0, "the background has transparent pixels");
+	assert.equal(stats.channels[3].max, 255, "the artwork remains opaque");
+	const sticker = source("src/components/features/HomeTitleSticker.astro");
+	assert.doesNotMatch(sticker, /box-shadow|border-radius|background:/);
+	assert.match(sticker, /filter: none/);
+});
+
+test("the initial sticker sits above Sky without covering the title", () => {
 	const sticker = source("src/components/features/HomeTitleSticker.astro");
 	const offsets = Array.from(sticker.matchAll(/top: (-?[\d.]+)rem/g), (match) => Number(match[1]));
 	const sizes = Array.from(sticker.matchAll(/--sticker-size: ([\d.]+)rem/g), (match) => Number(match[1]));
@@ -57,7 +73,7 @@ test("touch dragging does not trigger the wallpaper carousel swipe handlers", ()
 test("two small companions frame Sky's profile name", () => {
 	const profile = source("src/components/widget/Profile.astro");
 	assert.match(profile, /NameCompanions/);
-	assert.match(source("src/layouts/MainGridLayout.astro"), /<NameCompanions>/);
+	assert.doesNotMatch(source("src/layouts/MainGridLayout.astro"), /NameCompanions/);
 	const companions = source("src/components/features/NameCompanions.astro");
 	assert.equal((companions.match(/<DraggableSticker\b/g) || []).length, 2);
 	assert.match(companions, /blonde-idol\.webp/);

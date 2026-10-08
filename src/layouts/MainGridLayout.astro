@@ -13,7 +13,6 @@ import FloatingControls from "@/components/controls/FloatingControls.astro";
 import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro";
 import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
 import HomeTitleSticker from "@/components/features/HomeTitleSticker.astro";
-import NameCompanions from "@/components/features/NameCompanions.astro";
 import TypewriterText from "@/components/features/TypewriterText.astro";
 import CategoryBar from "@/components/layout/CategoryBar.astro";
 import {
@@ -784,7 +783,7 @@ const hasMultipleImages =
                     {backgroundWallpaper.common?.homeText?.title && (
                         <div class="banner-title font-bold text-white mb-2 lg:mb-4 leading-tight" style={{ '--banner-title-size': backgroundWallpaper.common.homeText.titleSize || "3rem" }}>
                             <HomeTitleSticker>
-                                <NameCompanions>{backgroundWallpaper.common.homeText.title}</NameCompanions>
+                                {backgroundWallpaper.common.homeText.title}
                             </HomeTitleSticker>
                         </div>
                     )}

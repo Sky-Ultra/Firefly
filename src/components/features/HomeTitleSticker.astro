@@ -5,7 +5,7 @@ import DraggableSticker from "@/components/common/DraggableSticker.astro";
 <div class="home-title-sticker-anchor">
 	<slot />
 	<DraggableSticker
-		src="/images/stickers/youre-absolutely-right.jpg"
+		src="/images/stickers/youre-absolutely-right.png"
 		label="You're Absolutely Right! 贴纸"
 		class="home-title-sticker"
 	/>
@@ -26,8 +26,7 @@ import DraggableSticker from "@/components/common/DraggableSticker.astro";
 		--sticker-size: 6.5rem;
 	}
 	.home-title-sticker-anchor :global(.home-title-sticker img) {
-		border-radius: 0.8rem;
-		box-shadow: 0 5px 16px rgb(39 29 45 / 14%);
+		filter: none;
 	}
 	@media (max-width: 639px) {
 		.home-title-sticker-anchor :global(.home-title-sticker) {
