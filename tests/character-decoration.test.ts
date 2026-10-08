@@ -8,17 +8,34 @@ const source = (file: string) => {
 	return readFileSync(location, "utf8");
 };
 
-test("banner stickers use the shared draggable element without mobile exclusions", () => {
-	const banner = source("src/components/features/BannerCharacters.astro");
-	assert.match(banner, /DraggableSticker/);
-	assert.match(banner, /data-drag-boundary/);
-	assert.doesNotMatch(banner, /hidden lg:|mobileStickerKeys|display: none/);
-	assert.match(source("src/layouts/MainGridLayout.astro"), /<BannerCharacters/);
+test("the nine-character banner row and its exclusive artwork are removed", () => {
+	assert.equal(existsSync(new URL("../src/components/features/BannerCharacters.astro", import.meta.url)), false);
+	assert.doesNotMatch(source("src/layouts/MainGridLayout.astro"), /BannerCharacters|banner-characters/);
+	for (const name of ["loading-girl", "blue-witch", "white-haired-reader", "pink-uniform", "bamboo-girl", "aqua-singer", "pink-bows", "brown-lightning", "pink-cat"]) {
+		assert.equal(existsSync(new URL(`../public/images/characters/${name}.webp`, import.meta.url)), false, name);
+	}
 });
 
-test("banner characters remain available after navigating home through Swup", () => {
-	assert.ok(source("src/layouts/MainGridLayout.astro").includes("    <BannerCharacters />"));
-	assert.match(source("src/components/features/BannerCharacters.astro"), /body:not\(\.is-home\)/);
+test("one uploaded sticker anchors to the homepage title and reuses dragging", () => {
+	const sticker = source("src/components/features/HomeTitleSticker.astro");
+	assert.equal((sticker.match(/<DraggableSticker\b/g) || []).length, 1);
+	assert.match(sticker, /\/images\/stickers\/youre-absolutely-right\.jpg/);
+	assert.match(sticker, /<slot/);
+	assert.match(sticker, /position: relative/);
+	assert.match(sticker, /position: absolute/);
+	const layout = source("src/layouts/MainGridLayout.astro");
+	assert.match(layout, /<HomeTitleSticker>/);
+	assert.match(layout, /id="banner-overlay-container" data-drag-boundary/);
+	assert.ok(existsSync(new URL("../public/images/stickers/youre-absolutely-right.jpg", import.meta.url)));
+});
+
+test("the initial sticker sits above the title companions without covering them", () => {
+	const sticker = source("src/components/features/HomeTitleSticker.astro");
+	const offsets = Array.from(sticker.matchAll(/top: (-?[\d.]+)rem/g), (match) => Number(match[1]));
+	const sizes = Array.from(sticker.matchAll(/--sticker-size: ([\d.]+)rem/g), (match) => Number(match[1]));
+	assert.equal(offsets.length, 2);
+	assert.equal(sizes.length, 2);
+	for (let i = 0; i < offsets.length; i++) assert.ok(offsets[i] + sizes[i] < 0, "sticker leaves room above the title on desktop and mobile");
 });
 
 test("sticker dragging supports pointer capture, keyboard movement and cleanup", () => {
