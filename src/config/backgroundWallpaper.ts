@@ -109,6 +109,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				"雄关漫道真如铁，而今迈步从头越",
 				"若有人兮云之际，舞袂翩兮扬玉霓",
 				"既见君兮予所欢，愿随风兮鸣银鸾",
+				"物物而不物于物，念念而不念于念",
 			],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",

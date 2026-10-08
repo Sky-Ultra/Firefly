@@ -1,9 +1,9 @@
 ---
 translationOf: homepage-welcome-messages.md
-sourceHash: sha256:095adfe4d4bc40d85e0eca54873e20d335d80fd5d5fbd6dfebe7d505f60deb20
+sourceHash: sha256:042d1d7baeb11d20b187ffce4e475a9616fd7e66a3566c5d3d0aed1fea98623f
 ---
 
-As time passes, the collection of welcome messages on the homepage keeps growing. The code displays them in a random order without repeating a message before the current round ends, but most visitors probably will not stay long enough to see them all. Here, then, are all the homepage welcome messages collected before October 1, 2026.
+As time passes, the collection of welcome messages on the homepage keeps growing. The code displays them in a random order without repeating a message before the current round ends, but most visitors probably will not stay long enough to see them all. Here, then, are all the homepage welcome messages collected as of October 9, 2026.
 
 All the welcome messages are listed below, together with their sources:
 
@@ -75,3 +75,6 @@ All the welcome messages are listed below, together with their sources:
 
 > Seeing you brings me joy; I would follow the wind and sing like a silver luan bird.  
 > —*Genshin Impact*, the story quest 《银翎溯月，玄鸟结璘》: 既见君兮予所欢，愿随风兮鸣银鸾
+
+> Engage with things without being ruled by them; be aware of thoughts without being ruled by them.  
+> —*Zhuangzi*, “The Tree on the Mountain” (《庄子·山木》)

@@ -9,7 +9,7 @@ const aboutPage = readFileSync(
 const addedParagraphs = [
 	"目前最喜欢使用的Agent产品是ChatGPT Codex以及DeepSeek Harness。我已经在Codex上使用超过90亿Token。",
 	"感觉我还是非常情绪稳定的喵！",
-	"我是白纸喵",
+	"嘻嘻，我还是白纸喵",
 	"喜欢和朋友一起玩，游戏，旅行，上课",
 ];
 
@@ -51,6 +51,14 @@ test("each new paragraph has its own line and an English counterpart", () => {
 test("the quoted wish follows the contact sentence on its own line", () => {
 	assert.match(
 		aboutPage,
-		/zh="欢迎通过 GitHub、邮箱、微信、QQ 与我交流。"[\s\S]*?\/>\s*<br\s*\/>\s*<LocalizedText zh="“我也想找到那个她”" en="[^"]+"/,
+		/zh="欢迎通过 GitHub、邮箱、微信、QQ 与我交流。"[\s\S]*?\/>\s*<br\s*\/>\s*<LocalizedText zh="“我\.\.\.也想找到那个⌈她⌋。我的⌈纯美⌋\.\.\.”" en="[^"]+"/,
+	);
+});
+
+test("the edited blank-paper and quoted wish lines have matching English copy", () => {
+	assert.match(aboutPage, /en="Hehe, I'm still a blank sheet of paper, meow!"/);
+	assert.match(
+		aboutPage,
+		/en="“I\.\.\. also hope to find ⌈her⌋\. My ⌈Pure Beauty⌋\.\.\.”"/,
 	);
 });

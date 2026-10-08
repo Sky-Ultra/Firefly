@@ -2,6 +2,7 @@
 title: 欢迎词文案展示
 titleEn: Homepage Welcome Messages
 published: 2026-09-30
+updated: 2026-10-09
 description: 主页欢迎词与出处的集中展示。
 descriptionEn: A collection of the homepage welcome messages and their sources.
 image: random
@@ -12,7 +13,7 @@ categoryEn: Showcase
 draft: false
 ---
 
-随着时间的推移，主页欢迎词数量变得越来越多。虽然我在代码里设定的规范是随机展示，且一轮未结束时不会重复展示，但是对多数人来说可能不会看完。所以这里将展示截至2026.10.1之前所有主页欢迎词内容
+随着时间的推移，主页欢迎词数量变得越来越多。虽然我在代码里设定的规范是随机展示，且一轮未结束时不会重复展示，但是对多数人来说可能不会看完。所以这里将展示截至2026.10.9的所有主页欢迎词内容。
 
 所有欢迎词如下展示（以及出处）：
 
@@ -84,3 +85,6 @@ draft: false
 
 > 既见君兮予所欢，愿随风兮鸣银鸾  
 > ——《原神》传说任务：《银翎溯月，玄鸟结璘》：既见君兮予所欢，愿随风兮鸣银鸾
+
+> 物物而不物于物，念念而不念于念  
+> ——《庄子·山木》
