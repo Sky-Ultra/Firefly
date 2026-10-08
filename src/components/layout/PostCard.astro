@@ -4,11 +4,14 @@ import { render } from "astro:content";
 import { Icon } from "astro-icon/components";
 import CoverImage from "@/components/common/CoverImage.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
 import PostMetadata from "@/components/layout/PostMeta.astro";
 import PostStats from "@/components/layout/PostStats.astro";
 import { siteConfig } from "@/config";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
+import { getPostDecoration } from "@/utils/post-decoration";
 import { isRandomCoverImage } from "@/utils/random-cover-utils";
+import "@/styles/post-card-decoration.css";
 import { getFileDirFromPath, getTagUrl } from "@/utils/url-utils";
 
 interface Props {
@@ -53,6 +56,7 @@ const {
 	randomCoverFallback = "",
 } = Astro.props;
 const className = Astro.props.class;
+const cardDecor = getPostDecoration(entry.id, category, tags);
 
 const usesRandomCover = isRandomCoverImage(image);
 // 本地随机封面由页面级分配器统一洗牌，服务端回退图用于避免首屏布局闪烁。
@@ -108,7 +112,7 @@ const minutes = remarkPluginFrontmatter.minutes;
 
 <div
   class:list={[
-    "post-card-wrapper",
+    "post-card-wrapper post-decorated-card",
     hasCover ? "has-cover" : "no-cover",
     pinned ? "pinned" : "",
     "card-base flex flex-col-reverse w-full rounded-(--radius-large) overflow-hidden relative",
@@ -116,6 +120,7 @@ const minutes = remarkPluginFrontmatter.minutes;
   ]}
   style={style}
 >
+  <SidebarDecoration motif={cardDecor} />
   <!-- pinned icon -->
   <div
     class:list={[

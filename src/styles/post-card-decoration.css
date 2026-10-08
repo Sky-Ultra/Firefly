@@ -1,0 +1,21 @@
+/* Reuses the MIT-licensed outline motifs from LICENSES/Aemeath.txt. */
+.post-decorated-card { isolation: isolate; --sidebar-decor-opacity: 0.14; --sidebar-decor-hover-opacity: 0.23; }
+.post-decorated-card > .sidebar-card-decoration { z-index: 0; }
+.post-decorated-card > .post-card-content { isolation: isolate; z-index: 1; }
+.post-decorated-card > .post-card-image, .post-decorated-card > .post-card-enter-btn { z-index: 2; }
+.post-decorated-card.has-cover > .sidebar-card-decoration { width: calc(100% - var(--coverWidth) - 1.5rem); }
+.post-decorated-card > .sidebar-card-decoration::before { right: -0.5rem; bottom: -1rem; width: 13rem; height: 10rem; }
+html.dark .post-decorated-card { --sidebar-decor-opacity: 0.11; --sidebar-decor-hover-opacity: 0.2; }
+@media (hover: hover) and (pointer: fine) {
+	.post-decorated-card:hover > .sidebar-card-decoration::before, .post-decorated-card:focus-within > .sidebar-card-decoration::before {
+		opacity: var(--sidebar-decor-hover-opacity); transform: translate(-0.25rem, -0.15rem) rotate(-4deg) scale(1.025);
+	}
+}
+@media (max-width: 767px) {
+	.post-decorated-card.has-cover > .sidebar-card-decoration { width: calc(100% - 9.75rem); }
+	.grid-mode .post-decorated-card.has-cover > .sidebar-card-decoration, .masonry-mode .post-decorated-card.has-cover > .sidebar-card-decoration { width: 100%; }
+	.post-decorated-card > .sidebar-card-decoration::before { width: 9rem; height: 7rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.post-decorated-card:hover > .sidebar-card-decoration::before, .post-decorated-card:focus-within > .sidebar-card-decoration::before { transform: none; transition: none; }
+}

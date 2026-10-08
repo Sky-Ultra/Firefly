@@ -19,6 +19,10 @@ Use `pnpm`; the `preinstall` script enforces it.
 
 ## Coding Style & Naming Conventions
 
+### Site-specific visual consistency
+
+New sidebar widgets and card-style components must continue the site's pale outline motif and gentle hover finish. Reuse `SidebarDecoration.astro` and the existing styles; choose a motif relevant to the component, with the blossom fallback for new widgets. Keep card backgrounds opaque, decorations non-interactive and hidden from assistive technology, and retain reduced-motion support. Article cards share this finish via `post-card-decoration.css`. Do not add decoration over reading content or obscure controls.
+
 Biome is the formatter and linter. It uses tabs for indentation and double quotes for JavaScript/TypeScript strings. Keep Astro and Svelte components in `PascalCase` (`PostCard.astro`, `ArchivePanel.svelte`), config modules in `camelCase` ending with `Config.ts`, and utilities in descriptive kebab case such as `date-utils.ts`. Keep `src/types` aligned with `src/config`. Avoid unrelated formatting churn.
 
 ## Testing Guidelines

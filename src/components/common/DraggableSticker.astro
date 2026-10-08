@@ -1,0 +1,135 @@
+---
+import { url } from "@/utils/url-utils";
+
+interface Props {
+	src: string;
+	label: string;
+	class?: string;
+	style?: string;
+}
+const { src, label, class: className, style } = Astro.props;
+---
+
+<draggable-sticker
+	class:list={["draggable-sticker", className]}
+	style={style}
+	role="button"
+	tabindex="0"
+	aria-label={`${label}：可拖动，方向键移动，Home 或 Esc 复位`}
+	data-i18n-zh={`${label}：可拖动，方向键移动，Home 或 Esc 复位`}
+	data-i18n-en={`${label}: drag or use arrow keys; Home or Escape to reset`}
+	data-i18n-attr="aria-label"
+	data-pagefind-ignore
+>
+	<img src={url(src)} alt="" draggable="false" decoding="async" loading="lazy" />
+</draggable-sticker>
+
+<script>
+	class DraggableSticker extends HTMLElement {
+		private controller?: AbortController;
+		private offset = { x: 0, y: 0 };
+		private active?: { id: number; x: number; y: number; baseX: number; baseY: number };
+
+		connectedCallback() {
+			if (this.controller) return;
+			this.controller = new AbortController();
+			const options = { signal: this.controller.signal };
+			this.addEventListener("pointerdown", (event) => {
+				if (!event.isPrimary || event.button !== 0) return;
+				event.stopPropagation();
+				this.active = { id: event.pointerId, x: event.clientX, y: event.clientY, baseX: this.offset.x, baseY: this.offset.y };
+				this.setPointerCapture(event.pointerId);
+				this.classList.add("is-dragging");
+			}, options);
+			this.addEventListener("pointermove", (event) => {
+				if (!this.active || this.active.id !== event.pointerId) return;
+				event.preventDefault();
+				event.stopPropagation();
+				this.move(this.active.baseX + event.clientX - this.active.x, this.active.baseY + event.clientY - this.active.y);
+			}, options);
+			for (const name of ["pointerup", "pointercancel", "lostpointercapture"] as const) {
+				this.addEventListener(name, () => this.endDrag(), options);
+			}
+			// Dragging a character should not also swipe the banner wallpaper.
+			for (const name of ["touchstart", "touchend"] as const) {
+				this.addEventListener(name, (event) => event.stopPropagation(), { ...options, passive: true });
+			}
+			this.addEventListener("keydown", (event) => {
+				const step = event.shiftKey ? 24 : 10;
+				const directions: Record<string, [number, number]> = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+				if (["Home", "Escape"].includes(event.key)) {
+					event.preventDefault();
+					event.stopPropagation();
+					this.endDrag();
+					this.move(0, 0);
+				} else if (Object.hasOwn(directions, event.key)) {
+					event.preventDefault();
+					event.stopPropagation();
+					const [x, y] = directions[event.key];
+					this.move(this.offset.x + x, this.offset.y + y);
+				}
+			}, options);
+			window.addEventListener("resize", () => { this.endDrag(); this.move(0, 0); }, options);
+		}
+
+		private move(x: number, y: number) {
+			const boundary = this.closest<HTMLElement>("[data-drag-boundary]");
+			if (boundary) {
+				const bounds = boundary.getBoundingClientRect();
+				const rect = this.getBoundingClientRect();
+				const left = rect.left - this.offset.x;
+				const top = rect.top - this.offset.y;
+				x = Math.max(bounds.left - left, Math.min(bounds.right - left - rect.width, x));
+				y = Math.max(bounds.top - top, Math.min(bounds.bottom - top - rect.height, y));
+			}
+			this.offset = { x, y };
+			this.style.setProperty("--sticker-x", `${x}px`);
+			this.style.setProperty("--sticker-y", `${y}px`);
+		}
+
+		private endDrag() {
+			const id = this.active?.id;
+			this.active = undefined;
+			this.classList.remove("is-dragging");
+			if (id !== undefined && this.hasPointerCapture(id)) this.releasePointerCapture(id);
+		}
+
+		disconnectedCallback() {
+			this.endDrag();
+			this.controller?.abort();
+			this.controller = undefined;
+		}
+	}
+	if (!customElements.get("draggable-sticker")) customElements.define("draggable-sticker", DraggableSticker);
+</script>
+
+<style>
+	.draggable-sticker {
+		position: relative;
+		display: inline-flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		width: var(--sticker-size, 6rem);
+		height: var(--sticker-size, 6rem);
+		transform: translate(var(--sticker-x, 0px), var(--sticker-y, 0px));
+		cursor: grab;
+		touch-action: none;
+		user-select: none;
+		pointer-events: auto;
+		border-radius: 0.8rem;
+	}
+	.draggable-sticker img {
+		width: 100%; height: 100%; object-fit: contain; pointer-events: none;
+		filter: drop-shadow(0 3px 6px rgb(79 53 86 / 12%));
+		transition: transform 220ms ease, filter 220ms ease;
+	}
+	.draggable-sticker:hover img { transform: translateY(-3px) rotate(-2deg); }
+	.draggable-sticker.is-dragging { cursor: grabbing; z-index: 20; }
+	.draggable-sticker.is-dragging img { transform: scale(1.04); }
+	.draggable-sticker:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+	@media (prefers-reduced-motion: reduce) {
+		.draggable-sticker img { transition: none; }
+		.draggable-sticker:hover img, .draggable-sticker.is-dragging img { transform: none; }
+	}
+</style>

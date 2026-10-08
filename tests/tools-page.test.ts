@@ -8,6 +8,12 @@ import { personalTools, thirdPartyTools } from "../src/config/toolsConfig";
 const root = resolve(import.meta.dirname, "..");
 const page = readFileSync(resolve(root, "src/pages/tools.astro"), "utf8");
 
+test("all tools, including the personal project, open in a new tab safely", () => {
+	assert.match(page, /target="_blank"/);
+	assert.match(page, /rel="noopener noreferrer"/);
+	assert.doesNotMatch(page, /target=\{external|rel=\{external/);
+});
+
 test("Tools is listed under the personal navigation menu", () => {
 	const menu = navBarConfig.links.find((link) => link.name === "我的");
 	const toolLink = menu?.children?.find((link) => link.url === "/tools/");

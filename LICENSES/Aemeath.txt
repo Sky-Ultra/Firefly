@@ -1,5 +1,5 @@
 Parts of the footer design, footer character artwork, sidebar decorative motifs
-and tools-page design are adapted from Aemeath:
+and tools-page design, banner character artwork and profile companions are adapted from Aemeath:
 https://github.com/Jarvis0227/Aemeath
 
 MIT License

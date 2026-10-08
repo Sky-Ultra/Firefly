@@ -1,0 +1,14 @@
+---
+import DraggableSticker from "@/components/common/DraggableSticker.astro";
+---
+
+<div class="name-companions" data-drag-boundary>
+	<DraggableSticker src="/images/characters/claudecode.webp" label="Sky 左侧的小伙伴" />
+	<span class="name-companions-label"><slot /></span>
+	<DraggableSticker src="/images/characters/dark-haired-girl.webp" label="Sky 右侧的小伙伴" />
+</div>
+
+<style>
+	.name-companions { display: flex; align-items: center; justify-content: center; gap: 0.65rem; min-height: 3.6rem; width: 100%; --sticker-size: 3.2rem; }
+	.name-companions-label { position: relative; z-index: 1; pointer-events: none; }
+</style>

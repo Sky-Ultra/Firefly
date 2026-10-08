@@ -89,8 +89,8 @@ const stars = [
 								<a
 									class:list={["tool-card", { "tool-card-spotlight": tool.spotlight }]}
 									href={url(tool.href)}
-									target={external ? "_blank" : undefined}
-									rel={external ? "noopener noreferrer" : undefined}
+									target="_blank"
+									rel="noopener noreferrer"
 									style={`--tool-accent: ${tool.accent}`}
 								>
 									{tool.spotlight && (
