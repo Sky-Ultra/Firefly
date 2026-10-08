@@ -43,6 +43,9 @@ test("two small companions frame Sky's profile name", () => {
 	assert.match(source("src/layouts/MainGridLayout.astro"), /<NameCompanions>/);
 	const companions = source("src/components/features/NameCompanions.astro");
 	assert.equal((companions.match(/<DraggableSticker\b/g) || []).length, 2);
+	assert.match(companions, /blonde-idol\.webp/);
+	assert.match(companions, /dark-haired-girl\.webp/);
+	assert.doesNotMatch(companions, /claudecode\.webp/);
 	assert.match(companions, /<slot/);
 });
 
