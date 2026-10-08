@@ -23,7 +23,7 @@ Use `pnpm`; the `preinstall` script enforces it.
 
 New sidebar widgets and card-style components must continue the site's pale outline motif and gentle hover finish. Reuse `SidebarDecoration.astro` and the existing styles; choose a motif relevant to the component, with the blossom fallback for new widgets. Keep card backgrounds opaque, decorations non-interactive and hidden from assistive technology, and retain reduced-motion support. Article cards share this finish via `post-card-decoration.css`. Do not add decoration over reading content or obscure controls.
 
-The homepage banner uses one transparent user-supplied draggable sticker just above and to the right of Sky, without a rectangular background or card shadow. Do not restore the removed nine-character row or the characters flanking the homepage title. Preserve the profile card's two character companions unless the user asks to remove them.
+The homepage banner title stays plain, without stickers or character companions. Do not restore the removed homepage sticker, nine-character row, or characters flanking the homepage title. Preserve the profile card's two character companions and reusable draggable-sticker support unless the user asks to remove them.
 
 Biome is the formatter and linter. It uses tabs for indentation and double quotes for JavaScript/TypeScript strings. Keep Astro and Svelte components in `PascalCase` (`PostCard.astro`, `ArchivePanel.svelte`), config modules in `camelCase` ending with `Config.ts`, and utilities in descriptive kebab case such as `date-utils.ts`. Keep `src/types` aligned with `src/config`. Avoid unrelated formatting churn.
 
