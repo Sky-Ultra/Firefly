@@ -1,0 +1,168 @@
+/*
+ * Sidebar outline artwork adapted from Jarvis0227/Aemeath home-card-decor.css.
+ * Copyright (c) 2024 saicaca; Copyright (c) 2025 CuteLeaf. MIT License.
+ * Source: https://github.com/Jarvis0227/Aemeath
+ * Full license: LICENSES/Aemeath.txt
+ */
+.sidebar-decorated-card {
+	position: relative;
+	isolation: isolate;
+	border: 1px solid color-mix(in srgb, var(--primary) 13%, var(--card-bg));
+	box-shadow: 0 0.35rem 0.95rem rgb(62 109 145 / 6%);
+	--sidebar-decor-opacity: 0.2;
+	--sidebar-decor-hover-opacity: 0.29;
+}
+
+/* Override the wallpaper surface in its own cascade layer. */
+@layer components {
+	.sidebar-decorated-card.card-base,
+	.wallpaper-transparent .sidebar-decorated-card.card-base {
+		background-color: var(--card-bg) !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+	}
+}
+
+.sidebar-card-decoration {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	overflow: hidden;
+	pointer-events: none;
+	user-select: none;
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/blossom.svg");
+	--sidebar-decor-start: #78cbbb;
+	--sidebar-decor-middle: #edabc2;
+	--sidebar-decor-end: #edcd88;
+}
+
+.sidebar-card-decoration::before {
+	content: "";
+	position: absolute;
+	right: -1.25rem;
+	bottom: -0.95rem;
+	width: 13rem;
+	height: 10.3rem;
+	background: linear-gradient(
+		135deg,
+		var(--sidebar-decor-start),
+		var(--sidebar-decor-middle) 57%,
+		var(--sidebar-decor-end)
+	);
+	-webkit-mask: var(--sidebar-decor-mask) center / contain no-repeat;
+	mask: var(--sidebar-decor-mask) center / contain no-repeat;
+	opacity: var(--sidebar-decor-opacity);
+	transform: rotate(-2deg);
+	transition:
+		opacity 220ms ease,
+		transform 260ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.sidebar-card-decoration[data-card-decor="chat"] {
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/chat.svg");
+	--sidebar-decor-start: #6fc5e8;
+	--sidebar-decor-middle: #ef94b3;
+	--sidebar-decor-end: #8fd7bc;
+}
+
+.sidebar-card-decoration[data-card-decor="quote"] {
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/quote.svg");
+	--sidebar-decor-start: #76bfc4;
+	--sidebar-decor-middle: #e99eb7;
+	--sidebar-decor-end: #b8a0e8;
+}
+
+.sidebar-card-decoration[data-card-decor="parcel"] {
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/parcel.svg");
+	--sidebar-decor-start: #55bde8;
+	--sidebar-decor-middle: #65d0b1;
+	--sidebar-decor-end: #f2b66d;
+}
+
+.sidebar-card-decoration[data-card-decor="paper-plane"] {
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/paper-plane.svg");
+	--sidebar-decor-start: #61c1cf;
+	--sidebar-decor-middle: #ef9fb5;
+	--sidebar-decor-end: #8eb1ed;
+}
+
+.sidebar-card-decoration[data-card-decor="orbit"] {
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/orbit.svg");
+	--sidebar-decor-start: #8b9df4;
+	--sidebar-decor-middle: #c08ee7;
+	--sidebar-decor-end: #67cde1;
+}
+
+.sidebar-card-decoration[data-card-decor="clock"] {
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/clock.svg");
+	--sidebar-decor-start: #68bff0;
+	--sidebar-decor-middle: #f0a96f;
+	--sidebar-decor-end: #f2cc6f;
+}
+
+.sidebar-card-decoration[data-card-decor="constellation"] {
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/constellation.svg");
+	--sidebar-decor-start: #7c9cf0;
+	--sidebar-decor-middle: #a78ce9;
+	--sidebar-decor-end: #58cbd8;
+}
+
+.sidebar-card-decoration[data-card-decor="window"] {
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/window.svg");
+	--sidebar-decor-start: #63bfe7;
+	--sidebar-decor-middle: #7fd2ba;
+	--sidebar-decor-end: #9da5ed;
+}
+
+.sidebar-card-decoration[data-card-decor="sun-cloud"] {
+	--sidebar-decor-mask: url("../assets/sidebar-decorations/sun-cloud.svg");
+	--sidebar-decor-start: #71c8ed;
+	--sidebar-decor-middle: #f5ba66;
+	--sidebar-decor-end: #f3df86;
+}
+
+.sidebar-decorated-card .sidebar-count-pill {
+	color: var(--primary);
+	background-color: color-mix(in srgb, var(--primary) 13%, transparent);
+	font-variant-numeric: tabular-nums;
+}
+
+html.dark .sidebar-decorated-card {
+	border-color: color-mix(in srgb, var(--primary) 15%, var(--card-bg));
+	box-shadow: 0 0.4rem 1rem rgb(0 0 0 / 14%);
+	--sidebar-decor-opacity: 0.13;
+	--sidebar-decor-hover-opacity: 0.2;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.sidebar-decorated-card:hover > .sidebar-card-decoration::before {
+		opacity: var(--sidebar-decor-hover-opacity);
+		transform: translate(-0.2rem, -0.15rem) rotate(-4deg) scale(1.025);
+	}
+}
+
+@media (max-width: 767px) {
+	.sidebar-decorated-card {
+		--sidebar-decor-opacity: 0.15;
+	}
+
+	.sidebar-card-decoration::before {
+		width: 11rem;
+		height: 8.7rem;
+	}
+
+	html.dark .sidebar-decorated-card {
+		--sidebar-decor-opacity: 0.1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sidebar-card-decoration::before {
+		transition: none;
+		transform: none;
+	}
+
+	.sidebar-decorated-card:hover > .sidebar-card-decoration::before {
+		transform: none;
+	}
+}

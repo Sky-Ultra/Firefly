@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
 import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
 import type { WidgetComponentConfig } from "@/types/config";
 
@@ -15,10 +16,11 @@ const { periods, image } = visitorWidgetsConfig.timeGreeting;
 ---
 
 <time-greeting-widget
-	class:list={["block card-base overflow-hidden", className]}
+	class:list={["block card-base sidebar-decorated-card overflow-hidden", className]}
 	style={style}
 	data-periods={JSON.stringify(periods)}
 >
+	<SidebarDecoration motif="clock" />
 	<div class="flex items-start justify-between gap-3 p-4 pb-3">
 		<div class="min-w-0">
 			<p

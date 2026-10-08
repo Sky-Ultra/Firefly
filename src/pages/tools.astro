@@ -1,0 +1,290 @@
+---
+import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import { personalTools, thirdPartyTools } from "@/config/toolsConfig";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import { url } from "@/utils/url-utils";
+
+// Layout inspired by Aemeath's MIT-licensed tools page; see LICENSES/Aemeath.txt.
+const sections = [
+	{
+		id: "personal-tools",
+		title: { zh: "本人项目", en: "My project" },
+		description: {
+			zh: "自己制作的小作品，想法在这里慢慢落地。",
+			en: "A small project of my own, bringing an idea to life.",
+		},
+		tools: personalTools,
+	},
+	{
+		id: "third-party-tools",
+		title: { zh: "非本人项目", en: "Third-party tools" },
+		description: {
+			zh: "收藏的第三方工具，按需探索它们各自的用途。",
+			en: "A collection of third-party tools to explore for different tasks.",
+		},
+		tools: thirdPartyTools,
+	},
+];
+const stats = [
+	{
+		count: personalTools.length + thirdPartyTools.length,
+		zh: "工具",
+		en: "Tools",
+	},
+	{ count: personalTools.length, zh: "本人项目", en: "My project" },
+	{ count: thirdPartyTools.length, zh: "第三方工具", en: "Third-party" },
+];
+const stars = [
+	[10, 16],
+	[21, 72],
+	[33, 33],
+	[41, 83],
+	[48, 12],
+	[56, 52],
+	[64, 26],
+	[70, 79],
+	[78, 10],
+	[83, 60],
+	[91, 32],
+	[96, 85],
+];
+---
+
+<MainGridLayout title="神器库" description="我的小作品，以及收藏的日常与开发工具。">
+	<section class="tools-page">
+		<header class="tools-hero">
+			<div class="tools-intro">
+				<div class="tools-kicker">
+					<Icon is:inline name="material-symbols:construction-rounded" />
+					<span>TOOLBOX</span>
+				</div>
+				<h1><LocalizedText zh="神器库" en="Toolkit" /></h1>
+				<p><LocalizedText zh="小作品与好工具，为日常多留一点灵感和效率。" en="Small projects and useful tools for a little more inspiration and ease in everyday work." /></p>
+			</div>
+			<dl class="tools-stats">
+				{stats.map((stat) => (
+					<div>
+						<dt><LocalizedText zh={stat.zh} en={stat.en} /></dt>
+						<dd>{stat.count}</dd>
+					</div>
+				))}
+			</dl>
+		</header>
+
+		<div class="tools-sections">
+			{sections.map((section) => (
+				<section aria-labelledby={section.id}>
+					<div class="tools-section-heading">
+						<div>
+							<h2 id={section.id}><LocalizedText zh={section.title.zh} en={section.title.en} /></h2>
+							<p><LocalizedText zh={section.description.zh} en={section.description.en} /></p>
+						</div>
+						<span class="tools-count">{section.tools.length}</span>
+					</div>
+					<div class="tools-grid">
+						{section.tools.map((tool) => {
+							const external = tool.href.startsWith("https://");
+							return (
+								<a
+									class:list={["tool-card", { "tool-card-spotlight": tool.spotlight }]}
+									href={url(tool.href)}
+									target={external ? "_blank" : undefined}
+									rel={external ? "noopener noreferrer" : undefined}
+									style={`--tool-accent: ${tool.accent}`}
+								>
+									{tool.spotlight && (
+										<div class="tool-starfield" aria-hidden="true">
+											<svg class="tool-outline-star" viewBox="0 0 100 100" fill="none">
+												<path d="m50 5 13 31 33 3-26 22 7 33-27-18-27 18 7-33L4 39l33-3Z" />
+											</svg>
+											{[[38, 17], [74, 38], [91, 70]].map(([left, top], index) => (
+												<svg class="tool-sparkle" viewBox="0 0 24 24" style={`left:${left}%;top:${top}%;--delay:${index * -1.2}s`}>
+													<path d="m12 1 2.5 8.5L23 12l-8.5 2.5L12 23l-2.5-8.5L1 12l8.5-2.5Z" />
+												</svg>
+											))}
+											{stars.map(([left, top], index) => (
+												<i class="tool-star" style={`left:${left}%;top:${top}%;--delay:${index * -0.6}s`} />
+											))}
+											{[0, 1, 2, 3, 4].map((index) => (
+												<i class="tool-meteor" style={`left:${40 + index * 15}%;top:${index * 13}%;--delay:${index * -1.7}s;--duration:${7 + index * 0.8}s`} />
+											))}
+										</div>
+									)}
+									<span class="tool-card-badge">
+										<LocalizedText zh={tool.category.zh} en={tool.category.en} />
+										<Icon is:inline name={external ? "material-symbols:arrow-outward-rounded" : "material-symbols:arrow-forward-rounded"} />
+									</span>
+									<div class="tool-card-avatar" aria-hidden="true">
+										{tool.image ? (
+											<img src={url(tool.image)} alt="" width="192" height="192" decoding="async" />
+										) : (
+											<Icon is:inline name={tool.icon} />
+										)}
+									</div>
+									<div class="tool-card-content">
+										<h3>{tool.name}</h3>
+										<p><LocalizedText zh={tool.description.zh} en={tool.description.en} /></p>
+									</div>
+									<div class="tool-card-tags">
+										{tool.tags.map((tag) => (
+											<span><LocalizedText zh={tag.zh} en={tag.en} /></span>
+										))}
+									</div>
+								</a>
+							);
+						})}
+					</div>
+				</section>
+			))}
+		</div>
+	</section>
+</MainGridLayout>
+
+<style>
+	.tools-page {
+		--tools-text: #242833;
+		--tools-muted: #6b7280;
+		width: 100%;
+		min-width: 0;
+		padding: 1.5rem;
+		border-radius: var(--radius-large);
+		background: var(--card-bg);
+		color: var(--tools-text);
+	}
+	:global(:root.dark) .tools-page {
+		--tools-text: #e7e8ec;
+		--tools-muted: #a0a6b2;
+	}
+	.tools-hero {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		padding: 1.25rem;
+		margin-bottom: 1.6rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.9rem;
+		background: color-mix(in srgb, var(--card-bg) 94%, var(--primary));
+	}
+	.tools-intro { min-width: 0; }
+	.tools-kicker {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-bottom: 0.5rem;
+		color: var(--primary);
+		font-size: 0.7rem;
+		font-weight: 750;
+		letter-spacing: 0.15em;
+	}
+	h1 { font-size: clamp(1.65rem, 3vw, 2rem); font-weight: 800; line-height: 1.3; }
+	.tools-intro p { margin-top: 0.5rem; max-width: 26rem; font-size: 0.85rem; line-height: 1.7; color: var(--tools-muted); }
+	.tools-stats { display: flex; flex: 0 0 auto; gap: 0.5rem; }
+	.tools-stats > div {
+		display: flex;
+		flex-direction: column-reverse;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		min-width: 4.3rem;
+		padding: 0.8rem 0.65rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.6rem;
+		background: var(--card-bg);
+	}
+	.tools-stats dt { color: var(--tools-muted); font-size: 0.65rem; white-space: nowrap; }
+	.tools-stats dd { font-size: 1.35rem; font-weight: 800; line-height: 1; }
+	.tools-sections { display: grid; gap: 1.6rem; }
+	.tools-section-heading { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
+	.tools-section-heading h2 { font-size: 1.1rem; font-weight: 750; }
+	.tools-section-heading p { margin-top: 0.3rem; color: var(--tools-muted); font-size: 0.8rem; line-height: 1.6; }
+	.tools-count { flex: 0 0 auto; min-width: 2rem; padding: 0.25rem 0.6rem; border-radius: 99px; text-align: center; font-size: 0.75rem; font-weight: 700; color: var(--primary); background: var(--btn-regular-bg); }
+	.tools-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; }
+	.tool-card {
+		position: relative;
+		isolation: isolate;
+		display: grid;
+		grid-template-columns: 3.5rem minmax(0, 1fr);
+		grid-template-rows: 1fr auto;
+		gap: 0.7rem;
+		min-width: 0;
+		min-height: 9.3rem;
+		padding: 0.75rem;
+		overflow: hidden;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.8rem;
+		background: var(--card-bg);
+		color: inherit;
+		text-decoration: none;
+		box-shadow: 0 3px 10px rgb(25 45 75 / 0.04);
+		transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+	}
+	.tool-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--tool-accent) 55%, var(--card-bg)); box-shadow: 0 6px 16px rgb(25 45 75 / 0.09); }
+	.tool-card:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+	.tool-card > :not(.tool-starfield) { position: relative; z-index: 1; }
+	.tool-card > .tool-card-badge {
+		position: absolute;
+		top: 0.45rem;
+		right: 0.55rem;
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.18rem 0.4rem;
+		border: 1px solid color-mix(in srgb, var(--tool-accent) 18%, transparent);
+		border-radius: 0.4rem;
+		background: color-mix(in srgb, var(--tool-accent) 8%, transparent);
+		color: color-mix(in srgb, var(--tool-accent) 68%, var(--tools-text));
+		font-size: 0.6rem;
+		font-weight: 650;
+		line-height: 1.2;
+	}
+	.tool-card-badge :global(svg) { width: 0.75rem; height: 0.75rem; }
+	.tool-card-avatar { display: flex; align-items: center; justify-content: center; align-self: center; width: 3.5rem; height: 3.5rem; border-radius: 0.85rem; background: color-mix(in srgb, var(--card-bg) 88%, var(--tool-accent)); color: var(--tool-accent); font-size: 1.65rem; }
+	.tool-card-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+	.tool-card-content { align-self: center; min-width: 0; padding-top: 1rem; }
+	.tool-card-content h3 { font-size: 0.95rem; font-weight: 750; line-height: 1.35; }
+	.tool-card-content p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin-top: 0.3rem; font-size: 0.72rem; line-height: 1.6; color: var(--tools-muted); }
+	.tool-card-tags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.35rem; padding-top: 0.55rem; border-top: 1px solid var(--line-divider); }
+	.tool-card-tags > span { padding: 0.1rem 0.4rem; border-radius: 0.35rem; background: var(--btn-regular-bg); color: var(--tools-muted); font-size: 0.6rem; line-height: 1.6; }
+	.tool-card-spotlight {
+		border-color: #e5bd65;
+		background: radial-gradient(ellipse at 100% 0%, #fff5d8, transparent 75%), #fffdf6;
+		box-shadow: 0 3px 15px rgb(197 150 44 / 0.14), inset 0 1px 0 #fff8e6;
+	}
+	.tool-card-spotlight:hover { border-color: #d7a331; box-shadow: 0 7px 22px rgb(197 150 44 / 0.23); }
+	.tool-card-spotlight .tool-card-content h3 { color: #886019; text-shadow: 0 0 14px rgb(220 169 57 / 0.38); animation: title-glow 4s ease-in-out infinite alternate; }
+	.tool-card-spotlight .tool-card-tags { border-color: rgb(202 157 55 / 0.22); }
+	.tool-card-spotlight .tool-card-tags > span { background: #f8edcf; color: #886019; }
+	:global(:root.dark) .tool-card-spotlight { border-color: #80622e; background: radial-gradient(ellipse at 100% 0%, #493821, transparent 75%), #29251d; box-shadow: 0 3px 15px rgb(0 0 0 / 0.18), inset 0 1px 0 rgb(238 195 99 / 0.13); }
+	:global(:root.dark) .tool-card-spotlight .tool-card-content h3 { color: #f2d494; }
+	:global(:root.dark) .tool-card-spotlight .tool-card-tags > span { background: #42351f; color: #ddc286; }
+	.tool-starfield { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; border-radius: inherit; }
+	.tool-outline-star { position: absolute; right: -0.3rem; bottom: -0.8rem; width: 6.7rem; height: 6.7rem; stroke: #d9a93e; stroke-width: 1.25; opacity: 0.22; transform: rotate(-12deg); filter: drop-shadow(0 0 5px rgb(220 169 57 / 0.2)); }
+	.tool-sparkle { position: absolute; width: 0.65rem; height: 0.65rem; fill: #d9a93e; filter: drop-shadow(0 0 4px #e9c576); animation: star-twinkle 3.5s ease-in-out var(--delay) infinite alternate; }
+	.tool-star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #d9a93e; box-shadow: 0 0 5px #e9c576; animation: star-twinkle 3.5s ease-in-out var(--delay) infinite alternate; }
+	.tool-star:nth-child(3n) { width: 3px; height: 3px; }
+	.tool-meteor { position: absolute; width: 80px; height: 1px; opacity: 0; background: linear-gradient(90deg, #e6b84f, transparent); transform: rotate(-38deg); animation: meteor-shower var(--duration) linear var(--delay) infinite; }
+	@keyframes title-glow { to { text-shadow: 0 0 18px rgb(220 169 57 / 0.58); } }
+	@keyframes star-twinkle { from { opacity: 0.2; } to { opacity: 0.8; } }
+	@keyframes meteor-shower {
+		0%, 73% { opacity: 0; transform: translate(80px, -60px) rotate(-38deg); }
+		76% { opacity: 0.75; }
+		89%, 100% { opacity: 0; transform: translate(-140px, 115px) rotate(-38deg); }
+	}
+	@media (max-width: 1199px) { .tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tools-hero { flex-wrap: wrap; } }
+	@media (max-width: 639px) {
+		.tools-page { padding: 1rem; }
+		.tools-hero { gap: 1rem; padding: 1rem; }
+		.tools-stats { width: 100%; }
+		.tools-stats > div { flex: 1; min-width: 0; }
+		.tools-grid { grid-template-columns: minmax(0, 1fr); gap: 0.65rem; }
+		.tool-card { min-height: 8.5rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.tool-card { transition: none; }
+		.tool-card:hover { transform: none; }
+		.tool-star, .tool-sparkle, .tool-card-spotlight .tool-card-content h3 { animation: none; }
+		.tool-meteor { display: none; }
+	}
+</style>

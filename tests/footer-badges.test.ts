@@ -60,7 +60,7 @@ test("disabled comments, analytics and copyright do not advertise active service
 	);
 });
 
-test("local responsive badges sit between the attribution and uptime", () => {
+test("local responsive pastel badges sit above the footer information panel", () => {
 	const footer = readFileSync(
 		new URL("../src/components/layout/Footer.astro", import.meta.url),
 		"utf8",
@@ -70,8 +70,8 @@ test("local responsive badges sit between the attribution and uptime", () => {
 		"utf8",
 	);
 	assert.ok(
-		footer.indexOf("<FooterBadges />") >
-			footer.indexOf("Power by xiaoxiaoboluo"),
+		footer.indexOf("<FooterBadges />") <
+			footer.indexOf('<footer class="site-footer-panel'),
 	);
 	assert.ok(
 		footer.indexOf("<SiteUptime />") > footer.indexOf("<FooterBadges />"),
@@ -83,6 +83,23 @@ test("local responsive badges sit between the attribution and uptime", () => {
 	assert.match(component, /data-i18n-en="Site technology and services"/);
 	assert.match(component, /data-i18n-skip/);
 	assert.match(component, /data-pagefind-ignore/);
+	assert.match(component, /color-mix/);
 	assert.match(component, /<Icon\s/);
 	assert.doesNotMatch(component, /<img\b|<script\b|shields\.io/);
+});
+
+test("the decorative footer only uses this site's links and omits visitor statistics", () => {
+	const footer = readFileSync(
+		new URL("../src/components/layout/Footer.astro", import.meta.url),
+		"utf8",
+	);
+	assert.match(footer, /profileConfig\.links\.filter/);
+	assert.match(footer, /profileConfig\.name/);
+	assert.match(footer, /footerCharacters\.src/);
+	assert.match(footer, /sitemap-index\.xml/);
+	assert.match(footer, /siteConfig\.pages\.rss/);
+	assert.doesNotMatch(
+		footer,
+		/data-umami-stat|今日访客|本站访客|ICP备|Rain\.|Bilibili|QEdge/,
+	);
 });

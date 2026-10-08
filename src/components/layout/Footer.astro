@@ -1,12 +1,19 @@
 ---
 import fs from "node:fs";
 import path from "node:path";
+import { Icon } from "astro-icon/components";
+import footerCharacters from "@/assets/images/footer-characters.webp";
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import FooterBadges from "@/components/layout/FooterBadges.astro";
 import SiteUptime from "@/components/layout/SiteUptime.astro";
 import { footerConfig, profileConfig, siteConfig } from "@/config";
 import { url } from "@/utils/url-utils";
+import "@/styles/site-footer.css";
 
 const currentYear = new Date().getFullYear();
+const socials = profileConfig.links.filter((link) =>
+	["GitHub", "Email"].includes(link.name),
+);
 
 // 读取FooterConfig.html文件内容
 let customFooterHtml = "";
@@ -31,39 +38,36 @@ if (footerConfig.enable) {
 ---
 
 
-<div
-  class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"
->
-</div>
-
-<div
-  class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6"
->
-  <div class="transition text-50 text-sm text-center wrap max-w-full">
-    <div class="mb-2">
-      {customFooterHtml && <div set:html={customFooterHtml} />}
-    </div>
-    <div class="m-0.5 flex gap-2 justify-center flex-wrap">
-      &copy; <span id="copyright-year">{currentYear}</span>
-      {profileConfig.name}. All Rights Reserved.
-      {siteConfig.pages.rss && (
-        <>
-          <span aria-hidden="true">/</span>
-          <a
-            class="transition link text-(--primary) font-medium"
-            target="_blank"
-            href={url("rss.xml")}>RSS</a
-          >
-        </>
-      )}
-    </div>
-    <div class="m-0.5 flex gap-2 justify-center flex-wrap">
-      <a
-        class="transition link text-(--primary) font-medium"
-        href={url("/about/")}>Power by xiaoxiaoboluo</a
-      >
-    </div>
-    <FooterBadges />
-    <SiteUptime />
-  </div>
+<!-- Adapted from Aemeath's MIT-licensed footer. See LICENSES/Aemeath.txt. -->
+<div class="site-footer-stage" data-pagefind-ignore="all">
+	<div class="site-footer-characters" aria-hidden="true">
+		<img src={footerCharacters.src} alt="" width={2170} height={305} loading="lazy" decoding="async" />
+	</div>
+	<FooterBadges />
+	<footer class="site-footer-panel card-base" aria-label="网站页脚" data-i18n-zh="网站页脚" data-i18n-en="Site footer" data-i18n-attr="aria-label">
+		<svg class="site-footer-parcel" viewBox="0 0 190 150" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="m78 58 39-20 39 20-39 20-39-20Zm0 0v45l39 21 39-21V58m-39 20v46m-20-76 39 20" stroke-width="3" />
+			<path d="M40 95c11 0 18 1 25 7m-8-15 9 15-16 5M164 40c-10-8-21-11-34-10m12-8-13 8 11 10M38 51h24M45 62h18" stroke-width="2" />
+			<circle cx="47" cy="40" r="2" fill="currentColor" /><circle cx="171" cy="114" r="2.5" fill="currentColor" />
+		</svg>
+		<div class="site-footer-content">
+			<nav class="site-footer-nav" aria-label="页脚导航" data-i18n-zh="页脚导航" data-i18n-en="Footer navigation" data-i18n-attr="aria-label">
+				<a href={url("/")}><Icon name="material-symbols:home-outline" aria-hidden="true" /><LocalizedText zh="博客" en="Blog" /></a>
+				{socials.map((social) => (
+					<a href={social.url} target={social.url.startsWith("https:") ? "_blank" : undefined} rel={social.url.startsWith("https:") ? "noopener noreferrer" : undefined}>
+						<Icon name={social.icon} aria-hidden="true" /><LocalizedText zh={social.name === "Email" ? "邮箱" : social.name} en={social.name} />
+					</a>
+				))}
+			</nav>
+			<SiteUptime />
+			{customFooterHtml && <div class="site-footer-custom" set:html={customFooterHtml} />}
+			<div class="site-footer-divider" aria-hidden="true"><span /><i>✦</i><span /></div>
+			<div class="site-footer-meta">
+				<span>&copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved.</span>
+				{siteConfig.pages.rss && <a href={url("rss.xml")}><Icon name="material-symbols:rss-feed-rounded" aria-hidden="true" />RSS</a>}
+				<a href={url("sitemap-index.xml")}><Icon name="material-symbols:account-tree-rounded" aria-hidden="true" /><LocalizedText zh="站点地图" en="Sitemap" /></a>
+			</div>
+			<div class="site-footer-powered"><a href={url("/about/")}>Powered by xiaoxiaoboluo</a></div>
+		</div>
+	</footer>
 </div>

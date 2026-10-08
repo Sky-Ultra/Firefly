@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import LocalizedText from "@/components/common/LocalizedText.astro";
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
 import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
 import type { WidgetComponentConfig } from "@/types/config";
 
@@ -15,7 +16,7 @@ const config = visitorWidgetsConfig.weather;
 ---
 
 <weather-widget
-	class:list={["block card-base p-4", className]}
+	class:list={["block card-base sidebar-decorated-card p-4", className]}
 	style={style}
 	data-location-api={config.locationApi}
 	data-forecast-api={config.forecastApi}
@@ -25,6 +26,7 @@ const config = visitorWidgetsConfig.weather;
 	data-fallback-latitude={config.fallbackLocation.latitude}
 	data-fallback-longitude={config.fallbackLocation.longitude}
 >
+	<SidebarDecoration motif="sun-cloud" />
 	<div class="mb-3 ml-4 flex items-center gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 relative before:absolute before:left-[-16px] before:h-4 before:w-1 before:rounded-md before:bg-(--primary)">
 		<Icon is:inline name="material-symbols:location-on-outline-rounded" class="text-(--primary)" aria-hidden="true" />
 		<span><LocalizedText zh="天气预报" en="Weather" /></span>

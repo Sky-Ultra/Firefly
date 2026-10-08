@@ -1,4 +1,5 @@
 ---
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
 import { visitorWidgetsConfig } from "@/config/visitorWidgetsConfig";
 import type { WidgetComponentConfig } from "@/types/config";
 
@@ -13,12 +14,13 @@ const { birthday, festivals } = visitorWidgetsConfig.festivalCountdown;
 ---
 
 <festival-countdown-widget
-	class:list={["block card-base p-4", className]}
+	class:list={["block card-base sidebar-decorated-card p-4", className]}
 	style={style}
 	data-festivals={JSON.stringify(festivals)}
 	data-birthday-month={birthday.month}
 	data-birthday-day={birthday.day}
 >
+	<SidebarDecoration motif="clock" />
 	<div class="space-y-3" aria-label="时间进度">
 		<div class="grid grid-cols-[3.4rem_1fr] items-center gap-3" data-birthday-progress>
 			<strong class="text-sm text-(--primary)" data-birthday-percent>--%</strong>

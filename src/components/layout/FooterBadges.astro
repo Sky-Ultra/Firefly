@@ -24,11 +24,11 @@ const badges = getFooterBadges({
 		<div
 			class="footer-badge"
 			role="listitem"
-			style={`--badge-color: ${badge.color}; --badge-icon-color: ${badge.iconColor}`}
+			style={`--badge-color: ${badge.color}`}
 		>
 			<span class="badge-label">
 				<Icon is:inline name={badge.icon} class="badge-icon" aria-hidden="true" />
-				{badge.label}
+				<span class="sr-only">{badge.label}: </span>
 			</span>
 			{badge.href ? (
 				<a class="badge-value" href={badge.href} target="_blank" rel="noopener noreferrer">
@@ -47,22 +47,24 @@ const badges = getFooterBadges({
 		flex-wrap: wrap;
 		align-items: center;
 		justify-content: center;
-		gap: 6px;
+		gap: 7px;
 		max-width: 100%;
-		margin-top: 12px;
-		margin-bottom: 10px;
+		margin-top: 14px;
+		margin-bottom: 23px;
 	}
 
 	.footer-badge {
 		display: inline-flex;
-		align-items: stretch;
+		align-items: center;
 		overflow: hidden;
-		border-radius: 3px;
-		background: #555;
-		color: #fff;
+		border-radius: 7px;
+		border: 1px solid color-mix(in srgb, var(--badge-color) 25%, var(--line-divider));
+		background: color-mix(in srgb, var(--badge-color) 5%, var(--card-bg));
+		color: var(--badge-color);
 		font-size: 11px;
-		font-weight: 500;
-		line-height: 14px;
+		font-weight: 600;
+		line-height: 16px;
+		padding: 4px 8px;
 		white-space: nowrap;
 	}
 
@@ -70,22 +72,19 @@ const badges = getFooterBadges({
 	.badge-value {
 		display: inline-flex;
 		align-items: center;
-		padding: 4px 6px;
 	}
 
 	.badge-label {
-		gap: 4px;
+		margin-right: 4px;
 	}
 
 	.badge-icon {
 		width: 13px;
 		height: 13px;
-		color: var(--badge-icon-color);
 	}
 
 	.badge-value {
-		background: var(--badge-color);
-		color: #fff;
+		color: inherit;
 		text-decoration: none;
 	}
 
@@ -95,8 +94,12 @@ const badges = getFooterBadges({
 	}
 
 	a.badge-value:focus-visible {
-		outline: 2px solid #fff;
+		outline: 2px solid currentColor;
 		outline-offset: -3px;
+	}
+
+	:global(.dark) .footer-badge {
+		color: color-mix(in srgb, var(--badge-color) 45%, white);
 	}
 
 	@media (max-width: 640px) {

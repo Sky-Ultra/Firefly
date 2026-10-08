@@ -81,6 +81,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 			// 足迹
 			LinkPresets.Places,
+
+			// 工具
+			LinkPresets.Tools,
 		],
 	});
 
@@ -217,6 +220,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		nameEn: "Footprints",
 		url: "/places/",
 		icon: "material-symbols:explore-rounded",
+	},
+	Tools: {
+		name: "工具",
+		nameEn: "Tools",
+		url: "/tools/",
+		icon: "material-symbols:handyman",
 	},
 };
 

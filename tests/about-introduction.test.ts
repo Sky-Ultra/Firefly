@@ -9,6 +9,7 @@ const aboutPage = readFileSync(
 const addedParagraphs = [
 	"目前最喜欢使用的Agent产品是ChatGPT Codex以及DeepSeek Harness。我已经在Codex上使用超过90亿Token。",
 	"感觉我还是非常情绪稳定的喵！",
+	"我是白纸喵",
 	"喜欢和朋友一起玩，游戏，旅行，上课",
 ];
 
@@ -23,10 +24,13 @@ test("the new introduction paragraphs follow the AI sentence in the requested or
 	assert.notEqual(introIndex, -1);
 	assert.ok(chineseTexts[introIndex].endsWith("拥抱 Agent。"));
 	assert.deepEqual(
-		chineseTexts.slice(introIndex + 1, introIndex + 4),
+		chineseTexts.slice(introIndex + 1, introIndex + 1 + addedParagraphs.length),
 		addedParagraphs,
 	);
-	assert.equal(chineseTexts[introIndex + 4], "目前坐标悉尼，在上学……");
+	assert.equal(
+		chineseTexts[introIndex + 1 + addedParagraphs.length],
+		"目前坐标悉尼，在上学……",
+	);
 });
 
 test("each new paragraph has its own line and an English counterpart", () => {
@@ -42,4 +46,11 @@ test("each new paragraph has its own line and an English counterpart", () => {
 		assert.match(block[2], /<br\s*\/>/);
 	}
 	assert.match(aboutPage, /over 9 billion tokens in Codex/);
+});
+
+test("the quoted wish follows the contact sentence on its own line", () => {
+	assert.match(
+		aboutPage,
+		/zh="欢迎通过 GitHub、邮箱、微信、QQ 与我交流。"[\s\S]*?\/>\s*<br\s*\/>\s*<LocalizedText zh="“我也想找到那个她”" en="[^"]+"/,
+	);
 });

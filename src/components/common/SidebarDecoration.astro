@@ -1,0 +1,18 @@
+---
+import "@/styles/sidebar-card-decoration.css";
+import type { SidebarDecoration } from "@/utils/sidebar-decoration";
+
+interface Props {
+	motif: SidebarDecoration;
+}
+
+const { motif } = Astro.props;
+---
+
+<span
+	class="sidebar-card-decoration"
+	data-card-decor={motif}
+	aria-hidden="true"
+	data-i18n-skip
+	data-pagefind-ignore
+></span>

@@ -1,0 +1,108 @@
+/* Footer styling adapted from Aemeath (MIT), see LICENSES/Aemeath.txt. */
+.site-footer-stage {
+	position: relative;
+	margin: 3.5rem auto 3rem;
+	width: 100%;
+	padding-inline: 0.5rem;
+	text-align: center;
+	color: var(--content-meta);
+}
+.site-footer-characters {
+	width: min(100%, 54rem);
+	margin-inline: auto;
+}
+.site-footer-characters img {
+	display: block;
+	width: 100%;
+	height: auto;
+	max-height: 7rem;
+	object-fit: contain;
+	object-position: center bottom;
+	filter: drop-shadow(0 5px 9px color-mix(in srgb, var(--primary) 12%, transparent));
+}
+.site-footer-panel {
+	position: relative;
+	isolation: isolate;
+	width: min(100%, 46rem);
+	margin-inline: auto;
+	border: 1px solid var(--line-divider);
+	background: var(--card-bg);
+}
+.site-footer-content {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 21px 25px 24px;
+}
+.site-footer-parcel {
+	position: absolute;
+	width: 180px;
+	right: 5px;
+	bottom: -12px;
+	color: var(--primary);
+	opacity: 0.14;
+	pointer-events: none;
+}
+.site-footer-nav {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 24px;
+	color: var(--text-color);
+}
+.site-footer-nav a, .site-footer-meta a {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 0.75rem;
+}
+.site-footer-nav svg, .site-footer-meta svg { width: 14px; height: 14px; }
+.site-footer-panel a {
+	transition: color 180ms ease, transform 180ms ease;
+	text-decoration: none;
+}
+.site-footer-panel a:hover { color: var(--primary); }
+.site-footer-panel a:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; border-radius: 3px; }
+.site-footer-divider {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	width: min(100%, 31rem);
+	margin: 10px 0;
+	color: var(--primary);
+}
+.site-footer-divider span { height: 1px; flex: 1; background: linear-gradient(90deg, transparent, var(--primary)); opacity: 0.55; }
+.site-footer-divider span:last-child { transform: scaleX(-1); }
+.site-footer-divider i { font-style: normal; font-size: 1.2rem; line-height: 1; }
+.site-footer-meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 8px 17px;
+	font-size: 0.68rem;
+}
+.site-footer-meta a { color: var(--primary); font-size: inherit; }
+.site-footer-powered { margin-top: 8px; font-size: 0.67rem; }
+.site-footer-powered a { color: var(--primary); }
+.site-footer-custom { margin-block: 6px; max-width: 100%; }
+/* Keep the new footer opaque even when the existing wallpaper mode uses glass. */
+@layer components {
+	.wallpaper-transparent .site-footer-panel.card-base { background-color: var(--card-bg) !important; }
+}
+@media (hover: hover) {
+	.site-footer-nav a:hover { transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+	.site-footer-panel a { transition: none; }
+	.site-footer-nav a:hover { transform: none; }
+}
+@media (max-width: 640px) {
+	.site-footer-stage { margin-top: 2.5rem; padding-inline: 0; }
+	.site-footer-content { padding: 19px 15px 24px; }
+	.site-footer-nav { gap: 20px; }
+	.site-footer-parcel { width: 135px; opacity: 0.1; }
+	.site-footer-meta { max-width: 260px; }
+}

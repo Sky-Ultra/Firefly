@@ -9,7 +9,7 @@ const pad = (value: number): string => value.toString().padStart(2, "0");
 ---
 
 <site-uptime
-	class="mt-2 flex flex-wrap items-center justify-center gap-x-1 gap-y-1 text-xs font-medium text-(--primary)"
+	class="site-uptime"
 	data-start-time={start}
 	role="timer"
 	aria-label="网站运行时长"
@@ -18,22 +18,63 @@ const pad = (value: number): string => value.toString().padStart(2, "0");
 	data-i18n-attr="aria-label"
 	aria-live="off"
 >
-	<span aria-hidden="true">⌛️</span>
-	<LocalizedText zh="小破站已运行" en="This little site has been running for" />
-	<span class="whitespace-nowrap text-amber-500 dark:text-amber-400">
+	<span class="uptime-clock" aria-hidden="true">
+		<svg viewBox="0 0 64 64" fill="none" stroke="currentColor"><circle cx="32" cy="32" r="23" stroke-width="2.5" /><path d="M32 18v15l10 6" stroke-width="3" stroke-linecap="round" /><ellipse cx="32" cy="32" rx="32" ry="12" transform="rotate(-42 32 32)" stroke-width="1" /></svg>
+	</span>
+	<LocalizedText zh="小破站已运行" en="Site uptime" />
+	<span class="whitespace-nowrap">
 		<span class="tabular-nums" data-uptime-unit="days">{uptime.days}</span><LocalizedText zh="天" en="d" />
 	</span>
-	<span class="whitespace-nowrap text-emerald-500 dark:text-emerald-400">
+	<span class="whitespace-nowrap">
 		<span class="inline-block min-w-[2ch] tabular-nums" data-uptime-unit="hours">{pad(uptime.hours)}</span><LocalizedText zh="时" en="h" />
 	</span>
-	<span class="whitespace-nowrap text-violet-500 dark:text-violet-400">
+	<span class="whitespace-nowrap">
 		<span class="inline-block min-w-[2ch] tabular-nums" data-uptime-unit="minutes">{pad(uptime.minutes)}</span><LocalizedText zh="分" en="min" />
 	</span>
 	<span class="whitespace-nowrap">
 		<span class="inline-block min-w-[2ch] tabular-nums" data-uptime-unit="seconds">{pad(uptime.seconds)}</span><LocalizedText zh="秒" en="s" />
 	</span>
-	<span aria-hidden="true">(●'◡'●)</span>
+	<span class="uptime-sparkle" aria-hidden="true">✦</span>
 </site-uptime>
+
+<style>
+	.site-uptime {
+		position: relative;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 4px;
+		margin: 14px 0 10px;
+		padding: 9px 18px 9px 48px;
+		max-width: 100%;
+		border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--line-divider));
+		border-radius: 99px;
+		background: color-mix(in srgb, var(--primary) 5%, var(--card-bg));
+		color: var(--primary);
+		font-size: 0.75rem;
+		font-weight: 650;
+		box-shadow: 0 3px 12px color-mix(in srgb, var(--primary) 12%, transparent);
+	}
+	.uptime-clock {
+		position: absolute;
+		left: -7px;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 54px;
+		height: 54px;
+		border-radius: 50%;
+		background: var(--card-bg);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 28%, transparent);
+	}
+	.uptime-clock svg { width: 100%; height: 100%; }
+	.uptime-sparkle { margin-left: 10px; font-size: 1rem; }
+	@media (max-width: 480px) {
+		.site-uptime { padding: 8px 10px 8px 37px; font-size: 0.66rem; gap: 3px; }
+		.uptime-clock { width: 43px; height: 43px; }
+		.uptime-sparkle { margin-left: 2px; }
+	}
+</style>
 
 <script>
 	import { getSiteUptime } from "@/utils/site-uptime";

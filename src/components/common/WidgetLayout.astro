@@ -1,9 +1,11 @@
 ---
 import { Icon } from "astro-icon/components";
 import LocalizedText from "@/components/common/LocalizedText.astro";
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
 import I18nKey from "@/i18n/i18nKey";
 import { localizedI18n } from "@/i18n/localized-content";
 import { i18n } from "@/i18n/translation";
+import { getSidebarDecoration } from "@/utils/sidebar-decoration";
 
 interface Props {
 	id: string;
@@ -36,9 +38,10 @@ const className = Astro.props.class;
     data-id={id}
     data-is-collapsed={String(isCollapsed)}
     data-use-expanded-button-spacing={String(useExpandedButtonSpacing)}
-    class:list={["card-base", {"pb-4": contentPadding}, className]}
+    class:list={["card-base sidebar-decorated-card", {"pb-4": contentPadding}, className]}
     style={style}
 >
+    <SidebarDecoration motif={getSidebarDecoration(id)} />
     {name && showTitle && (
         <div class="widget-title font-bold transition text-lg text-neutral-900 dark:text-neutral-100 relative ml-8 mt-4 mb-2
             before:w-1 before:h-4 before:rounded-md before:bg-(--primary)

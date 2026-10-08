@@ -32,7 +32,7 @@ test("does not show negative or invalid elapsed time", () => {
 	assert.deepEqual(getSiteUptime(Number.NaN, 1000), empty);
 });
 
-test("places a lifecycle-safe realtime timer below the footer attribution", () => {
+test("places a lifecycle-safe realtime timer inside the decorative footer panel", () => {
 	const footer = readFileSync(
 		new URL("../src/components/layout/Footer.astro", import.meta.url),
 		"utf8",
@@ -42,7 +42,12 @@ test("places a lifecycle-safe realtime timer below the footer attribution", () =
 		"utf8",
 	);
 	assert.ok(
-		footer.indexOf("<SiteUptime />") > footer.indexOf("Power by xiaoxiaoboluo"),
+		footer.indexOf("<SiteUptime />") >
+			footer.indexOf('<footer class="site-footer-panel'),
+	);
+	assert.ok(
+		footer.indexOf("<SiteUptime />") <
+			footer.indexOf("Powered by xiaoxiaoboluo"),
 	);
 	assert.match(timer, /siteConfig\.siteStartDate/);
 	assert.match(timer, /小破站已运行/);
