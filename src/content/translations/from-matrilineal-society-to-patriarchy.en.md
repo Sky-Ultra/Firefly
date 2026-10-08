@@ -1,13 +1,29 @@
 ---
 translationOf: from-matrilineal-society-to-patriarchy.md
-sourceHash: sha256:175c53b001087e428de1ccd0e721e52b4000a15b5cdb17612a84ab9beb619b79
+sourceHash: sha256:74aacbe82ae4097ea65336fd16da9b47ef7c18f0b4559be9e699f471680e3a4c
 ---
 
-> There has been a great deal of noise online recently, and antagonism between men and women has become severe. In this article, we take neither side and look at the facts only from a historical perspective.
+> **Disclaimer:**
 >
+> First of all, I am fairly easygoing and emotionally very stable. But because of my tuning parameters, the writing in this article is rather aggressive. Its tone does not represent my personal manner. That said, I am not always so accommodating toward certain people either.
+>
+> If you want lyrical writing, please go to the website's homepage and look for my essays.
+>
+> If you find the information in this piece hurtful, or at odds with your values, that proves you are a victim of the subject being discussed. Please close this website immediately and regard this content as AI-generated. I take no responsibility for any effects it may have.
+>
+> If you have different views after reading the article, please discuss them in the comments below. If you have my personal contact details, you are welcome to get in touch. I generally do not accept one-to-one conversations with strangers, regardless of gender, unless you are a Walmart shopping bag or an armed helicopter. Thank you for understanding.
+>
+> <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
+>
+> <mark class="theme-highlight">I am a guy myself, there is also a girl I really like, and I deeply understand some of the “risks” women face in marriage today.</mark> [About Me](/about/)
+>
+> <mark class="theme-highlight">Secondly, this article represents only opinions and some superficial reflections. I certainly do not count myself among the people described here, and I will take their example as a warning.</mark>
+>
+> <mark class="theme-highlight">This means I represent no position, speak for neither men nor women, and do not seek to create antagonism. I speak only as myself and on behalf of my website, xiaoxiaoboluo.cn.</mark>
+
+<div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
+
 > Another clarification: the view that “gender antagonism is a displacement of class conflict” holds that some gender conflicts in society appear on the surface to be conflicts of interest between men and women, while their deeper causes may involve economic structures, resource distribution, and differences between social classes. For example, pressures involving housing, employment, childbirth, and education may fundamentally arise from the distribution of social resources, yet can easily turn into mutual accusations between men and women. Within this theory, upper social strata or established interests are understood as potentially reinforcing conflicts over identity to divide ordinary people and weaken their attention to deeper economic problems. However, this does not mean that every gender issue is caused by class conflict. Gender inequality also has independent causes in the real world, and the two are often intertwined.
->
-> Once again, articles on this site represent only this site's views. If you disagree with my views, you are free to leave and report them. If your argument persuades me, I will debate with you; if it does not, I will consider you ignorant and block you permanently.
 
 ## Introduction: Social Institutions Are Not Naturally Given
 

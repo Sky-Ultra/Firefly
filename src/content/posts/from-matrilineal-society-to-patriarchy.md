@@ -2,6 +2,7 @@
 title: 从母系社会到父权制度：亲缘、私有制与现代性别关系的演变(浅谈男女对立)
 titleEn: "From Matrilineal Society to Patriarchy: The Evolution of Kinship, Private Property, and Modern Gender Relations (A Brief Discussion of Gender Antagonism)"
 published: 2026-10-08
+updated: 2026-10-09
 description: 从亲缘确认、私有制和生产方式出发，浅谈母系亲缘结构、父权制度与现代男女对立背后的历史逻辑。
 descriptionEn: A brief discussion of the historical logic behind matrilineal kinship, patriarchy, and modern gender antagonism, starting with kinship verification, private property, and modes of production.
 image: random
@@ -14,11 +15,27 @@ comment: true
 draft: false
 ---
 
-> 最近网络上的声音很大，男女对立也很严重，本期我们不站队任何一方，只从历史的角度去看待客观事实。
+> **免责声明：**
 >
+> 首先我个人性格比较随和且情绪很稳定。但是因为我的参数调教，这篇文章行文比较激进。行文风格不代表我的个人风格。但是对于部分人群我同样没那么好说话。
+>
+> 想看抒情的请去网站主页找随笔。
+>
+> 如果你发现这篇内容的信息伤害到了你，或者与你的价值观不符，证明你是该题材受害者，请你立即关闭此网站并且当作此内容为AI生成。我对产生的任何影响不负任何责任。
+>
+> 如果你看完文章有一些不同见解，请在文章下评论区交流。如果您有我的个人联系方式欢迎与我交流。我基本不接受陌生人单独交流，无论性别，除非你是沃尔玛购物袋或者武装直升机。感谢理解。
+>
+> <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
+>
+> <mark class="theme-highlight">我自己是个男生，亦有非常喜欢的女孩，也深刻明白现在女性结婚的一些“风险”</mark> [关于我](/about/)
+>
+> <mark class="theme-highlight">其次文章仅代表观点以及一些浅薄的思考。我自身定不在此列，且会引以为戒</mark>
+>
+> <mark class="theme-highlight">这意味着我不代表任何立场，不代表男女也不制造对立。我仅作为我自己以及网站xiaoxiaoboluo.cn 进行</mark>
+
+<div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
+
 > 再次叠甲，“男女对立是阶级矛盾转移”的观点认为，社会中的一些性别冲突，表面上表现为男性与女性之间的利益冲突，但深层可能与经济结构、资源分配和阶层差异有关。例如，住房、就业、生育、教育等压力，本质上可能来自社会资源分配问题，却容易被转化为男女之间的相互指责。上层或既有利益结构在这种理论中被认为可能通过强化身份矛盾，让普通群体内部产生分裂，从而弱化对更深层经济问题的关注。不过，这并不意味着所有性别问题都是阶级矛盾造成的，现实中的性别不平等也有其独立存在的原因，二者往往是相互交织的。
->
-> 再次声明，本站文章仅代表本站观点，若你不认可我的观点尽可离去并举报，如果你的观点能打动我，我会与你辩论，如果没有我会觉得你很无知并永久拉黑。
 
 ## 引言：社会制度并非天然存在
 
