@@ -19,6 +19,10 @@ Use `pnpm`; the `preinstall` script enforces it.
 
 ## Coding Style & Naming Conventions
 
+### Changelog links
+
+When publishing changelog entries, link mentioned articles, site pages, and features with an existing public destination to their actual site URL. This includes the About Me page (`/about/`), Tools (`/tools/`), Places (`/places/`), and Games (`/games/`). Preserve the author's wording and dates, keep the paired English changelog synchronized, and do not invent destinations for features without a public page.
+
 ### Site-specific visual consistency
 
 New sidebar widgets and card-style components must continue the site's pale outline motif and gentle hover finish. Reuse `SidebarDecoration.astro` and the existing styles; choose a motif relevant to the component, with the blossom fallback for new widgets. Keep card backgrounds opaque, decorations non-interactive and hidden from assistive technology, and retain reduced-motion support. Article cards share this finish via `post-card-decoration.css`. Do not add decoration over reading content or obscure controls.

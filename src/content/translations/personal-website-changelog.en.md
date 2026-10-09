@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:c56b229cfa8f08472f368ab1c9a6c64412b85907909c65cece07498af06257ba
+sourceHash: sha256:3a17cf8163a2342e014709b63240ca43ff2c29840fc51e19353a49447bc53668
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -12,7 +12,7 @@ This article provides a brief record of updates to my personal website, beginnin
 - Added a large number of songs
 - Added more image assets
 - Expanded the homepage welcome messages
-- Enabled live visitor comments; sign-in currently supports GitHub accounts only
+- Enabled live visitor comments
 - Added a birthday countdown timer
 - Improved browsing smoothness
 - Improved music module loading speed and added fallback APIs
@@ -24,7 +24,7 @@ This article provides a brief record of updates to my personal website, beginnin
 - Major update: Completely rebuilt the guestbook. Visitors no longer need to sign in with GitHub and can comment by entering an email address. Powered by Twikoo (if you do not have an email address, a placeholder such as `xxx@xx.com` also works)
 - Updated the relationship timer widget text
 - Updated image assets and removed low-resolution images
-- Completely rebuilt the “About Me?” page with more detailed information: [Visit the page](/en/about/)
+- Completely rebuilt the “About Me?” page with more detailed information: [Visit the page](/about/)
 
 ## September 16, 2026
 
@@ -50,3 +50,35 @@ This article provides a brief record of updates to my personal website, beginnin
 ## September 25, 2026
 
 - Published the article [“To the Flawless One”](/posts/to-the-flawless-one/)
+
+## September 30, 2026
+
+- Published the article [“Homepage Welcome Messages”](/posts/homepage-welcome-messages/)
+
+## October 2, 2026
+
+- Published the article [“Chenqing Fu — Nian”](/posts/chenqing-fu-nian/)
+- Added entirely new image content
+- Updated the content of the “[About Me](/about/)” page
+- Fixed intermittent IP lookup issues
+- Fixed intermittent [music module](/music/) loading issues
+
+## October 3, 2026
+
+- Published the article [“Why Do Some ‘Poor People’ Remain Poor?”](/posts/why-the-poor-stay-poor/)
+- Major update: Added [My - Places](/places/), showing some of the places I remember visiting. I will continue adding places I visit in the future and places I have visited in the past
+- Added more games I have played to [My - Games](/games/)
+- Added the [User Agreement](/privacy/) and a disclaimer
+
+## October 8, 2026
+
+- Today brought many significant updates. Substantially improved the appearance and polish of the overall site
+- Published the article [“From Matrilineal Society to Patriarchy: The Evolution of Kinship, Private Property, and Modern Gender Relations (A Brief Discussion of Gender Antagonism)”](/posts/from-matrilineal-society-to-patriarchy/)
+- Major update: Added original pale line-art patterns and gentle hover animations to the sidebar widgets
+- Major update: Added original pale line-art patterns and gentle hover animations to the [article cards](/archive/)
+- Major update: Added [My - Tools](/tools/), the Toolkit Library. Here you can find some of my projects and open-source projects I like or recommend
+- Major update: Restyled the site footer, added anime chibi plush characters, improved the footer UI, and introduced a more unified design. Added website technology and service badges
+- Added a large number of new images. Added new [homepage welcome messages](/).
+- Added profile stickers that support drag interactions.
+- Updated some information on the “[About Me](/about/)” page
+- Major update: Substantially improved the browsing smoothness and experience of other websites, web pages, and pages I have created and deployed on my personal website. Please revisit these pages for a better experience!
