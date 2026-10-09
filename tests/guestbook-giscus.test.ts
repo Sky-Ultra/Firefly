@@ -3,6 +3,20 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { commentConfig } from "../src/config/commentConfig";
 
+test("guestbook and article comment composers show the requested two-line placeholder without prefilling a message", () => {
+	assert.equal(
+		commentConfig.twikoo?.placeholder,
+		"氢氦锂铍硼的锌灵~\nFeel free to chime in here",
+	);
+	const twikooComponent = readFileSync(
+		new URL("../src/components/comment/Twikoo.astro", import.meta.url),
+		"utf8",
+	);
+	assert.match(twikooComponent, /\.\.\.twikooConfig/);
+	assert.match(twikooComponent, /\.init\(dynamicConfig\)/);
+	assert.doesNotMatch(twikooComponent, /(?:\.value|textContent)\s*=/);
+});
+
 test("guestbook and opted-in posts use the deployed Twikoo service", () => {
 	assert.equal(commentConfig.type, "twikoo");
 	assert.deepEqual(commentConfig.enabledOn, {

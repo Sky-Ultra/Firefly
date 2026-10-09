@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:3a17cf8163a2342e014709b63240ca43ff2c29840fc51e19353a49447bc53668
+sourceHash: sha256:46c08a0f19bf3f4a3f1c128f64bae64fcc649c0035f2371018f8b34dd2ed1ac4
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -21,7 +21,7 @@ This article provides a brief record of updates to my personal website, beginnin
 
 ## September 13, 2026
 
-- Major update: Completely rebuilt the guestbook. Visitors no longer need to sign in with GitHub and can comment by entering an email address. Powered by Twikoo (if you do not have an email address, a placeholder such as `xxx@xx.com` also works)
+- <mark class="theme-highlight">Major update</mark>: Completely rebuilt the guestbook. Visitors no longer need to sign in with GitHub and can comment by entering an email address. Powered by Twikoo (if you do not have an email address, a placeholder such as `xxx@xx.com` also works)
 - Updated the relationship timer widget text
 - Updated image assets and removed low-resolution images
 - Completely rebuilt the “About Me?” page with more detailed information: [Visit the page](/about/)
@@ -66,7 +66,7 @@ This article provides a brief record of updates to my personal website, beginnin
 ## October 3, 2026
 
 - Published the article [“Why Do Some ‘Poor People’ Remain Poor?”](/posts/why-the-poor-stay-poor/)
-- Major update: Added [My - Places](/places/), showing some of the places I remember visiting. I will continue adding places I visit in the future and places I have visited in the past
+- <mark class="theme-highlight">Major update</mark>: Added [My - Places](/places/), showing some of the places I remember visiting. I will continue adding places I visit in the future and places I have visited in the past
 - Added more games I have played to [My - Games](/games/)
 - Added the [User Agreement](/privacy/) and a disclaimer
 
@@ -74,11 +74,11 @@ This article provides a brief record of updates to my personal website, beginnin
 
 - Today brought many significant updates. Substantially improved the appearance and polish of the overall site
 - Published the article [“From Matrilineal Society to Patriarchy: The Evolution of Kinship, Private Property, and Modern Gender Relations (A Brief Discussion of Gender Antagonism)”](/posts/from-matrilineal-society-to-patriarchy/)
-- Major update: Added original pale line-art patterns and gentle hover animations to the sidebar widgets
-- Major update: Added original pale line-art patterns and gentle hover animations to the [article cards](/archive/)
-- Major update: Added [My - Tools](/tools/), the Toolkit Library. Here you can find some of my projects and open-source projects I like or recommend
-- Major update: Restyled the site footer, added anime chibi plush characters, improved the footer UI, and introduced a more unified design. Added website technology and service badges
+- <mark class="theme-highlight">Major update</mark>: Added original pale line-art patterns and gentle hover animations to the sidebar widgets
+- <mark class="theme-highlight">Major update</mark>: Added original pale line-art patterns and gentle hover animations to the [article cards](/archive/)
+- <mark class="theme-highlight">Major update</mark>: Added [My - Tools](/tools/), the Toolkit Library. Here you can find some of my projects and open-source projects I like or recommend
+- <mark class="theme-highlight">Major update</mark>: Restyled the site footer, added anime chibi plush characters, improved the footer UI, and introduced a more unified design. Added website technology and service badges
 - Added a large number of new images. Added new [homepage welcome messages](/).
 - Added profile stickers that support drag interactions.
 - Updated some information on the “[About Me](/about/)” page
-- Major update: Substantially improved the browsing smoothness and experience of other websites, web pages, and pages I have created and deployed on my personal website. Please revisit these pages for a better experience!
+- <mark class="theme-highlight">Major update</mark>: Substantially improved the browsing smoothness and experience of other websites, web pages, and pages I have created and deployed on my personal website. Please revisit these pages for a better experience!

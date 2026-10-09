@@ -17,6 +17,8 @@ export const commentConfig: CommentConfig = {
 		envId: "https://firefly-twikoo.netlify.app/.netlify/functions/twikoo",
 		// 设置 Twikoo 评论系统语言
 		lang: "zh-CN",
+		// 评论框的两行占位提示；不会预填或提交为留言正文。
+		placeholder: "氢氦锂铍硼的锌灵~\nFeel free to chime in here",
 		// 是否启用文章访问量统计功能
 		visitorCount: true,
 		// Twikoo JS 文件地址，支持 CDN 链接

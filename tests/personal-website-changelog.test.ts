@@ -34,6 +34,9 @@ const postPage = readFileSync(
 const bodyOf = (content: string): string =>
 	content.replaceAll("\r\n", "\n").replace(/^---\n[\s\S]*?\n---\n/, "");
 
+const withoutHighlights = (content: string): string =>
+	content.replace(/<mark class="theme-highlight">([^<]+)<\/mark>/g, "$1");
+
 const newDocumentEntries = [
 	{
 		date: "2026.9.30",
@@ -114,8 +117,10 @@ test("the changelog has a current English translation", () => {
 	assert.match(changelogTranslation, /^## September 25, 2026$/m);
 });
 
-test("only removes the requested GitHub-login suffix from the existing history", () => {
-	const oldHistory = bodyOf(changelog).split("\n## 2026.9.30")[0].trim();
+test("preserves the existing history wording apart from the removed login suffix", () => {
+	const oldHistory = withoutHighlights(bodyOf(changelog))
+		.split("\n## 2026.9.30")[0]
+		.trim();
 	assert.equal(
 		createHash("sha256").update(oldHistory, "utf8").digest("hex"),
 		"774c2553c0aa057c56333498e2f96f6d27f7684ca2b610fa3fb6eabd9d9bbff7",
@@ -146,10 +151,36 @@ test("appends every September 30 onward Word entry in its original date and orde
 		const items = section
 			.split("\n")
 			.filter((line) => line.startsWith("- "))
-			.map((line) => line.slice(2).replace(/\[([^\]]+)\]\([^)]*\)/g, "$1"));
+			.map((line) =>
+				withoutHighlights(line.slice(2)).replace(
+					/\[([^\]]+)\]\([^)]*\)/g,
+					"$1",
+				),
+			);
 		assert.deepEqual(items, entry.items, entry.date);
 	}
-	assert.ok(changelog.includes("updated: 2026-10-09"));
+	assert.ok(changelog.includes("updated: 2026-10-10"));
+});
+
+test("every major-update label uses the existing theme highlighter without highlighting punctuation", () => {
+	const chineseLabels = (changelog.match(/重要更新/g) ?? []).length;
+	assert.ok(chineseLabels >= 7);
+	assert.equal(
+		(changelog.match(/<mark class="theme-highlight">重要更新<\/mark>：/g) ?? [])
+			.length,
+		chineseLabels,
+	);
+	const englishLabels = (changelogTranslation.match(/Major update/g) ?? [])
+		.length;
+	assert.equal(englishLabels, chineseLabels);
+	assert.equal(
+		(
+			changelogTranslation.match(
+				/<mark class="theme-highlight">Major update<\/mark>:/g,
+			) ?? []
+		).length,
+		englishLabels,
+	);
 });
 
 test("keeps new article links usable and synchronizes the English changelog", () => {

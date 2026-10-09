@@ -14,6 +14,8 @@ export type CommentConfig = {
 		envId: string;
 		region?: string;
 		lang?: string;
+		/** 评论输入框的占位提示，支持换行。 */
+		placeholder?: string;
 		visitorCount?: boolean;
 		/**
 		 * Twikoo JS 文件地址，支持 CDN 链接
