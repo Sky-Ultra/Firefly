@@ -6,8 +6,8 @@ export const announcementConfig: AnnouncementConfig = {
 	titleEn: "📢 Welcome",
 
 	// 公告内容
-	content: "Hi，我是Sky，欢迎您！",
-	contentEn: "Hi, I'm Sky. Welcome!",
+	content: "Hi，我喜欢你呀！！",
+	contentEn: "Hi, I like you!!",
 
 	// 是否允许用户关闭公告
 	closable: false,

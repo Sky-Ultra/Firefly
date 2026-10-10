@@ -112,8 +112,8 @@ const payload = JSON.stringify(placesConfig).replaceAll("<", "\\u003c");
 		<p class="places-closing"><LocalizedText zh="山河远阔，步履不停。" en="A world to wander, a story to keep." /></p>
 		<noscript><p class="places-preview-notice">地图与筛选需要启用 JavaScript；地点列表仍可阅读。</p></noscript>
 	</places-explorer>
+	<!-- 保持脚本在被 Swup 替换的内容中，首次站内跳转也会初始化地图。 -->
+	<script>
+		import "@/utils/places-explorer";
+	</script>
 </MainGridLayout>
-
-<script>
-	import "@/utils/places-explorer";
-</script>

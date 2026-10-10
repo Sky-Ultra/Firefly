@@ -31,21 +31,23 @@ function place(id: string, start: string, end?: string): PlaceItem {
 }
 
 test("真实足迹全部录入，示例不再展示或下发", () => {
-	assert.equal(placesConfig.places.length, 17);
+	assert.equal(placesConfig.places.length, 19);
 	assert.equal(placesConfig.examples.length, 0);
 	assert.equal(placesConfig.previewWithExamples, false);
 	assert.doesNotThrow(() => validatePlaces(placesConfig.places));
 	assert.doesNotThrow(() => validatePlaces(placesConfig.examples));
 	assert.deepEqual(summarizePlaces(placesConfig.places, {}, 2026), {
-		places: 17,
-		visits: 17,
+		places: 19,
+		visits: 20,
 		thisYear: 7,
-		regions: 12,
+		regions: 13,
 	});
 	assert.deepEqual(getPlacesYears(placesConfig.places), [
 		"2026",
 		"2025",
 		"2023",
+		"2019",
+		"2018",
 	]);
 	assert.equal(
 		summarizePlaces(placesConfig.places, { year: "2025" }, 2026).visits,
@@ -59,6 +61,37 @@ test("真实足迹全部录入，示例不再展示或下发", () => {
 		placesConfig.places.find((p) => p.id === "chengdu")?.visits,
 		[{ start: "2026-04-10" }, { start: "2025-05", period: "early" }],
 	);
+});
+
+test("补录珀斯和宜宾的月份足迹，重庆在已有地点中追加到访", () => {
+	assert.deepEqual(placesConfig.places.find((p) => p.id === "perth")?.visits, [
+		{ start: "2019-08" },
+	]);
+	assert.deepEqual(placesConfig.places.find((p) => p.id === "yibin")?.visits, [
+		{ start: "2018-07" },
+	]);
+	const chongqing = placesConfig.places.filter((p) => p.id === "chongqing");
+	assert.equal(chongqing.length, 1);
+	assert.deepEqual(chongqing[0].visits, [
+		{ start: "2025-05", period: "late" },
+		{ start: "2018-07" },
+	]);
+	assert.deepEqual(
+		filterPlaces(placesConfig.places, { year: "2018" })
+			.map((p) => p.id)
+			.sort(),
+		["chongqing", "yibin"],
+	);
+});
+
+test("足迹初始化脚本位于布局插槽内，首次无刷新跳转也能执行", () => {
+	const page = readFileSync(
+		new URL("../src/pages/places.astro", import.meta.url),
+		"utf8",
+	);
+	const script = page.indexOf('import "@/utils/places-explorer"');
+	assert.ok(script > page.indexOf("<places-explorer"));
+	assert.ok(script < page.indexOf("</MainGridLayout>"));
 });
 
 test("按月和旬保留原始时间精度，年筛选与同月排序正确", () => {
