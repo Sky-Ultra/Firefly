@@ -44,11 +44,28 @@ test("the screenshot songs keep their requested playlist order", () => {
 	assert.deepEqual(order.baseHeadOrder, expectedBaseHeadSongs);
 	assert.deepEqual(
 		order.pinnedSongs?.map((song) => song.name),
-		["星炬不熄"],
+		["星炬不熄", "月声尽，心灯明"],
 	);
 	assert.deepEqual(
 		order.insertedSongs?.map((song) => song.name),
 		expectedInsertedSongs,
+	);
+});
+
+test("the new song follows Star Torch exactly once with the original performers", () => {
+	const order = musicPlayerConfig.meting?.playlistOrder;
+	assert.ok(order);
+	const song = order.pinnedSongs?.[1];
+	assert.equal(song?.name, "月声尽，心灯明");
+	assert.equal(song?.artist, "鸣潮先约电台 / jixwang / Cassie Wei");
+	assert.equal(song?.server, "tencent");
+	assert.equal(song?.id, "001EjuUm1WaoYx");
+	assert.equal(song?.picId, "003oAlSH2mmMIc");
+	assert.equal(
+		[...(order.pinnedSongs ?? []), ...(order.insertedSongs ?? [])].filter(
+			(track) => track.name === "月声尽，心灯明",
+		).length,
+		1,
 	);
 });
 

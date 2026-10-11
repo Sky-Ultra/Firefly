@@ -61,6 +61,13 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 					id: "000nMgTC3lDi8o",
 					picId: "0033K7J91KNK1q",
 				},
+				{
+					name: "月声尽，心灯明",
+					artist: "鸣潮先约电台 / jixwang / Cassie Wei",
+					server: "tencent",
+					id: "001EjuUm1WaoYx",
+					picId: "003oAlSH2mmMIc",
+				},
 			],
 			insertedSongs: [
 				{
