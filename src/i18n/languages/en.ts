@@ -364,6 +364,9 @@ export const en: Translation = {
 	[Key.copied]: "Copied",
 	[Key.copyLink]: "Copy Link",
 	[Key.savePoster]: "Save Poster",
+	[Key.regeneratePoster]: "Regenerate",
+	[Key.posterGenerationFailed]:
+		"Could not generate the poster. Please try again.",
 	[Key.scanToRead]: "Scan to Read",
 
 	// Code Block Collapsible Configuration

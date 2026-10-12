@@ -362,6 +362,9 @@ export const ja: Translation = {
 	[Key.copied]: "コピーしました",
 	[Key.copyLink]: "リンクをコピー",
 	[Key.savePoster]: "ポスターを保存",
+	[Key.regeneratePoster]: "再生成",
+	[Key.posterGenerationFailed]:
+		"ポスターを生成できませんでした。もう一度お試しください。",
 	[Key.scanToRead]: "QRコードで読む",
 
 	// コードブロック折りたたみ設定

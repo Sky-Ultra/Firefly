@@ -350,6 +350,8 @@ enum I18nKey {
 	copied = "copied",
 	copyLink = "copyLink",
 	savePoster = "savePoster",
+	regeneratePoster = "regeneratePoster",
+	posterGenerationFailed = "posterGenerationFailed",
 	scanToRead = "scanToRead",
 
 	// 代码块折叠配置

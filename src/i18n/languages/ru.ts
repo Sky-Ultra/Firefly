@@ -365,6 +365,9 @@ export const ru: Translation = {
 	[Key.copied]: "Скопировано",
 	[Key.copyLink]: "Копировать ссылку",
 	[Key.savePoster]: "Сохранить постер",
+	[Key.regeneratePoster]: "Создать заново",
+	[Key.posterGenerationFailed]:
+		"Не удалось создать постер. Попробуйте ещё раз.",
 	[Key.scanToRead]: "Сканируйте, чтобы прочитать",
 
 	// Конфигурация блоков коллапсируемого кода

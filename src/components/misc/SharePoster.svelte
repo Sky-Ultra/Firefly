@@ -3,6 +3,7 @@ import QRCode from "qrcode";
 import { onMount } from "svelte";
 import Icon from "@/components/common/Icon.svelte";
 import { LANGUAGE_CHANGE_EVENT } from "@/i18n/runtime-language";
+import { getNextPosterCover } from "@/utils/poster-cover-utils";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 
@@ -14,6 +15,7 @@ export let descriptionEn = description;
 export let pubDate: string;
 export let coverImage: string | null = null;
 export let coverImages: string[] = [];
+export let regenerateCoverImages: string[] = [];
 export let url: string;
 export let siteTitle: string;
 export let avatar: string | null = null;
@@ -21,6 +23,8 @@ export let avatar: string | null = null;
 let showModal = false;
 let posterImage: string | null = null;
 let generating = false;
+let posterError = false;
+let currentCoverImage: string | null = null;
 let themeColor = "#558e88"; // Default blue
 let activeTitle = title;
 let activeDescription = description;
@@ -31,6 +35,7 @@ onMount(() => {
 		activeTitle = isEnglish ? titleEn : title;
 		activeDescription = isEnglish ? descriptionEn : description;
 		posterImage = null;
+		posterError = false;
 	};
 
 	// Get theme color from CSS variable
@@ -104,12 +109,12 @@ function getLines(
 	return lines;
 }
 
-function selectPosterCoverImage(): string | null {
-	const candidates = [...new Set(coverImages.filter(Boolean))];
-	if (candidates.length === 0) return coverImage;
-	return (
-		candidates[Math.floor(Math.random() * candidates.length)] ?? coverImage
-	);
+function selectPosterCoverImage(regenerate = false): string | null {
+	const images =
+		regenerate && regenerateCoverImages.length > 0
+			? regenerateCoverImages
+			: coverImages;
+	return getNextPosterCover(images, coverImage, currentCoverImage);
 }
 
 function drawRoundedRect(
@@ -133,16 +138,18 @@ function drawRoundedRect(
 	ctx.closePath();
 }
 
-async function generatePoster() {
+async function generatePoster(regenerate = false) {
 	showModal = true;
-	if (posterImage) return;
+	if (generating) return;
+	if (posterImage && !regenerate) return;
 
 	generating = true;
+	posterError = false;
 	try {
 		const scale = 2;
 		const width = 425 * scale;
 		const padding = 24 * scale;
-		const selectedCoverImage = selectPosterCoverImage();
+		const selectedCoverImage = selectPosterCoverImage(regenerate);
 
 		// 1. Prepare resources
 		const qrCodeUrl = await QRCode.toDataURL(url, {
@@ -157,6 +164,9 @@ async function generatePoster() {
 				: Promise.resolve(null),
 			avatar ? loadImage(avatar) : Promise.resolve(null),
 		]);
+		if (selectedCoverImage && !coverImg)
+			throw new Error("Poster cover failed to load");
+		if (!qrImg) throw new Error("Poster QR code failed to load");
 
 		// 2. Setup Canvas for measuring
 		const canvas = document.createElement("canvas");
@@ -479,15 +489,17 @@ async function generatePoster() {
 
 		// Finalize
 		posterImage = canvas.toDataURL("image/png");
-		generating = false;
+		currentCoverImage = selectedCoverImage;
 	} catch (error) {
 		console.error("Failed to generate poster:", error);
+		posterError = true;
+	} finally {
 		generating = false;
 	}
 }
 
 function downloadPoster() {
-	if (posterImage) {
+	if (posterImage && !generating) {
 		const a = document.createElement("a");
 		a.href = posterImage;
 		a.download = `poster-${activeTitle.replace(/\s+/g, "-")}.png`;
@@ -523,7 +535,7 @@ function portal(node: HTMLElement) {
 <!-- Trigger Button -->
 <button 
   class="btn-regular rounded-lg h-12 px-6 gap-2 hover:scale-105 active:scale-95 whitespace-nowrap"
-  on:click={generatePoster}
+  on:click={() => generatePoster()}
   aria-label="Generate Share Poster"
 >
   <Icon icon="material-symbols:share" size="md" />
@@ -539,18 +551,42 @@ function portal(node: HTMLElement) {
   <div use:portal class="fixed inset-0 z-9999 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 transition-opacity" on:click={closeModal}>
     <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-[440px] w-full max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl transform transition-all" on:click={(e) => e.stopPropagation()}>
       
-      <div class="p-6 flex justify-center bg-gray-50 dark:bg-gray-900 min-h-[200px] items-center">
+      <div class="p-6 flex justify-center bg-gray-50 dark:bg-gray-900 min-h-[200px] items-center" aria-busy={generating}>
         {#if posterImage}
-          <img src={posterImage} alt="Poster" class="max-w-full h-auto shadow-lg rounded-lg" />
+          <div class="relative w-full">
+            <img src={posterImage} alt="Poster" class="max-w-full h-auto shadow-lg rounded-lg" />
+            {#if generating}
+              <div class="absolute inset-0 rounded-lg bg-white/75 dark:bg-gray-900/75 flex flex-col items-center justify-center gap-3" role="status" aria-live="polite">
+                <div class="w-8 h-8 border-2 border-gray-200 rounded-full animate-spin motion-reduce:animate-none" style="border-top-color: {themeColor}"></div>
+                <span class="text-sm text-gray-600 dark:text-gray-300">{i18n(I18nKey.generatingPoster)}</span>
+              </div>
+            {/if}
+          </div>
         {:else}
-           <div class="flex flex-col items-center gap-3">
-             <div class="w-8 h-8 border-2 border-gray-200 rounded-full animate-spin" style="border-top-color: {themeColor}"></div>
-             <span class="text-sm text-gray-500">{i18n(I18nKey.generatingPoster)}</span>
+           <div class="flex flex-col items-center gap-3" role="status" aria-live="polite">
+             {#if posterError}
+               <span class="text-sm text-gray-600 dark:text-gray-300">{i18n(I18nKey.posterGenerationFailed)}</span>
+             {:else}
+               <div class="w-8 h-8 border-2 border-gray-200 rounded-full animate-spin motion-reduce:animate-none" style="border-top-color: {themeColor}"></div>
+               <span class="text-sm text-gray-500">{i18n(I18nKey.generatingPoster)}</span>
+             {/if}
            </div>
         {/if}
       </div>
       
       <div class="p-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-2 gap-3">
+        {#if posterError && posterImage}
+          <p class="col-span-2 text-sm text-gray-600 dark:text-gray-300 text-center" role="alert">{i18n(I18nKey.posterGenerationFailed)}</p>
+        {/if}
+        <button
+          class="col-span-2 py-3 border rounded-xl font-medium flex items-center justify-center gap-2 hover:brightness-95 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          style="color: {themeColor}; background-color: color-mix(in srgb, {themeColor} 10%, transparent); border-color: color-mix(in srgb, {themeColor} 25%, transparent); outline-color: {themeColor};"
+          on:click={() => generatePoster(true)}
+          disabled={generating}
+        >
+          <Icon icon="material-symbols:refresh" size="md" />
+          {generating ? i18n(I18nKey.generatingPoster) : i18n(I18nKey.regeneratePoster)}
+        </button>
         <button 
           class="py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           on:click={copyLink}
@@ -567,7 +603,7 @@ function portal(node: HTMLElement) {
           class="py-3 text-white rounded-xl font-medium active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-90"
           style="background-color: {themeColor};"
           on:click={downloadPoster}
-          disabled={!posterImage}
+          disabled={generating || !posterImage}
         >
           <Icon icon="material-symbols:download" size="md" />
           {i18n(I18nKey.savePoster)}

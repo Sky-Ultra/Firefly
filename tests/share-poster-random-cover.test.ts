@@ -24,14 +24,16 @@ test("random-cover articles pass the complete image pool to share posters", () =
 
 test("share posters select a random image while preserving a fixed-cover fallback", () => {
 	assert.match(sharePoster, /export let coverImages: string\[\] = \[\]/);
-	assert.match(sharePoster, /function selectPosterCoverImage\(\)/);
 	assert.match(
 		sharePoster,
-		/Math\.floor\(Math\.random\(\) \* candidates\.length\)/,
+		/function selectPosterCoverImage\(regenerate = false\)/,
 	);
-	assert.match(sharePoster, /return coverImage/);
 	assert.match(
 		sharePoster,
-		/const selectedCoverImage = selectPosterCoverImage\(\)/,
+		/getNextPosterCover\(images, coverImage, currentCoverImage\)/,
+	);
+	assert.match(
+		sharePoster,
+		/const selectedCoverImage = selectPosterCoverImage\(regenerate\)/,
 	);
 });

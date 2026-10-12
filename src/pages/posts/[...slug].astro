@@ -112,6 +112,9 @@ const posterCoverImages = usesRandomCover
 	: posterCoverUrl
 		? [posterCoverUrl]
 		: [];
+const posterRegenerateImages = (await getRandomCoverImages())
+	.map((image) => image.originalUrl)
+	.filter(Boolean);
 
 // 处理头像URL
 let posterAvatarUrl: string | null = profileConfig.avatar || null;
@@ -345,6 +348,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                         pubDate={formatDateToYYYYMMDD(entry.data.published)}
                         coverImage={posterCoverUrl}
                         coverImages={posterCoverImages}
+                        regenerateCoverImages={posterRegenerateImages}
                         url={Astro.url.href}
                         siteTitle={siteConfig.title}
                         avatar={posterAvatarUrl}
@@ -418,6 +422,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                         pubDate={formatDateToYYYYMMDD(entry.data.published)}
                         coverImage={posterCoverUrl}
                         coverImages={posterCoverImages}
+                        regenerateCoverImages={posterRegenerateImages}
                         url={Astro.url.href}
                         siteTitle={siteConfig.title}
                         avatar={posterAvatarUrl}
