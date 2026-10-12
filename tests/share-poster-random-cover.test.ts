@@ -14,11 +14,18 @@ const sharePoster = readFileSync(
 test("random-cover articles pass the complete image pool to share posters", () => {
 	assert.match(
 		postPage,
-		/const posterCoverImages = usesRandomCover[\s\S]*randomCoverImages\.map\(\(image\) => image\.originalUrl\)/,
+		/const posterCoverImages = usesRandomCover\s*\? posterRegenerateImages/,
 	);
 	assert.equal(
 		(postPage.match(/coverImages=\{posterCoverImages\}/g) ?? []).length,
 		2,
+	);
+});
+
+test("all regeneration covers use build-emitted WebP assets instead of potentially missing original files", () => {
+	assert.match(
+		postPage,
+		/const posterRegenerateImages = await getPosterCoverImages\(\)/,
 	);
 });
 

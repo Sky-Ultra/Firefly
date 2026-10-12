@@ -89,7 +89,7 @@ test("fixed-cover articles also offer the shared image pool when regenerating", 
 	);
 	assert.match(
 		postPage,
-		/const posterRegenerateImages = \(await getRandomCoverImages\(\)\)/,
+		/const posterRegenerateImages = await getPosterCoverImages\(\)/,
 	);
 	assert.match(component, /regenerate && regenerateCoverImages\.length > 0/);
 	assert.match(component, /selectPosterCoverImage\(regenerate\)/);

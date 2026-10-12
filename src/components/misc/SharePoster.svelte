@@ -146,7 +146,7 @@ async function generatePoster(regenerate = false) {
 	generating = true;
 	posterError = false;
 	try {
-		const scale = 2;
+		const scale = 3;
 		const width = 425 * scale;
 		const padding = 24 * scale;
 		const selectedCoverImage = selectPosterCoverImage(regenerate);

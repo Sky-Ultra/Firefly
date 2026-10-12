@@ -37,6 +37,7 @@ const mobileHomeWallpaperOriginalModules = import.meta.glob<string>(
 );
 
 let randomCoverImagesPromise: Promise<RandomCoverImage[]> | undefined;
+let posterCoverImagesPromise: Promise<string[]> | undefined;
 
 export function isRandomCoverImage(image?: string): boolean {
 	return image === RANDOM_COVER_IMAGE;
@@ -80,6 +81,27 @@ export function getRandomCoverImages(): Promise<RandomCoverImage[]> {
 	}
 
 	return randomCoverImagesPromise;
+}
+
+/**
+ * 海报独立使用高清 WebP，不改变文章列表缩略图；getImage 会确保这些资源实际输出。
+ * 与现有图片池共享自动扫描结果，新图片会在下一次构建时加入，无需维护文件清单。
+ */
+export function getPosterCoverImages(): Promise<string[]> {
+	if (!posterCoverImagesPromise) {
+		posterCoverImagesPromise = Promise.all(
+			Object.values(randomCoverModules).map(async (image) => {
+				const result = await getImage({
+					src: image,
+					width: Math.min(image.width, 1800),
+					format: "webp",
+					quality: 95,
+				});
+				return result.src;
+			}),
+		);
+	}
+	return posterCoverImagesPromise;
 }
 
 /**

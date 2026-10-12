@@ -35,6 +35,7 @@ import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
 import { getPostTranslation } from "@/utils/post-translations";
 import {
+	getPosterCoverImages,
 	getRandomCoverImages,
 	isRandomCoverImage,
 } from "@/utils/random-cover-utils";
@@ -107,14 +108,12 @@ if (processedImage) {
 	}
 }
 
+const posterRegenerateImages = await getPosterCoverImages();
 const posterCoverImages = usesRandomCover
-	? randomCoverImages.map((image) => image.originalUrl).filter(Boolean)
+	? posterRegenerateImages
 	: posterCoverUrl
 		? [posterCoverUrl]
 		: [];
-const posterRegenerateImages = (await getRandomCoverImages())
-	.map((image) => image.originalUrl)
-	.filter(Boolean);
 
 // 处理头像URL
 let posterAvatarUrl: string | null = profileConfig.avatar || null;
