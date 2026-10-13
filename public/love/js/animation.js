@@ -212,10 +212,18 @@ function startAmbientHeartPetals() {
   let spawnTimer = 0;
   let boostTimer = 0;
   let densityMultiplier = 1;
+  let speedMultiplier = 1;
   let baselineCount = 0;
 
   function randomBetween(min, max) {
     return min + Math.random() * (max - min);
+  }
+
+  function syncPetalSpeed(petal) {
+    for (const animation of petal.getAnimations?.() || []) {
+      if (typeof animation.updatePlaybackRate === "function") animation.updatePlaybackRate(speedMultiplier);
+      else animation.playbackRate = speedMultiplier;
+    }
   }
 
   function createPetal(isInitial = false) {
@@ -249,6 +257,7 @@ function startAmbientHeartPetals() {
     petal.style.setProperty("--end-rotate", `${randomBetween(250, 620).toFixed(0)}deg`);
     petal.addEventListener("animationend", () => petal.remove(), { once: true });
     field.appendChild(petal);
+    syncPetalSpeed(petal);
   }
 
   function scheduleNextPetal() {
@@ -257,12 +266,14 @@ function startAmbientHeartPetals() {
     spawnTimer = window.setTimeout(() => {
       createPetal();
       scheduleNextPetal();
-    }, randomBetween(1050, 1750) / densityMultiplier);
+    }, randomBetween(1050, 1750) / (densityMultiplier * speedMultiplier));
   }
 
   function restoreDensity() {
     densityMultiplier = 1;
+    speedMultiplier = 1;
     for (const petal of field.querySelectorAll('[data-petal-boost="true"]')) petal.remove();
+    for (const petal of field.querySelectorAll(".heart-petal")) syncPetalSpeed(petal);
     const missing = Math.min(baselineCount, maxPetals) - field.childElementCount;
     for (let i = 0; i < missing; i++) createPetal(true);
     scheduleNextPetal();
@@ -272,8 +283,11 @@ function startAmbientHeartPetals() {
     if (document.hidden || prefersReducedMotion()) return;
     window.clearTimeout(boostTimer);
     baselineCount = Math.min(field.childElementCount || Math.ceil(maxPetals * 0.55), maxPetals);
-    densityMultiplier = 2;
-    for (let i = 0; i < baselineCount; i++) createPetal(true);
+    densityMultiplier = 2.5;
+    speedMultiplier = 2.5;
+    for (const petal of field.querySelectorAll(".heart-petal")) syncPetalSpeed(petal);
+    const missing = Math.ceil(baselineCount * densityMultiplier) - field.childElementCount;
+    for (let i = 0; i < missing; i++) createPetal(true);
     scheduleNextPetal();
     boostTimer = window.setTimeout(restoreDensity, duration);
   }

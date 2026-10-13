@@ -31,14 +31,14 @@ test("ambient petals stop for reduced motion and while the page is hidden", () =
 	assert.match(styles, /prefers-reduced-motion: reduce[\s\S]*#heart-petal-field \{ display: none/);
 });
 
-test("the entry boost immediately doubles petals and restores normal density after ten seconds", () => {
+test("the entry boost raises quantity and speed to 2.5 times normal and restores both after ten seconds", () => {
 	const children = [];
 	const timers = new Map();
 	let nextTimer = 1;
 	const field = {
 		get childElementCount() { return children.length; },
 		appendChild(petal) { children.push(petal); },
-		querySelectorAll() { return children.filter(petal => petal.dataset.petalBoost === "true"); },
+		querySelectorAll(selector) { return selector === ".heart-petal" ? [...children] : children.filter(petal => petal.dataset.petalBoost === "true"); },
 		replaceChildren() { children.length = 0; },
 	};
 	const motion = { matches: false, addEventListener() {} };
@@ -53,7 +53,8 @@ test("the entry boost immediately doubles petals and restores normal density aft
 			getElementById: () => field,
 			addEventListener() {},
 			createElement() {
-				return { dataset: {}, style: { setProperty() {} }, addEventListener() {}, remove() { const index = children.indexOf(this); if (index >= 0) children.splice(index, 1); } };
+				const motion = { playbackRate: 1, updatePlaybackRate(rate) { this.playbackRate = rate; } };
+				return { dataset: {}, style: { setProperty() {} }, getAnimations: () => [motion], addEventListener() {}, remove() { const index = children.indexOf(this); if (index >= 0) children.splice(index, 1); } };
 			},
 		},
 	});
@@ -62,13 +63,15 @@ test("the entry boost immediately doubles petals and restores normal density aft
 	const baseline = children.length;
 	const baseDelay = [...timers.values()][0].delay;
 	controller.boostFor(10000);
-	assert.equal(children.length, baseline * 2);
+	assert.equal(children.length, Math.ceil(baseline * 2.5));
+	assert(children.every(petal => petal.getAnimations()[0].playbackRate === 2.5));
 	const boostedSpawn = [...timers.values()].find(timer => timer.delay !== 10000);
-	assert(boostedSpawn.delay >= 525 && boostedSpawn.delay <= 875);
+	assert(boostedSpawn.delay >= 168 && boostedSpawn.delay <= 280);
 	assert(baseDelay >= 1050 && baseDelay <= 1750);
 	const restore = [...timers.values()].find(timer => timer.delay === 10000);
 	assert(restore);
 	restore.callback();
 	assert.equal(children.length, baseline);
 	assert.equal(children.filter(petal => petal.dataset.petalBoost === "true").length, 0);
+	assert(children.every(petal => petal.getAnimations()[0].playbackRate === 1));
 });

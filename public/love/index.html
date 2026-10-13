@@ -7,20 +7,22 @@
 	<meta name="referrer" content="no-referrer">
 	<meta name="theme-color" content="#ffffee">
 	<title>Falling for you</title>
-	<link rel="stylesheet" href="/love/styles.css?v=10">
+	<link rel="stylesheet" href="/love/styles.css?v=11">
 	<link rel="icon" type="image/svg+xml" href="/love/favicon.svg">
 	<script defer src="/love/config.js?v=6"></script>
 	<script defer src="/love/js/geometry.js?v=1"></script>
-	<script defer src="/love/js/animation.js?v=7"></script>
+	<script defer src="/love/js/animation.js?v=8"></script>
 	<script defer src="/love/js/tree.js?v=1"></script>
 	<script defer src="/love/js/ui.js?v=4"></script>
 	<script defer src="/love/js/third-page.js?v=1"></script>
 	<script defer src="/love/js/afterword.js?v=3"></script>
-	<script defer src="/love/js/main.js?v=6"></script>
+	<script defer src="/love/js/reading-progress.js?v=1"></script>
+	<script defer src="/love/js/main.js?v=7"></script>
 </head>
 <body data-pagefind-ignore="all">
 	<audio loop id="bgm" preload="none" src="/love/bgm.mp3"></audio>
 	<div id="heart-petal-field" aria-hidden="true"></div>
+	<div id="love-reading-progress" role="progressbar" aria-label="当前页阅读进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><span></span></div>
 	<main>
 		<section id="love-first-page" aria-label="爱情树">
 			<div id="viewport">
@@ -35,7 +37,7 @@
 							<path d="M32 56C27 46 2 33 2 18C2 0 26-5 32 14C38-5 62 0 62 18C62 33 37 46 32 56Z" fill="currentColor"/>
 						</svg>
 						<span class="intro-caption">Falling for you</span>
-						<span class="intro-updated">最后更新时间<time datetime="2026-10-02">2026.10.2</time></span>
+						<span class="intro-updated">最后更新时间<time datetime="2026-10-11">2026.10.11</time></span>
 					</button>
 					<div id="tree-caption" aria-label="树下寄语" hidden><p></p></div>
 				</div>
@@ -47,8 +49,8 @@
 				<div class="afterword-stanza afterword-opening">
 					<p>如果你看到了这里，大概你已经拒绝我了一段时间，好吧，所以我制作，且启动了彩蛋</p>
 					
-					<P>首先，我确信你就是我的伊德莉拉...</P>
-					<p>其次，白月光我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你</p>
+					<P>首先，我确信你就是我的⌈纯美⌋伊德莉拉...</P>
+					<p>其次，白月光呀我好喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你我喜欢你!!!</p>
 					<p>尽管我是真心的，不过你大约永远看不见这里吧......所以，我想我可以随便说了：我很想你。我很真的爱你。能和你一起的时候，就是我最开心的时刻...实话实说，我从最开始并不想和任何人谈恋爱，我感觉我就是我。但你在我眼里似乎完全不一样...不知为何，或许是你不可。我就是喜欢你一起，能和你一起玩游戏，说话就能让我非常开心......我真的不知道应该和你说什么，也不知道你会想要什么...我不敢和你说暧昧的话，也没有资格吃你的醋。或许现在我连主动说话都不敢了吧...或许是因为尽力克制自己不打扰，或许是因为怕给你带来困扰吧...</p>
 				</div>
 				<div class="afterword-stanza">
@@ -192,6 +194,7 @@
 	<button id="third-page-scroll-indicator" type="button" aria-label="继续向下，阅读第三页" aria-controls="love-third-page" hidden>
 		<svg class="love-scroll-icon third-page-scroll-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 7 7 7-7"/></svg>
 	</button>
+	<div id="love-reading-percentage" aria-hidden="true" hidden>0%</div>
 	<button id="music-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false" hidden>
 		<span aria-hidden="true">♪</span>
 	</button>

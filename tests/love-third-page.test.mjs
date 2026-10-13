@@ -41,9 +41,9 @@ function fixture(reduced = false) {
 	return { state, third, button, controller, observers, windowListeners, buttonListeners };
 }
 
-test("the third page stays hidden until requested, and the original update date remains unchanged", () => {
+test("the third page stays hidden until requested, and the update date uses October eleventh", () => {
 	assert.match(html, /id="love-third-page"[^>]*hidden/);
-	assert.match(html, /最后更新时间<time datetime="2026-10-02">2026\.10\.2<\/time>/);
+	assert.match(html, /最后更新时间<time datetime="2026-10-11">2026\.10\.11<\/time>/);
 	assert.match(html, /id="third-page-scroll-indicator"[^>]*aria-controls="love-third-page"[^>]*hidden/);
 	assert.match(styles, /\.third-page-scroll-icon[\s\S]*?width: 3\.9rem/);
 	assert.match(styles, /third-page-fade-in 1\.5s/);

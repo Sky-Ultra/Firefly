@@ -1,6 +1,7 @@
 async function startApp() {
 	initContent(CONFIG);
 	const afterword = initAfterword();
+	const readingProgress = initReadingProgress();
 	scaleContent();
 	const startMusic = initMusic();
 	const staticCanvas = initCanvas("static-canvas");
@@ -14,6 +15,7 @@ async function startApp() {
 		button.addEventListener("click", async () => {
 			button.disabled = true;
 			afterword.revealAfterword();
+			readingProgress.start();
 			startMusic();
 			await animateOpening(button, seed, staticCanvas);
 			button.hidden = true;
