@@ -115,7 +115,7 @@ canvas {
 	transform-origin: bottom right;
 	content: "";
 }
-#start-button:focus-visible, #music-toggle:focus-visible, #love-scroll-indicator:focus-visible {
+#start-button:focus-visible, #music-toggle:focus-visible, #love-scroll-indicator:focus-visible, #third-page-scroll-indicator:focus-visible {
 	outline: 2px solid #be1a25;
 	outline-offset: 5px;
 }
@@ -240,13 +240,48 @@ canvas {
 	50% { transform: translateY(15px); }
 }
 
-#afterword {
+#third-page-scroll-indicator {
+	position: fixed;
+	z-index: 6;
+	left: 50%;
+	bottom: max(0.75rem, env(safe-area-inset-bottom));
+	width: 5rem;
+	min-height: 44px;
+	padding: 0.25rem;
+	border: 0;
+	border-radius: 1rem;
+	background: radial-gradient(ellipse, rgb(255 249 241 / 92%), rgb(255 249 241 / 0%) 72%);
+	color: #e48ba9;
+	transform: translateX(-50%);
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+}
+#third-page-scroll-indicator:hover { color: #d96f94; }
+.third-page-scroll-icon {
+	width: 3.9rem;
+	height: 3.9rem;
+	animation-name: third-page-scroll-bounce;
+}
+@keyframes third-page-scroll-bounce {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(9px); }
+}
+
+#afterword, #love-third-page {
 	position: relative;
 	min-height: 100svh;
 	padding: clamp(4rem, 8vw, 7rem) 1.5rem clamp(6rem, 10vw, 9rem);
 	background: radial-gradient(circle at 85% 8%, rgb(255 204 222 / 18%), transparent 27rem),
 		linear-gradient(180deg, var(--bg-color), #fff9f1 36%, #fff9f1);
 }
+#love-third-page { background: linear-gradient(180deg, #fff9f1, #fffaf4); }
+#love-third-page.third-page-awaiting-entry { opacity: 0; }
+#love-third-page.third-page-entering { animation: third-page-fade-in 1.5s ease both; }
+@keyframes third-page-fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+#love-third-page p { white-space: pre-wrap; }
 .afterword-content {
 	width: min(100%, 47rem);
 	margin: 0 auto;
@@ -328,7 +363,7 @@ canvas {
 	#letter p { min-height: 1.85em; }
 	#letter .stanza { margin-bottom: 1.5em; }
 	#letter.mobile-letter-staging { visibility: hidden; }
-	#afterword { padding: 3.5rem 1.4rem 6rem; }
+	#afterword, #love-third-page { padding: 3.5rem 1.4rem 6rem; }
 	.afterword-content { font-size: 1rem; line-height: 1.95; }
 	.afterword-content::before { margin-bottom: 2.5rem; }
 	#love-scroll-indicator {
@@ -343,6 +378,7 @@ canvas {
 	.intro-heart, .typewriter-cursor, .tree-caption-cursor, .love-scroll-icon { animation: none; }
 	#heart-petal-field { display: none; }
 	.afterword-token { top: 0; opacity: 1; filter: none; transition: none; }
+	#love-third-page.third-page-awaiting-entry, #love-third-page.third-page-entering { opacity: 1; animation: none; }
 }
 
 @media (forced-colors: active) {

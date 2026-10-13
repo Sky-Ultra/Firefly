@@ -210,13 +210,16 @@ function startAmbientHeartPetals() {
   const field = document.getElementById("heart-petal-field");
   const maxPetals = 16;
   let spawnTimer = 0;
+  let boostTimer = 0;
+  let densityMultiplier = 1;
+  let baselineCount = 0;
 
   function randomBetween(min, max) {
     return min + Math.random() * (max - min);
   }
 
   function createPetal(isInitial = false) {
-    if (field.childElementCount >= maxPetals || document.hidden || prefersReducedMotion()) return;
+    if (field.childElementCount >= maxPetals * densityMultiplier || document.hidden || prefersReducedMotion()) return;
 
     const petal = document.createElement("span");
     const duration = randomBetween(16, 25);
@@ -228,6 +231,7 @@ function startAmbientHeartPetals() {
     const size = randomBetween(11, 24);
 
     petal.className = "heart-petal";
+    if (densityMultiplier > 1) petal.dataset.petalBoost = "true";
     petal.textContent = "♥";
     petal.style.setProperty("--petal-color", HeartPetalColors[Math.floor(Math.random() * HeartPetalColors.length)]);
     petal.style.setProperty("--petal-size", `${size.toFixed(1)}px`);
@@ -253,7 +257,25 @@ function startAmbientHeartPetals() {
     spawnTimer = window.setTimeout(() => {
       createPetal();
       scheduleNextPetal();
-    }, randomBetween(1050, 1750));
+    }, randomBetween(1050, 1750) / densityMultiplier);
+  }
+
+  function restoreDensity() {
+    densityMultiplier = 1;
+    for (const petal of field.querySelectorAll('[data-petal-boost="true"]')) petal.remove();
+    const missing = Math.min(baselineCount, maxPetals) - field.childElementCount;
+    for (let i = 0; i < missing; i++) createPetal(true);
+    scheduleNextPetal();
+  }
+
+  function boostFor(duration = 10000) {
+    if (document.hidden || prefersReducedMotion()) return;
+    window.clearTimeout(boostTimer);
+    baselineCount = Math.min(field.childElementCount || Math.ceil(maxPetals * 0.55), maxPetals);
+    densityMultiplier = 2;
+    for (let i = 0; i < baselineCount; i++) createPetal(true);
+    scheduleNextPetal();
+    boostTimer = window.setTimeout(restoreDensity, duration);
   }
 
   function syncPetalsWithPage() {
@@ -271,6 +293,7 @@ function startAmbientHeartPetals() {
   }
   document.addEventListener("visibilitychange", syncPetalsWithPage);
   MotionPreference.addEventListener("change", syncPetalsWithPage);
+  return { boostFor };
 }
 
 // ===========================

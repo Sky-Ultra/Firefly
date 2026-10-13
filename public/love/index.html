@@ -7,15 +7,16 @@
 	<meta name="referrer" content="no-referrer">
 	<meta name="theme-color" content="#ffffee">
 	<title>Falling for you</title>
-	<link rel="stylesheet" href="/love/styles.css?v=9">
+	<link rel="stylesheet" href="/love/styles.css?v=10">
 	<link rel="icon" type="image/svg+xml" href="/love/favicon.svg">
 	<script defer src="/love/config.js?v=6"></script>
 	<script defer src="/love/js/geometry.js?v=1"></script>
-	<script defer src="/love/js/animation.js?v=6"></script>
+	<script defer src="/love/js/animation.js?v=7"></script>
 	<script defer src="/love/js/tree.js?v=1"></script>
 	<script defer src="/love/js/ui.js?v=4"></script>
-	<script defer src="/love/js/afterword.js?v=2"></script>
-	<script defer src="/love/js/main.js?v=5"></script>
+	<script defer src="/love/js/third-page.js?v=1"></script>
+	<script defer src="/love/js/afterword.js?v=3"></script>
+	<script defer src="/love/js/main.js?v=6"></script>
 </head>
 <body data-pagefind-ignore="all">
 	<audio loop id="bgm" preload="none" src="/love/bgm.mp3"></audio>
@@ -152,10 +153,44 @@
 			</div>
 			</article>
 		</section>
+		<section id="love-third-page" aria-label="写在最后的话" tabindex="-1" hidden>
+			<article class="afterword-content">
+				<div class="afterword-stanza afterword-opening">
+					<p>本页面更新于2026.10.11</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>好吧。</p>
+					<p>「你好」、「谢谢」；最后是「再见」</p>
+					<p>我知道你很生气吧，不过既然你想到这就算了，我也没关系，从一开始就是我自己擅闯了你的生活……你的有些话很伤人，我也会难过，但我不可能对你生气的。虽人非草木，我或许难过一会就过去了…</p>
+					<p>其实这个结果，在当初我说出我喜欢你的时候，我就已经能猜到最终的结局了…</p>
+					<p>你说我们没有什么共同话题，对吗？其实，我也很想和你分享我的一些东西，但是似乎这些东西对你来说并不感兴趣。好吧，确实是我错了。是我在消耗你的情绪价值…对不起。你知道吗？其实我真的很期待能和你聊天，真的会很开心…唉…或许确实是我情商太低了，没有顾及到你的感受。我再次对此感到抱歉…对不起呀…</p>
+					<p>我的姿态会太卑微了吗…？好吧，但是对于喜欢的人来说，确实有点情不自禁呢…我真的很珍惜你，我真的很喜欢你，我很害怕你会离我而去…虽然说这个结果在表白那天我就已经知道了…</p>
+					<p>“我无法挽留任何从我生命中离开的人，但是还是感谢你…”</p>
+					<p>“假使有一日不得不同你相别，你在我的记忆中也会如黄金般闪耀。”</p>
+					<p>纤云逐月，尘世系舟。</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>好吧虽然我很不想承认现实，我现在算是能完全感受出来你不喜欢我了好吧。那么，我也祝你能遇到属于你的更好的更幸福人吧！虽然你是我的白月光，我的⌈纯美⌋伊德莉拉，但是我也会努力忘掉你的…！</p>
+					<p>同时我不希望因为我让你有任何不好的心情或者情绪…我知道你平时已经很累…更不想因为我的喜欢让你有任何负担。</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>唉，好想哭…</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>那就这样吧。这个网站我也将开源啦，我希望更多人可以用它来寻得自己的幸福…</p>
+					<p>对不起。</p>
+					<p>再见。</p>
+					<p>Sy.❤</p>
+				</div>
+			</article>
+		</section>
 	</main>
 	<button id="love-scroll-indicator" type="button" aria-label="向下滑动，阅读下一页" aria-controls="afterword" hidden>
 		<span class="love-scroll-hint" hidden>向下滑动</span>
 		<svg class="love-scroll-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 7 7 7-7"/></svg>
+	</button>
+	<button id="third-page-scroll-indicator" type="button" aria-label="继续向下，阅读第三页" aria-controls="love-third-page" hidden>
+		<svg class="love-scroll-icon third-page-scroll-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 7 7 7-7"/></svg>
 	</button>
 	<button id="music-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false" hidden>
 		<span aria-hidden="true">♪</span>

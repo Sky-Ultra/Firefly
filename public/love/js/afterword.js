@@ -3,6 +3,7 @@ function initAfterword() {
 	const hint = indicator.querySelector(".love-scroll-hint");
 	const afterword = document.getElementById("afterword");
 	let activated = false;
+	const thirdPage = initThirdPage({ revealParagraphs, canEnter: () => activated });
 
 	function showParagraph(paragraph) {
 		if (paragraph.dataset.revealed === "true") return;
@@ -30,13 +31,9 @@ function initAfterword() {
 		});
 	}
 
-	function revealAfterword() {
-		if (activated) return;
-		activated = true;
-		afterword.hidden = false;
-		indicator.hidden = false;
+	function revealParagraphs(section) {
 		if (!("IntersectionObserver" in window)) {
-			for (const paragraph of afterword.querySelectorAll("p")) showParagraph(paragraph);
+			for (const paragraph of section.querySelectorAll("p")) showParagraph(paragraph);
 			return;
 		}
 		const observer = new IntersectionObserver((entries) => {
@@ -46,7 +43,16 @@ function initAfterword() {
 				showParagraph(entry.target);
 			}
 		}, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
-		for (const paragraph of afterword.querySelectorAll("p")) observer.observe(paragraph);
+		for (const paragraph of section.querySelectorAll("p")) observer.observe(paragraph);
+	}
+
+	function revealAfterword() {
+		if (activated) return;
+		activated = true;
+		afterword.hidden = false;
+		indicator.hidden = false;
+		revealParagraphs(afterword);
+		thirdPage.updateVisibility();
 		updateIndicatorVisibility();
 	}
 
@@ -73,5 +79,5 @@ function initAfterword() {
 		afterword.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
 	});
 	window.addEventListener("scroll", updateIndicatorVisibility, { passive: true });
-	return { revealAfterword, showScrollHintWhenSecondLineStarts };
+	return { revealAfterword, showScrollHintWhenSecondLineStarts, setPetalController: thirdPage.setPetalController };
 }
