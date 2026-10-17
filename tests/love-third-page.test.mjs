@@ -8,7 +8,7 @@ const html = readFileSync(new URL("../public/love/index.html", import.meta.url),
 const styles = readFileSync(new URL("../public/love/styles.css", import.meta.url), "utf8");
 
 function fixture(reduced = false) {
-	const state = { now: 1000, bottom: 1800, top: -400, viewport: 800, active: true, boosts: [], scrolls: [], reveals: [], focused: false };
+	const state = { now: 1000, bottom: 1800, top: -400, viewport: 800, active: true, boosts: [], scrolls: [], reveals: [], focused: false, pixelStarts: 0 };
 	const windowListeners = {};
 	const buttonListeners = {};
 	const observers = [];
@@ -28,6 +28,7 @@ function fixture(reduced = false) {
 		document: { getElementById: id => ({ afterword, "love-third-page": third, "third-page-scroll-indicator": button })[id] },
 		performance: { now: () => state.now },
 		prefersReducedMotion: () => reduced,
+		initPixelFarewell: () => ({ start() { state.pixelStarts++; } }),
 		IntersectionObserver: class {
 			constructor(callback) { this.callback = callback; observers.push(this); }
 			observe() {}
@@ -69,11 +70,13 @@ test("clicking the arrow unlocks the third page once, then entry starts the fade
 	assert.equal(f.state.scrolls[0].behavior, "smooth");
 	assert(f.third.classList.contains("third-page-awaiting-entry"));
 	assert.equal(f.state.boosts.length, 0);
+	assert.equal(f.state.pixelStarts, 0);
 	f.observers[0].callback([{ isIntersecting: true }]);
 	assert(f.third.classList.contains("third-page-entering"));
 	assert.equal(f.state.focused, true);
 	assert.deepEqual(f.state.boosts, [10000]);
 	assert.equal(f.state.reveals.length, 1);
+	assert.equal(f.state.pixelStarts, 1);
 	f.buttonListeners.click();
 	assert.equal(f.state.scrolls.length, 1);
 });

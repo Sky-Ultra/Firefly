@@ -8,13 +8,15 @@
 	<meta name="theme-color" content="#ffffee">
 	<title>Falling for you</title>
 	<link rel="stylesheet" href="/love/styles.css?v=11">
+	<link rel="stylesheet" href="/love/pixel-farewell.css?v=4">
 	<link rel="icon" type="image/svg+xml" href="/love/favicon.svg">
 	<script defer src="/love/config.js?v=6"></script>
 	<script defer src="/love/js/geometry.js?v=1"></script>
 	<script defer src="/love/js/animation.js?v=8"></script>
 	<script defer src="/love/js/tree.js?v=1"></script>
 	<script defer src="/love/js/ui.js?v=4"></script>
-	<script defer src="/love/js/third-page.js?v=1"></script>
+	<script defer src="/love/js/pixel-farewell.js?v=4"></script>
+	<script defer src="/love/js/third-page.js?v=2"></script>
 	<script defer src="/love/js/afterword.js?v=3"></script>
 	<script defer src="/love/js/reading-progress.js?v=1"></script>
 	<script defer src="/love/js/main.js?v=7"></script>
@@ -196,6 +198,14 @@
 	<button id="third-page-scroll-indicator" type="button" aria-label="继续向下，阅读第三页" aria-controls="love-third-page" hidden>
 		<svg class="love-scroll-icon third-page-scroll-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 7 7 7-7"/></svg>
 	</button>
+	<div id="third-page-countdown" role="timer" aria-label="第三页文字飘散倒计时" aria-live="off" hidden>
+		<span id="third-page-countdown-number">12</span>
+	</div>
+	<canvas id="third-page-pixel-canvas" aria-hidden="true" hidden></canvas>
+	<div id="third-page-pixel-result" aria-live="polite" hidden>
+		<span class="pixel-emoticon-label">╥﹏╥...</span>
+		<button id="third-page-pixel-replay" type="button" aria-label="重播像素动画" title="重播"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.4 6.2"/><path d="M3 4v7h7"/></svg></button>
+	</div>
 	<div id="love-reading-percentage" aria-hidden="true" hidden>0%</div>
 	<button id="music-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false" hidden>
 		<span aria-hidden="true">♪</span>

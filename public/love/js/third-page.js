@@ -2,6 +2,7 @@ function initThirdPage({ revealParagraphs, canEnter }) {
 	const afterword = document.getElementById("afterword");
 	const thirdPage = document.getElementById("love-third-page");
 	const indicator = document.getElementById("third-page-scroll-indicator");
+	const pixelFarewell = initPixelFarewell(thirdPage);
 	let unlocked = false;
 	let entered = false;
 	let petals = null;
@@ -32,6 +33,7 @@ function initThirdPage({ revealParagraphs, canEnter }) {
 		thirdPage.focus({ preventScroll: true });
 		petals?.boostFor(10000);
 		revealParagraphs(thirdPage);
+		pixelFarewell.start();
 	}
 
 	function openThirdPage() {
