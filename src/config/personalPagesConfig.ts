@@ -93,6 +93,94 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "the-years-are-finite",
+				date: "2026-10-17T17:05:00+11:00",
+				content: "至此间 我知觉 流年应有限...",
+				contentEn:
+					"At this point, I come to realize that the passing years must be finite...",
+			},
+			{
+				id: "cold-at-the-heights",
+				date: "2026-10-16T21:26:00+11:00",
+				content: "高处不胜寒。",
+				contentEn: "At such heights, the cold is more than one can bear.",
+			},
+			{
+				id: "swords-and-melodies",
+				date: "2026-10-14T21:41:00+11:00",
+				content: "观千剑而后识器，操千曲而后晓声",
+				contentEn:
+					"Only after examining a thousand swords do you know a blade; only after playing a thousand melodies do you understand music.",
+			},
+			{
+				id: "hello-thanks-goodbye",
+				date: "2026-10-14T21:17:00+11:00",
+				content: "「你好」、「谢谢」；最后是「再见」",
+				contentEn: "「Hello」, 「Thank you」; and finally, 「Goodbye」",
+			},
+			{
+				id: "vow-to-the-dawn",
+				date: "2026-10-13T23:26:00+11:00",
+				content:
+					"「以晨露未晞的鲜花为誓，献与你金穗遍野的繁荣。」\n「以长夜不熄的灯火为誓，捍卫你极光映雪的山川。」\n「以追逐黎明的羽翼为誓，迎接你身披风霜的归途。」\n「群星为证，誓予破晓。」",
+				contentEn:
+					"「By flowers still wet with morning dew, I swear to offer you prosperity, golden grain across your fields.」\n「By lights that never fade through the long night, I swear to defend your mountains and rivers, where auroras shine upon the snow.」\n「By wings that pursue the dawn, I swear to welcome your return, weathered by wind and frost.」\n「With the stars as witnesses, I pledge myself to daybreak.」",
+			},
+			{
+				id: "time-and-all-things",
+				date: "2026-10-13T21:10:00+11:00",
+				content: "时间本身就是万物的参照，所以万物都是时间的参照",
+				contentEn:
+					"Time itself is the reference for all things, so all things are references for time.",
+			},
+			{
+				id: "you-in-my-memory",
+				date: "2026-10-12T18:44:00+11:00",
+				content: "没人能比得上我记忆中的你，即使现在的你也不行...",
+				contentEn:
+					"No one can compare to the you in my memory, not even the person you are now...",
+			},
+			{
+				id: "unbound-by-things",
+				date: "2026-10-11T23:13:00+11:00",
+				content: "物物而不物于物，念念而不念于念",
+				contentEn:
+					"Engage with things without being bound by them; attend to thoughts without being held by them.",
+			},
+			{
+				id: "she-loves-her-dream",
+				date: "2026-10-11T18:50:00+11:00",
+				content: "她只爱她的梦。她不爱任何人。",
+				contentEn: "She loves only her dreams. She loves no one.",
+			},
+			{
+				id: "brief-utopia",
+				date: "2026-10-10T22:39:00+11:00",
+				content: "你的存在是我在这个世界短暂的乌托邦...",
+				contentEn: "Your presence is my brief utopia in this world...",
+			},
+			{
+				id: "thank-you-for-leaving",
+				date: "2026-10-06T18:44:00+11:00",
+				content: "“我无法挽留任何从我生命中离开的人，但是感谢你们”",
+				contentEn:
+					"“I cannot keep anyone who leaves my life, but thank you all.”",
+			},
+			{
+				id: "stars-upon-the-river",
+				date: "2026-10-03T20:02:00+10:00",
+				content: "观尘寰兮焜煌，如星落兮满江。",
+				contentEn:
+					"Behold the mortal world aglow, like stars falling to fill the river.",
+			},
+			{
+				id: "golden-memory",
+				date: "2026-10-01T19:29:00+10:00",
+				content: "假使有一日不得不同你相别，你在我的记忆中也会如黄金般闪耀。",
+				contentEn:
+					"Should a day come when I must part from you, you will still shine like gold in my memory.",
+			},
+			{
 				id: "love-and-domain",
 				date: "2026-09-20T20:03:00+10:00",
 				content: "“如果爱也能被量化，我的心早已超出定义域”",
