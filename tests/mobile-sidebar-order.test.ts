@@ -1,37 +1,87 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
+import { sidebarLayoutConfig } from "../src/config/sidebarConfig";
 
-const source = readFileSync(
-	new URL("../src/config/sidebarConfig.ts", import.meta.url),
-	"utf8",
-);
-
-test("the mobile relationship timer appears immediately after music", () => {
-	const mobileSection = source.slice(source.indexOf("mobileBottomComponents:"));
-	const musicIndex = mobileSection.indexOf('type: "music"');
-	const relationshipIndex = mobileSection.indexOf('type: "relationship"');
-	const categoriesIndex = mobileSection.indexOf('type: "categories"');
-
-	assert.ok(musicIndex >= 0);
-	assert.ok(relationshipIndex > musicIndex);
-	assert.ok(categoriesIndex > relationshipIndex);
-
-	const betweenMusicAndRelationship = mobileSection.slice(
-		musicIndex + 'type: "music"'.length,
-		relationshipIndex,
+test("only exchanges the desktop relationship and visitor-statistics slots", () => {
+	assert.deepEqual(
+		sidebarLayoutConfig.leftComponents.map((item) => item.type),
+		[
+			"profile",
+			"announcement",
+			"music",
+			"categories",
+			"tags",
+			"relationship",
+			"umamiStats",
+		],
 	);
-	assert.doesNotMatch(betweenMusicAndRelationship, /type: "/);
+	assert.deepEqual(
+		sidebarLayoutConfig.rightComponents.map((item) => item.type),
+		[
+			"timeGreeting",
+			"weather",
+			"dailyQuote",
+			"festivalCountdown",
+			"stats",
+			"siteInfo",
+			"calendar",
+			"sidebarToc",
+		],
+	);
 });
 
-test("the desktop sidebar order remains unchanged", () => {
-	const leftStart = source.indexOf("leftComponents:");
-	const rightStart = source.indexOf("rightComponents:");
-	const leftSection = source.slice(leftStart, rightStart);
-
-	assert.ok(leftSection.indexOf('type: "music"') >= 0);
-	assert.ok(
-		leftSection.indexOf('type: "relationship"') >
-			leftSection.indexOf('type: "umamiStats"'),
+test("exchanges the mobile visitor-statistics and relationship slots without reordering other widgets", () => {
+	assert.deepEqual(
+		sidebarLayoutConfig.mobileBottomComponents.map((item) => item.type),
+		[
+			"profile",
+			"announcement",
+			"music",
+			"umamiStats",
+			"categories",
+			"tags",
+			"relationship",
+			"timeGreeting",
+			"weather",
+			"dailyQuote",
+			"festivalCountdown",
+			"stats",
+			"siteInfo",
+		],
 	);
+});
+
+test("preserves widget visibility and keeps the article's separate mobile timer from being duplicated", () => {
+	const left = sidebarLayoutConfig.leftComponents;
+	const mobile = sidebarLayoutConfig.mobileBottomComponents;
+	assert.equal(
+		left.find((item) => item.type === "relationship")?.showOnPostPage,
+		true,
+	);
+	assert.equal(
+		left.find((item) => item.type === "umamiStats")?.showOnPostPage,
+		false,
+	);
+	assert.equal(
+		left.find((item) => item.type === "relationship")?.position,
+		"sticky",
+	);
+	assert.equal(
+		left.find((item) => item.type === "umamiStats")?.position,
+		"sticky",
+	);
+	assert.equal(
+		mobile.find((item) => item.type === "relationship")?.showOnPostPage,
+		false,
+	);
+	assert.equal(
+		mobile.find((item) => item.type === "umamiStats")?.showOnPostPage,
+		false,
+	);
+	for (const widgets of [left, mobile, sidebarLayoutConfig.rightComponents]) {
+		assert.equal(
+			new Set(widgets.map((item) => item.type)).size,
+			widgets.length,
+		);
+	}
 });

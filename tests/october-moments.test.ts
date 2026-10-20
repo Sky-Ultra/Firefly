@@ -73,8 +73,12 @@ const expected = [
 ];
 const items = personalPagesConfig.moments.items;
 
-test("adds exactly the thirteen requested October moments while keeping the six existing updates", () => {
-	assert.equal(items.length, 19);
+test("retains the thirteen requested early-October moments and six original updates as the feed grows", () => {
+	assert.equal(
+		items.filter((item) => expected.some((entry) => entry.id === item.id))
+			.length,
+		13,
+	);
 	assert.equal(new Set(items.map((item) => item.id)).size, items.length);
 	for (const entry of expected) {
 		const matches = items.filter((item) => item.id === entry.id);
@@ -83,18 +87,19 @@ test("adds exactly the thirteen requested October moments while keeping the six 
 		assert.equal(matches[0].date.slice(0, 10), entry.day, entry.id);
 		assert.ok(matches[0].contentEn?.trim(), entry.id);
 	}
+	const originalIds = [
+		"love-and-domain",
+		"ten-thousand-winters-and-springs",
+		"autumn-moon-poem",
+		"love-leaves-regret",
+		"firefly-glow",
+		"welcome",
+	];
 	assert.deepEqual(
 		items
-			.filter((item) => !expected.some((entry) => entry.id === item.id))
+			.filter((item) => originalIds.includes(item.id))
 			.map((item) => item.id),
-		[
-			"love-and-domain",
-			"ten-thousand-winters-and-springs",
-			"autumn-moon-poem",
-			"love-leaves-regret",
-			"firefly-glow",
-			"welcome",
-		],
+		originalIds,
 	);
 });
 

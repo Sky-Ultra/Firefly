@@ -99,18 +99,18 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			},
 		},
 		{
-			// 组件类型：Umami 访问统计卡片
-			type: "umamiStats",
-			enable: true,
-			position: "sticky",
-			showOnPostPage: false,
-		},
-		{
 			// 组件类型：恋爱计时组件
 			type: "relationship",
 			enable: true,
 			position: "sticky",
 			showOnPostPage: true,
+		},
+		{
+			// 组件类型：Umami 访问统计卡片
+			type: "umamiStats",
+			enable: true,
+			position: "sticky",
+			showOnPostPage: false,
 		},
 	],
 
@@ -232,10 +232,9 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：恋爱计时组件（移动端紧跟音乐播放器）
-			type: "relationship",
+			// 组件类型：Umami 访问统计卡片（与恋爱计时交换原有位置）
+			type: "umamiStats",
 			enable: true,
-			// 文章页单独放在评论区之后，不在底部侧栏重复展示
 			showOnPostPage: false,
 		},
 		{
@@ -265,9 +264,10 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			},
 		},
 		{
-			// 组件类型：Umami 访问统计卡片
-			type: "umamiStats",
+			// 组件类型：恋爱计时组件
+			type: "relationship",
 			enable: true,
+			// 文章页单独放在评论区之后，不在底部侧栏重复展示
 			showOnPostPage: false,
 		},
 		{

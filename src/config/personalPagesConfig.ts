@@ -93,6 +93,42 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "randomness-and-eternity",
+				date: "2026-10-20T18:16:00+11:00",
+				content:
+					"世间的每一次相遇，都不过是无数随机变量的一次取值。可偏偏只有你，让我在一场偶然里，生出了对⌈永恒⌋的妄想......\n宇宙不曾为任何一颗恒星停下膨胀，我也不该为某一个人停下脚步。只是偶尔回头，仍觉得那一小片星空，比整个宇宙都明亮......",
+				contentEn:
+					"Every encounter in this world is only one realization of countless random variables. Yet you alone, in a single chance meeting, gave rise to my fantasy of ⌈eternity⌋......\nThe universe has never paused its expansion for any star, and I should not stop moving forward for one person either. Yet when I occasionally look back, that little patch of stars still seems brighter than the entire universe......",
+			},
+			{
+				id: "unchanged-moonlight",
+				date: "2026-10-19T22:49:00+11:00",
+				content: "奈何月色如初，空照满庭落叶成秋...",
+				contentEn:
+					"Yet the moonlight is as it was, shining in vain upon a courtyard of fallen leaves turned to autumn...",
+			},
+			{
+				id: "question-the-stars",
+				date: "2026-10-19T20:43:00+11:00",
+				content: "我，将诘问群星！",
+				contentEn: "I shall question the stars!",
+			},
+			{
+				id: "empty-set-and-dreams",
+				date: "2026-10-18T19:47:00+11:00",
+				content:
+					"空集是任何集合的子集，于是我的每个梦里都有你\n你是我的补集：现实里没有你，我就把梦当成全集...",
+				contentEn:
+					"The empty set is a subset of every set, and so you are in every dream of mine.\nYou are my complement: if reality has no you, I'll take my dreams as the universal set...",
+			},
+			{
+				id: "winter-snow-and-old-years",
+				date: "2026-10-18T18:35:00+11:00",
+				content: "纵有千般眷恋，终随暮雪入旧年...",
+				contentEn:
+					"Though I hold a thousand affections, in the end they follow the evening snow into years gone by...",
+			},
+			{
 				id: "the-years-are-finite",
 				date: "2026-10-17T17:05:00+11:00",
 				content: "至此间 我知觉 流年应有限...",
