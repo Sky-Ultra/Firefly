@@ -87,7 +87,7 @@ const gapIndices = [4, 9, 10, 69, 70, 72, 79, 84, 92];
 test("publishes the marriage follow-up with the exact supplied title and two-line introduction", () => {
 	const source = readContent(sourcePath);
 	for (const field of [
-		"title: 婚姻的的风险与代价：对文章“穷人会保持贫穷”的深入思考",
+		"title: 对婚姻的的风险与代价的思考：对文章“穷人为何保持贫穷”的深入理解",
 		"published: 2026-10-21",
 		"author: Sky",
 		"category: 随笔",
@@ -98,7 +98,7 @@ test("publishes the marriage follow-up with the exact supplied title and two-lin
 		assert.ok(source.split("\n").includes(field), field);
 	assert.match(
 		source,
-		/description: \|-\n {2}本文是对之前文章的更深入思考，补充了对底层婚姻风险代价的进一步理解。\n {2}感兴趣的话欢迎阅读。这篇文章花了不少精力喵\.\.\.\n/,
+		/description: \|-\n {2}是对之前文章的更深入思考，补充了对底层婚姻风险代价的进一步理解。\n {2}这篇文章花了不少精力喵\.\.\.希望你能看到最后\n/,
 	);
 });
 

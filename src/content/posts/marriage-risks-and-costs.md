@@ -1,13 +1,13 @@
 ---
-title: 婚姻的的风险与代价：对文章“穷人会保持贫穷”的深入思考
-titleEn: "The Risks and Costs of Marriage: Further Reflections on “Why the Poor Remain Poor”"
+title: 对婚姻的的风险与代价的思考：对文章“穷人为何保持贫穷”的深入理解
+titleEn: "Reflections on the Risks and Costs of Marriage: A Deeper Understanding of “Why the Poor Remain Poor”"
 published: 2026-10-21
 description: |-
-  本文是对之前文章的更深入思考，补充了对底层婚姻风险代价的进一步理解。
-  感兴趣的话欢迎阅读。这篇文章花了不少精力喵...
+  是对之前文章的更深入思考，补充了对底层婚姻风险代价的进一步理解。
+  这篇文章花了不少精力喵...希望你能看到最后
 descriptionEn: |-
   This article develops the earlier discussion further, adding a deeper understanding of the risks and costs of marriage for people at the bottom of society.
-  If you're interested, you're welcome to read it. I put quite a lot of effort into this one, meow...
+  I put quite a lot of effort into this article, meow... I hope you'll read to the end.
 image: random
 tags: [随笔]
 tagsEn: [Essay]
