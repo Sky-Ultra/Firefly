@@ -46,7 +46,7 @@ test("publishes the growth essay with the source title, today's date and the exa
 	}
 	assert.match(
 		source,
-		/description: \|-\n {2}算是对自己的一些反思吧\.\.\.\n {2}过去一段有点蠢了\.\.\.\n {2}灵感来源银狼\n/,
+		/description: \|-\n {2}算是对自己的一些反思吧\.\.\.\n {2}唉，过去似乎有点蠢了\.\.\.\n {2}灵感来源银狼\n/,
 	);
 });
 
