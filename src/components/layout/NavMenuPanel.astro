@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import MagneticMenuItem from "@/components/common/MagneticMenuItem.astro";
 import type { NavBarLink } from "@/types/config";
 import { url } from "@/utils/url-utils";
 
@@ -31,6 +32,7 @@ const processedLinks = Astro.props.links;
                     </button>
                     <div class="mobile-submenu" data-mobile-submenu>
                         {link.children.map((child) => (
+                            <MagneticMenuItem enabled={link.nameEn === "Personal"}>
                             <a href={child.external ? child.url : url(child.url)}
                                class="group flex justify-between items-center py-2 pl-6 pr-1 rounded-lg gap-8
                                    hover:bg-(--btn-plain-bg-hover) active:bg-(--btn-plain-bg-active) transition"
@@ -44,6 +46,7 @@ const processedLinks = Astro.props.links;
                                       class="transition text-[0.75rem] text-black/25 dark:text-white/25 -translate-x-1"
                                 />}
                             </a>
+                            </MagneticMenuItem>
                         ))}
                     </div>
                 </div>

@@ -1,0 +1,10 @@
+magnetic-menu-item {
+	display: block;
+	width: 100%;
+	min-width: 0;
+	translate: var(--card-hover-x, 0px) var(--card-hover-y, 0px);
+}
+magnetic-menu-item[data-hover-moving] { will-change: translate; }
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+	magnetic-menu-item { translate: none; will-change: auto; }
+}

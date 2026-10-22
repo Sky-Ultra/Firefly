@@ -1,0 +1,12 @@
+---
+import "@/styles/menu-motion.css";
+
+interface Props {
+	enabled?: boolean;
+}
+const { enabled = true } = Astro.props;
+---
+{enabled ? <magnetic-menu-item data-hover-strength="0.45"><slot /></magnetic-menu-item> : <slot />}
+<script>
+	import "@/utils/magnetic-post-card";
+</script>

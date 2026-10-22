@@ -16,12 +16,17 @@ class MagneticPostCard extends HTMLElement {
 	private readonly trackPointer = (event: PointerEvent) => {
 		if (event.pointerType !== "mouse" || !this.motionQuery?.matches) return;
 		const bounds = this.getBoundingClientRect();
-		this.target = getCardHoverTarget(event.clientX, event.clientY, {
-			left: bounds.left - this.x.position,
-			top: bounds.top - this.y.position,
-			width: bounds.width,
-			height: bounds.height,
-		});
+		this.target = getCardHoverTarget(
+			event.clientX,
+			event.clientY,
+			{
+				left: bounds.left - this.x.position,
+				top: bounds.top - this.y.position,
+				width: bounds.width,
+				height: bounds.height,
+			},
+			Number(this.dataset.hoverStrength ?? 1),
+		);
 		this.dataset.hoverActive = "";
 		this.start();
 	};
@@ -100,4 +105,11 @@ class MagneticPostCard extends HTMLElement {
 
 if (!customElements.get("magnetic-post-card")) {
 	customElements.define("magnetic-post-card", MagneticPostCard);
+}
+
+if (!customElements.get("magnetic-menu-item")) {
+	customElements.define(
+		"magnetic-menu-item",
+		class extends MagneticPostCard {},
+	);
 }

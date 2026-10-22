@@ -3,6 +3,7 @@ import { Icon } from "astro-icon/components";
 import DropdownItem from "@/components/common/DropdownItem.astro";
 import DropdownPanel from "@/components/common/DropdownPanel.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
+import MagneticMenuItem from "@/components/common/MagneticMenuItem.astro";
 import type { NavBarLink } from "@/types/config";
 import { url } from "@/utils/url-utils";
 
@@ -40,6 +41,7 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 		<div class="dropdown-menu" data-dropdown-menu>
 			<DropdownPanel class="dropdown-content">
 				{processedLink.children?.map((child, index) => (
+					<MagneticMenuItem enabled={processedLink.nameEn === "Personal"}>
 					<DropdownItem
 						href={child.external ? child.url : url(child.url)}
 						target={child.external ? "_blank" : undefined}
@@ -52,6 +54,7 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 							<Icon is:inline name="fa7-solid:arrow-up-right-from-square" class="text-[0.75rem] text-black/25 dark:text-white/25 ml-auto" />
 						)}
 					</DropdownItem>
+					</MagneticMenuItem>
 				))}
 			</DropdownPanel>
 		</div>

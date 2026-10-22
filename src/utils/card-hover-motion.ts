@@ -5,12 +5,16 @@ export function getCardHoverTarget(
 	x: number,
 	y: number,
 	bounds: CardBounds,
+	strength = 1,
 ): { x: number; y: number } {
 	if (bounds.width <= 0 || bounds.height <= 0) return { x: 0, y: 0 };
 	const clamp = (value: number) => Math.max(-1, Math.min(1, value));
+	const amount = Number.isFinite(strength)
+		? Math.max(0, Math.min(1, strength))
+		: 1;
 	return {
-		x: clamp(((x - bounds.left) / bounds.width - 0.5) * 2) * 6,
-		y: clamp(((y - bounds.top) / bounds.height - 0.5) * 2) * 5,
+		x: clamp(((x - bounds.left) / bounds.width - 0.5) * 2) * 6 * amount,
+		y: clamp(((y - bounds.top) / bounds.height - 0.5) * 2) * 5 * amount,
 	};
 }
 

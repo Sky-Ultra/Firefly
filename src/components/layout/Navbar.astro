@@ -4,6 +4,7 @@ import * as path from "node:path";
 import type { ImageMetadata } from "astro";
 import { Icon } from "astro-icon/components";
 import LocalizedText from "@/components/common/LocalizedText.astro";
+import MagneticMenuItem from "@/components/common/MagneticMenuItem.astro";
 import DisplaySettings from "@/components/controls/DisplaySettingsIntegrated.svelte";
 import LanguageSwitch from "@/components/controls/LanguageSwitch.astro";
 import LightDarkSwitch from "@/components/controls/LightDarkSwitch.svelte";
@@ -171,6 +172,7 @@ if (isLocalSrcLogo) {
                                     data-mobile-navbar-panel
                                 >
                                     {link.children.map((child) => (
+                                        <MagneticMenuItem enabled={link.nameEn === "Personal"}>
                                         <a
                                             href={child.external ? child.url : url(child.url)}
                                             class="group flex justify-between items-center py-2 pl-3 pr-2 rounded-lg gap-8 hover:bg-(--btn-plain-bg-hover) active:bg-(--btn-plain-bg-active) transition"
@@ -189,6 +191,7 @@ if (isLocalSrcLogo) {
                                                 />
                                             )}
                                         </a>
+                                        </MagneticMenuItem>
                                     ))}
                                 </div>
                             </div>
