@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import "@/styles/elastic-links.css";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -26,7 +27,7 @@ const totalPosts = categories.reduce((sum, cat) => sum + cat.count, 0);
             categories.map((category, index) => (
                 <a
                     href={category.url}
-                    class="card-base p-6 flex items-center gap-4 group onload-animation"
+                    class="elastic-link card-base p-6 flex items-center gap-4 group onload-animation"
                     style={`animation-delay: calc(var(--content-delay) + ${index * 50}ms);`}
                 >
                     <div class="shrink-0 w-14 h-14 rounded-full bg-(--primary)/10 group-hover:bg-(--primary)/20 flex items-center justify-center transition-colors">
@@ -36,7 +37,7 @@ const totalPosts = categories.reduce((sum, cat) => sum + cat.count, 0);
                         />
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="text-lg font-bold text-90 truncate group-hover:text-(--primary) transition-colors" title={category.name}>
+                        <h2 class="elastic-label text-lg font-bold text-90 truncate group-hover:text-(--primary) transition-colors" title={category.name}>
                             {category.name}
                         </h2>
                         <p class="text-sm text-30 mt-1 group-hover:text-(--primary)/60 transition-colors">

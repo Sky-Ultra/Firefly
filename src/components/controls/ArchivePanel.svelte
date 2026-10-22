@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import "@/styles/elastic-links.css";
 
 import { siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
@@ -250,7 +251,7 @@ onMount(async () => {
 				<a
 						href={getPostUrlBySlug(post.id)}
 						aria-label={post.data.title}
-						class="group btn-plain block! h-10 w-full rounded-lg hover:text-[initial]"
+						class="elastic-link group btn-plain block! h-10 w-full rounded-lg hover:text-[initial]"
 				>
 					<div class="flex flex-row justify-start items-center h-full">
 						<!-- date -->
@@ -284,7 +285,7 @@ onMount(async () => {
 									{post.data.category}
 								</span>
 							{/if}
-							<span class="truncate">{post.data.title}</span>
+							<span class="elastic-label truncate">{post.data.title}</span>
 						</div>
 
 						<!-- tag list -->

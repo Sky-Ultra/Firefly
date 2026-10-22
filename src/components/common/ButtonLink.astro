@@ -1,4 +1,6 @@
 ---
+import "@/styles/elastic-links.css";
+
 interface Props {
 	badge?: string;
 	url?: string;
@@ -6,7 +8,7 @@ interface Props {
 }
 const { badge, url, label } = Astro.props;
 ---
-<a href={url} aria-label={label}>
+<a href={url} aria-label={label} class="elastic-link">
     <button
         class:list={`
             w-full
@@ -27,7 +29,7 @@ const { badge, url, label } = Astro.props;
         }
     >
         <div class="flex items-center justify-between relative mr-2">
-            <div class="overflow-hidden text-left whitespace-nowrap text-ellipsis  ">
+            <div class="elastic-label overflow-hidden text-left whitespace-nowrap text-ellipsis">
                 <slot></slot>
             </div>
             { badge !== undefined && badge !== null && badge !== '' &&
