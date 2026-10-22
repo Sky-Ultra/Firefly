@@ -7,6 +7,7 @@ import DailyQuote from "@/components/widget/DailyQuote.astro";
 import FestivalCountdown from "@/components/widget/FestivalCountdown.astro";
 import Music from "@/components/widget/Music.astro";
 import Profile from "@/components/widget/Profile.astro";
+import RecentActivity from "@/components/widget/RecentActivity.astro";
 import RelationshipTimer from "@/components/widget/RelationshipTimer.astro";
 import SidebarTOC from "@/components/widget/SidebarTOC.astro";
 import SiteInfo from "@/components/widget/SiteInfo.astro";
@@ -20,6 +21,7 @@ import type {
 	MobileBottomComponentConfig,
 	WidgetComponentConfig,
 } from "@/types/config";
+import { isHomePage } from "@/utils/layout-utils";
 
 interface Props {
 	class?: string;
@@ -61,6 +63,7 @@ const componentMap = {
 	weather: Weather,
 	dailyQuote: DailyQuote,
 	festivalCountdown: FestivalCountdown,
+	recentActivity: RecentActivity,
 };
 
 // 获取侧边栏位置
@@ -112,11 +115,13 @@ const getAnimationDelay = (index: number): string => {
 
 // 判断当前页面是否为文章页面（服务端渲染时确定）
 const isPostPage = Astro.url.pathname.includes("/posts/");
+const isHome = isHomePage(Astro.url.pathname);
 
 // 判断组件在当前页面首屏是否可见（用于计算布局间距，避免隐藏组件占位）
 const isComponentInitiallyVisible = (
 	config: WidgetComponentConfig | MobileBottomComponentConfig,
 ): boolean => {
+	if (config.homeOnly && !isHome) return false;
 	if (
 		"showOnPostPage" in config &&
 		config.showOnPostPage === false &&
@@ -156,6 +161,12 @@ const getComponentProps = (
 	if ("hideOnNonPostPage" in config && config.hideOnNonPostPage === true) {
 		baseProps.class = `${baseProps.class} widget-hide-on-non-post`;
 		if (!isPostPage) {
+			baseProps.class = `${baseProps.class} hidden`;
+		}
+	}
+	if (config.homeOnly) {
+		baseProps.class = `${baseProps.class} widget-home-only`;
+		if (!isHome) {
 			baseProps.class = `${baseProps.class} hidden`;
 		}
 	}

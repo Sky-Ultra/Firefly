@@ -1696,6 +1696,11 @@ function disableAnimation() {
       !isPostPage ? widget.classList.add("hidden") : widget.classList.remove("hidden");
     });
 
+    const isHome = pathsEqual(window.location.pathname, url("/"));
+    document.querySelectorAll(".widget-home-only").forEach((widget) => {
+      widget.classList.toggle("hidden", !isHome);
+    });
+
     // 组件可见性变化后，立即重算 sticky 间距，避免 swup 切页后残留旧间距
     updateSidebarStickySpacing();
   }

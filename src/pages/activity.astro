@@ -1,0 +1,85 @@
+---
+import { Icon } from "astro-icon/components";
+import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
+import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
+import { personalPagesConfig, profileConfig } from "@/config";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import { buildActivityFeed } from "@/utils/activity-feed";
+import { getSortedPosts } from "@/utils/content-utils";
+import { getPostUrlBySlug, url } from "@/utils/url-utils";
+import "@/styles/activity-timeline.css";
+
+const title = "最近发生的事";
+const description = "新文章、生活片刻，沿着时间慢慢生长。";
+const posts = (await getSortedPosts()).map(({ id, data }) => ({ id, data }));
+const activities = buildActivityFeed(posts, personalPagesConfig.moments.items, {
+	post: getPostUrlBySlug,
+	moment: (id) => `${url("/moments/#")}${id}`,
+});
+const postCount = activities.filter((item) => item.kind === "post").length;
+const momentCount = activities.length - postCount;
+---
+
+<MainGridLayout title={title} description={description}>
+	<section class="activity-header card-base sidebar-decorated-card relative mb-4 overflow-hidden p-5 sm:p-7 lg:p-9">
+		<SidebarDecoration motif="clock" />
+		<PersonalPageHeader
+			title={title}
+			titleEn="Recent activity"
+			description={description}
+			descriptionEn="New posts and little moments, growing along a timeline."
+			icon="material-symbols:history-rounded"
+		/>
+		<p class="text-sm text-neutral-500 dark:text-neutral-400">
+			<LocalizedText zh={`${postCount} 篇文章 · ${momentCount} 条动态`} en={`${postCount} posts · ${momentCount} moments`} />
+		</p>
+	</section>
+
+	<section class="activity-timeline card-base" aria-labelledby="activity-timeline-title">
+		<h2 id="activity-timeline-title" class="sr-only"><LocalizedText zh="文章与生活时间线" en="A timeline of posts and moments" /></h2>
+		{activities.length > 0 ? (
+			<ol class="activity-list" role="list">
+				{activities.map((item) => (
+					<li class:list={["activity-item", `activity-item-${item.kind}`]}>
+						<span class="activity-marker" aria-hidden="true">
+							<Icon is:inline name={item.kind === "post" ? "material-symbols:description-outline-rounded" : "material-symbols:format-quote-rounded"} />
+						</span>
+						<div class="activity-entry">
+							<div class="activity-meta">
+								<time datetime={item.date}>{item.kind === "post" ? item.date : item.date.slice(0, 16).replace("T", " ")}</time>
+								<span class="activity-kind"><LocalizedText zh={item.kind === "post" ? "文章" : "生活片刻"} en={item.kind === "post" ? "Post" : "Moment"} /></span>
+							</div>
+							{item.kind === "post" ? (
+								<p class="activity-post">
+									<span class="activity-published"><LocalizedText zh="发布了" en="Published" /></span>{" "}
+									<a href={item.href} class="activity-post-link"><LocalizedText zh={item.title} en={item.titleEn} /></a>
+								</p>
+							) : (
+								<div class="activity-conversation">
+									<ImageWrapper
+										src={profileConfig.avatar || "assets/images/avatar.avif"}
+										alt={profileConfig.name}
+										class="activity-avatar h-9 w-9 shrink-0 rounded-full"
+										widths={[36, 72]}
+										sizes="36px"
+									/>
+									<div class="activity-message">
+										<div class="activity-author">{profileConfig.name}</div>
+										<div class="activity-bubble">
+											<p><LocalizedText zh={item.content} en={item.contentEn} /></p>
+										</div>
+										<a href={item.href} class="activity-moment-link"><LocalizedText zh="查看这条动态" en="View this moment" /><Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></a>
+									</div>
+								</div>
+							)}
+						</div>
+					</li>
+				))}
+			</ol>
+		) : (
+			<p class="py-8 text-center text-neutral-500"><LocalizedText zh="新的故事，正在路上。" en="New stories are on their way." /></p>
+		)}
+	</section>
+</MainGridLayout>

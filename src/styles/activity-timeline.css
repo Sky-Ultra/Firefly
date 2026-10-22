@@ -1,0 +1,211 @@
+.activity-timeline {
+	--activity-text: rgb(0 0 0 / 75%);
+	--activity-meta: rgb(0 0 0 / 50%);
+	padding: clamp(1.1rem, 3vw, 2.5rem);
+	background-color: var(--card-bg);
+}
+
+html.dark .activity-timeline {
+	--activity-text: rgb(255 255 255 / 80%);
+	--activity-meta: rgb(255 255 255 / 55%);
+}
+
+@layer components {
+	.activity-timeline.card-base,
+	.wallpaper-transparent .activity-timeline.card-base {
+		background-color: var(--card-bg) !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+	}
+}
+
+.activity-list {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.activity-list::before {
+	position: absolute;
+	top: 1.1rem;
+	bottom: 1.1rem;
+	left: 1.05rem;
+	width: 2px;
+	background: color-mix(in oklch, var(--primary) 22%, var(--line-divider));
+	content: "";
+}
+
+.activity-item {
+	position: relative;
+	display: grid;
+	grid-template-columns: 2.2rem minmax(0, 1fr);
+	column-gap: clamp(0.75rem, 2vw, 1.5rem);
+	padding-bottom: 2.25rem;
+}
+
+.activity-item:last-child {
+	padding-bottom: 0;
+}
+
+.activity-marker {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	width: 2.2rem;
+	height: 2.2rem;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid color-mix(in oklch, var(--primary) 32%, var(--line-divider));
+	border-radius: 50%;
+	background: var(--card-bg);
+	color: var(--primary);
+	font-size: 1.15rem;
+}
+
+.activity-item-moment .activity-marker {
+	border-style: dashed;
+}
+
+.activity-entry {
+	min-width: 0;
+	padding-top: 0.45rem;
+}
+
+.activity-meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.4rem 0.75rem;
+	margin-bottom: 0.65rem;
+	color: var(--activity-meta);
+	font-size: 0.75rem;
+	font-variant-numeric: tabular-nums;
+	line-height: 1.5;
+}
+
+.activity-kind {
+	color: var(--primary);
+	font-size: 0.7rem;
+}
+
+.activity-post {
+	margin: 0;
+	color: var(--activity-text);
+	font-size: 0.95rem;
+	line-height: 1.9;
+	overflow-wrap: anywhere;
+}
+
+.activity-published {
+	margin-right: 0.15rem;
+}
+
+.activity-post-link {
+	border-bottom: 1px solid color-mix(in oklch, var(--primary) 35%, transparent);
+	color: var(--primary);
+	font-weight: 600;
+	text-decoration: none;
+	transition: border-color 150ms ease;
+}
+
+.activity-post-link:hover {
+	border-color: var(--primary);
+}
+
+.activity-conversation {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.7rem;
+}
+
+.activity-avatar {
+	border: 1px solid var(--line-divider);
+}
+
+.activity-message {
+	min-width: 0;
+	flex: 1;
+}
+
+.activity-author {
+	margin: 0.05rem 0 0.4rem;
+	color: var(--activity-text);
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.activity-bubble {
+	border: 1px solid color-mix(in oklch, var(--primary) 15%, var(--line-divider));
+	border-radius: 0.3rem 1rem 1rem 1rem;
+	background: color-mix(in oklch, var(--primary) 5%, var(--card-bg));
+	padding: 0.85rem 1rem;
+	color: var(--activity-text);
+	font-size: 0.95rem;
+	line-height: 1.95;
+	overflow-wrap: anywhere;
+}
+
+.activity-bubble p {
+	margin: 0;
+	white-space: pre-wrap;
+}
+
+.activity-moment-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	margin-top: 0.6rem;
+	color: var(--activity-meta);
+	font-size: 0.75rem;
+	text-decoration: none;
+	transition: color 150ms ease;
+}
+
+.activity-moment-link:hover {
+	color: var(--primary);
+}
+
+.activity-timeline a:focus-visible {
+	border-radius: 0.25rem;
+	outline: 2px solid var(--primary);
+	outline-offset: 4px;
+}
+
+@media (max-width: 479px) {
+	.activity-item {
+		column-gap: 0.65rem;
+		padding-bottom: 1.8rem;
+	}
+
+	.activity-conversation {
+		display: grid;
+		grid-template-columns: 2.25rem minmax(0, 1fr);
+		gap: 0.45rem;
+	}
+
+	.activity-message {
+		display: contents;
+	}
+
+	.activity-author {
+		align-self: center;
+		margin: 0;
+	}
+
+	.activity-bubble {
+		grid-column: 1 / -1;
+		padding: 0.75rem 0.85rem;
+	}
+
+	.activity-moment-link {
+		grid-column: 1 / -1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.activity-timeline,
+	.activity-timeline a {
+		transition: none;
+	}
+}

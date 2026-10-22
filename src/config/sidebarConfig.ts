@@ -145,6 +145,14 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 		},
 		{
+			// 组件类型：首页最近发生的事入口
+			type: "recentActivity",
+			enable: true,
+			position: "top",
+			showOnPostPage: false,
+			homeOnly: true,
+		},
+		{
 			// 组件类型：站点统计组件
 			type: "stats",
 			// 是否启用该组件
@@ -293,6 +301,13 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			type: "festivalCountdown",
 			enable: true,
 			showOnPostPage: true,
+		},
+		{
+			// 组件类型：首页最近发生的事入口
+			type: "recentActivity",
+			enable: true,
+			showOnPostPage: false,
+			homeOnly: true,
 		},
 		{
 			// 组件类型：站点统计组件

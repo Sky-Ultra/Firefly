@@ -16,6 +16,7 @@ const widgetDecorations: Record<string, SidebarDecoration> = {
 	categories: "parcel",
 	tags: "paper-plane",
 	"calendar-widget": "clock",
+	"recent-activity": "clock",
 	"site-stats": "constellation",
 	"site-info": "window",
 };

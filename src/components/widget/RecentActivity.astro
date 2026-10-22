@@ -1,0 +1,38 @@
+---
+import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import WidgetLayout from "@/components/common/WidgetLayout.astro";
+import type { WidgetComponentConfig } from "@/types/config";
+import { url } from "@/utils/url-utils";
+
+interface Props {
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetComponentConfig;
+}
+
+const { class: className, style, widgetConfig } = Astro.props;
+---
+
+<WidgetLayout
+	id="recent-activity"
+	name="最近发生的事"
+	nameEn="Recent activity"
+	showTitle={widgetConfig?.showTitle !== false}
+	class={className}
+	style={style}
+>
+	<p class="mb-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
+		<LocalizedText zh="新文章与生活片刻，都留在这条时间线上。" en="New posts and small moments, gathered along a timeline." />
+	</p>
+	<a
+		href={url("/activity/")}
+		target="_blank"
+		rel="noopener noreferrer"
+		class="btn-regular inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary)"
+	>
+		<LocalizedText zh="去看看" en="Take a look" />
+		<Icon is:inline name="material-symbols:open-in-new-rounded" aria-hidden="true" />
+		<span class="sr-only"><LocalizedText zh="（在新标签页打开）" en="(opens in a new tab)" /></span>
+	</a>
+</WidgetLayout>
