@@ -12,6 +12,7 @@ import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
 import { getPostDecoration } from "@/utils/post-decoration";
 import { isRandomCoverImage } from "@/utils/random-cover-utils";
 import "@/styles/post-card-decoration.css";
+import "@/styles/post-card-motion.css";
 import { getFileDirFromPath, getTagUrl } from "@/utils/url-utils";
 
 interface Props {
@@ -110,7 +111,7 @@ const words = remarkPluginFrontmatter.words;
 const minutes = remarkPluginFrontmatter.minutes;
 ---
 
-<div
+<magnetic-post-card
   class:list={[
     "post-card-wrapper post-decorated-card",
     hasCover ? "has-cover" : "no-cover",
@@ -277,7 +278,11 @@ const minutes = remarkPluginFrontmatter.minutes;
       </a>
     )
   }
-</div>
+</magnetic-post-card>
+
+<script>
+  import "@/utils/magnetic-post-card";
+</script>
 
 <style define:vars={{ coverWidth, descriptionClampLines }}>
   .description-clamped {
