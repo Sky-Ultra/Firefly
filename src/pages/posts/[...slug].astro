@@ -303,12 +303,12 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
       {entry.data.password ? (
         <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint}>
-		  <div data-language-only="zh-CN" data-pagefind-body>
+		  <div data-language-only="zh-CN" data-pagefind-body data-reading-body>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <Content />
 			</Markdown>
 		  </div>
-		  <div data-language-only="en" data-pagefind-body hidden>
+		  <div data-language-only="en" data-pagefind-body data-reading-body hidden>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <EnglishContent />
 			</Markdown>
@@ -377,12 +377,12 @@ const relatedPosts = await getRelatedPosts(entry, 5);
         </EncryptedPost>
       ) : (
         <>
-		  <div data-language-only="zh-CN" data-pagefind-body>
+		  <div data-language-only="zh-CN" data-pagefind-body data-reading-body>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <Content />
 			</Markdown>
 		  </div>
-		  <div data-language-only="en" data-pagefind-body hidden>
+		  <div data-language-only="en" data-pagefind-body data-reading-body hidden>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <EnglishContent />
 			</Markdown>

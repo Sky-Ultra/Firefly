@@ -1,0 +1,122 @@
+<article-reading-progress hidden data-i18n-skip>
+	<button
+		type="button"
+		class="reading-progress-button card-base"
+		aria-label="阅读进度 0%，返回正文开头"
+		title="阅读进度 0%，返回正文开头"
+	>
+		<svg class="reading-progress-ring" viewBox="0 0 40 40" aria-hidden="true">
+			<circle class="reading-progress-track" cx="20" cy="20" r="17" />
+			<circle
+				class="reading-progress-fill"
+				cx="20"
+				cy="20"
+				r="17"
+				pathLength="100"
+				stroke-dasharray="100"
+				stroke-dashoffset="100"
+				data-reading-ring
+			/>
+		</svg>
+		<span class="reading-progress-value" data-reading-percentage aria-hidden="true">0%</span>
+	</button>
+</article-reading-progress>
+
+<script>
+	import { registerReadingProgress } from "@/utils/reading-progress-runtime";
+
+	registerReadingProgress();
+</script>
+
+<style>
+	article-reading-progress {
+		display: block;
+		flex: none;
+		width: 3rem;
+		height: 3rem;
+		pointer-events: auto;
+	}
+
+	article-reading-progress[hidden] {
+		display: none;
+	}
+
+	.reading-progress-button {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 100%;
+		height: 100%;
+		padding: 0.2rem;
+		border: 1px solid rgb(0 0 0 / 10%);
+		border-radius: 1rem;
+		background: var(--card-bg);
+		color: var(--primary);
+		cursor: pointer;
+		transition: background-color 150ms ease, box-shadow 150ms ease;
+	}
+
+	.reading-progress-button:hover {
+		background: var(--btn-card-bg-hover);
+		box-shadow: var(--shadow-button);
+	}
+
+	.reading-progress-button:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: 3px;
+	}
+
+	.reading-progress-ring {
+		position: absolute;
+		inset: 0.2rem;
+		width: calc(100% - 0.4rem);
+		height: calc(100% - 0.4rem);
+		fill: none;
+		stroke-width: 2;
+		transform: rotate(-90deg);
+		pointer-events: none;
+	}
+
+	.reading-progress-track {
+		stroke: currentColor;
+		opacity: 0.15;
+	}
+
+	.reading-progress-fill {
+		stroke: currentColor;
+		stroke-linecap: round;
+	}
+
+	.reading-progress-value {
+		font-size: 0.65rem;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		line-height: 1;
+		pointer-events: none;
+	}
+
+	:global(.dark) .reading-progress-button {
+		border-color: rgb(255 255 255 / 15%);
+	}
+
+	:global(.dark) .reading-progress-button:hover {
+		box-shadow: var(--shadow-button-dark);
+	}
+
+	@media (max-width: 480px) {
+		article-reading-progress {
+			width: 2.5rem;
+			height: 2.5rem;
+		}
+
+		.reading-progress-value {
+			font-size: 0.6rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.reading-progress-button {
+			transition: none;
+		}
+	}
+</style>
