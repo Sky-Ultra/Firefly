@@ -9,6 +9,7 @@ import FontSetup from "@components/features/FontSetup.astro";
 import LanguageManager from "@components/features/LanguageManager.astro";
 import MusicManager from "@components/features/MusicManager.astro";
 import SakuraEffect from "@components/features/SakuraEffect.astro";
+import SiteLikeToast from "@components/features/SiteLikeToast.astro";
 import WelcomeToast from "@components/features/WelcomeToast.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
 
@@ -652,6 +653,7 @@ const siteLang = lang.replace("_", "-");
     <div id="progress-bar"></div>
     <CopyToast />
     <WelcomeToast />
+    <SiteLikeToast />
 
     <!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
     {shouldShowTopHighlight && <div class="top-gradient-highlight" />}

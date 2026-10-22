@@ -5,6 +5,7 @@ import { Icon } from "astro-icon/components";
 import footerCharacters from "@/assets/images/footer-characters.webp";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import FooterBadges from "@/components/layout/FooterBadges.astro";
+import FooterWindsock from "@/components/layout/FooterWindsock.astro";
 import SiteUptime from "@/components/layout/SiteUptime.astro";
 import { footerConfig, profileConfig, siteConfig } from "@/config";
 import { url } from "@/utils/url-utils";
@@ -43,6 +44,7 @@ if (footerConfig.enable) {
 	<div class="site-footer-characters" aria-hidden="true">
 		<img src={footerCharacters.src} alt="" width={2170} height={305} loading="lazy" decoding="async" />
 	</div>
+	<FooterWindsock />
 	<FooterBadges />
 	<footer class="site-footer-panel card-base" aria-label="网站页脚" data-i18n-zh="网站页脚" data-i18n-en="Site footer" data-i18n-attr="aria-label">
 		<svg class="site-footer-parcel" viewBox="0 0 190 150" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

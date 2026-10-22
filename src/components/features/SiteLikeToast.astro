@@ -1,0 +1,102 @@
+---
+import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import "@/styles/footer-windsock.css";
+---
+
+<site-like-toast data-state="hidden" aria-hidden="true">
+	<div class="welcome-toast-card">
+		<span class="welcome-toast-icon" aria-hidden="true"><Icon is:inline name="material-symbols:favorite-rounded" /></span>
+		<div class="welcome-toast-content">
+			<p class="welcome-toast-message" data-like-message><LocalizedText zh="谢谢！我也喜欢你❤！" en="Thank you! I like you too ❤!" /></p>
+			<span class="sr-only" data-like-announcement role="status" aria-live="polite" aria-atomic="true"></span>
+		</div>
+		<button type="button" class="welcome-toast-close" data-like-toast-close aria-label="关闭感谢提示" data-i18n-zh="关闭感谢提示" data-i18n-en="Dismiss thank-you message" data-i18n-attr="aria-label"><span aria-hidden="true">×</span></button>
+	</div>
+</site-like-toast>
+
+<script>
+	class SiteLikeToast extends HTMLElement {
+		private hideTimer: number | undefined;
+		private announceFrame = 0;
+		private trigger: HTMLButtonElement | undefined;
+		private readonly handleClick = (event: MouseEvent) => {
+			if (!(event.target instanceof Element)) return;
+			const button = event.target.closest<HTMLButtonElement>("button[data-site-like]");
+			if (button) {
+				this.trigger = button;
+				this.show();
+			}
+		};
+		private readonly handleClose = () => this.close();
+		private readonly handleKey = (event: KeyboardEvent) => {
+			if (event.key === "Escape" && this.dataset.state === "visible") this.close();
+		};
+		private readonly handleFocusIn = () => {
+			if (this.hideTimer !== undefined) window.clearTimeout(this.hideTimer);
+			this.hideTimer = undefined;
+		};
+		private readonly handleFocusOut = (event: FocusEvent) => {
+			if (event.relatedTarget instanceof Node && this.contains(event.relatedTarget)) return;
+			if (this.dataset.state === "visible") this.startDismissTimer();
+		};
+
+		connectedCallback() {
+			document.addEventListener("click", this.handleClick);
+			document.addEventListener("keydown", this.handleKey);
+			this.addEventListener("focusin", this.handleFocusIn);
+			this.addEventListener("focusout", this.handleFocusOut);
+			this.querySelector("[data-like-toast-close]")?.addEventListener("click", this.handleClose);
+		}
+
+		disconnectedCallback() {
+			document.removeEventListener("click", this.handleClick);
+			document.removeEventListener("keydown", this.handleKey);
+			this.removeEventListener("focusin", this.handleFocusIn);
+			this.removeEventListener("focusout", this.handleFocusOut);
+			this.querySelector("[data-like-toast-close]")?.removeEventListener("click", this.handleClose);
+			this.clearTimers();
+			this.trigger = undefined;
+		}
+
+		private show() {
+			this.clearTimers();
+			this.dataset.state = "visible";
+			this.setAttribute("aria-hidden", "false");
+			const announcement = this.querySelector<HTMLElement>("[data-like-announcement]");
+			if (announcement) {
+				announcement.textContent = "";
+				this.announceFrame = requestAnimationFrame(() => {
+					announcement.textContent = this.querySelector("[data-like-message]")?.textContent || "";
+				});
+			}
+			this.startDismissTimer();
+		}
+
+		private startDismissTimer() {
+			if (this.hideTimer !== undefined) window.clearTimeout(this.hideTimer);
+			this.hideTimer = window.setTimeout(() => {
+				this.hideTimer = undefined;
+				if (!this.contains(document.activeElement)) this.close();
+			}, 5000);
+		}
+
+		private close() {
+			const restoreFocus = this.contains(document.activeElement);
+			this.clearTimers();
+			this.dataset.state = "hidden";
+			this.setAttribute("aria-hidden", "true");
+			const announcement = this.querySelector("[data-like-announcement]");
+			if (announcement) announcement.textContent = "";
+			if (restoreFocus && this.trigger?.isConnected) this.trigger.focus({ preventScroll: true });
+		}
+
+		private clearTimers() {
+			if (this.hideTimer !== undefined) window.clearTimeout(this.hideTimer);
+			this.hideTimer = undefined;
+			cancelAnimationFrame(this.announceFrame);
+		}
+	}
+
+	if (!customElements.get("site-like-toast")) customElements.define("site-like-toast", SiteLikeToast);
+</script>

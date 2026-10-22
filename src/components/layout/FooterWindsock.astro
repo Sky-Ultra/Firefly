@@ -1,0 +1,35 @@
+---
+import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
+import { siteConfig } from "@/config";
+import { getFooterDestinations } from "@/utils/footer-destinations";
+import { url } from "@/utils/url-utils";
+import "@/styles/footer-windsock.css";
+
+const destinations = getFooterDestinations(siteConfig.pages);
+---
+
+<section class="site-windsock sidebar-decorated-card card-base" aria-labelledby="footer-windsock-title">
+	<SidebarDecoration motif="paper-plane" />
+	<div class="site-windsock-content">
+		<h2 id="footer-windsock-title" class="text-90"><LocalizedText zh="风向标" en="Find your way" /></h2>
+		<p class="site-windsock-subtitle text-75"><LocalizedText zh="去别处看看？" en="Where shall we go next?" /></p>
+		<nav aria-label="风向标导航" data-i18n-zh="风向标导航" data-i18n-en="Explore the site" data-i18n-attr="aria-label">
+			<ul class="site-windsock-links">
+				{destinations.map((destination) => (
+					<li>
+						<a class="site-windsock-link text-75" href={url(destination.path)}>
+							<Icon is:inline name={destination.icon} aria-hidden="true" />
+							<LocalizedText zh={destination.label} en={destination.labelEn} />
+						</a>
+					</li>
+				))}
+			</ul>
+		</nav>
+		<button type="button" class="site-windsock-like btn-regular" data-site-like>
+			<LocalizedText zh="喜欢本站" en="Like this site" />
+			<Icon is:inline name="material-symbols:favorite-rounded" aria-hidden="true" />
+		</button>
+	</div>
+</section>
