@@ -41,7 +41,7 @@ const hasChildren = processedLink.children && processedLink.children.length > 0;
 		<div class="dropdown-menu" data-dropdown-menu>
 			<DropdownPanel class="dropdown-content">
 				{processedLink.children?.map((child, index) => (
-					<MagneticMenuItem enabled={processedLink.nameEn === "Personal"}>
+					<MagneticMenuItem>
 					<DropdownItem
 						href={child.external ? child.url : url(child.url)}
 						target={child.external ? "_blank" : undefined}

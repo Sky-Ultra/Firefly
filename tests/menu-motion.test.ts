@@ -25,7 +25,7 @@ test("menu magnetic hover shares the card spring with a smaller bounded strength
 	);
 });
 
-test("the desktop, mobile navbar and fallback personal menus opt into the same wrapper", () => {
+test("only expanded navigation children share the magnetic wrapper in desktop and mobile menus", () => {
 	for (const path of [
 		"components/layout/DropdownMenu.astro",
 		"components/layout/Navbar.astro",
@@ -33,7 +33,12 @@ test("the desktop, mobile navbar and fallback personal menus opt into the same w
 	]) {
 		const content = source(path);
 		assert.match(content, /MagneticMenuItem/);
-		assert.match(content, /Personal/);
+		assert.equal((content.match(/<MagneticMenuItem>/g) ?? []).length, 1);
+		assert.doesNotMatch(content, /<MagneticMenuItem[^>]*enabled/);
+		assert.match(
+			content,
+			/children\??\.map\([\s\S]*?<MagneticMenuItem>\s*<(?:DropdownItem|a)\b/,
+		);
 	}
 	const component = source("components/common/MagneticMenuItem.astro");
 	assert.match(component, /data-hover-strength="0\.45"/);

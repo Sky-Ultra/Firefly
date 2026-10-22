@@ -172,7 +172,7 @@ if (isLocalSrcLogo) {
                                     data-mobile-navbar-panel
                                 >
                                     {link.children.map((child) => (
-                                        <MagneticMenuItem enabled={link.nameEn === "Personal"}>
+                                        <MagneticMenuItem>
                                         <a
                                             href={child.external ? child.url : url(child.url)}
                                             class="group flex justify-between items-center py-2 pl-3 pr-2 rounded-lg gap-8 hover:bg-(--btn-plain-bg-hover) active:bg-(--btn-plain-bg-active) transition"
