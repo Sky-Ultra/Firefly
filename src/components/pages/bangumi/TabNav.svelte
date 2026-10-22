@@ -1,4 +1,6 @@
 <script lang="ts">
+import JellyHover from "@/components/common/JellyHover.svelte";
+
 interface Tab {
 	id: string;
 	name: string;
@@ -40,10 +42,12 @@ function clickTab(tabId: string) {
 </script>
 
 <div class="border-b border-(--line-divider) mb-3">
-  <div class="overflow-x-auto" data-tab-scroll-container>
+  <div class="overflow-x-auto px-1 -mx-1 py-1 -my-1" data-tab-scroll-container>
     <nav class="flex min-w-max space-x-8" aria-label="Tabs">
       {#each tabs as tab}
+		<JellyHover profile="control">
         <button
+          data-jelly-surface
           class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 {tab.id === activeTab
             ? 'border-(--primary) text-(--primary)'
             : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'}"
@@ -57,6 +61,7 @@ function clickTab(tabId: string) {
             </span>
           {/if}
         </button>
+		</JellyHover>
       {/each}
     </nav>
   </div>

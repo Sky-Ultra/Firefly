@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import JellyMotion from "@/components/common/JellyMotion.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import { profileConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
@@ -138,6 +139,7 @@ const finalNotes = [
 ---
 
 <MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
+	<JellyMotion />
 	<section class="card-base w-full overflow-hidden p-5 sm:p-7 lg:p-9">
 		<section class="about-profile mb-10 border-b border-(--line-divider) pb-9" aria-labelledby="about-profile-title">
 			<h1 id="about-profile-title" class="mb-8 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
@@ -145,7 +147,8 @@ const finalNotes = [
 			</h1>
 
 			<div class="mb-7 flex justify-center">
-				<div class="rounded-[1.45rem] bg-linear-to-br from-(--primary)/25 to-(--primary)/5 p-1.5 shadow-lg shadow-(--primary)/10">
+				<jelly-hover data-jelly-profile="avatar">
+				<div data-jelly-surface class="rounded-[1.45rem] bg-linear-to-br from-(--primary)/25 to-(--primary)/5 p-1.5 shadow-lg shadow-(--primary)/10">
 					<ImageWrapper
 						src={profileConfig.avatar || "assets/images/avatar.avif"}
 						alt="Sky 的头像"
@@ -157,6 +160,7 @@ const finalNotes = [
 						fetchpriority="high"
 					/>
 				</div>
+				</jelly-hover>
 			</div>
 
 			<div class="mx-auto max-w-3xl text-center text-[0.95rem] font-medium leading-8 text-neutral-700 dark:text-neutral-300 sm:text-base">

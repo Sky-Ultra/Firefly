@@ -193,6 +193,7 @@ function closeDetail() {
 
 	<!-- 分页 -->
 	<ClientPagination
+		jelly
 		totalItems={filteredItems().length}
 		{itemsPerPage}
 		{currentPage}

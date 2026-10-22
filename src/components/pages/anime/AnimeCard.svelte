@@ -1,4 +1,5 @@
 <script lang="ts">
+import JellyHover from "@/components/common/JellyHover.svelte";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import type { StandardizedAnime } from "@/types/anime";
@@ -48,8 +49,10 @@ function getTypeColor(seasonType: number): string {
 }
 </script>
 
+<JellyHover profile="card">
 <div
-	class="anime-card group relative overflow-hidden rounded-xl border border-(--line-divider) bg-(--card-bg) cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-(--primary)/30 hover:-translate-y-1"
+	data-jelly-surface
+	class="anime-card group relative overflow-hidden rounded-xl border border-(--line-divider) bg-(--card-bg) cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-(--primary)/30"
 	onclick={handleClick}
 	onkeydown={(e) => e.key === "Enter" && handleClick()}
 	role="button"
@@ -126,6 +129,7 @@ function getTypeColor(seasonType: number): string {
 		</div>
 	</div>
 </div>
+</JellyHover>
 
 <style>
 	.line-clamp-1 {

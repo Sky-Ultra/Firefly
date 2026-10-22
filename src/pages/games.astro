@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import JellyMotion from "@/components/common/JellyMotion.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import GameSection from "@/components/pages/games/GameSection.astro";
 import { gamesPageConfig, siteConfig } from "@/config";
@@ -14,6 +15,7 @@ if (!siteConfig.pages.games) {
 	title={gamesPageConfig.title}
 	description={gamesPageConfig.description}
 >
+	<JellyMotion />
 	<div class="flex min-h-32 w-full overflow-hidden rounded-(--radius-large)">
 		<div class="card-base relative z-10 w-full px-5 py-6 sm:px-9">
 			<header class="mb-9 border-b border-(--line-divider) pb-7">

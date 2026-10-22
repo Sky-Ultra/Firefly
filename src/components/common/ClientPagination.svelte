@@ -1,12 +1,21 @@
 <script lang="ts">
+import JellyHover from "./JellyHover.svelte";
+
 interface Props {
 	totalItems: number;
 	itemsPerPage: number;
 	currentPage: number;
 	onPageChange: (page: number) => void;
+	jelly?: boolean;
 }
 
-const { totalItems, itemsPerPage, currentPage, onPageChange }: Props = $props();
+const {
+	totalItems,
+	itemsPerPage,
+	currentPage,
+	onPageChange,
+	jelly = false,
+}: Props = $props();
 
 const totalPages = $derived(Math.ceil(totalItems / itemsPerPage));
 
@@ -41,10 +50,12 @@ function goToPage(page: number) {
 </script>
 
 {#if totalPages > 1}
-  <div class="responsive-pagination flex justify-center items-center mt-8">
+  <div class="responsive-pagination flex justify-center items-center mt-8" class:jelly-pagination={jelly}>
     <!-- 移动端简化版分页 -->
     <div class="mobile-pagination items-center gap-3">
+      <JellyHover profile="control" enabled={jelly}>
       <button
+        data-jelly-surface
         type="button"
         class="btn-card overflow-hidden rounded-lg text-(--primary) w-11 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
         onclick={() => goToPage(currentPage - 1)}
@@ -53,6 +64,7 @@ function goToPage(page: number) {
       >
         <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
+      </JellyHover>
 
       <div class="btn-card flex items-center rounded-lg px-4 h-11 gap-1.5">
         <span class="text-base font-bold text-(--primary)">{currentPage}</span>
@@ -60,7 +72,9 @@ function goToPage(page: number) {
         <span class="text-base font-bold text-neutral-700 dark:text-neutral-300">{totalPages}</span>
       </div>
 
+      <JellyHover profile="control" enabled={jelly}>
       <button
+        data-jelly-surface
         type="button"
         class="btn-card overflow-hidden rounded-lg text-(--primary) w-11 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
         onclick={() => goToPage(currentPage + 1)}
@@ -69,11 +83,14 @@ function goToPage(page: number) {
       >
         <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
       </button>
+      </JellyHover>
     </div>
 
     <!-- 桌面端完整版分页 -->
     <div class="desktop-pagination items-center gap-3">
+      <JellyHover profile="control" enabled={jelly}>
       <button
+        data-jelly-surface
         type="button"
         class="btn-card overflow-hidden rounded-lg text-(--primary) w-11 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
         onclick={() => goToPage(currentPage - 1)}
@@ -82,12 +99,15 @@ function goToPage(page: number) {
       >
         <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
+      </JellyHover>
 
       {#each pageNumbers as pageItem}
         {#if pageItem === "..."}
           <svg class="w-11 h-11 flex items-center justify-center text-neutral-700 dark:text-neutral-300" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
         {:else}
+          <JellyHover profile="control" enabled={jelly}>
           <button
+            data-jelly-surface
             type="button"
             class="rounded-lg overflow-hidden w-11 h-11 flex items-center justify-center font-bold {pageItem === currentPage
               ? 'bg-(--primary) text-white dark:text-black/70'
@@ -98,10 +118,13 @@ function goToPage(page: number) {
           >
             {pageItem}
           </button>
+          </JellyHover>
         {/if}
       {/each}
 
+      <JellyHover profile="control" enabled={jelly}>
       <button
+        data-jelly-surface
         type="button"
         class="btn-card overflow-hidden rounded-lg text-(--primary) w-11 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
         onclick={() => goToPage(currentPage + 1)}
@@ -110,6 +133,7 @@ function goToPage(page: number) {
       >
         <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
       </button>
+      </JellyHover>
     </div>
   </div>
 {/if}
@@ -154,6 +178,9 @@ function goToPage(page: number) {
   .responsive-pagination button {
     transition: all 0.2s ease-in-out;
   }
+
+  .jelly-pagination { padding-block: 0.25rem; }
+  .jelly-pagination button { transition-property: background-color, border-color, box-shadow, color, opacity; }
 
   @media (prefers-contrast: high) {
     .responsive-pagination button {

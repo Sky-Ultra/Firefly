@@ -1,0 +1,13 @@
+/* Stable outer hit area; only its direct visual child follows the spring. */
+jelly-hover { display: block; min-width: 0; }
+jelly-hover[data-jelly-profile="control"] { display: inline-flex; flex: none; vertical-align: middle; }
+jelly-hover[data-jelly-profile="avatar"] { padding: 0.75rem; margin: -0.75rem; }
+jelly-hover > [data-jelly-surface] {
+	translate: var(--jelly-x, 0px) var(--jelly-y, 0px);
+	transition-property: background-color, border-color, box-shadow, color, opacity;
+}
+jelly-hover[data-jelly-profile="card"] > [data-jelly-surface] { height: 100%; }
+jelly-hover[data-jelly-moving] > [data-jelly-surface] { will-change: translate; }
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+	jelly-hover > [data-jelly-surface] { translate: none; will-change: auto; }
+}

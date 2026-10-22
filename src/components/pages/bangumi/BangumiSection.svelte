@@ -174,6 +174,7 @@ function goToPage(page: number) {
     </div>
 
     <ClientPagination
+      jelly
       totalItems={filteredItems.length}
       itemsPerPage={itemsPerPage}
       currentPage={currentPage}

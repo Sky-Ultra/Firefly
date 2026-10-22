@@ -19,11 +19,13 @@ const hiddenTagCount = Math.max(
 );
 ---
 
+<jelly-hover data-jelly-profile="card">
 <a
+	data-jelly-surface
 	href={item.url}
 	target="_blank"
 	rel="noopener noreferrer nofollow"
-	class="game-card group relative block overflow-hidden rounded-xl bg-(--btn-regular-bg) transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+	class="game-card group relative block overflow-hidden rounded-xl bg-(--btn-regular-bg) transition-all duration-300 hover:shadow-xl"
 	aria-label={`${item.title}，${status.label}`}
 >
 	<div class="relative aspect-2/3 overflow-hidden">
@@ -84,6 +86,7 @@ const hiddenTagCount = Math.max(
 		</div>
 	</div>
 </a>
+</jelly-hover>
 
 <style>
 	.line-clamp-2 {

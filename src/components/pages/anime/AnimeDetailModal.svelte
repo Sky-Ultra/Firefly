@@ -1,4 +1,5 @@
 <script lang="ts">
+import JellyHover from "@/components/common/JellyHover.svelte";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import type { StandardizedAnime } from "@/types/anime";
@@ -73,8 +74,10 @@ function getTypeColor(seasonType: number): string {
 	>
 		<div class="relative w-full max-w-lg max-h-[90vh] overflow-hidden rounded-xl sm:rounded-2xl bg-(--card-bg) border border-(--line-divider) shadow-2xl animate-in scale-90 sm:scale-100">
 			<!-- 关闭按钮 -->
+			<JellyHover profile="control" class="absolute top-4 right-4 z-10">
 			<button
-				class="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+				data-jelly-surface
+				class="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
 				onclick={onclose}
 				aria-label={i18n(I18nKey.animeClose)}
 			>
@@ -82,6 +85,7 @@ function getTypeColor(seasonType: number): string {
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 				</svg>
 			</button>
+			</JellyHover>
 
 			<!-- 内容区域 -->
 			<div class="flex flex-col md:flex-row">
@@ -157,7 +161,9 @@ function getTypeColor(seasonType: number): string {
 					{/if}
 
 					<!-- 跳转按钮 -->
+					<JellyHover profile="control" class="w-full">
 					<a
+						data-jelly-surface
 						href={anime.link}
 						target="_blank"
 						rel="noopener noreferrer"
@@ -176,6 +182,7 @@ function getTypeColor(seasonType: number): string {
 							{i18n(I18nKey.animeViewTmdb)}
 						{/if}
 					</a>
+					</JellyHover>
 				</div>
 			</div>
 		</div>
