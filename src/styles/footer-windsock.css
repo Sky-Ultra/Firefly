@@ -27,14 +27,16 @@ site-like-toast {
 	bottom: max(1rem, env(safe-area-inset-bottom, 0px));
 	z-index: 10002;
 	display: block;
+	width: 22rem;
 	max-width: min(22rem, calc(100vw - 2rem));
-	transform: translateY(calc(100% + 1.5rem));
-	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
-	transition: transform 500ms ease, opacity 500ms ease, visibility 0s linear 500ms;
 }
-site-like-toast[data-state="visible"] { transform: translateY(0); opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+site-like-toast[data-state="visible"] { visibility: visible; }
+.site-like-toast-stack { display: flex; flex-direction: column; gap: 0.625rem; }
+site-like-toast [data-like-notice] { pointer-events: auto; }
+.site-like-hearts { position: fixed; inset: 0; z-index: 10003; pointer-events: none; overflow: hidden; }
+.site-like-heart { position: absolute; font-size: 1.2rem; line-height: 1; user-select: none; }
 body:has(site-like-toast[data-state="visible"]) welcome-visitor-toast[data-state="visible"] { opacity: 0; visibility: hidden; pointer-events: none; }
 site-like-toast .welcome-toast-card {
 	display: flex;
@@ -57,10 +59,10 @@ site-like-toast .welcome-toast-close:hover { background: var(--btn-plain-bg-hove
 site-like-toast .welcome-toast-close:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 @media (max-width: 640px) {
 	.site-windsock-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-	site-like-toast { right: 1rem; left: 1rem; max-width: none; }
+	site-like-toast { right: 1rem; left: 1rem; width: auto; max-width: none; }
 }
 @media (prefers-reduced-motion: reduce) {
 	.site-windsock-link, .site-windsock-like { transition: none; }
 	.site-windsock-link:hover, .site-windsock-like:active { transform: none; }
-	site-like-toast { transform: none; transition: opacity 120ms ease, visibility 0s linear 120ms; }
+	.site-like-hearts { display: none; }
 }

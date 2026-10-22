@@ -61,7 +61,9 @@ test("the dismissible thanks toast is outside transformed footer ancestors and h
 	const layout = source("layouts/Layout.astro");
 	assert.match(layout, /<SiteLikeToast\s*\/>/);
 	assert.ok(layout.indexOf("<SiteLikeToast />") < layout.indexOf("<slot />"));
-	const toast = source("components/features/SiteLikeToast.astro");
+	const toast =
+		source("components/features/SiteLikeToast.astro") +
+		source("utils/site-like-toast.ts");
 	assert.match(toast, /role="status"/);
 	assert.match(toast, /aria-live="polite"/);
 	assert.match(toast, /data-like-toast-close/);
@@ -144,7 +146,7 @@ test("footer and thanks icons are self-contained after Swup navigation and mobil
 });
 
 test("keyboard focus pauses dismissal and closing restores the original like button without scrolling", () => {
-	const toast = source("components/features/SiteLikeToast.astro");
+	const toast = source("utils/site-like-toast.ts");
 	assert.match(toast, /addEventListener\("focusin"/);
 	assert.match(toast, /addEventListener\("focusout"/);
 	assert.match(toast, /removeEventListener\("focusin"/);
