@@ -10,6 +10,7 @@ import { buildActivityFeed } from "@/utils/activity-feed";
 import { getSortedPosts } from "@/utils/content-utils";
 import { getPostUrlBySlug, url } from "@/utils/url-utils";
 import "@/styles/activity-timeline.css";
+import "@/styles/elastic-links.css";
 
 const title = "最近发生的事";
 const description = "新文章、生活片刻，沿着时间慢慢生长。";
@@ -54,7 +55,7 @@ const momentCount = activities.length - postCount;
 							{item.kind === "post" ? (
 								<p class="activity-post">
 									<span class="activity-published"><LocalizedText zh="发布了" en="Published" /></span>{" "}
-									<a href={item.href} class="activity-post-link"><LocalizedText zh={item.title} en={item.titleEn} /></a>
+									<a href={item.href} class="activity-post-link elastic-link"><LocalizedText class="elastic-label" zh={item.title} en={item.titleEn} /></a>
 								</p>
 							) : (
 								<div class="activity-conversation">
@@ -70,7 +71,7 @@ const momentCount = activities.length - postCount;
 										<div class="activity-bubble">
 											<p><LocalizedText zh={item.content} en={item.contentEn} /></p>
 										</div>
-										<a href={item.href} class="activity-moment-link"><LocalizedText zh="查看这条动态" en="View this moment" /><Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></a>
+										<a href={item.href} class="activity-moment-link elastic-link"><LocalizedText class="elastic-label" zh="查看这条动态" en="View this moment" /><Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></a>
 									</div>
 								</div>
 							)}
