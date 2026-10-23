@@ -27,12 +27,9 @@ const { class: className, style, widgetConfig } = Astro.props;
 	</p>
 	<a
 		href={url("/activity/")}
-		target="_blank"
-		rel="noopener noreferrer"
 		class="btn-regular inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary)"
 	>
 		<LocalizedText zh="去看看" en="Take a look" />
-		<Icon is:inline name="material-symbols:open-in-new-rounded" aria-hidden="true" />
-		<span class="sr-only"><LocalizedText zh="（在新标签页打开）" en="(opens in a new tab)" /></span>
+		<Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true" />
 	</a>
 </WidgetLayout>

@@ -1,0 +1,65 @@
+.article-export-stage {
+	position: fixed;
+	left: -100000px;
+	top: 0;
+	pointer-events: none;
+}
+.article-export-viewport {
+	position: relative;
+	overflow: hidden;
+	background: #fff;
+	color-scheme: light;
+}
+.article-export {
+	width: 100%;
+	margin: 0;
+	background: #fff;
+	color: #28303d;
+	--primary: var(--export-color);
+	--selection-bg: color-mix(in srgb, var(--export-color) 23%, white);
+	--card-bg: #fff;
+	--deep-text: #28303d;
+	--line-divider: #e5e7eb;
+	--inline-code-bg: #f3f4f6;
+	--inline-code-color: #374151;
+	--tw-prose-body: #28303d;
+	--tw-prose-headings: #111827;
+	--tw-prose-bold: #111827;
+	--tw-prose-quotes: #374151;
+	font-size: var(--export-font-size);
+	line-height: 1.95;
+}
+.article-export *, .article-export *::before, .article-export *::after {
+	box-sizing: border-box;
+	animation: none !important;
+	transition: none !important;
+	content-visibility: visible !important;
+}
+.article-export-cover { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; margin: 0; }
+.article-export-content { padding: 32px 36px; }
+.article-export-meta { margin: 0 0 14px; color: #6b7280; font-size: 12px; line-height: 1.7; }
+.article-export-title { margin: 0 0 20px; font-size: 1.65em; line-height: 1.5; font-weight: 750; color: #111827; overflow-wrap: anywhere; }
+.article-export-description { margin: 0 0 32px; padding: 4px 0 4px 14px; border-left: 3px solid var(--export-color); color: #667085; font-size: .88em; line-height: 1.9; white-space: pre-line; }
+.article-export-body { font-size: inherit !important; line-height: inherit !important; color: inherit !important; }
+.article-export-body p { margin: 0 0 1.15em; line-height: inherit; }
+.article-export-body h1, .article-export-body h2, .article-export-body h3, .article-export-body h4 { margin: 1.8em 0 .7em; line-height: 1.6; color: #111827; }
+.article-export-body h1 { font-size: 1.6em; }
+.article-export-body h2 { font-size: 1.4em; }
+.article-export-body h3 { font-size: 1.2em; }
+.article-export-body blockquote { margin: 1.2em 0; padding: .25em 0 .25em 1em; border-left: 3px solid var(--selection-bg); color: #475467; }
+.article-export-body ul, .article-export-body ol { margin: 1em 0; padding-left: 1.65em; }
+.article-export-body li { margin: .35em 0; }
+.article-export-body img, .article-export-body svg { max-width: 100%; height: auto; }
+.article-export-body img { margin: 1em auto; }
+.article-export-body pre, .article-export-body pre code { white-space: pre-wrap !important; overflow-wrap: anywhere !important; word-break: break-word !important; max-height: none !important; overflow: visible !important; }
+.article-export-body pre { font-size: .75em; padding: 16px; border-radius: 10px; }
+.article-export-body .expressive-code, .article-export-body .ec-line, .article-export-body .code { max-height: none !important; mask-image: none !important; }
+.article-export-body .ec-collapse__content { max-height: none !important; overflow: visible !important; }
+.article-export-body .ec-collapse__gradient { display: none !important; }
+.article-export .article-export-body table { width: 100% !important; min-width: 0 !important; max-width: 100%; table-layout: fixed; font-size: .72em; line-height: 1.7; border-collapse: collapse; }
+.article-export .article-export-body th, .article-export .article-export-body td { min-width: 0 !important; border: 1px solid #e5e7eb; padding: .6em; white-space: normal !important; overflow-wrap: anywhere; }
+.article-export-body td code, .article-export-body th code { white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+.article-export-body .horizontal-scroll-container, .article-export-body .katex-display-container, .article-export-body .mermaid-diagram-container, .article-export-body .plantuml-diagram-container { overflow: visible !important; max-height: none !important; }
+.article-export-body .word-paragraph-gap { height: calc(var(--empty-paragraphs) * 1lh); margin: 0; }
+.article-export-footer { margin: 36px 0 0; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #667085; font-size: 12px; line-height: 1.8; white-space: pre-line; overflow-wrap: anywhere; }
+.article-export-media-note { color: #667085; font-size: .8em; }

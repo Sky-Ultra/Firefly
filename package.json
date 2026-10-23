@@ -55,6 +55,7 @@
     "katex": "^0.17.0",
     "l2d-widget": "^0.1.0",
     "mdast-util-to-string": "^4.0.0",
+    "modern-screenshot": "4.7.0",
     "pagefind": "^1.5.2",
     "pako": "^3.0.1",
     "qrcode": "^1.5.4",

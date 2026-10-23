@@ -24,14 +24,14 @@ test("homepage entrance follows the countdown on desktop and mobile", () => {
 	}
 });
 
-test("homepage widget opens the independent timeline in a safe new tab with the site motif", () => {
+test("homepage widget opens the timeline in the current tab with the site motif", () => {
 	const widget = source("src/components/widget/RecentActivity.astro");
 	assert.match(widget, /WidgetLayout/);
 	assert.match(widget, /最近发生的事/);
 	assert.match(widget, /LocalizedText/);
 	assert.match(widget, /href=\{url\("\/activity\/"\)\}/);
-	assert.match(widget, /target="_blank"/);
-	assert.match(widget, /rel="noopener noreferrer"/);
+	assert.doesNotMatch(widget, /target="_blank"|在新标签页打开|open-in-new/);
+	assert.match(widget, /arrow-forward-rounded/);
 	assert.equal(getSidebarDecoration("recent-activity"), "clock");
 });
 

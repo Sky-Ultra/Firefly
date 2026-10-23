@@ -1,7 +1,11 @@
 <script lang="ts">
 import QRCode from "qrcode";
-import { onMount } from "svelte";
+import { onMount, tick } from "svelte";
 import Icon from "@/components/common/Icon.svelte";
+import JellyHover from "@/components/common/JellyHover.svelte";
+import { registerJellyHover } from "@/utils/jelly-hover";
+import FullArticleShare from "./FullArticleShare.svelte";
+import "@/styles/jelly-hover.css";
 import { LANGUAGE_CHANGE_EVENT } from "@/i18n/runtime-language";
 import { getNextPosterCover } from "@/utils/poster-cover-utils";
 import I18nKey from "../../i18n/i18nKey";
@@ -21,6 +25,10 @@ export let siteTitle: string;
 export let avatar: string | null = null;
 
 let showModal = false;
+let shareMode: "poster" | "article" = "poster";
+let isEnglish = false;
+let previousFocus: HTMLElement | null = null;
+let dialog: HTMLDivElement;
 let posterImage: string | null = null;
 let generating = false;
 let posterError = false;
@@ -30,8 +38,9 @@ let activeTitle = title;
 let activeDescription = description;
 
 onMount(() => {
+	registerJellyHover();
 	const syncLanguage = () => {
-		const isEnglish = window.fireflyLanguage?.get() === "en";
+		isEnglish = window.fireflyLanguage?.get() === "en";
 		activeTitle = isEnglish ? titleEn : title;
 		activeDescription = isEnglish ? descriptionEn : description;
 		posterImage = null;
@@ -52,8 +61,41 @@ onMount(() => {
 
 	syncLanguage();
 	document.addEventListener(LANGUAGE_CHANGE_EVENT, syncLanguage);
-	return () =>
+	const keyboard = (event: KeyboardEvent) => {
+		if (!showModal) return;
+		if (event.key === "Escape") {
+			event.preventDefault();
+			closeModal();
+		}
+		if (event.key !== "Tab") return;
+		const elements = Array.from(
+			dialog?.querySelectorAll<HTMLElement>(
+				'button:not(:disabled), select, a[href], [tabindex="0"]',
+			) ?? [],
+		).filter((node) => node.getClientRects().length);
+		const first = elements[0];
+		const last = elements.at(-1);
+		if (
+			event.shiftKey &&
+			(document.activeElement === first ||
+				!dialog?.contains(document.activeElement))
+		) {
+			event.preventDefault();
+			last?.focus();
+		} else if (
+			!event.shiftKey &&
+			(document.activeElement === last ||
+				!dialog?.contains(document.activeElement))
+		) {
+			event.preventDefault();
+			first?.focus();
+		}
+	};
+	document.addEventListener("keydown", keyboard);
+	return () => {
 		document.removeEventListener(LANGUAGE_CHANGE_EVENT, syncLanguage);
+		document.removeEventListener("keydown", keyboard);
+	};
 });
 
 function loadImage(src: string): Promise<HTMLImageElement | null> {
@@ -139,6 +181,13 @@ function drawRoundedRect(
 }
 
 async function generatePoster(regenerate = false) {
+	if (!showModal) {
+		previousFocus = document.activeElement as HTMLElement | null;
+		shareMode = "poster";
+		void tick().then(() =>
+			dialog?.querySelector<HTMLButtonElement>("button")?.focus(),
+		);
+	}
 	showModal = true;
 	if (generating) return;
 	if (posterImage && !regenerate) return;
@@ -509,6 +558,17 @@ function downloadPoster() {
 
 function closeModal() {
 	showModal = false;
+	previousFocus?.focus();
+}
+
+async function switchShareMode(mode: "poster" | "article") {
+	shareMode = mode;
+	await tick();
+	dialog
+		?.querySelector<HTMLButtonElement>(
+			mode === "article" ? ".full-share button" : ".poster-switch",
+		)
+		?.focus();
 }
 
 let copied = false;
@@ -521,9 +581,12 @@ function copyLink() {
 }
 
 function portal(node: HTMLElement) {
+	const previousOverflow = document.body.style.overflow;
+	document.body.style.overflow = "hidden";
 	document.body.appendChild(node);
 	return {
 		destroy() {
+			document.body.style.overflow = previousOverflow;
 			if (node.parentNode) {
 				node.parentNode.removeChild(node);
 			}
@@ -533,14 +596,17 @@ function portal(node: HTMLElement) {
 </script>
 
 <!-- Trigger Button -->
+<JellyHover profile="control">
 <button 
-  class="btn-regular rounded-lg h-12 px-6 gap-2 hover:scale-105 active:scale-95 whitespace-nowrap"
+  data-jelly-surface
+  class="btn-regular rounded-lg h-12 px-6 gap-2 whitespace-nowrap"
   on:click={() => generatePoster()}
   aria-label="Generate Share Poster"
 >
   <Icon icon="material-symbols:share" size="md" />
   <span>{i18n(I18nKey.shareArticle)}</span>
 </button>
+</JellyHover>
 
 
 
@@ -549,7 +615,15 @@ function portal(node: HTMLElement) {
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div use:portal class="fixed inset-0 z-9999 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 transition-opacity" on:click={closeModal}>
-    <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-[440px] w-full max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl transform transition-all" on:click={(e) => e.stopPropagation()}>
+    <div bind:this={dialog} role="dialog" aria-modal="true" aria-label={isEnglish ? "Share article" : "分享文章"} tabindex="-1" class="bg-white dark:bg-gray-800 rounded-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl" style:max-width={shareMode === "article" ? "760px" : "440px"} on:click={(e) => e.stopPropagation()}>
+      <div class="flex justify-end px-4 pt-3">
+        <JellyHover profile="control"><button data-jelly-surface class="btn-regular rounded-lg px-3 py-1.5 text-sm" on:click={closeModal}>{isEnglish ? "Close" : "关闭"}</button></JellyHover>
+      </div>
+      {#if shareMode === "article"}
+        {#key `${activeTitle}-${isEnglish}`}
+          <FullArticleShare title={activeTitle} description={activeDescription} {author} {pubDate} {url} {siteTitle} cover={currentCoverImage || coverImage} covers={regenerateCoverImages.length ? regenerateCoverImages : coverImages} {themeColor} english={isEnglish} onBack={() => switchShareMode("poster")} />
+        {/key}
+      {:else}
       
       <div class="p-6 flex justify-center bg-gray-50 dark:bg-gray-900 min-h-[200px] items-center" aria-busy={generating}>
         {#if posterImage}
@@ -578,8 +652,10 @@ function portal(node: HTMLElement) {
         {#if posterError && posterImage}
           <p class="col-span-2 text-sm text-gray-600 dark:text-gray-300 text-center" role="alert">{i18n(I18nKey.posterGenerationFailed)}</p>
         {/if}
+        <JellyHover profile="control" class="col-span-2 w-full">
         <button
-          class="col-span-2 py-3 border rounded-xl font-medium flex items-center justify-center gap-2 hover:brightness-95 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          data-jelly-surface
+          class="w-full py-3 border rounded-xl font-medium flex items-center justify-center gap-2 hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           style="color: {themeColor}; background-color: color-mix(in srgb, {themeColor} 10%, transparent); border-color: color-mix(in srgb, {themeColor} 25%, transparent); outline-color: {themeColor};"
           on:click={() => generatePoster(true)}
           disabled={generating}
@@ -587,8 +663,11 @@ function portal(node: HTMLElement) {
           <Icon icon="material-symbols:refresh" size="md" />
           {generating ? i18n(I18nKey.generatingPoster) : i18n(I18nKey.regeneratePoster)}
         </button>
+        </JellyHover>
+        <JellyHover profile="control" class="w-full">
         <button 
-          class="py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          data-jelly-surface
+          class="w-full py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center gap-2"
           on:click={copyLink}
         >
           {#if copied}
@@ -599,8 +678,11 @@ function portal(node: HTMLElement) {
             <span>{i18n(I18nKey.copyLink)}</span>
           {/if}
         </button>
+        </JellyHover>
+        <JellyHover profile="control" class="w-full">
         <button 
-          class="py-3 text-white rounded-xl font-medium active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-90"
+          data-jelly-surface
+          class="w-full py-3 text-white rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-90"
           style="background-color: {themeColor};"
           on:click={downloadPoster}
           disabled={generating || !posterImage}
@@ -608,7 +690,10 @@ function portal(node: HTMLElement) {
           <Icon icon="material-symbols:download" size="md" />
           {i18n(I18nKey.savePoster)}
         </button>
+        </JellyHover>
+        <JellyHover profile="control" class="col-span-2 w-full"><button data-jelly-surface class="poster-switch btn-regular w-full rounded-xl py-3 gap-2" on:click={() => switchShareMode("article")} disabled={generating}><Icon icon="material-symbols:article-outline-rounded" size="md" />{isEnglish ? "Switch to full article image" : "切换分享 · 全文长图"}</button></JellyHover>
       </div>
+      {/if}
     </div>
   </div>
 {/if}
