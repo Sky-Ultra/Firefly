@@ -2,8 +2,10 @@ function initAfterword() {
 	const indicator = document.getElementById("love-scroll-indicator");
 	const hint = indicator.querySelector(".love-scroll-hint");
 	const afterword = document.getElementById("afterword");
+	const fourthPage = document.getElementById("love-fourth-page");
 	let activated = false;
-	const thirdPage = initThirdPage({ revealParagraphs, canEnter: () => activated });
+	let fourthActivated = false;
+	const thirdPage = initThirdPage({ revealParagraphs, canEnter: () => activated, onReveal: revealFourthPage });
 
 	function showParagraph(paragraph) {
 		if (paragraph.dataset.revealed === "true") return;
@@ -56,6 +58,25 @@ function initAfterword() {
 		updateIndicatorVisibility();
 	}
 
+	function revealFourthPage() {
+		if (fourthActivated) return;
+		fourthActivated = true;
+		fourthPage.hidden = false;
+		revealParagraphs(fourthPage);
+	}
+
+	function navigateToPage(page) {
+		const ids = ["love-first-page", "afterword", "love-third-page", "love-fourth-page"];
+		const target = document.getElementById(ids[page - 1]);
+		if (!target) return;
+		if (page >= 2) revealAfterword();
+		if (page >= 3) thirdPage.reveal();
+		if (page === 4) revealFourthPage();
+		// Direct section navigation avoids passing through another page's timed effects.
+		target.scrollIntoView({ behavior: "auto", block: "start" });
+		target.focus({ preventScroll: true });
+	}
+
 	function showScrollHintWhenSecondLineStarts() {
 		const secondLine = document.querySelector("#letter .stanza p:nth-child(2)");
 		if (!secondLine) return;
@@ -79,5 +100,5 @@ function initAfterword() {
 		afterword.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
 	});
 	window.addEventListener("scroll", updateIndicatorVisibility, { passive: true });
-	return { revealAfterword, showScrollHintWhenSecondLineStarts, setPetalController: thirdPage.setPetalController };
+	return { revealAfterword, showScrollHintWhenSecondLineStarts, navigateToPage, setPetalController: thirdPage.setPetalController };
 }

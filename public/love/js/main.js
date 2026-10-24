@@ -11,6 +11,10 @@ async function startApp() {
 		StageConfig.width, StageConfig.height, TreeShape, CONFIG);
 	const { seed, footer } = tree;
 	const button = document.getElementById("start-button");
+	initPageNavigation({ navigate(page) {
+		if (page > 1 && !button.disabled) button.click();
+		afterword.navigateToPage(page);
+	} });
 	await new Promise(resolve => {
 		button.addEventListener("click", async () => {
 			button.disabled = true;

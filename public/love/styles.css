@@ -267,7 +267,7 @@ canvas {
 	50% { transform: translateY(9px); }
 }
 
-#afterword, #love-third-page {
+#afterword, #love-third-page, #love-fourth-page {
 	position: relative;
 	min-height: 100svh;
 	padding: clamp(4rem, 8vw, 7rem) 1.5rem clamp(6rem, 10vw, 9rem);
@@ -275,6 +275,7 @@ canvas {
 		linear-gradient(180deg, var(--bg-color), #fff9f1 36%, #fff9f1);
 }
 #love-third-page { background: linear-gradient(180deg, #fff9f1, #fffaf4); }
+#love-fourth-page { background: linear-gradient(180deg, #fffaf4, #fff9f1); }
 #love-third-page.third-page-awaiting-entry { opacity: 0; }
 #love-third-page.third-page-entering { animation: third-page-fade-in 1.5s ease both; }
 @keyframes third-page-fade-in {
@@ -394,7 +395,7 @@ canvas {
 	#letter p { min-height: 1.85em; }
 	#letter .stanza { margin-bottom: 1.5em; }
 	#letter.mobile-letter-staging { visibility: hidden; }
-	#afterword, #love-third-page { padding: 3.5rem 1.4rem 6rem; }
+	#afterword, #love-third-page, #love-fourth-page { padding: 3.5rem 1.4rem 6rem; }
 	.afterword-content { font-size: 1rem; line-height: 1.95; }
 	.afterword-content::before { margin-bottom: 2.5rem; }
 	#love-scroll-indicator {

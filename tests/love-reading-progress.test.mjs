@@ -7,12 +7,13 @@ const source = readFileSync(new URL("../public/love/js/reading-progress.js", imp
 const html = readFileSync(new URL("../public/love/index.html", import.meta.url), "utf8");
 
 function fixture() {
-	const state = { offset: 0, viewport: 800, thirdHidden: true, fill: {}, percentage: "", attributes: {}, frames: [], resizeCallback: null };
+	const state = { offset: 0, viewport: 800, thirdHidden: true, fourthHidden: true, fill: {}, percentage: "", attributes: {}, frames: [], resizeCallback: null };
 	const listeners = {};
 	const sections = [
 		{ id: "love-first-page", hidden: false, getBoundingClientRect: () => ({ top: -state.offset, height: 1000 }) },
 		{ id: "afterword", hidden: false, getBoundingClientRect: () => ({ top: 1000 - state.offset, height: 3000 }) },
 		{ id: "love-third-page", get hidden() { return state.thirdHidden; }, getBoundingClientRect: () => ({ top: 4000 - state.offset, height: 2000 }) },
+		{ id: "love-fourth-page", get hidden() { return state.fourthHidden; }, getBoundingClientRect: () => ({ top: 6000 - state.offset, height: 2400 }) },
 	];
 	const bar = { hidden: true, style: { setProperty(name, value) { state.fill[name] = value; } }, setAttribute(name, value) { state.attributes[name] = value; } };
 	const badge = { hidden: true, set textContent(text) { state.percentage = text; } };
@@ -26,10 +27,10 @@ function fixture() {
 	return { state, context, bar, badge, listeners, controller: context.initReadingProgress() };
 }
 
-test("progress is hidden before the opening and the date follows the requested October eleventh", () => {
+test("progress is hidden before the opening and the date follows the requested October twenty-third", () => {
 	assert.match(html, /id="love-reading-progress"[^>]*role="progressbar"[^>]*hidden/);
 	assert.match(html, /id="love-reading-percentage"[^>]*hidden/);
-	assert.match(html, /datetime="2026-10-11">2026\.10\.11<\/time>/);
+	assert.match(html, /datetime="2026-10-23">2026\.10\.23<\/time>/);
 	const f = fixture();
 	assert.equal(f.bar.hidden, true);
 	f.controller.start();
@@ -86,4 +87,14 @@ test("progress is bounded even with overscroll or a page shorter than the viewpo
 	assert.equal(f.context.getPageReadingProgress({ top: -3000, height: 2000 }, 800), 1);
 	assert.equal(f.context.getPageReadingProgress({ top: 0, height: 800 }, 800), 0);
 	assert.equal(f.context.getPageReadingProgress({ top: -10, height: 600 }, 800), 1);
+});
+
+test("the fourth page owns its own reading percentage", () => {
+	const f = fixture();
+	f.state.thirdHidden = false;
+	f.state.fourthHidden = false;
+	f.state.offset = 6800;
+	f.controller.start();
+	assert.equal(f.state.percentage, "50%");
+	assert.equal(f.state.attributes["aria-label"], "第 4 页阅读进度");
 });

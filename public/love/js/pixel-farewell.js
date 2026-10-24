@@ -253,7 +253,9 @@ function initPixelFarewell(section, renderer = createPixelFarewellRenderer(secti
 
 	function inView() {
 		const bounds = section.getBoundingClientRect();
-		return !section.hidden && !document.hidden && bounds.top < window.innerHeight * 0.62 && bounds.bottom > window.innerHeight * 0.35;
+		const destination = document.body?.dataset?.lovePageTarget;
+		if (destination && destination !== "3") return false;
+		return !section.hidden && !document.hidden && bounds.top < window.innerHeight * 0.62 && bounds.bottom > window.innerHeight * 0.62;
 	}
 
 	function setPhase(value) { phase = value; section.dataset.pixelPhase = value; }

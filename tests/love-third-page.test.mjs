@@ -8,7 +8,7 @@ const html = readFileSync(new URL("../public/love/index.html", import.meta.url),
 const styles = readFileSync(new URL("../public/love/styles.css", import.meta.url), "utf8");
 
 function fixture(reduced = false) {
-	const state = { now: 1000, bottom: 1800, top: -400, viewport: 800, active: true, boosts: [], scrolls: [], reveals: [], focused: false, pixelStarts: 0 };
+	const state = { now: 1000, bottom: 1800, top: -400, viewport: 800, active: true, boosts: [], scrolls: [], reveals: [], focused: false, pixelStarts: 0, fourthReveals: 0 };
 	const windowListeners = {};
 	const buttonListeners = {};
 	const observers = [];
@@ -25,7 +25,7 @@ function fixture(reduced = false) {
 	const window = { innerHeight: state.viewport, addEventListener(type, listener) { windowListeners[type] = listener; } };
 	const context = vm.createContext({
 		window,
-		document: { getElementById: id => ({ afterword, "love-third-page": third, "third-page-scroll-indicator": button })[id] },
+		document: { body: { dataset: {} }, getElementById: id => ({ afterword, "love-third-page": third, "third-page-scroll-indicator": button })[id] },
 		performance: { now: () => state.now },
 		prefersReducedMotion: () => reduced,
 		initPixelFarewell: () => ({ start() { state.pixelStarts++; } }),
@@ -37,14 +37,14 @@ function fixture(reduced = false) {
 	});
 	window.IntersectionObserver = context.IntersectionObserver;
 	vm.runInContext(source, context);
-	const controller = context.initThirdPage({ canEnter: () => state.active, revealParagraphs: section => state.reveals.push(section) });
+	const controller = context.initThirdPage({ canEnter: () => state.active, revealParagraphs: section => state.reveals.push(section), onReveal: () => { state.fourthReveals++; } });
 	controller.setPetalController({ boostFor: duration => state.boosts.push(duration) });
-	return { state, third, button, controller, observers, windowListeners, buttonListeners };
+	return { state, third, button, controller, observers, windowListeners, buttonListeners, context };
 }
 
-test("the third page stays hidden until requested, and the update date uses October eleventh", () => {
+test("the third page stays hidden until requested, and the update date uses October twenty-third", () => {
 	assert.match(html, /id="love-third-page"[^>]*hidden/);
-	assert.match(html, /最后更新时间<time datetime="2026-10-11">2026\.10\.11<\/time>/);
+	assert.match(html, /最后更新时间<time datetime="2026-10-23">2026\.10\.23<\/time>/);
 	assert.match(html, /id="third-page-scroll-indicator"[^>]*aria-controls="love-third-page"[^>]*hidden/);
 	assert.match(styles, /\.third-page-scroll-icon[\s\S]*?width: 3\.9rem/);
 	assert.match(styles, /third-page-fade-in 1\.5s/);
@@ -116,6 +116,22 @@ test("reduced-motion users keep immediate navigation and readable text", () => {
 	const f = fixture(true);
 	f.buttonListeners.click();
 	assert.equal(f.state.scrolls[0].behavior, "auto");
+	f.observers[0].callback([{ isIntersecting: true }]);
 	assert.equal(f.state.reveals.length, 1);
 	assert.equal(f.third.classList.contains("third-page-awaiting-entry"), false);
+});
+
+test("a direct fourth-page jump unlocks the intermediate page without starting its pixel countdown", () => {
+	const f = fixture();
+	f.context.document.body.dataset.lovePageTarget = "4";
+	f.controller.reveal();
+	f.controller.reveal();
+	assert.equal(f.third.hidden, false);
+	assert.equal(f.state.fourthReveals, 1);
+	assert.equal(f.state.scrolls.length, 0);
+	f.observers[0].callback([{ isIntersecting: true }]);
+	assert.equal(f.state.pixelStarts, 0);
+	delete f.context.document.body.dataset.lovePageTarget;
+	f.observers[0].callback([{ isIntersecting: true }]);
+	assert.equal(f.state.pixelStarts, 1);
 });

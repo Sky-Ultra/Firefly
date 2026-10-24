@@ -1,4 +1,4 @@
-function initThirdPage({ revealParagraphs, canEnter }) {
+function initThirdPage({ revealParagraphs, canEnter, onReveal = () => {} }) {
 	const afterword = document.getElementById("afterword");
 	const thirdPage = document.getElementById("love-third-page");
 	const indicator = document.getElementById("third-page-scroll-indicator");
@@ -27,6 +27,8 @@ function initThirdPage({ revealParagraphs, canEnter }) {
 
 	function beginEntry() {
 		if (entered) return;
+		const destination = document.body?.dataset?.lovePageTarget;
+		if (destination && destination !== "3") return;
 		entered = true;
 		thirdPage.classList.remove("third-page-awaiting-entry");
 		if (!prefersReducedMotion()) thirdPage.classList.add("third-page-entering");
@@ -36,15 +38,20 @@ function initThirdPage({ revealParagraphs, canEnter }) {
 		pixelFarewell.start();
 	}
 
-	function openThirdPage() {
+	function reveal() {
 		if (!eligible()) return;
 		unlocked = true;
 		indicator.hidden = true;
 		thirdPage.hidden = false;
-		if (!prefersReducedMotion() && "IntersectionObserver" in window) {
-			thirdPage.classList.add("third-page-awaiting-entry");
+		onReveal();
+		if ("IntersectionObserver" in window) {
+			if (!prefersReducedMotion()) thirdPage.classList.add("third-page-awaiting-entry");
 			const entryObserver = new IntersectionObserver((entries) => {
 				if (!entries.some(entry => entry.isIntersecting)) return;
+				const destination = document.body?.dataset?.lovePageTarget;
+				if (destination && destination !== "3") return;
+				const bounds = thirdPage.getBoundingClientRect?.();
+				if (bounds && (bounds.bottom <= 0 || bounds.top >= window.innerHeight)) return;
 				entryObserver.disconnect();
 				beginEntry();
 			}, { rootMargin: "0px 0px -12% 0px", threshold: 0 });
@@ -52,6 +59,11 @@ function initThirdPage({ revealParagraphs, canEnter }) {
 		} else {
 			beginEntry();
 		}
+	}
+
+	function openThirdPage() {
+		if (!eligible()) return;
+		reveal();
 		thirdPage.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
 	}
 
@@ -110,5 +122,5 @@ function initThirdPage({ revealParagraphs, canEnter }) {
 		}
 	});
 	updateVisibility();
-	return { updateVisibility, setPetalController: controller => { petals = controller; } };
+	return { reveal, updateVisibility, setPetalController: controller => { petals = controller; } };
 }

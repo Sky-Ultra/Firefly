@@ -7,26 +7,28 @@
 	<meta name="referrer" content="no-referrer">
 	<meta name="theme-color" content="#ffffee">
 	<title>Falling for you</title>
-	<link rel="stylesheet" href="/love/styles.css?v=11">
+	<link rel="stylesheet" href="/love/styles.css?v=12">
 	<link rel="stylesheet" href="/love/pixel-farewell.css?v=4">
+	<link rel="stylesheet" href="/love/page-navigation.css?v=1">
 	<link rel="icon" type="image/svg+xml" href="/love/favicon.svg">
 	<script defer src="/love/config.js?v=6"></script>
 	<script defer src="/love/js/geometry.js?v=1"></script>
 	<script defer src="/love/js/animation.js?v=8"></script>
 	<script defer src="/love/js/tree.js?v=1"></script>
 	<script defer src="/love/js/ui.js?v=4"></script>
-	<script defer src="/love/js/pixel-farewell.js?v=4"></script>
-	<script defer src="/love/js/third-page.js?v=2"></script>
-	<script defer src="/love/js/afterword.js?v=3"></script>
+	<script defer src="/love/js/pixel-farewell.js?v=5"></script>
+	<script defer src="/love/js/third-page.js?v=3"></script>
+	<script defer src="/love/js/afterword.js?v=4"></script>
 	<script defer src="/love/js/reading-progress.js?v=1"></script>
-	<script defer src="/love/js/main.js?v=7"></script>
+	<script defer src="/love/js/page-navigation.js?v=1"></script>
+	<script defer src="/love/js/main.js?v=8"></script>
 </head>
 <body data-pagefind-ignore="all">
 	<audio loop id="bgm" preload="none" src="/love/bgm.mp3"></audio>
 	<div id="heart-petal-field" aria-hidden="true"></div>
 	<div id="love-reading-progress" role="progressbar" aria-label="当前页阅读进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><span></span></div>
 	<main>
-		<section id="love-first-page" aria-label="爱情树">
+		<section id="love-first-page" aria-label="爱情树" tabindex="-1">
 			<div id="viewport">
 				<div id="scene">
 					<div id="main">
@@ -39,14 +41,14 @@
 							<path d="M32 56C27 46 2 33 2 18C2 0 26-5 32 14C38-5 62 0 62 18C62 33 37 46 32 56Z" fill="currentColor"/>
 						</svg>
 						<span class="intro-caption">Falling for you</span>
-						<span class="intro-updated">最后更新时间<time datetime="2026-10-11">2026.10.11</time></span>
+						<span class="intro-updated">最后更新时间<time datetime="2026-10-23">2026.10.23</time></span>
 					</button>
 					<div id="tree-caption" aria-label="树下寄语" hidden><p></p></div>
 				</div>
 				<article id="letter" aria-label="写给 sy 的信" hidden></article>
 			</div>
 		</section>
-		<section id="afterword" aria-label="写在树后的话" hidden>
+		<section id="afterword" aria-label="写在树后的话" tabindex="-1" hidden>
 			<article class="afterword-content">
 				<div class="afterword-stanza afterword-opening">
 					<p>如果你看到了这里，大概你已经拒绝我了一段时间，好吧，所以我制作，且启动了彩蛋</p>
@@ -190,7 +192,52 @@
 				</div>
 			</article>
 		</section>
+		<section id="love-fourth-page" aria-label="写在十月二十三日的话" tabindex="-1" hidden>
+			<article class="afterword-content">
+				<div class="afterword-stanza afterword-opening">
+					<p>本页面更新于10月23日</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>我似乎已经不知道该如何面对你</p>
+					<p>只能在这里写点东西，期盼哪天有人可以看到一眼…</p>
+					<p>毕竟我觉得你今天也算是继续拒绝我吧…</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>说不心痛那肯定是假的吧…虽然这么说可能有点冒犯，但是爱而不得肯定是很难受的体验吧…更何况我毕竟暗恋了这么久…对不起。不知道你能否理解，我也是快二十年了第一次动了真心…</p>
+					<p>虽然实话实说，我并不太相信你所谓的不会喜欢别人…你或许只是想“体面”的拒绝我而已…但是我相信你也知道的，尽管你拒绝我很多次，但是我的心也很难被改变，我只能，或许也只还能在背后继续暗恋你…但是我仍然抱有一点希望，等你在这方面有想法的时候，才能再想起我吧…</p>
+					<p>我知道，也许我们的机会有点渺茫了。你不喜欢我。我自己也总是在深夜一厢情愿地幻想…我总是这样。罢了。</p>
+					<p>插个话，在写这些东西的时候，我一直在翻看聊天记录。不知为何，其实我也有一些你高中时期的照片。我必须承认，高中时期的你似乎并没有这么漂亮，但是我还是喜欢了你这么多年…真是好神奇啊，也许我只是真的喜欢你…</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>不知道为什么，我在思念这方面已经有一点痛苦了…我真的好累啊，我好想你。不要冷暴力，我求你了，让我试试吧…我真的很难想象呀，为什么会有人可以让我这么魂牵梦绕呢…</p>
+					<p>我记得你之前曾经说过不愿意和朋友谈恋爱，但是朋友才是最好的恋爱对象呀，不和朋友谈恋爱是完全与我的恋爱观相悖的。如果你曾经到访过我的主网站的话，你也许会读到过这样的文章…所以，我也只能把你之前说的这句话，也当成是拒绝了…</p>
+					<p>所以，言至于此，你就这么不喜欢我吗…我真的很想知道，你究竟是哪里不喜欢我？我到底哪里不好…是我长得不好看吗…唉…我不知道啊…</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>不过也没关系，现在已经比之前好了。最开始的那段时间，真的是被折磨得夜不能寐…就是在想起来的时候会比较难受。或许也能被时间冲淡抚平吧…</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>如同我曾经写过的：有些人只是短暂地经过，却在我们的注意力矩阵里留下了极高的权重；有些记忆明明已经过去很多年，却依然能跨越漫长的时间序列，被某个相似的瞬间重新激活。尽管我们中间跨越了两三年…但是你在我心中那一年留下的权重，足够我在接下来的一生中，都能在我的注意力矩阵中被激活。同时，不知你是否记得，其实有三四个月的时间，你的座位都在我的右前方。那个时候，每天上课都能看见你，感觉真好啊…</p>
+					<p>就好像在亿万次参数更新、无数次梯度下降之后，整个模型仍然固执地保留着一个未曾收敛的愿望。</p>
+				</div>
+				<div class="afterword-stanza">
+					<p>欲追云兮云已散，空余月兮照旧宫…</p>
+					<p>只求与君共朝暮，不羡瑶台万载春…</p>
+					<p>愿我们在清醒的现实再会吧…我喜欢你…</p>
+				</div>
+			</article>
+		</section>
 	</main>
+	<nav id="love-page-navigation" aria-label="页面导航" hidden>
+		<button id="love-page-nav-toggle" type="button" aria-label="展开页面导航" aria-controls="love-page-nav-list" aria-expanded="false"><span class="page-nav-toggle-line is-current" aria-hidden="true"></span><span class="page-nav-toggle-line" aria-hidden="true"></span><span class="page-nav-toggle-line" aria-hidden="true"></span><span class="page-nav-toggle-line" aria-hidden="true"></span></button>
+		<div id="love-page-nav-list" class="page-nav-list">
+			<span class="page-nav-current" aria-hidden="true"></span>
+			<button class="page-nav-item" type="button" data-page="1" aria-label="前往第一页" aria-controls="love-first-page" aria-current="page"><span class="page-nav-label">第一页</span><span class="page-nav-line" aria-hidden="true"></span></button>
+			<button class="page-nav-item" type="button" data-page="2" aria-label="前往第二页" aria-controls="afterword"><span class="page-nav-label">第二页</span><span class="page-nav-line" aria-hidden="true"></span></button>
+			<button class="page-nav-item" type="button" data-page="3" aria-label="前往第三页" aria-controls="love-third-page"><span class="page-nav-label">第三页</span><span class="page-nav-line" aria-hidden="true"></span></button>
+			<button class="page-nav-item" type="button" data-page="4" aria-label="前往第四页" aria-controls="love-fourth-page"><span class="page-nav-label">第四页</span><span class="page-nav-line" aria-hidden="true"></span></button>
+		</div>
+	</nav>
 	<button id="love-scroll-indicator" type="button" aria-label="向下滑动，阅读下一页" aria-controls="afterword" hidden>
 		<span class="love-scroll-hint" hidden>向下滑动</span>
 		<svg class="love-scroll-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 7 7 7-7"/></svg>
