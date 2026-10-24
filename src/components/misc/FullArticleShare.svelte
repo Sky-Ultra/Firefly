@@ -23,6 +23,8 @@ export let onBack: () => void;
 
 let width: number = DEFAULT_ARTICLE_SHARE.width;
 let fontSize: number = DEFAULT_ARTICLE_SHARE.fontSize;
+let showLink = true;
+let showAuthorDate = true;
 let images: { url: string; bytes: number }[] = [];
 let generating = false;
 let dirty = false;
@@ -62,7 +64,7 @@ async function generate(randomize = false) {
 	const selected = randomize
 		? getNextPosterCover(covers, currentCover, currentCover)
 		: currentCover;
-	const settings = { width, fontSize };
+	const settings = { width, fontSize, showLink, showAuthorDate };
 	const timeout = window.setTimeout(
 		() =>
 			job.abort(
@@ -127,6 +129,8 @@ function download(index: number) {
 function reset() {
 	width = DEFAULT_ARTICLE_SHARE.width;
 	fontSize = DEFAULT_ARTICLE_SHARE.fontSize;
+	showLink = true;
+	showAuthorDate = true;
 	void generate();
 }
 </script>
@@ -136,6 +140,11 @@ function reset() {
 		<div><h2>{t("全文长图", "Full article image")}</h2><p>{t("保留正文与高光 · 无二维码 · 高清 PNG", "Full text and highlights · No QR code · HD PNG")}</p></div>
 		<JellyHover profile="control"><button data-jelly-surface class="share-secondary" on:click={onBack}>{t("返回常规海报", "Back to poster")}</button></JellyHover>
 	</div>
+	<fieldset class="full-share-elements">
+		<legend>{t("显示元素", "Visible elements")}</legend>
+		<label><input type="checkbox" bind:checked={showLink} on:change={changed} />{t("显示底部网页链接", "Show website link at the bottom")}</label>
+		<label><input type="checkbox" bind:checked={showAuthorDate} on:change={changed} />{t("显示作者与时间", "Show author and date")}</label>
+	</fieldset>
 	<div class="full-share-settings">
 		<label>{t("排版宽度", "Layout width")}<select bind:value={width} on:change={changed}>
 			{#each ARTICLE_WIDTHS as value}<option value={value}>{value === 480 ? t("窄版", "Narrow") : value === 600 ? t("推荐版", "Recommended") : t("宽版", "Wide")} · {value}px</option>{/each}
@@ -179,6 +188,11 @@ h2 { margin: 0; font-size: 20px; font-weight: 700; color: #182230; }
 .full-share-heading p, .full-share-hint { color: #667085; font-size: 12px; line-height: 1.8; margin: 6px 0 0; }
 .full-share-settings { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; padding: 18px 0 6px; }
 label { display: grid; gap: 6px; flex: 1; min-width: 120px; font-size: 12px; font-weight: 600; }
+.full-share-elements { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 14px 0 0; padding: 10px 12px 12px; border: 1px solid #e4e7ec; border-radius: 10px; }
+.full-share-elements legend { padding: 0 4px; color: #667085; font-size: 12px; }
+.full-share-elements label { display: inline-flex; flex: none; align-items: center; gap: 8px; min-width: 0; min-height: 28px; cursor: pointer; }
+.full-share-elements input { width: 16px; height: 16px; flex: none; accent-color: var(--share-color); cursor: pointer; }
+.full-share-elements input:focus-visible { outline: 2px solid var(--share-color); outline-offset: 3px; }
 select { width: 100%; background: #f8fafc; border: 1px solid #e4e7ec; border-radius: 9px; padding: 10px 8px; color: #344054; font-size: 13px; }
 button { border-radius: 10px; font-size: 13px; padding: 11px 14px; line-height: 1.5; font-weight: 600; cursor: pointer; }
 button:disabled { opacity: .5; cursor: not-allowed; }

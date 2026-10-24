@@ -15,6 +15,65 @@ test("article image has readable defaults and offers three widths and four font 
 	assert.deepEqual(DEFAULT_ARTICLE_SHARE, { width: 600, fontSize: 18 });
 });
 
+test("article image text elements independently honor both visibility choices", async () => {
+	const module = await import("../src/utils/article-share-layout");
+	assert.equal(typeof module.getArticleShareMetadata, "function");
+	const options = {
+		siteTitle: "Sky",
+		author: "Sky",
+		date: "2026-10-23",
+		url: "https://example.com/post/",
+	};
+	assert.deepEqual(
+		module.getArticleShareMetadata({
+			...options,
+			showLink: true,
+			showAuthorDate: true,
+		}),
+		{ meta: "Sky · 2026-10-23", footer: "Sky\nhttps://example.com/post/" },
+	);
+	assert.deepEqual(
+		module.getArticleShareMetadata({
+			...options,
+			showLink: false,
+			showAuthorDate: true,
+		}),
+		{ meta: "Sky · 2026-10-23", footer: "Sky" },
+	);
+	assert.deepEqual(
+		module.getArticleShareMetadata({
+			...options,
+			showLink: true,
+			showAuthorDate: false,
+		}),
+		{ meta: "", footer: "https://example.com/post/" },
+	);
+	assert.deepEqual(
+		module.getArticleShareMetadata({
+			...options,
+			showLink: false,
+			showAuthorDate: false,
+		}),
+		{ meta: "", footer: "" },
+	);
+});
+
+test("both checkbox choices are applied on regeneration and reset to the recommended defaults", () => {
+	const article = source("src/components/misc/FullArticleShare.svelte");
+	for (const option of ["showLink", "showAuthorDate"]) {
+		assert.match(article, new RegExp(`bind:checked=\\{${option}\\}`));
+		assert.equal(
+			(article.match(new RegExp(`${option} = true`, "g")) ?? []).length,
+			2,
+		);
+	}
+	assert.match(article, /显示底部网页链接/);
+	assert.match(article, /显示作者与时间/);
+	const renderer = source("src/utils/article-share-renderer.ts");
+	assert.match(renderer, /if \(metadata\.meta\)/);
+	assert.match(renderer, /if \(metadata\.footer\)/);
+});
+
 test("long images split without missing or overlapping pixels and never silently shrink text", async () => {
 	assert.ok(existsSync(file("src/utils/article-share-layout.ts")));
 	const { planArticleSlices } = await import(

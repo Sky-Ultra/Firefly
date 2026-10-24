@@ -31,21 +31,34 @@ test("publishes the supplied essay with today's date, Sky and the exact descript
 	);
 });
 
-test("preserves every original Word character and all nine highlights without adding images", () => {
+test("corrects the narrative to first person while preserving the original wording and highlights", () => {
 	const plain = body(source)
 		.replace(/<[^>]+>/g, "")
 		.replace(/\s/g, "");
 	assert.equal(plain.length, 547);
 	assert.equal(
 		createHash("sha256").update(plain).digest("hex"),
-		"915a4946c31d80e0245eeeb1a0da62135d9b3e3576756a40fd793a489b4aebc3",
+		"77f22a47896723a697fba3d68cd4d07388ade9b0e842be0d36f00fc4ed94692b",
 	);
 	assert.equal(
 		(body(source).match(/<mark class="theme-highlight">/g) ?? []).length,
 		9,
 	);
 	assert.doesNotMatch(body(source), /!\[|<img/);
-	assert.match(body(source), /跑得足够快， {2}\n把真心捧得足够高/);
+	assert.doesNotMatch(body(source), /你/);
+	assert.match(body(source), /我总是这样。/);
+	assert.match(body(source), /从此，我与自己，悲喜同舟。/);
+});
+
+test("restores the same independent paragraphs and intentional gaps as the other essays", () => {
+	const paragraphs = body(source).trim().split("\n\n");
+	assert.equal(paragraphs.length, 55);
+	assert.equal(
+		paragraphs.filter((p) => p.startsWith('<div class="word-paragraph-gap"'))
+			.length,
+		7,
+	);
+	assert.doesNotMatch(body(source), / {2}\n|<br\s*\/?\s*>/);
 });
 
 test("pairs the complete English poem and the same highlighter positions", () => {
@@ -60,6 +73,7 @@ test("pairs the complete English poem and the same highlighter positions", () =>
 	);
 	assert.match(
 		translation,
-		/From now on, you sail with yourself, through joy and sorrow/,
+		/From now on, I sail with myself, through joy and sorrow/,
 	);
+	assert.doesNotMatch(body(translation), /\byou(?:r|rself)?\b/i);
 });

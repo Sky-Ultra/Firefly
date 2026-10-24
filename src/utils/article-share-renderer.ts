@@ -1,7 +1,11 @@
-import { planArticleSlices } from "./article-share-layout";
+import {
+	type ArticleShareVisibility,
+	getArticleShareMetadata,
+	planArticleSlices,
+} from "./article-share-layout";
 import "@/styles/article-share.css";
 
-export interface ArticleShareOptions {
+export interface ArticleShareOptions extends ArticleShareVisibility {
 	title: string;
 	description: string;
 	author: string;
@@ -32,9 +36,7 @@ export async function renderArticleShare(
 	options: ArticleShareOptions,
 ): Promise<Blob[]> {
 	const { signal, english } = options;
-	const byline = [
-		...new Set([options.siteTitle, options.author].filter(Boolean)),
-	].join(" · ");
+	const metadata = getArticleShareMetadata(options);
 	const say = (zh: string, en: string) => options.progress(english ? en : zh);
 	const source = Array.from(
 		document.querySelectorAll<HTMLElement>(
@@ -78,9 +80,8 @@ export async function renderArticleShare(
 		}
 		const content = document.createElement("div");
 		content.className = "article-export-content";
-		content.append(
-			textElement("p", `${byline} · ${options.date}`, "article-export-meta"),
-		);
+		if (metadata.meta)
+			content.append(textElement("p", metadata.meta, "article-export-meta"));
 		content.append(textElement("h1", options.title, "article-export-title"));
 		if (options.description)
 			content.append(
@@ -117,9 +118,10 @@ export async function renderArticleShare(
 			image.loading = "eager";
 		}
 		content.append(body);
-		content.append(
-			textElement("p", `${byline}\n${options.url}`, "article-export-footer"),
-		);
+		if (metadata.footer)
+			content.append(
+				textElement("p", metadata.footer, "article-export-footer"),
+			);
 		sheet.append(content);
 		document.body.append(stage);
 		await document.fonts.ready;
