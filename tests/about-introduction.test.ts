@@ -9,6 +9,7 @@ const aboutPage = readFileSync(
 const addedParagraphs = [
 	"目前最喜欢使用的Agent产品是ChatGPT Codex以及DeepSeek Harness。我已经在Codex上使用超过90亿Token。",
 	"感觉我还是非常情绪稳定的喵！",
+	"（永远）烟酒不沾，与烟酒为敌。也请别拿什么礼貌应酬和我说事...",
 	"嘻嘻，我还是白纸一张喵~",
 	"喜欢和朋友一起玩，游戏，旅行，上课，聊天",
 ];

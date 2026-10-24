@@ -1,7 +1,7 @@
 ---
 title: “我与自己 悲喜同舟”
 titleEn: "With Myself, Through Joy and Sorrow"
-published: 2026-10-23
+published: 2026-10-24
 description: |-
   纵有千般眷恋，终随暮雪入旧年...
   欲追云兮云已散，空余月兮照旧宫...

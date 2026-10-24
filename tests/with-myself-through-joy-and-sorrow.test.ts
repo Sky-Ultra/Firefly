@@ -15,10 +15,10 @@ const translation = read(
 );
 const body = (text: string) => text.replace(/^---\n[\s\S]*?\n---\n/, "");
 
-test("publishes the supplied essay with today's date, Sky and the exact description", () => {
+test("uses the corrected actual publication date, Sky and the exact description", () => {
 	for (const field of [
 		"title: “我与自己 悲喜同舟”",
-		"published: 2026-10-23",
+		"published: 2026-10-24",
 		"author: Sky",
 		"category: 随笔",
 		"image: random",
