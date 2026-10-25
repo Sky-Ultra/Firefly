@@ -1,4 +1,5 @@
 ---
+import LocalizedText from "@/components/common/LocalizedText.astro";
 import { commentConfig } from "@/config/commentConfig";
 import { url } from "@/utils/url-utils";
 
@@ -18,7 +19,27 @@ const config = {
 };
 ---
 
-<div id="tcomment"></div>
+<private-comment-branch>
+  <label class="private-send-toggle"><input type="checkbox" data-private-toggle autocomplete="off" disabled /><LocalizedText zh="私密发送" en="Private send" /></label>
+  <div data-private-mount></div>
+  <div data-public-comments><div id="tcomment"></div></div>
+</private-comment-branch>
+<script>
+  import frameScript from "@/scripts/private-comment-frame.js?raw";
+  import { registerPrivateComments } from "@/utils/private-comments";
+  registerPrivateComments(frameScript);
+</script>
+<style>
+  private-comment-branch { display: block; }
+  .private-send-toggle { display: inline-flex; align-items: center; gap: .45rem; min-height: 32px; margin-bottom: .25rem; color: var(--content-meta); font-size: .85rem; cursor: pointer; }
+  .private-send-toggle input { accent-color: var(--primary); width: 15px; height: 15px; cursor: pointer; }
+  .private-send-toggle input:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+  private-comment-branch :global(iframe[data-private-comment-frame][hidden]), private-comment-branch[data-private-active] :global(.tk-submit[hidden]) { display: none !important; }
+  private-comment-branch :global([data-private-total]) { font-size: 0; }
+  private-comment-branch :global([data-private-total]::after) { content: attr(data-private-total); font-size: var(--private-count-font); }
+  private-comment-branch :global([data-private-count-visible]) { visibility: visible !important; opacity: 1 !important; }
+  private-comment-branch[data-has-private-comments] :global(.tk-comments-no) { display: none !important; }
+</style>
 <script is:inline src={jsUrl}></script>
 {cssUrl && <link rel="stylesheet" href={cssUrl.startsWith("http") ? cssUrl : url(cssUrl)} />}
 <script is:inline define:vars={{ config }}>

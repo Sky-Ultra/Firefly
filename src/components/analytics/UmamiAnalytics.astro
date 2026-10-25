@@ -27,7 +27,12 @@ const replaysEnabled = replays?.enabled ?? false;
 const replaysSampleRate = replays?.sampleRate ?? 0.15;
 const replaysMaskLevel = replays?.maskLevel ?? "moderate";
 const replaysMaxDuration = replays?.maxDuration ?? 300000;
-const replaysBlockSelector = replays?.blockSelector?.trim();
+const replaysBlockSelector = [
+	replays?.blockSelector?.trim(),
+	"[data-private-comment-frame]",
+]
+	.filter(Boolean)
+	.join(", ");
 ---
 
 <script
