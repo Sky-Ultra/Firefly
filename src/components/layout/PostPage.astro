@@ -40,7 +40,7 @@ const useHomeWallpaper = isHomePage(Astro.url.pathname);
 const randomCoverImages =
 	hasRandomCovers || useHomeWallpaper ? await getRandomCoverImages() : [];
 const mobileHomeWallpaperImages = useHomeWallpaper
-	? getMobileHomeWallpaperImages()
+	? await getMobileHomeWallpaperImages()
 	: [];
 let randomCoverFallbackIndex = 0;
 const getRandomCoverFallback = (entry: PostEntry): string | undefined => {

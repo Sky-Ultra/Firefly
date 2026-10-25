@@ -34,6 +34,7 @@ const {
 		id: string;
 		previewUrl: string;
 		originalUrl: string;
+		wallpaperUrl?: string;
 	}
 
 	interface RandomCoverRuntime {
@@ -217,7 +218,7 @@ const {
 			if (!candidate) break;
 			for (const slide of slides) {
 				if (slide.dataset.index === slideIndexes[offset]) {
-					slide.dataset.wallpaperSrc = candidate.originalUrl;
+					slide.dataset.wallpaperSrc = candidate.wallpaperUrl ?? candidate.originalUrl;
 					slide.dataset.wallpaperLoadState = "idle";
 				}
 			}
@@ -312,7 +313,7 @@ const {
 			const wallpaperImage = slot.classList.contains("banner-image-slot-mobile")
 				? mobileWallpaper
 				: desktopWallpaper;
-			if (wallpaperImage) replaceWallpaperImage(slot, wallpaperImage.originalUrl);
+			if (wallpaperImage) replaceWallpaperImage(slot, wallpaperImage.wallpaperUrl ?? wallpaperImage.originalUrl);
 		}
 	}
 

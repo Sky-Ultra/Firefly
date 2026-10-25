@@ -1,0 +1,32 @@
+{
+  "id": "/RhineWuwa/",
+  "name": "SOLARIS · 鸣潮档案终端",
+  "short_name": "鸣潮档案",
+  "description": "鸣潮主题三维阅读终端：潮汐任务、伴星任务、危行纪闻、世界档案与书籍回响",
+  "lang": "zh-CN",
+  "start_url": "/RhineWuwa/?source=pwa",
+  "scope": "/RhineWuwa/",
+  "display": "standalone",
+  "background_color": "#e8e5e1",
+  "theme_color": "#e8e5e1",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

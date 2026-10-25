@@ -17,6 +17,18 @@ const sites = [
 		prefix: "ASTRAL-EXPRESS",
 		downloads: 40,
 	},
+	{
+		directory: "RhineWuwa",
+		title: "鸣潮档案终端",
+		prefix: "SOLARIS",
+		downloads: 115,
+	},
+	{
+		directory: "RhineZZZ",
+		title: "绝区零档案终端",
+		prefix: "NEW-ERIDU",
+		downloads: 72,
+	},
 ];
 
 test("prebuilt Rhine releases retain exact bytes when uploaded through Git", () => {
@@ -119,14 +131,36 @@ test("Rhine pages do not become main-site navigation or article entrances", () =
 		resolve(root, "src/config/navBarConfig.ts"),
 		"utf8",
 	);
-	assert.doesNotMatch(navigation, /RhineGenshin|RhineStarRail/);
+	assert.doesNotMatch(
+		navigation,
+		/RhineGenshin|RhineStarRail|RhineWuwa|RhineZZZ|Stickerwebsite/,
+	);
 });
 
-test("Rhine response rules are scoped to the two standalone directories", () => {
+test("standalone response rules stay scoped to their own directories", () => {
 	const path = resolve(root, "public/_headers");
 	assert.ok(existsSync(path), "scoped response rules must exist");
 	const headers = readFileSync(path, "utf8");
 	const rules = headers.split(/\r?\n/).filter((line) => line.startsWith("/"));
 	assert.ok(rules.length > 0);
-	assert.ok(rules.every((rule) => /^\/Rhine(?:Genshin|StarRail)\//.test(rule)));
+	assert.ok(
+		rules.every((rule) =>
+			/^\/(?:Rhine(?:Genshin|StarRail|Wuwa|ZZZ)|Stickerwebsite)\//.test(rule),
+		),
+	);
+});
+
+test("the sticker studio is a complete standalone release with relative resources", () => {
+	const directory = resolve(root, "public/Stickerwebsite");
+	const html = readFileSync(resolve(directory, "index.html"), "utf8");
+	assert.match(html, /贴点/);
+	assert.match(html, /data-pagefind-ignore="all"/);
+	assert.doesNotMatch(html, /(?:src|href)="\//);
+	for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
+		if (/^(?:https?:|data:)/.test(match[1])) continue;
+		assert.ok(existsSync(resolve(directory, match[1])), match[1]);
+	}
+	for (const file of ["server.cjs", "package.json", ".env", "AGENTS.md"]) {
+		assert.ok(!existsSync(resolve(directory, file)), file);
+	}
 });

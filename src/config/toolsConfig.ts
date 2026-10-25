@@ -34,6 +34,57 @@ export const personalTools: ToolItem[] = [
 		],
 		spotlight: true,
 	},
+	{
+		name: "Rhine Wuwa",
+		description: {
+			zh: "索拉里斯鸣潮档案终端：在三维档案阵列中，阅读潮汐、伴星任务与世界档案。",
+			en: "A Solaris archive terminal for Wuthering Waves: explore main quests, companion stories and world records in a 3D archive.",
+		},
+		category: { zh: "本人项目", en: "My project" },
+		icon: "material-symbols:inventory-2-rounded",
+		image: "/RhineWuwa/icons/icon-192.png",
+		href: "/RhineWuwa/",
+		accent: "#63b4a4",
+		tags: [
+			{ zh: "Web", en: "Web" },
+			{ zh: "3D 档案", en: "3D archive" },
+			{ zh: "PWA", en: "PWA" },
+		],
+	},
+	{
+		name: "Rhine ZZZ",
+		description: {
+			zh: "新艾利都绝区零档案终端：整理剧情、代理人和城市见闻，支持检索、收藏与阅读足迹。",
+			en: "A New Eridu archive terminal for Zenless Zone Zero, with stories, agents and city records, search, bookmarks and reading history.",
+		},
+		category: { zh: "本人项目", en: "My project" },
+		icon: "material-symbols:inventory-2-rounded",
+		image: "/RhineZZZ/icons/icon-192.png",
+		href: "/RhineZZZ/",
+		accent: "#d4a546",
+		tags: [
+			{ zh: "Web", en: "Web" },
+			{ zh: "3D 档案", en: "3D archive" },
+			{ zh: "PWA", en: "PWA" },
+		],
+	},
+	{
+		name: "Sticker website",
+		description: {
+			zh: "贴点照片贴纸工作台：上传照片，添加贴纸与文字，在浏览器内编辑并导出高清图片。",
+			en: "Tiedian photo and sticker studio: add photos, stickers and text, edit in your browser and export high-resolution images.",
+		},
+		category: { zh: "本人项目", en: "My project" },
+		icon: "material-symbols:photo-camera-rounded",
+		image: "/Stickerwebsite/assets/favicon.svg",
+		href: "/Stickerwebsite/",
+		accent: "#e75d3b",
+		tags: [
+			{ zh: "Web", en: "Web" },
+			{ zh: "照片贴纸", en: "Photo stickers" },
+			{ zh: "本地处理", en: "On-device" },
+		],
+	},
 ];
 
 export const thirdPartyTools: ToolItem[] = [

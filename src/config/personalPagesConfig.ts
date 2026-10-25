@@ -107,6 +107,20 @@ export const personalPagesConfig: PersonalPagesConfig = {
 					"Wild geese fly far, yet cannot carry the moonlight; fish and dragons dive and leap, tracing patterns on the water.",
 			},
 			{
+				id: "flowers-and-unspoken-feelings",
+				date: "2026-10-23T20:12:00+11:00",
+				content: "花开未敢传心事，花落方知春已深。",
+				contentEn:
+					"While flowers bloomed, I dared not share my feelings; only when they fell did I realize how far spring had gone.",
+			},
+			{
+				id: "mayfly-and-starlight",
+				date: "2026-10-23T18:56:00+11:00",
+				content: "蜉蝣不识千秋夜，也借星光渡此生",
+				contentEn:
+					"The mayfly knows nothing of a thousand autumn nights, yet borrows starlight to carry it through this life.",
+			},
+			{
 				id: "winter-snow-october-22",
 				date: "2026-10-22T21:50:00+11:00",
 				content: "纵有千般眷恋，终随暮雪入旧年",

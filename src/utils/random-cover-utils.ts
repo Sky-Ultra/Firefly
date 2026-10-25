@@ -8,6 +8,7 @@ export interface RandomCoverImage {
 	id: string;
 	previewUrl: string;
 	originalUrl: string;
+	wallpaperUrl?: string;
 }
 
 const randomCoverModules = import.meta.glob<ImageMetadata>(
@@ -36,8 +37,14 @@ const mobileHomeWallpaperOriginalModules = import.meta.glob<string>(
 	},
 );
 
+const mobileHomeWallpaperModules = import.meta.glob<ImageMetadata>(
+	"../Using Picture mobile/**/*.{png,jpg,jpeg,webp,avif}",
+	{ eager: true, import: "default" },
+);
+
 let randomCoverImagesPromise: Promise<RandomCoverImage[]> | undefined;
 let posterCoverImagesPromise: Promise<string[]> | undefined;
+let mobileHomeWallpaperImagesPromise: Promise<RandomCoverImage[]> | undefined;
 
 export function isRandomCoverImage(image?: string): boolean {
 	return image === RANDOM_COVER_IMAGE;
@@ -71,10 +78,17 @@ export function getRandomCoverImages(): Promise<RandomCoverImage[]> {
 					format: "webp",
 					quality: getImageQuality(),
 				});
+				const wallpaper = await getImage({
+					src: image,
+					width: Math.min(image.width, 3200),
+					format: "webp",
+					quality: 92,
+				});
 				return {
 					id,
 					previewUrl: result.src,
 					originalUrl,
+					wallpaperUrl: wallpaper.src,
 				};
 			}),
 		);
@@ -105,9 +119,10 @@ export function getPosterCoverImages(): Promise<string[]> {
 }
 
 /**
- * 扫描移动端首页专用壁纸池。这里保留原图 URL，不参与文章封面分配。
+ * 扫描移动端首页专用壁纸池，生成高清 WebP；原图仍保留，不参与文章封面分配。
  */
-export function getMobileHomeWallpaperImages(): RandomCoverImage[] {
+export function getMobileHomeWallpaperImages(): Promise<RandomCoverImage[]> {
+	if (mobileHomeWallpaperImagesPromise) return mobileHomeWallpaperImagesPromise;
 	const images = Object.entries(mobileHomeWallpaperOriginalModules).sort(
 		([a], [b]) => a.localeCompare(b, "zh-CN"),
 	);
@@ -118,9 +133,22 @@ export function getMobileHomeWallpaperImages(): RandomCoverImage[] {
 		);
 	}
 
-	return images.map(([id, originalUrl]) => ({
-		id,
-		previewUrl: originalUrl,
-		originalUrl,
-	}));
+	mobileHomeWallpaperImagesPromise = Promise.all(
+		images.map(async ([id, originalUrl]) => {
+			const image = mobileHomeWallpaperModules[id];
+			const wallpaper = await getImage({
+				src: image,
+				width: Math.min(image.width, 1440),
+				format: "webp",
+				quality: 92,
+			});
+			return {
+				id,
+				previewUrl: originalUrl,
+				originalUrl,
+				wallpaperUrl: wallpaper.src,
+			};
+		}),
+	);
+	return mobileHomeWallpaperImagesPromise;
 }

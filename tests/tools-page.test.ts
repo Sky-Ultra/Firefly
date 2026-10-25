@@ -26,8 +26,28 @@ test("Tools is listed under the personal navigation menu", () => {
 	);
 });
 
-test("the sole personal tool links to the deployed Rhine Genshin app and its real icon", () => {
-	assert.equal(personalTools.length, 1);
+test("personal tools link to their deployed folder paths and retain the featured Genshin card", () => {
+	assert.deepEqual(
+		personalTools.map((tool) => [tool.name, tool.href]),
+		[
+			["Rhine Genshin", "/RhineGenshin/"],
+			["Rhine Wuwa", "/RhineWuwa/"],
+			["Rhine ZZZ", "/RhineZZZ/"],
+			["Sticker website", "/Stickerwebsite/"],
+		],
+	);
+	for (const project of personalTools) {
+		assert.ok(
+			existsSync(resolve(root, "public", project.href.slice(1), "index.html")),
+			project.name,
+		);
+		assert.ok(
+			project.image &&
+				existsSync(resolve(root, "public", project.image.slice(1))),
+			project.name,
+		);
+		assert.equal(project.category.zh, "本人项目");
+	}
 	const tool = personalTools[0];
 	assert.equal(tool.name, "Rhine Genshin");
 	assert.equal(tool.href, "/RhineGenshin/");

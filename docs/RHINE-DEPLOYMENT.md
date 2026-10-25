@@ -1,5 +1,7 @@
 # 独立 Rhine 档案页面
 
+2026-10-26 新增 Rhine Wuwa、Rhine ZZZ、Sticker website 的独立路径与神器库入口，见 [本人项目部署](PERSONAL-PROJECTS-DEPLOYMENT.md)。以下保留此前两站的初次部署记录。
+
 ## 部署边界
 
 2026-10-05 按用户要求，将两个本地网站的当前版本作为独立静态发行包部署到现有主站：

@@ -39,3 +39,55 @@
 
 /RhineStarRail/pwa-build.json
   Cache-Control: no-cache, must-revalidate
+
+/RhineWuwa/*
+  X-Robots-Tag: noindex, nofollow
+
+/RhineWuwa/
+  Cache-Control: no-cache, must-revalidate
+
+/RhineWuwa/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/RhineWuwa/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/RhineWuwa/manifest.webmanifest
+  Cache-Control: no-cache, must-revalidate
+
+/RhineWuwa/update*
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/RhineWuwa/pwa-build.json
+  Cache-Control: no-cache, must-revalidate
+
+/RhineZZZ/*
+  X-Robots-Tag: noindex, nofollow
+
+/RhineZZZ/
+  Cache-Control: no-cache, must-revalidate
+
+/RhineZZZ/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/RhineZZZ/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/RhineZZZ/manifest.webmanifest
+  Cache-Control: no-cache, must-revalidate
+
+/RhineZZZ/update*
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/RhineZZZ/pwa-build.json
+  Cache-Control: no-cache, must-revalidate
+
+/Stickerwebsite/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache, must-revalidate
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+
+/Stickerwebsite/
+  Cache-Control: no-cache, must-revalidate

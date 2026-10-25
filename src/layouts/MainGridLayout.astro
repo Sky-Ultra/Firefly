@@ -126,14 +126,18 @@ const homeRandomCoverImages = isHomePageCheck
 	? await getRandomCoverImages()
 	: [];
 const mobileHomeWallpaperImages = isHomePageCheck
-	? getMobileHomeWallpaperImages()
+	? await getMobileHomeWallpaperImages()
 	: [];
+const homeWallpaperSlideCount = Math.max(
+	1,
+	Math.floor(backgroundWallpaper.common?.carousel?.count ?? 16),
+);
 const desktopHomeWallpaperUrls = homeRandomCoverImages
-	.slice(-10)
-	.map((image) => image.originalUrl);
+	.slice(-homeWallpaperSlideCount)
+	.map((image) => image.wallpaperUrl ?? image.originalUrl);
 const mobileHomeWallpaperUrls = mobileHomeWallpaperImages
-	.slice(-10)
-	.map((image) => image.originalUrl);
+	.slice(-homeWallpaperSlideCount)
+	.map((image) => image.wallpaperUrl ?? image.originalUrl);
 const backgroundImages =
 	isHomePageCheck && desktopHomeWallpaperUrls.length > 0
 		? {
@@ -452,6 +456,7 @@ const hasMultipleImages =
             var effect = container.dataset.carouselEffect || 'fade';
             var FADE_MS = 800;
             var transitioning = false;
+			var transitionGeneration = 0;
 			var slideLoadPromises = new WeakMap();
 
             // 创建过渡遮罩（用于 kenburns 效果的 LQIP 桥接）
@@ -593,12 +598,34 @@ const hasMultipleImages =
 				return findLoadableSlide(slides, currentIndex + 1, 0);
 			}
 
+			function releaseDistantSlides(slides, currentIndex) {
+				var keep = new Set([
+					slides[currentIndex],
+					slides[(currentIndex + 1) % slides.length],
+					slides[(currentIndex + slides.length - 1) % slides.length]
+				]);
+				container.querySelectorAll('.slide-item').forEach(function(slide) {
+					if (keep.has(slide) || !slide.dataset.wallpaperSrc || slide.dataset.wallpaperLoadState !== 'loaded') return;
+					var image = slide.querySelector('img');
+					if (!image) return;
+					image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+					image.style.opacity = '0';
+					image.setAttribute('data-deferred-image', 'true');
+					slide.dataset.wallpaperLoadState = 'idle';
+					slideLoadPromises.delete(slide);
+					var placeholder = slide.querySelector('.lqip-placeholder');
+					if (placeholder) placeholder.classList.remove('loaded');
+				});
+			}
+
 			function prepareCurrentAndNext() {
 				var slides = getVisibleSlides();
 				if (slides.length === 0) return;
 				var currentIndex = getCurrentIndex(slides);
+				releaseDistantSlides(slides, currentIndex);
 
 				ensureSlideLoaded(slides[currentIndex]).then(function(success) {
+					if (slides[0] !== getVisibleSlides()[0]) return;
 					if (success || getCurrentIndex(slides) !== currentIndex) return;
 					findLoadableSlide(slides, currentIndex + 1, 0).then(function(nextIndex) {
 						if (nextIndex < 0 || nextIndex === currentIndex) return;
@@ -611,6 +638,7 @@ const hasMultipleImages =
 			}
 
             function applySlideChange(slides, nextIndex) {
+				if (slides[0] !== getVisibleSlides()[0]) return;
                 // Slide 效果需要 prev-waiting 辅助类
                 if (effect === 'slide') {
                     for (var i = 0; i < slides.length; i++) {
@@ -632,21 +660,33 @@ const hasMultipleImages =
 				if (nextIndex === getCurrentIndex(slides)) return Promise.resolve(false);
 
 				var restartAutoPlay = resetProgress !== false && appState.isPlaying;
-				if (restartAutoPlay) stopAutoPlay();
+				if (restartAutoPlay) {
+					clearTimeout(appState.autoPlayTimer);
+					appState.autoPlayTimer = null;
+					appState.autoPlayGeneration++;
+				}
+				var playbackGeneration = appState.autoPlayGeneration;
+				function resumeAutoPlay() {
+					if (restartAutoPlay && appState.isPlaying && playbackGeneration === appState.autoPlayGeneration) startAutoPlay();
+				}
 				transitioning = true;
+				var generation = transitionGeneration;
 
 				return findLoadableSlide(slides, nextIndex, 0).then(function(loadableIndex) {
+					if (generation !== transitionGeneration) return false;
 					if (loadableIndex < 0 || loadableIndex === getCurrentIndex(slides)) {
 						transitioning = false;
-						if (restartAutoPlay) startAutoPlay();
+						resumeAutoPlay();
 						return false;
 					}
 
 					return new Promise(function(resolve) {
 						var finishTransition = function() {
+							if (generation !== transitionGeneration) { resolve(false); return; }
 							transitioning = false;
+							releaseDistantSlides(slides, loadableIndex);
 							preloadNextAvailable(slides, loadableIndex);
-							if (restartAutoPlay) startAutoPlay();
+							resumeAutoPlay();
 							resolve(true);
 						};
 
@@ -666,9 +706,10 @@ const hasMultipleImages =
 						}
 					});
 				}).catch(function(error) {
+					if (generation !== transitionGeneration) return false;
 					console.warn('Wallpaper preload failed.', error);
 					transitioning = false;
-					if (restartAutoPlay) startAutoPlay();
+					resumeAutoPlay();
 					return false;
 				});
 			}
@@ -676,6 +717,7 @@ const hasMultipleImages =
             var appState = {
                 isPlaying: false,
                 autoPlayTimer: null,
+                autoPlayGeneration: 0,
                 touchStartX: 0,
                 touchEndX: 0
             };
@@ -684,14 +726,16 @@ const hasMultipleImages =
                 stopAutoPlay();
                 if (!isCarouselEnabled()) return;
                 if (!isBannerWallpaperMode()) return;
+				if (document.hidden) { resumeOnVisibility = true; return; }
 
                 appState.isPlaying = true;
+                var generation = appState.autoPlayGeneration;
                 appState.autoPlayTimer = setTimeout(function advance() {
-                    if (!appState.isPlaying) return;
+                    if (!appState.isPlaying || generation !== appState.autoPlayGeneration) return;
                     var slides = getVisibleSlides();
                     var currentIdx = getCurrentIndex(slides);
 					changeToSlide(currentIdx + 1, false).finally(function() {
-						if (!appState.isPlaying) return;
+						if (!appState.isPlaying || generation !== appState.autoPlayGeneration) return;
 						appState.autoPlayTimer = setTimeout(advance, interval);
 					});
                 }, interval);
@@ -699,6 +743,7 @@ const hasMultipleImages =
 
             function stopAutoPlay() {
                 appState.isPlaying = false;
+                appState.autoPlayGeneration++;
                 if (appState.autoPlayTimer) {
                     clearTimeout(appState.autoPlayTimer);
                     appState.autoPlayTimer = null;
@@ -707,6 +752,8 @@ const hasMultipleImages =
 
             // 键盘控制
             document.addEventListener('keydown', function(e) {
+                if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+                if (e.target && e.target.closest && e.target.closest('input, textarea, select, button, a, [role="textbox"], [contenteditable]:not([contenteditable="false"])')) return;
                 if (!isBannerWallpaperMode() || !isCarouselEnabled()) return;
                 if (e.key === 'ArrowRight') {
                     var slides = getVisibleSlides();
@@ -746,6 +793,30 @@ const hasMultipleImages =
                 }
             });
 			window.addEventListener('firefly:wallpaper-assignments-ready', prepareCurrentAndNext);
+
+			var resumeOnVisibility = false;
+			document.addEventListener('visibilitychange', function() {
+				if (document.hidden) {
+					resumeOnVisibility = appState.isPlaying;
+					stopAutoPlay();
+				} else if (resumeOnVisibility) {
+					resumeOnVisibility = false;
+					prepareCurrentAndNext();
+					startAutoPlay();
+				}
+			});
+			var lastIsDesktop = window.innerWidth >= 1024;
+			window.addEventListener('resize', function() {
+				var isDesktop = window.innerWidth >= 1024;
+				if (isDesktop === lastIsDesktop) return;
+				lastIsDesktop = isDesktop;
+				transitionGeneration++;
+				transitioning = false;
+				var wasPlaying = appState.isPlaying;
+				stopAutoPlay();
+				prepareCurrentAndNext();
+				if (wasPlaying) startAutoPlay();
+			});
 
             // 随机首张
             var slides = getVisibleSlides();

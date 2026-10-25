@@ -7,7 +7,7 @@
     "start": "astro dev",
     "check": "tsx scripts/check-post-translations.ts && astro check",
     "check:translations": "tsx scripts/check-post-translations.ts",
-    "build": "node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && tsx scripts/check-post-translations.ts && astro build && npx tsx scripts/subset-fonts.ts && pagefind --site dist",
+    "build": "node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && tsx scripts/check-post-translations.ts && astro build && node scripts/ensure-random-cover-originals.mjs && npx tsx scripts/subset-fonts.ts && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
