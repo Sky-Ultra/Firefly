@@ -93,6 +93,41 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "warm-snow-and-a-moment",
+				date: "2026-10-24T19:13:00+11:00",
+				content: "淡雪融时阳彩暖，一瞬芳华抵万年",
+				contentEn:
+					"As light snow melts, the sunlight glows warm; a fleeting moment of beauty is worth ten thousand years.",
+			},
+			{
+				id: "moonlight-and-water-patterns",
+				date: "2026-10-23T22:08:00+11:00",
+				content: "鸿雁长飞光不度，鱼龙潜跃水成文",
+				contentEn:
+					"Wild geese fly far, yet cannot carry the moonlight; fish and dragons dive and leap, tracing patterns on the water.",
+			},
+			{
+				id: "winter-snow-october-22",
+				date: "2026-10-22T21:50:00+11:00",
+				content: "纵有千般眷恋，终随暮雪入旧年",
+				contentEn:
+					"Though I hold a thousand affections, in the end they follow the evening snow into years gone by.",
+			},
+			{
+				id: "world-execute-me",
+				date: "2026-10-22T18:52:00+11:00",
+				content: "world.execute(me)\n\n世界，请处决我...",
+				contentEn: "world.execute(me)\n\nWorld, please execute me...",
+			},
+			{
+				id: "half-a-moon-and-a-river-boat",
+				date: "2026-10-21T18:27:00+11:00",
+				content:
+					"春风曾照故人眸，\n一别山河几度秋。\n若问相思何处寄，\n半轮明月半江舟。",
+				contentEn:
+					"Spring's breeze once lit a dear one's eyes,\nHow many autumns have passed over hills and rivers since we parted?\nIf you ask where I might send this longing,\nHalf a bright moon, a boat upon the river.",
+			},
+			{
 				id: "randomness-and-eternity",
 				date: "2026-10-20T18:16:00+11:00",
 				content:
