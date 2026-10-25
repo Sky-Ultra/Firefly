@@ -1,3 +1,58 @@
+// One timeline per article; 90% of the original speed is 10% slower.
+function revealAfterwordArticle(section) {
+	if (section.dataset.revealPrepared === "true") return;
+	section.dataset.revealPrepared = "true";
+	const paragraphs = Array.from(section.querySelectorAll("p"));
+	if (prefersReducedMotion()) {
+		section.dataset.revealStarted = "true";
+		return;
+	}
+
+	const tokens = [];
+	const chunkSizes = [3, 5, 4, 6];
+	const tokenInterval = 28 / 0.9;
+	for (const paragraph of paragraphs) {
+		const characters = Array.from(paragraph.textContent);
+		const fragment = document.createDocumentFragment();
+		let offset = 0;
+		while (offset < characters.length) {
+			const size = chunkSizes[tokens.length % chunkSizes.length];
+			const token = document.createElement("span");
+			token.className = "afterword-token";
+			token.textContent = characters.slice(offset, offset + size).join("");
+			token.style.setProperty("--token-delay", `${(tokens.length * tokenInterval).toFixed(2)}ms`);
+			fragment.appendChild(token);
+			tokens.push(token);
+			offset += size;
+		}
+		paragraph.replaceChildren(fragment);
+	}
+
+	function start() {
+		if (section.dataset.revealStarted === "true") return;
+		section.dataset.revealStarted = "true";
+		requestAnimationFrame(() => {
+			for (const token of tokens) token.classList.add("is-visible");
+		});
+	}
+
+	if (!("IntersectionObserver" in window)) {
+		start();
+		return;
+	}
+	const observer = new IntersectionObserver(entries => {
+		if (!entries.some(entry => entry.isIntersecting)) return;
+		const destination = document.body?.dataset?.lovePageTarget;
+		const pageIds = ["love-first-page", "afterword", "love-third-page", "love-fourth-page"];
+		if (destination && pageIds[Number(destination) - 1] !== section.id) return;
+		const bounds = section.getBoundingClientRect();
+		if (bounds.bottom <= 0 || bounds.top >= window.innerHeight) return;
+		observer.disconnect();
+		start();
+	}, { rootMargin: "0px 0px -8% 0px", threshold: 0 });
+	observer.observe(section);
+}
+
 function initAfterword() {
 	const indicator = document.getElementById("love-scroll-indicator");
 	const hint = indicator.querySelector(".love-scroll-hint");
@@ -5,55 +60,14 @@ function initAfterword() {
 	const fourthPage = document.getElementById("love-fourth-page");
 	let activated = false;
 	let fourthActivated = false;
-	const thirdPage = initThirdPage({ revealParagraphs, canEnter: () => activated, onReveal: revealFourthPage });
-
-	function showParagraph(paragraph) {
-		if (paragraph.dataset.revealed === "true") return;
-		paragraph.dataset.revealed = "true";
-		if (prefersReducedMotion()) return;
-
-		const characters = Array.from(paragraph.textContent);
-		const chunkSizes = [3, 5, 4, 6];
-		const fragment = document.createDocumentFragment();
-		const tokens = [];
-		let offset = 0;
-		while (offset < characters.length) {
-			const size = chunkSizes[tokens.length % chunkSizes.length];
-			const token = document.createElement("span");
-			token.className = "afterword-token";
-			token.textContent = characters.slice(offset, offset + size).join("");
-			token.style.setProperty("--token-delay", `${tokens.length * 28}ms`);
-			fragment.appendChild(token);
-			tokens.push(token);
-			offset += size;
-		}
-		paragraph.replaceChildren(fragment);
-		requestAnimationFrame(() => {
-			for (const token of tokens) token.classList.add("is-visible");
-		});
-	}
-
-	function revealParagraphs(section) {
-		if (!("IntersectionObserver" in window)) {
-			for (const paragraph of section.querySelectorAll("p")) showParagraph(paragraph);
-			return;
-		}
-		const observer = new IntersectionObserver((entries) => {
-			for (const entry of entries) {
-				if (!entry.isIntersecting) continue;
-				observer.unobserve(entry.target);
-				showParagraph(entry.target);
-			}
-		}, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
-		for (const paragraph of section.querySelectorAll("p")) observer.observe(paragraph);
-	}
+	const thirdPage = initThirdPage({ revealParagraphs: revealAfterwordArticle, canEnter: () => activated, onReveal: revealFourthPage });
 
 	function revealAfterword() {
 		if (activated) return;
 		activated = true;
 		afterword.hidden = false;
 		indicator.hidden = false;
-		revealParagraphs(afterword);
+		revealAfterwordArticle(afterword);
 		thirdPage.updateVisibility();
 		updateIndicatorVisibility();
 	}
@@ -62,7 +76,7 @@ function initAfterword() {
 		if (fourthActivated) return;
 		fourthActivated = true;
 		fourthPage.hidden = false;
-		revealParagraphs(fourthPage);
+		revealAfterwordArticle(fourthPage);
 	}
 
 	function navigateToPage(page) {
