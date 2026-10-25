@@ -98,3 +98,16 @@ test("the fourth page owns its own reading percentage", () => {
 	assert.equal(f.state.percentage, "50%");
 	assert.equal(f.state.attributes["aria-label"], "第 4 页阅读进度");
 });
+
+test("next-page arrows follow the exact same progress fraction on desktop and mobile", () => {
+	const f = fixture();
+	for (const viewport of [390, 800, 1200]) {
+		const height = viewport + 2000;
+		const boundsAt = progress => ({ top: -2000 * progress, bottom: height - 2000 * progress, height });
+		assert.equal(f.context.isNextPageArrowVisible(boundsAt(0.799), viewport), false);
+		assert.equal(f.context.isNextPageArrowVisible(boundsAt(0.8), viewport), true);
+		assert.equal(f.context.isNextPageArrowVisible(boundsAt(1), viewport), true);
+		assert.equal(f.context.isNextPageArrowVisible({ top: -height, bottom: 0, height }, viewport), false);
+		assert.equal(f.context.isNextPageArrowVisible({ top: 100, bottom: height + 100, height }, viewport), false);
+	}
+});

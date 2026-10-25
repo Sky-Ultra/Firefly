@@ -2,6 +2,8 @@ function initThirdPage({ revealParagraphs, canEnter, onReveal = () => {} }) {
 	const afterword = document.getElementById("afterword");
 	const thirdPage = document.getElementById("love-third-page");
 	const indicator = document.getElementById("third-page-scroll-indicator");
+	const fourthPage = document.getElementById("love-fourth-page");
+	const fourthIndicator = document.getElementById("fourth-page-scroll-indicator");
 	const pixelFarewell = initPixelFarewell(thirdPage);
 	let unlocked = false;
 	let entered = false;
@@ -20,9 +22,8 @@ function initThirdPage({ revealParagraphs, canEnter, onReveal = () => {} }) {
 	}
 
 	function updateVisibility() {
-		const bounds = afterword.getBoundingClientRect();
-		const nearEnd = Math.min(180, window.innerHeight * 0.22);
-		indicator.hidden = !eligible() || bounds.top >= 0 || bounds.bottom > window.innerHeight + nearEnd;
+		indicator.hidden = !canEnter() || afterword.hidden || !isNextPageArrowVisible(afterword.getBoundingClientRect(), window.innerHeight);
+		fourthIndicator.hidden = !unlocked || thirdPage.hidden || fourthPage.hidden || !isNextPageArrowVisible(thirdPage.getBoundingClientRect(), window.innerHeight);
 	}
 
 	function beginEntry() {
@@ -62,9 +63,15 @@ function initThirdPage({ revealParagraphs, canEnter, onReveal = () => {} }) {
 	}
 
 	function openThirdPage() {
-		if (!eligible()) return;
+		if (!canEnter()) return;
 		reveal();
 		thirdPage.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+	}
+
+	function openFourthPage() {
+		if (!unlocked || fourthPage.hidden) return;
+		fourthPage.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+		fourthPage.focus({ preventScroll: true });
 	}
 
 	function handleWheel(event) {
@@ -110,6 +117,7 @@ function initThirdPage({ revealParagraphs, canEnter, onReveal = () => {} }) {
 	}
 
 	indicator.addEventListener("click", openThirdPage);
+	fourthIndicator.addEventListener("click", openFourthPage);
 	window.addEventListener("scroll", updateVisibility, { passive: true });
 	window.addEventListener("resize", updateVisibility, { passive: true });
 	window.addEventListener("wheel", handleWheel, { passive: true });

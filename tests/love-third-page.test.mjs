@@ -4,19 +4,24 @@ import test from "node:test";
 import vm from "node:vm";
 
 const source = readFileSync(new URL("../public/love/js/third-page.js", import.meta.url), "utf8");
+const progressSource = readFileSync(new URL("../public/love/js/reading-progress.js", import.meta.url), "utf8");
 const html = readFileSync(new URL("../public/love/index.html", import.meta.url), "utf8");
 const styles = readFileSync(new URL("../public/love/styles.css", import.meta.url), "utf8");
 
 function fixture(reduced = false) {
-	const state = { now: 1000, bottom: 1800, top: -400, viewport: 800, active: true, boosts: [], scrolls: [], reveals: [], focused: false, pixelStarts: 0, fourthReveals: 0 };
+	const state = { now: 1000, bottom: 1800, top: -400, thirdTop: 0, thirdBottom: 1800, viewport: 800, active: true, boosts: [], scrolls: [], fourthScrolls: [], reveals: [], focused: false, fourthFocused: false, pixelStarts: 0, fourthReveals: 0 };
 	const windowListeners = {};
 	const buttonListeners = {};
+	const fourthButtonListeners = {};
 	const observers = [];
 	const values = new Set();
 	const button = { hidden: true, addEventListener(type, listener) { buttonListeners[type] = listener; } };
-	const afterword = { getBoundingClientRect: () => ({ bottom: state.bottom, top: state.top }) };
+	const fourthButton = { hidden: true, addEventListener(type, listener) { fourthButtonListeners[type] = listener; } };
+	const afterword = { hidden: false, getBoundingClientRect: () => ({ bottom: state.bottom, top: state.top, height: state.bottom - state.top }) };
+	const fourth = { hidden: true, scrollIntoView(options) { state.fourthScrolls.push(options); }, focus() { state.fourthFocused = true; } };
 	const third = {
 		hidden: true,
+		getBoundingClientRect: () => ({ top: state.thirdTop, bottom: state.thirdBottom, height: state.thirdBottom - state.thirdTop }),
 		classList: { add: (...names) => names.forEach(name => values.add(name)), remove: (...names) => names.forEach(name => values.delete(name)), contains: name => values.has(name) },
 		scrollIntoView(options) { state.scrolls.push(options); },
 		focus() { state.focused = true; },
@@ -25,7 +30,7 @@ function fixture(reduced = false) {
 	const window = { innerHeight: state.viewport, addEventListener(type, listener) { windowListeners[type] = listener; } };
 	const context = vm.createContext({
 		window,
-		document: { body: { dataset: {} }, getElementById: id => ({ afterword, "love-third-page": third, "third-page-scroll-indicator": button })[id] },
+		document: { body: { dataset: {} }, getElementById: id => ({ afterword, "love-third-page": third, "third-page-scroll-indicator": button, "love-fourth-page": fourth, "fourth-page-scroll-indicator": fourthButton })[id] },
 		performance: { now: () => state.now },
 		prefersReducedMotion: () => reduced,
 		initPixelFarewell: () => ({ start() { state.pixelStarts++; } }),
@@ -36,10 +41,11 @@ function fixture(reduced = false) {
 		},
 	});
 	window.IntersectionObserver = context.IntersectionObserver;
+	vm.runInContext(progressSource, context);
 	vm.runInContext(source, context);
-	const controller = context.initThirdPage({ canEnter: () => state.active, revealParagraphs: section => state.reveals.push(section), onReveal: () => { state.fourthReveals++; } });
+	const controller = context.initThirdPage({ canEnter: () => state.active, revealParagraphs: section => state.reveals.push(section), onReveal: () => { state.fourthReveals++; fourth.hidden = false; } });
 	controller.setPetalController({ boostFor: duration => state.boosts.push(duration) });
-	return { state, third, button, controller, observers, windowListeners, buttonListeners, context };
+	return { state, third, fourth, button, fourthButton, controller, observers, windowListeners, buttonListeners, fourthButtonListeners, context };
 }
 
 test("the third page stays hidden until requested, and the update date uses October twenty-third", () => {
@@ -50,13 +56,25 @@ test("the third page stays hidden until requested, and the update date uses Octo
 	assert.match(styles, /third-page-fade-in 1\.5s/);
 });
 
-test("the small arrow only appears near the bottom of the activated second page", () => {
+test("the second-page arrow appears at eighty percent, hides above that threshold and remains reusable", () => {
 	const f = fixture();
 	f.controller.updateVisibility();
 	assert.equal(f.button.hidden, true);
-	f.state.bottom = 900;
+	f.state.top = -1119;
+	f.state.bottom = 1081;
+	f.controller.updateVisibility();
+	assert.equal(f.button.hidden, true);
+	f.state.top = -1120;
+	f.state.bottom = 1080;
 	f.controller.updateVisibility();
 	assert.equal(f.button.hidden, false);
+	f.buttonListeners.click();
+	f.controller.updateVisibility();
+	assert.equal(f.button.hidden, false, "returning to page two still offers the arrow after page three is unlocked");
+	f.state.top = -1100;
+	f.state.bottom = 1100;
+	f.controller.updateVisibility();
+	assert.equal(f.button.hidden, true);
 	f.state.active = false;
 	f.controller.updateVisibility();
 	assert.equal(f.button.hidden, true);
@@ -78,7 +96,48 @@ test("clicking the arrow unlocks the third page once, then entry starts the fade
 	assert.equal(f.state.reveals.length, 1);
 	assert.equal(f.state.pixelStarts, 1);
 	f.buttonListeners.click();
-	assert.equal(f.state.scrolls.length, 1);
+	assert.equal(f.state.scrolls.length, 2);
+	assert.equal(f.state.fourthReveals, 1);
+	assert.equal(f.state.pixelStarts, 1);
+});
+
+test("the third-page arrow uses the same eighty-percent threshold and scrolls to page four", () => {
+	const f = fixture();
+	f.controller.updateVisibility();
+	assert.equal(f.fourthButton.hidden, true);
+	f.buttonListeners.click();
+	f.state.top = -2200;
+	f.state.bottom = 0;
+	f.state.thirdTop = -799;
+	f.state.thirdBottom = 1001;
+	f.controller.updateVisibility();
+	assert.equal(f.button.hidden, true);
+	assert.equal(f.fourthButton.hidden, true);
+	f.state.thirdTop = -800;
+	f.state.thirdBottom = 1000;
+	f.controller.updateVisibility();
+	assert.equal(f.fourthButton.hidden, false);
+	f.fourthButtonListeners.click();
+	assert.equal(f.state.fourthScrolls.length, 1);
+	assert.equal(f.state.fourthScrolls[0].behavior, "smooth");
+	assert.equal(f.state.fourthFocused, true);
+	f.state.thirdTop = -1800;
+	f.state.thirdBottom = 0;
+	f.controller.updateVisibility();
+	assert.equal(f.fourthButton.hidden, true);
+	f.state.thirdTop = -800;
+	f.state.thirdBottom = 1000;
+	f.controller.updateVisibility();
+	assert.equal(f.fourthButton.hidden, false);
+});
+
+test("both arrows share the existing animation and reduced-motion navigation", () => {
+	assert.match(html, /id="fourth-page-scroll-indicator"[^>]*aria-controls="love-fourth-page"[^>]*hidden/);
+	assert.match(styles, /#third-page-scroll-indicator, #fourth-page-scroll-indicator \{/);
+	const f = fixture(true);
+	f.buttonListeners.click();
+	f.fourthButtonListeners.click();
+	assert.equal(f.state.fourthScrolls[0].behavior, "auto");
 });
 
 test("a swipe that merely reaches the bottom does not enter; a deliberate new upward swipe does", () => {

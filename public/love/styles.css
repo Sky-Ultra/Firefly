@@ -115,7 +115,7 @@ canvas {
 	transform-origin: bottom right;
 	content: "";
 }
-#start-button:focus-visible, #music-toggle:focus-visible, #love-scroll-indicator:focus-visible, #third-page-scroll-indicator:focus-visible {
+#start-button:focus-visible, #music-toggle:focus-visible, #love-scroll-indicator:focus-visible, #third-page-scroll-indicator:focus-visible, #fourth-page-scroll-indicator:focus-visible {
 	outline: 2px solid #be1a25;
 	outline-offset: 5px;
 }
@@ -240,7 +240,7 @@ canvas {
 	50% { transform: translateY(15px); }
 }
 
-#third-page-scroll-indicator {
+#third-page-scroll-indicator, #fourth-page-scroll-indicator {
 	position: fixed;
 	z-index: 6;
 	left: 50%;
@@ -256,7 +256,7 @@ canvas {
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
 }
-#third-page-scroll-indicator:hover { color: #d96f94; }
+#third-page-scroll-indicator:hover, #fourth-page-scroll-indicator:hover { color: #d96f94; }
 .third-page-scroll-icon {
 	width: 3.9rem;
 	height: 3.9rem;

@@ -4,6 +4,10 @@ function getPageReadingProgress(bounds, viewportHeight) {
 	return Math.max(0, Math.min(1, -bounds.top / scrollRange));
 }
 
+function isNextPageArrowVisible(bounds, viewportHeight) {
+	return bounds.top <= 1 && bounds.bottom > 1 && getPageReadingProgress(bounds, viewportHeight) >= 0.8;
+}
+
 function initReadingProgress() {
 	const bar = document.getElementById("love-reading-progress");
 	const badge = document.getElementById("love-reading-percentage");
