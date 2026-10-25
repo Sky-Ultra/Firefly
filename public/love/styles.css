@@ -179,16 +179,16 @@ canvas {
 	color: var(--petal-color);
 	font-size: var(--petal-size);
 	line-height: 1;
-	opacity: var(--petal-opacity);
+	opacity: calc(var(--petal-opacity) * var(--petal-fade, 1));
 	filter: drop-shadow(0 0 0.18em color-mix(in srgb, var(--petal-color) 34%, transparent));
 	will-change: transform, opacity;
 	animation: heart-petal-drift var(--petal-duration) linear var(--petal-delay) forwards;
 }
 @keyframes heart-petal-drift {
 	0% { transform: translate3d(var(--start-x), var(--start-y), 0) rotate(var(--start-rotate)) scale(0.82); opacity: 0; }
-	8% { opacity: var(--petal-opacity); }
+	8% { opacity: calc(var(--petal-opacity) * var(--petal-fade, 1)); }
 	48% { transform: translate3d(var(--mid-x), var(--mid-y), 0) rotate(var(--mid-rotate)) scale(1); }
-	90% { opacity: var(--petal-opacity); }
+	90% { opacity: calc(var(--petal-opacity) * var(--petal-fade, 1)); }
 	100% { transform: translate3d(var(--end-x), var(--end-y), 0) rotate(var(--end-rotate)) scale(0.88); opacity: 0; }
 }
 
@@ -361,7 +361,32 @@ canvas {
 	font-size: 0.75rem;
 	font-weight: 600;
 	font-variant-numeric: tabular-nums;
-	pointer-events: none;
+	padding: 0;
+	cursor: pointer;
+	transition: background 180ms ease, border-color 180ms ease;
+}
+#love-reading-percentage-value { transition: opacity 180ms ease, transform 180ms ease; }
+.reading-reset-icon {
+	position: absolute;
+	width: 22px;
+	height: 22px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	opacity: 0;
+	transform: rotate(-45deg) scale(0.8);
+	transition: opacity 180ms ease, transform 220ms ease;
+}
+#love-reading-percentage:disabled { opacity: 1; cursor: default; }
+#love-reading-percentage:focus-visible { outline: 2px solid #cb89a4; outline-offset: 4px; }
+#love-reading-percentage:not(:disabled):is(:focus-visible, :active) #love-reading-percentage-value { opacity: 0; transform: translateY(-4px); }
+#love-reading-percentage:not(:disabled):is(:focus-visible, :active) .reading-reset-icon { opacity: 1; transform: rotate(0) scale(1); }
+@media (hover: hover) {
+	#love-reading-percentage:not(:disabled):hover { background: #faeaf0; border-color: #edc8d6; }
+	#love-reading-percentage:not(:disabled):hover #love-reading-percentage-value { opacity: 0; transform: translateY(-4px); }
+	#love-reading-percentage:not(:disabled):hover .reading-reset-icon { opacity: 1; transform: rotate(0) scale(1); }
 }
 #music-toggle {
 	bottom: max(1rem, env(safe-area-inset-bottom));
@@ -412,6 +437,7 @@ canvas {
 	.afterword-token { top: 0; opacity: 1; filter: none; transition: none; }
 	#love-third-page.third-page-awaiting-entry, #love-third-page.third-page-entering { opacity: 1; animation: none; }
 	#love-reading-progress span { transition: none; }
+	#love-reading-percentage, #love-reading-percentage-value, .reading-reset-icon { transition: none; }
 }
 
 @media (forced-colors: active) {

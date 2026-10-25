@@ -1,7 +1,15 @@
 async function startApp() {
 	initContent(CONFIG);
 	const afterword = initAfterword();
-	const readingProgress = initReadingProgress();
+	const letter = document.getElementById("letter");
+	const readingProgress = initReadingProgress({ onReset(section) {
+		section.scrollIntoView({ behavior: "auto", block: "start" });
+		if (section.id === "love-first-page") {
+			if (!letter.hidden) typewriter(letter);
+		} else {
+			revealAfterwordArticle(section, { restart: true });
+		}
+	} });
 	scaleContent();
 	const startMusic = initMusic();
 	const staticCanvas = initCanvas("static-canvas");
@@ -37,7 +45,6 @@ async function startApp() {
 	footer.draw();
 	await animateTreeMove(staticCanvas);
 	document.body.classList.add("letter-open");
-	const letter = document.getElementById("letter");
 	letter.hidden = false;
 	typewriter(letter);
 	afterword.showScrollHintWhenSecondLineStarts();

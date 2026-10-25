@@ -13,6 +13,7 @@ function fixture({ reduced = false, observer = true } = {}) {
 	const context = vm.createContext({
 		prefersReducedMotion: () => reduced,
 		requestAnimationFrame: callback => frames.push(callback),
+		cancelAnimationFrame() {},
 		document: {
 			body,
 			createDocumentFragment: () => ({ children: [], appendChild(child) { this.children.push(child); } }),
@@ -62,6 +63,27 @@ test("the output and token slide run ten percent slower", () => {
 	const interval = parseFloat(section.paragraphs[0].children[1].style["--token-delay"]);
 	assert(Math.abs(28 / interval - 0.9) < 0.001);
 	assert.match(styles, /transition: top 0\.356s ease, opacity 0\.356s ease, filter 0\.356s ease/);
+});
+
+test("manual restart cancels stale observers and restarts the whole article from its first token", () => {
+	const f = fixture();
+	const section = f.section();
+	f.reveal(section);
+	const oldObserver = f.observers[0];
+	oldObserver.callback([{ isIntersecting: true }]);
+	const oldTokens = section.paragraphs.flatMap(paragraph => paragraph.children);
+	f.context.revealAfterwordArticle(section, { restart: true });
+	assert.equal(oldObserver.disconnected, true);
+	assert.equal(section.dataset.revealStarted, undefined);
+	oldObserver.callback([{ isIntersecting: true }]);
+	assert.equal(section.dataset.revealStarted, undefined, "a stale entry cannot start the replacement timeline");
+	f.observers[1].callback([{ isIntersecting: true }]);
+	f.flush();
+	const newTokens = section.paragraphs.flatMap(paragraph => paragraph.children);
+	assert.notEqual(newTokens[0], oldTokens[0]);
+	assert.equal(newTokens[0].style["--token-delay"], "0.00ms");
+	assert(newTokens.every(token => token.classes.has("is-visible")));
+	assert(oldTokens.every(token => !token.classes.has("is-visible")));
 });
 
 test("each of pages two, three and four starts its own article once upon entry", () => {

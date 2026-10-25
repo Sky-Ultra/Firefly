@@ -1,7 +1,15 @@
 // One timeline per article; 90% of the original speed is 10% slower.
-function revealAfterwordArticle(section) {
-	if (section.dataset.revealPrepared === "true") return;
+const AfterwordRevealRuns = new WeakMap();
+
+function revealAfterwordArticle(section, { restart = false } = {}) {
+	if (section.dataset.revealPrepared === "true" && !restart) return;
+	const previous = AfterwordRevealRuns.get(section);
+	previous?.observer?.disconnect();
+	if (previous?.frame) cancelAnimationFrame(previous.frame);
+	const run = { observer: null, frame: 0 };
+	AfterwordRevealRuns.set(section, run);
 	section.dataset.revealPrepared = "true";
+	delete section.dataset.revealStarted;
 	const paragraphs = Array.from(section.querySelectorAll("p"));
 	if (prefersReducedMotion()) {
 		section.dataset.revealStarted = "true";
@@ -29,9 +37,11 @@ function revealAfterwordArticle(section) {
 	}
 
 	function start() {
-		if (section.dataset.revealStarted === "true") return;
+		if (AfterwordRevealRuns.get(section) !== run || section.dataset.revealStarted === "true") return;
 		section.dataset.revealStarted = "true";
-		requestAnimationFrame(() => {
+		run.frame = requestAnimationFrame(() => {
+			run.frame = 0;
+			if (AfterwordRevealRuns.get(section) !== run) return;
 			for (const token of tokens) token.classList.add("is-visible");
 		});
 	}
@@ -41,6 +51,7 @@ function revealAfterwordArticle(section) {
 		return;
 	}
 	const observer = new IntersectionObserver(entries => {
+		if (AfterwordRevealRuns.get(section) !== run) return;
 		if (!entries.some(entry => entry.isIntersecting)) return;
 		const destination = document.body?.dataset?.lovePageTarget;
 		const pageIds = ["love-first-page", "afterword", "love-third-page", "love-fourth-page"];
@@ -50,6 +61,7 @@ function revealAfterwordArticle(section) {
 		observer.disconnect();
 		start();
 	}, { rootMargin: "0px 0px -8% 0px", threshold: 0 });
+	run.observer = observer;
 	observer.observe(section);
 }
 

@@ -7,21 +7,21 @@
 	<meta name="referrer" content="no-referrer">
 	<meta name="theme-color" content="#ffffee">
 	<title>Falling for you</title>
-	<link rel="stylesheet" href="/love/styles.css?v=14">
+	<link rel="stylesheet" href="/love/styles.css?v=15">
 	<link rel="stylesheet" href="/love/pixel-farewell.css?v=4">
 	<link rel="stylesheet" href="/love/page-navigation.css?v=1">
 	<link rel="icon" type="image/svg+xml" href="/love/favicon.svg">
 	<script defer src="/love/config.js?v=6"></script>
 	<script defer src="/love/js/geometry.js?v=1"></script>
-	<script defer src="/love/js/animation.js?v=8"></script>
+	<script defer src="/love/js/animation.js?v=9"></script>
 	<script defer src="/love/js/tree.js?v=1"></script>
 	<script defer src="/love/js/ui.js?v=4"></script>
-	<script defer src="/love/js/pixel-farewell.js?v=5"></script>
+	<script defer src="/love/js/pixel-farewell.js?v=6"></script>
 	<script defer src="/love/js/third-page.js?v=4"></script>
-	<script defer src="/love/js/afterword.js?v=5"></script>
-	<script defer src="/love/js/reading-progress.js?v=2"></script>
+	<script defer src="/love/js/afterword.js?v=6"></script>
+	<script defer src="/love/js/reading-progress.js?v=3"></script>
 	<script defer src="/love/js/page-navigation.js?v=1"></script>
-	<script defer src="/love/js/main.js?v=8"></script>
+	<script defer src="/love/js/main.js?v=9"></script>
 </head>
 <body data-pagefind-ignore="all">
 	<audio loop id="bgm" preload="none" src="/love/bgm.mp3"></audio>
@@ -50,6 +50,9 @@
 		</section>
 		<section id="afterword" aria-label="写在树后的话" tabindex="-1" hidden>
 			<article class="afterword-content">
+				<div class="afterword-stanza afterword-opening">
+					<p>本页面最近更新于9月26号</p>
+				</div>
 				<div class="afterword-stanza afterword-opening">
 					<p>如果你看到了这里，大概你已经拒绝我了一段时间，好吧，所以我制作，且启动了彩蛋</p>
 					
@@ -242,7 +245,10 @@
 		<span class="pixel-emoticon-label">╥﹏╥...</span>
 		<button id="third-page-pixel-replay" type="button" aria-label="重播像素动画" title="重播"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.4 6.2"/><path d="M3 4v7h7"/></svg></button>
 	</div>
-	<div id="love-reading-percentage" aria-hidden="true" hidden>0%</div>
+	<button id="love-reading-percentage" type="button" aria-label="返回本页顶部并重新播放文字" title="返回本页顶部并重新播放文字" hidden>
+		<span id="love-reading-percentage-value" aria-hidden="true">0%</span>
+		<svg class="reading-reset-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.4 6.2"/><path d="M3 4v7h7"/></svg>
+	</button>
 	<button id="music-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false" hidden>
 		<span aria-hidden="true">♪</span>
 	</button>

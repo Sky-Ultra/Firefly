@@ -7,7 +7,7 @@ const source = readFileSync(new URL("../public/love/js/reading-progress.js", imp
 const html = readFileSync(new URL("../public/love/index.html", import.meta.url), "utf8");
 
 function fixture() {
-	const state = { offset: 0, viewport: 800, thirdHidden: true, fourthHidden: true, fill: {}, percentage: "", attributes: {}, frames: [], resizeCallback: null };
+	const state = { offset: 0, viewport: 800, thirdHidden: true, fourthHidden: true, fill: {}, percentage: "", attributes: {}, badgeAttributes: {}, resets: [], frames: [], resizeCallback: null };
 	const listeners = {};
 	const sections = [
 		{ id: "love-first-page", hidden: false, getBoundingClientRect: () => ({ top: -state.offset, height: 1000 }) },
@@ -16,15 +16,16 @@ function fixture() {
 		{ id: "love-fourth-page", get hidden() { return state.fourthHidden; }, getBoundingClientRect: () => ({ top: 6000 - state.offset, height: 2400 }) },
 	];
 	const bar = { hidden: true, style: { setProperty(name, value) { state.fill[name] = value; } }, setAttribute(name, value) { state.attributes[name] = value; } };
-	const badge = { hidden: true, set textContent(text) { state.percentage = text; } };
+	const badge = { hidden: true, setAttribute(name, value) { state.badgeAttributes[name] = value; }, addEventListener(type, listener) { listeners[`badge:${type}`] = listener; } };
+	const value = { set textContent(text) { state.percentage = text; } };
 	const context = vm.createContext({
-		document: { getElementById: id => ({ "love-reading-progress": bar, "love-reading-percentage": badge })[id], querySelectorAll: () => sections },
+		document: { getElementById: id => ({ "love-reading-progress": bar, "love-reading-percentage": badge, "love-reading-percentage-value": value })[id], querySelectorAll: () => sections },
 		window: { get innerHeight() { return state.viewport; }, addEventListener(type, listener) { listeners[type] = listener; } },
 		requestAnimationFrame(callback) { state.frames.push(callback); return state.frames.length; },
 		ResizeObserver: class { constructor(callback) { state.resizeCallback = callback; } observe() {} },
 	});
 	vm.runInContext(source, context);
-	return { state, context, bar, badge, listeners, controller: context.initReadingProgress() };
+	return { state, context, bar, badge, listeners, controller: context.initReadingProgress({ onReset(page) { state.resets.push(page.id); state.offset = [0, 1000, 4000, 6000][sections.indexOf(page)]; } }) };
 }
 
 test("progress is hidden before the opening and the date follows the requested October twenty-third", () => {
@@ -110,4 +111,41 @@ test("next-page arrows follow the exact same progress fraction on desktop and mo
 		assert.equal(f.context.isNextPageArrowVisible({ top: -height, bottom: 0, height }, viewport), false);
 		assert.equal(f.context.isNextPageArrowVisible({ top: 100, bottom: height + 100, height }, viewport), false);
 	}
+});
+
+test("the percentage button resets the current page rather than the whole website", () => {
+	const f = fixture();
+	f.state.offset = 2100;
+	f.controller.start();
+	assert.equal(f.state.percentage, "50%");
+	assert.equal(f.badge.disabled, false);
+	f.listeners["badge:click"]();
+	assert.deepEqual(f.state.resets, ["afterword"]);
+	assert.equal(f.state.offset, 1000);
+	assert.equal(f.state.percentage, "0%");
+	f.state.thirdHidden = false;
+	f.state.fourthHidden = false;
+	f.state.offset = 6800;
+	f.listeners["badge:click"]();
+	assert.deepEqual(f.state.resets, ["afterword", "love-fourth-page"]);
+	assert.equal(f.state.percentage, "0%");
+});
+
+test("page three keeps a read-only percentage and uses its existing pixel replay button", () => {
+	const f = fixture();
+	f.state.thirdHidden = false;
+	f.state.offset = 4600;
+	f.controller.start();
+	assert.equal(f.badge.disabled, true);
+	assert.equal(f.state.percentage, "50%");
+	f.listeners["badge:click"]();
+	assert.deepEqual(f.state.resets, []);
+	assert(!f.state.badgeAttributes["aria-label"].includes("重新播放"));
+});
+
+test("the percentage is a keyboard-accessible button with a separate replay icon", () => {
+	assert.match(html, /<button id="love-reading-percentage"[^>]*type="button"/);
+	assert.match(html, /id="love-reading-percentage-value"/);
+	assert.match(html, /class="reading-reset-icon"/);
+	assert.match(html, /本页面最近更新于9月26号/);
 });

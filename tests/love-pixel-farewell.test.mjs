@@ -92,13 +92,18 @@ test("leaving the third page pauses the countdown instead of destroying text off
 	assert.equal(f.section.dataset.pixelPhase, "countdown");
 });
 
-test("replay restores the original text and begins a fresh twelve-second countdown", () => {
+test("manual replay restores the original text and gives two minutes instead of the initial twelve seconds", () => {
 	const f = fixture();
 	f.controller.start(); f.frame(0); f.frame(12000); f.frame(14800); f.frame(17200);
 	f.state.replay(); f.frame(20000);
 	assert.equal(f.state.classes.has("third-page-text-disintegrated"), false);
 	assert.equal(f.result.hidden, true);
-	assert.equal(f.number.textContent, "12");
+	assert.equal(f.number.textContent, "120");
+	f.frame(139000);
+	assert.equal(f.number.textContent, "1");
+	assert.equal(f.section.dataset.pixelPhase, "countdown");
+	f.frame(140000);
+	assert.equal(f.section.dataset.pixelPhase, "dispersing");
 });
 
 test("pixel paths finish beyond the upper-left edge and assemble exactly at the face target", () => {

@@ -211,6 +211,7 @@ function startAmbientHeartPetals() {
   const maxPetals = 16;
   let spawnTimer = 0;
   let boostTimer = 0;
+  let restoreFrame = 0;
   let densityMultiplier = 1;
   let speedMultiplier = 1;
   let baselineCount = 0;
@@ -230,12 +231,16 @@ function startAmbientHeartPetals() {
     if (field.childElementCount >= maxPetals * densityMultiplier || document.hidden || prefersReducedMotion()) return;
 
     const petal = document.createElement("span");
-    const duration = randomBetween(16, 25);
-    const startX = randomBetween(82, 112);
-    const startY = randomBetween(-16, 24);
-    const endX = randomBetween(-24, 18);
-    const endY = randomBetween(92, 122);
-    const sway = randomBetween(-8, 8);
+    // Enter across both edges so parallel diagonal paths cover the whole screen.
+    const entersFromTop = Math.random() < 0.55;
+    const startX = entersFromTop ? randomBetween(8, 102) : 106;
+    const startY = entersFromTop ? -6 : randomBetween(-2, 92);
+    const slope = randomBetween(0.85, 1.2);
+    const distance = Math.min(startX + 6, (106 - startY) / slope);
+    const endX = startX - distance;
+    const endY = startY + distance * slope;
+    const duration = randomBetween(16, 25) * Math.max(0.45, distance / 100);
+    const sway = randomBetween(-1, 1) * Math.min(8, distance * 0.12);
     const size = randomBetween(11, 24);
 
     petal.className = "heart-petal";
@@ -270,22 +275,54 @@ function startAmbientHeartPetals() {
   }
 
   function restoreDensity() {
-    densityMultiplier = 1;
-    speedMultiplier = 1;
-    for (const petal of field.querySelectorAll('[data-petal-boost="true"]')) petal.remove();
-    for (const petal of field.querySelectorAll(".heart-petal")) syncPetalSpeed(petal);
-    const missing = Math.min(baselineCount, maxPetals) - field.childElementCount;
-    for (let i = 0; i < missing; i++) createPetal(true);
-    scheduleNextPetal();
+    const petals = Array.from(field.querySelectorAll(".heart-petal"));
+    const keep = new Set(petals.slice(-Math.min(baselineCount, maxPetals)));
+    for (const petal of petals) {
+      if (keep.has(petal)) delete petal.dataset.petalBoost;
+      else petal.dataset.petalBoost = "true";
+    }
+    const initialDensity = densityMultiplier;
+    const initialSpeed = speedMultiplier;
+    let startedAt = null;
+    let lastUpdate = -Infinity;
+    function easeBack(now) {
+      if (startedAt === null) startedAt = now;
+      const progress = Math.min(1, (now - startedAt) / 3000);
+      if (now - lastUpdate >= 50 || progress === 1) {
+        lastUpdate = now;
+        const eased = progress * progress * (3 - 2 * progress);
+        densityMultiplier = initialDensity + (1 - initialDensity) * eased;
+        speedMultiplier = initialSpeed + (1 - initialSpeed) * eased;
+        for (const petal of field.querySelectorAll(".heart-petal")) {
+          if (petal.dataset.petalBoost === "true") petal.style.setProperty("--petal-fade", String(1 - eased));
+          syncPetalSpeed(petal);
+        }
+      }
+      if (progress < 1) {
+        restoreFrame = requestAnimationFrame(easeBack);
+      } else {
+        restoreFrame = 0;
+        for (const petal of field.querySelectorAll('[data-petal-boost="true"]')) petal.remove();
+        const missing = Math.min(baselineCount, maxPetals) - field.childElementCount;
+        for (let i = 0; i < missing; i++) createPetal(true);
+        scheduleNextPetal();
+      }
+    }
+    restoreFrame = requestAnimationFrame(easeBack);
   }
 
   function boostFor(duration = 10000) {
     if (document.hidden || prefersReducedMotion()) return;
     window.clearTimeout(boostTimer);
-    baselineCount = Math.min(field.childElementCount || Math.ceil(maxPetals * 0.55), maxPetals);
+    if (restoreFrame) cancelAnimationFrame(restoreFrame);
+    restoreFrame = 0;
+    baselineCount = Math.min(field.childElementCount || Math.ceil(maxPetals * 0.65), maxPetals);
     densityMultiplier = 2.5;
     speedMultiplier = 2.5;
-    for (const petal of field.querySelectorAll(".heart-petal")) syncPetalSpeed(petal);
+    for (const petal of field.querySelectorAll(".heart-petal")) {
+      petal.style.setProperty("--petal-fade", "1");
+      syncPetalSpeed(petal);
+    }
     const missing = Math.ceil(baselineCount * densityMultiplier) - field.childElementCount;
     for (let i = 0; i < missing; i++) createPetal(true);
     scheduleNextPetal();
@@ -295,6 +332,11 @@ function startAmbientHeartPetals() {
   function syncPetalsWithPage() {
     window.clearTimeout(spawnTimer);
     if (document.hidden || prefersReducedMotion()) {
+      window.clearTimeout(boostTimer);
+      if (restoreFrame) cancelAnimationFrame(restoreFrame);
+      restoreFrame = 0;
+      densityMultiplier = 1;
+      speedMultiplier = 1;
       field.replaceChildren();
       return;
     }
@@ -302,7 +344,7 @@ function startAmbientHeartPetals() {
   }
 
   if (!prefersReducedMotion()) {
-    for (let i = 0; i < Math.ceil(maxPetals * 0.55); i++) createPetal(true);
+    for (let i = 0; i < Math.ceil(maxPetals * 0.65); i++) createPetal(true);
     scheduleNextPetal();
   }
   document.addEventListener("visibilitychange", syncPetalsWithPage);
@@ -321,7 +363,15 @@ function charDelay(char, base) {
   return base + Math.random() * base * 0.5;
 }
 
+const TypewriterRuns = new WeakMap();
+
 async function typewriter(el, speed = 100) {
+  const previous = TypewriterRuns.get(el);
+  const lines = previous?.lines ?? Array.from(el.querySelectorAll("p"), p => ({ p, text: p.textContent }));
+  const run = { lines };
+  TypewriterRuns.set(el, run);
+  const isCurrent = () => TypewriterRuns.get(el) === run;
+  for (const { p, text } of lines) p.textContent = text;
   el.style.display = "block";
   if (prefersReducedMotion()) return;
 
@@ -329,20 +379,17 @@ async function typewriter(el, speed = 100) {
   cursor.className = "typewriter-cursor";
   cursor.textContent = "_";
 
-  const lines = [];
-  const paragraphs = el.querySelectorAll("p");
-  for (const p of paragraphs) {
-    lines.push({ p, text: p.textContent });
-    p.textContent = "";
-  }
+  for (const { p } of lines) p.textContent = "";
 
   for (let i = 0; i < lines.length; i++) {
+    if (!isCurrent()) return;
     const line = lines[i];
     const textNode = document.createTextNode("");
     line.p.appendChild(textNode);
     line.p.appendChild(cursor);
 
     for (const char of line.text) {
+      if (!isCurrent()) return;
       if (prefersReducedMotion()) {
         for (const { p, text } of lines) p.textContent = text;
         cursor.remove();
@@ -357,6 +404,7 @@ async function typewriter(el, speed = 100) {
     }
   }
 
+  if (!isCurrent()) return;
   cursor.classList.add("typewriter-cursor--done");
   await wait(3600);
   cursor.remove();

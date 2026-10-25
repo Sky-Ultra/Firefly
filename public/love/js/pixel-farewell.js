@@ -1,4 +1,4 @@
-const PixelFarewellConfig = Object.freeze({ countdown: 12000, scatter: 2800, assemble: 2400, maxPixels: 6500, face: "╥﹏╥..." });
+const PixelFarewellConfig = Object.freeze({ countdown: 12000, replayCountdown: 120000, scatter: 2800, assemble: 2400, maxPixels: 6500, face: "╥﹏╥..." });
 
 function farewellClamp(value) { return Math.max(0, Math.min(1, value)); }
 function farewellEase(value) { return 1 - (1 - farewellClamp(value)) ** 3; }
@@ -247,6 +247,7 @@ function initPixelFarewell(section, renderer = createPixelFarewellRenderer(secti
 	const replay = document.getElementById("third-page-pixel-replay");
 	const article = section.querySelector(".afterword-content");
 	let phase = "idle";
+	let countdownDuration = PixelFarewellConfig.countdown;
 	let elapsed = 0;
 	let lastTime = null;
 	let frame = 0;
@@ -281,7 +282,7 @@ function initPixelFarewell(section, renderer = createPixelFarewellRenderer(secti
 		countdown.hidden = phase !== "countdown";
 		canvas.hidden = phase === "countdown";
 		result.hidden = phase !== "complete";
-		if (phase === "countdown") number.textContent = String(Math.max(0, Math.ceil((PixelFarewellConfig.countdown - elapsed) / 1000)));
+		if (phase === "countdown") number.textContent = String(Math.max(0, Math.ceil((countdownDuration - elapsed) / 1000)));
 		if (phase === "dispersing") renderer.scatter(elapsed / PixelFarewellConfig.scatter);
 		if (phase === "assembling") renderer.assemble(elapsed / PixelFarewellConfig.assemble);
 		if (phase === "complete") renderer.finish(elapsed);
@@ -292,8 +293,8 @@ function initPixelFarewell(section, renderer = createPixelFarewellRenderer(secti
 		if (!inView()) { pause(); return; }
 		if (lastTime !== null) elapsed += Math.max(0, now - lastTime);
 		lastTime = now;
-		if (phase === "countdown" && elapsed >= PixelFarewellConfig.countdown) {
-			elapsed -= PixelFarewellConfig.countdown;
+		if (phase === "countdown" && elapsed >= countdownDuration) {
+			elapsed -= countdownDuration;
 			beginDispersal();
 		}
 		if (phase === "dispersing" && elapsed >= PixelFarewellConfig.scatter) {
@@ -315,18 +316,19 @@ function initPixelFarewell(section, renderer = createPixelFarewellRenderer(secti
 		else if (!frame) frame = requestAnimationFrame(tick);
 	}
 
-	function restart() {
+	function restart(duration = PixelFarewellConfig.countdown) {
 		pause();
+		countdownDuration = duration;
 		elapsed = 0;
 		section.classList.remove("third-page-text-disintegrated");
 		article.removeAttribute("aria-hidden");
 		renderer.clear();
 		setPhase("countdown");
-		number.textContent = String(Math.ceil(PixelFarewellConfig.countdown / 1000));
+		number.textContent = String(Math.ceil(countdownDuration / 1000));
 		syncActivity();
 	}
 
-	replay.addEventListener("click", restart);
+	replay.addEventListener("click", () => restart(PixelFarewellConfig.replayCountdown));
 	window.addEventListener("scroll", syncActivity, { passive: true });
 	window.addEventListener("resize", () => { renderer.resize(); syncActivity(); }, { passive: true });
 	document.addEventListener("visibilitychange", syncActivity);
