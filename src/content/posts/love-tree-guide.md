@@ -16,6 +16,10 @@ categoryEn: Showcase
 author: Sky
 comment: true
 draft: false
+password: env:PRIVATE_POST_PASSWORD
+passwordHint: |-
+  ⌈她⌋的诞日
+  例:0427
 ---
 
 七百朵爱的花瓣组合成的爱的树...  

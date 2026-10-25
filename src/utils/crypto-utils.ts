@@ -5,6 +5,23 @@ const SALT_LENGTH = 16;
 const IV_LENGTH = 12;
 const KEY_LENGTH = 32;
 
+/** Resolve build-only password references without storing secrets in content. */
+export function resolveContentPassword(
+	password: string,
+	environment: Record<string, unknown>,
+): string {
+	if (!password.startsWith("env:")) return password;
+	const variable = password.slice(4);
+	if (!/^[A-Z_][A-Z0-9_]*$/.test(variable)) {
+		throw new Error("Invalid encrypted-content password variable name.");
+	}
+	const value = environment[variable];
+	if (typeof value !== "string" || !value.trim()) {
+		throw new Error(`Missing encrypted-content build variable: ${variable}`);
+	}
+	return value;
+}
+
 /**
  * Derive deterministic bytes from a key and context string using HMAC-SHA256.
  */

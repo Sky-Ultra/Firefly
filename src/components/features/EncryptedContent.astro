@@ -1,7 +1,7 @@
 ---
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import { encryptContent } from "@utils/crypto-utils";
+import { encryptContent, resolveContentPassword } from "@utils/crypto-utils";
 import { Icon } from "astro-icon/components";
 
 interface Props {
@@ -13,7 +13,13 @@ interface Props {
 const { password, slug, hint = "" } = Astro.props;
 
 const rawHtml = await Astro.slots.render("default");
-const encryptedData = encryptContent(rawHtml, password, slug);
+const encryptedData = encryptContent(
+	rawHtml,
+	resolveContentPassword(password, {
+		PRIVATE_POST_PASSWORD: import.meta.env.PRIVATE_POST_PASSWORD,
+	}),
+	slug,
+);
 
 const labels = {
 	protected: i18n(I18nKey.passwordProtected),
@@ -39,7 +45,7 @@ const labels = {
       <p class="text-sm text-black/40 dark:text-white/40 text-center m-0">{labels.desc}</p>
 
       {hint && (
-        <p class="text-xs text-black/30 dark:text-white/30 text-center m-0">{labels.hint}: {hint}</p>
+        <p class="text-xs text-black/30 dark:text-white/30 text-center whitespace-pre-line m-0">{labels.hint}: {hint}</p>
       )}
 
       <form id="password-form" class="w-full mt-2 space-y-2">

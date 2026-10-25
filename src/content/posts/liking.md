@@ -16,6 +16,10 @@ categoryEn: Essay
 author: Sky
 comment: true
 draft: false
+password: env:PRIVATE_POST_PASSWORD
+passwordHint: |-
+  ⌈她⌋的诞日
+  例:0427
 ---
 
 有时候觉得，
