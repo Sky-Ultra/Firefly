@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-10-10
+updated: 2026-10-25
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -93,3 +93,70 @@ draft: false
 - 新增资料贴纸，可以进行拖动交互。
 - 更新“[关于我](/about/)”标签页的部分信息
 - <mark class="theme-highlight">重要更新</mark>：大幅度改善部署在个人网站其他的我自己制作的 网站/网页/页面 的访问流畅度以及体验。欢迎重新访问这些标签以获得更好的体验！
+
+## 2026.10.10
+
+- 更新了文章：[⌈喜欢⌋](/posts/liking/)
+
+## 2026.10.11
+
+- 更新了[恋爱计时模块](/)的部分信息
+- 更新了[关于我？](/about/) 标签页下的部分信息
+
+## 2026.10.12
+
+- 更新了文章：[告白树/恋爱树的实现方式和原理](/posts/love-tree-guide/)
+
+## 2026.10.14
+
+- 更新了文章：[莱茵生命档案的代码实现和细节](/posts/rhine-lab-archives-guide/)
+
+## 2026.10.15
+
+- 增加全新模块：[最近发生的事](/activity/)，可以通过时间轴的方式来查看最近发生的我的动态
+- 新增网站底部[风向标](/#footer-windsock-title)功能，可以更好地导航全站
+
+## 2026.10.16
+
+- 更新了文章：[制造羁绊，就要承受落泪的风险](/posts/the-risk-of-forming-bonds/)
+
+## 2026.10.17
+
+- 更新了文章：[白昼的遗书](/posts/daylights-last-letter/)
+
+## 2026.10.18
+
+- <mark class="theme-highlight">重要更新</mark>：新增全新的网站，动画效果：果冻效果。该效果目前在[文章主页](/)以及部分标签页以及标签页的页签下开放，并仅在电脑端生效。在此效果下，当鼠标移到模块或者文章上的时候，会产生随鼠标方向的果冻效果
+- 新增部分图片素材资源
+- 尝试修复了中国大陆地区部分时候访问网站时产生的 Image API Error 问题
+- 更新了文章：[碱基之间：脱氧核糖核酸展示网站的技术实现与知识库展示](/posts/between-bases-dna-website-guide/)
+
+## 2026.10.19
+
+- 更新了文章：[所以，究竟何为⌈喜欢⌋，何为⌈爱⌋...？](/posts/what-are-liking-and-love/)
+
+## 2026.10.20
+
+- <mark class="theme-highlight">重要更新</mark>：我们新增了[全新的分享方式](/posts/homepage-welcome-messages/)，基于 Astro 架构下，可以通过直接在网站内将文章实时渲染成文字长图的方式，对外进行分享，无需通过二维码扫描或者其他在线方式，即可直接访问我们的文章和其他相关信息。
+- 我们优化了[评论区](/guestbook/#post-comments)功能
+
+## 2026.10.21
+
+- 更新了文章：[“成长不是成为更好的自己，而是拼凑完整的自己”](/posts/growth-and-the-whole-self/)
+- 更新了文章：[对婚姻的的风险与代价的思考：对文章“穷人为何保持贫穷”的深入理解](/posts/marriage-risks-and-costs/)
+
+## 2026.10.22
+
+- 更新了文章：[夏天总会过去，而人总要长大](/posts/summer-passes-and-we-grow-up/)
+
+## 2026.10.23
+
+- 更新了文章：[人类就是一个Transformer：在注意力机制的尽头...](/posts/human-transformer/)
+
+## 2026.10.24
+
+- 更新了文章：[“我与自己 悲喜同舟”](/posts/with-myself-through-joy-and-sorrow/)
+
+## 2026.10.25
+
+- 我们为[评论区](/guestbook/#post-comments)全新增加了匿名评论功能，在该功能下，你的评论不会被其他人看见

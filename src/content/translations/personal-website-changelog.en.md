@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:46c08a0f19bf3f4a3f1c128f64bae64fcc649c0035f2371018f8b34dd2ed1ac4
+sourceHash: sha256:c616fa7f1bf382e1b491dd8e52d32bcf861878fc12f53c77b1dcd6fd77e51ee6
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -82,3 +82,70 @@ This article provides a brief record of updates to my personal website, beginnin
 - Added profile stickers that support drag interactions.
 - Updated some information on the “[About Me](/about/)” page
 - <mark class="theme-highlight">Major update</mark>: Substantially improved the browsing smoothness and experience of other websites, web pages, and pages I have created and deployed on my personal website. Please revisit these pages for a better experience!
+
+## October 10, 2026
+
+- Published the article [“⌈Affection⌋”](/posts/liking/)
+
+## October 11, 2026
+
+- Updated some information in the [relationship timer widget](/)
+- Updated some information on the [About Me?](/about/) page
+
+## October 12, 2026
+
+- Published the article [“How the Confession / Love Tree Works”](/posts/love-tree-guide/)
+
+## October 14, 2026
+
+- Published the article [“Rhine Lab Archives — Implementation and Details”](/posts/rhine-lab-archives-guide/)
+
+## October 15, 2026
+
+- Added a new [Recent activity](/activity/) module, where a timeline shows my latest updates
+- Added [Find your way](/#footer-windsock-title) to the site footer to make navigating the whole site easier
+
+## October 16, 2026
+
+- Published the article [“To Form Bonds Is to Risk Tears”](/posts/the-risk-of-forming-bonds/)
+
+## October 17, 2026
+
+- Published the article [“Daylight's Last Letter”](/posts/daylights-last-letter/)
+
+## October 18, 2026
+
+- <mark class="theme-highlight">Major update</mark>: Added a new website animation: the jelly effect. It is currently available on the [article homepage](/), some pages and their tabs, and only on desktop. Moving the pointer over a widget or article produces a springy jelly-like motion that follows the pointer's direction
+- Added more image assets
+- Attempted to fix the Image API Error issue that sometimes occurs when visiting the site from mainland China
+- Published the article [“Between Bases: Building a DNA Showcase and Knowledge Base”](/posts/between-bases-dna-website-guide/)
+
+## October 19, 2026
+
+- Published the article [“So, What Exactly Are ⌈Liking⌋ and ⌈Love⌋...?”](/posts/what-are-liking-and-love/)
+
+## October 20, 2026
+
+- <mark class="theme-highlight">Major update</mark>: Added a [new sharing method](/posts/homepage-welcome-messages/) built on Astro. Articles can be rendered on the site in real time as long images of their text for sharing, allowing readers to read the article and related information directly without scanning a QR code or using another online method
+- Improved the [comment section](/guestbook/#post-comments)
+
+## October 21, 2026
+
+- Published the article [“Growth Is Not About Becoming a Better Self, but Piecing Together a Whole Self”](/posts/growth-and-the-whole-self/)
+- Published the article [“Reflections on the Risks and Costs of Marriage: A Deeper Understanding of ‘Why the Poor Remain Poor’”](/posts/marriage-risks-and-costs/)
+
+## October 22, 2026
+
+- Published the article [“Summer Will Pass, and We All Have to Grow Up”](/posts/summer-passes-and-we-grow-up/)
+
+## October 23, 2026
+
+- Published the article [“Humans Are a Transformer: At the End of Attention...”](/posts/human-transformer/)
+
+## October 24, 2026
+
+- Published the article [“With Myself, Through Joy and Sorrow”](/posts/with-myself-through-joy-and-sorrow/)
+
+## October 25, 2026
+
+- Added an anonymous-comment feature to the [comment section](/guestbook/#post-comments). Comments sent using this feature cannot be seen by other visitors

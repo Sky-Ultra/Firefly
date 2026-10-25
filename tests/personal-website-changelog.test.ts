@@ -159,7 +159,7 @@ test("appends every September 30 onward Word entry in its original date and orde
 			);
 		assert.deepEqual(items, entry.items, entry.date);
 	}
-	assert.ok(changelog.includes("updated: 2026-10-10"));
+	assert.ok(changelog.includes("updated: 2026-10-25"));
 });
 
 test("every major-update label uses the existing theme highlighter without highlighting punctuation", () => {
@@ -217,7 +217,10 @@ test("links newly mentioned site pages, including every About Me update", () => 
 		assert.ok(changelogTranslation.includes(`](${target})`), target);
 	}
 	const newHistory = changelog.split("## 2026.9.30")[1];
-	assert.equal((newHistory.match(/\[关于我\]\(\/about\/\)/g) ?? []).length, 2);
+	assert.equal(
+		(newHistory.match(/\[关于我(?:？)?\]\(\/about\/\)/g) ?? []).length,
+		3,
+	);
 	assert.ok(!changelogTranslation.includes("](/en/about/)"));
 });
 

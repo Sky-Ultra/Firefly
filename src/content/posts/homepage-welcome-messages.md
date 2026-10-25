@@ -10,6 +10,7 @@ tags: [欢迎词]
 tagsEn: [Welcome Messages]
 category: 展示
 categoryEn: Showcase
+pinned: true
 draft: false
 ---
 
