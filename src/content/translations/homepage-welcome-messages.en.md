@@ -1,9 +1,9 @@
 ---
 translationOf: homepage-welcome-messages.md
-sourceHash: sha256:042d1d7baeb11d20b187ffce4e475a9616fd7e66a3566c5d3d0aed1fea98623f
+sourceHash: sha256:3cd2e85fb79d5a67890de889cc7e8e3a70cc7bb1f030c39e23f88c0496359e92
 ---
 
-As time passes, the collection of welcome messages on the homepage keeps growing. The code displays them in a random order without repeating a message before the current round ends, but most visitors probably will not stay long enough to see them all. Here, then, are all the homepage welcome messages collected as of October 9, 2026.
+As time passes, the collection of welcome messages on the homepage keeps growing. The code displays them in a random order without repeating a message before the current round ends, but most visitors probably will not stay long enough to see them all. Here, then, are all the homepage welcome messages collected as of October 25, 2026.
 
 All the welcome messages are listed below, together with their sources:
 
@@ -78,3 +78,27 @@ All the welcome messages are listed below, together with their sources:
 
 > Engage with things without being ruled by them; be aware of thoughts without being ruled by them.  
 > —*Zhuangzi*, “The Tree on the Mountain” (《庄子·山木》)
+
+> Wild geese fly far, yet cannot cross the moonlight; fish and dragons dive and leap, tracing patterns upon the water.  
+> —*A Moonlit Night on the Spring River* (《春江花月夜》)
+
+> For a thousand years, the stars have kept their ancient paths; one night's fireflies set the Milky Way astir.  
+> —Sky
+
+> The tide has its end and returns at last to shore; the moon, without intention, shines upon the terraces.  
+> —Sky
+
+> I reach for the clouds, but they have scattered; only the moon remains, shining on the old palace.  
+> —Sky
+
+> I ask only to share each dawn and dusk with you, not ten thousand springtimes in the celestial palace.  
+> —Sky
+
+> While flowers bloomed, I dared not speak my heart; only when they fell did I realize how late in spring it was.  
+> —Sky
+
+> However many attachments linger, they pass with the evening snow into the old year.  
+> —Sky
+
+> When the pale snow melts, the sunlight turns warm; a fleeting bloom is worth ten thousand years.  
+> —Sky
