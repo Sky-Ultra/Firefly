@@ -169,6 +169,9 @@ function fixture(
 		status: () =>
 			view.document.getElementById("password-attempt-status")?.textContent ??
 			"",
+		resetDelay: () =>
+			[...timeouts.values()].find((value) => value.callback.name === "refresh")
+				?.delay,
 		sync: () => view.dispatchEvent(new view.StorageEvent("storage", { key })),
 		reset: () => {
 			const entry = [...timeouts.entries()].find(
@@ -219,11 +222,23 @@ test("the first five failures remain retryable; the sixth locks and refresh cann
 	}
 });
 
-test("local midnight resets a locked open page and the next failure belongs to the new day", async () => {
-	const f = fixture();
+test("midnight preserves the lock; local 04:00 resets an open page and starts a new period", async () => {
+	const clock = { now: new Date(2026, 9, 26, 23, 59).getTime() };
+	const f = fixture({ clock });
 	try {
 		for (let index = 0; index < 6; index++) await f.submit("wrong");
 		f.clock.now = new Date(2026, 9, 27, 0, 0, 0, 50).getTime();
+		f.reset();
+		assert.ok(f.locked() && f.input.disabled && f.button.disabled);
+		assert.match(
+			f.view.document.getElementById("password-lock-countdown")?.textContent ??
+				"",
+			/04:00/,
+		);
+		f.clock.now = new Date(2026, 9, 27, 3, 59, 59, 999).getTime();
+		f.reset();
+		assert.ok(f.locked());
+		f.clock.now = new Date(2026, 9, 27, 4, 0, 0, 50).getTime();
 		f.reset();
 		assert.equal(f.locked(), false);
 		assert.equal(f.input.disabled, false);
@@ -232,6 +247,55 @@ test("local midnight resets a locked open page and the next failure belongs to t
 		assert.deepEqual(f.record(), { day: "2026-10-27", failures: 1 });
 	} finally {
 		await f.close();
+	}
+});
+
+test("early-morning attempts and legacy midnight-based records remain locked until 04:00", async () => {
+	const clock = { now: new Date(2026, 9, 27, 2, 30).getTime() };
+	const store = storage();
+	const f = fixture({ clock, store });
+	try {
+		await f.submit("wrong");
+		assert.deepEqual(f.record(), { day: "2026-10-26", failures: 1 });
+		store.setItem(f.key, JSON.stringify({ day: "2026-10-27", failures: 6 }));
+		f.sync();
+		assert.ok(f.locked());
+	} finally {
+		await f.close();
+	}
+	const reloaded = fixture({ clock, store });
+	try {
+		assert.ok(reloaded.locked());
+		clock.now = new Date(2026, 9, 27, 4).getTime();
+		reloaded.reset();
+		assert.equal(reloaded.locked(), false);
+		await reloaded.submit("wrong");
+		assert.deepEqual(reloaded.record(), { day: "2026-10-27", failures: 1 });
+	} finally {
+		await reloaded.close();
+	}
+});
+
+test("reset timers follow calendar 04:00 through daylight-saving transition dates", async () => {
+	for (const [month, day] of [
+		[3, 4],
+		[9, 3],
+	]) {
+		const clock = { now: new Date(2026, month, day, 4).getTime() };
+		const f = fixture({ clock });
+		try {
+			const nextReset = new Date(2026, month, day + 1, 4).getTime();
+			assert.equal(f.resetDelay(), nextReset - clock.now + 25);
+			await f.submit("wrong");
+			clock.now = nextReset - 1;
+			f.reset();
+			assert.match(f.status(), /已输错 1 次/);
+			clock.now = nextReset;
+			f.reset();
+			assert.doesNotMatch(f.status(), /已输错 1 次/);
+		} finally {
+			await f.close();
+		}
 	}
 });
 

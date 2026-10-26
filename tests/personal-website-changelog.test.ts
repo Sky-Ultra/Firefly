@@ -159,7 +159,15 @@ test("appends every September 30 onward Word entry in its original date and orde
 			);
 		assert.deepEqual(items, entry.items, entry.date);
 	}
-	assert.ok(changelog.includes("updated: 2026-10-25"));
+	const latestDate = Array.from(sections.keys())
+		.map((date) => date.split(".").map(Number))
+		.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2])
+		.at(-1);
+	assert.ok(latestDate);
+	const updated = latestDate
+		.map((part, index) => String(part).padStart(index === 0 ? 4 : 2, "0"))
+		.join("-");
+	assert.match(changelog, new RegExp(`^updated: ${updated}$`, "m"));
 });
 
 test("every major-update label uses the existing theme highlighter without highlighting punctuation", () => {

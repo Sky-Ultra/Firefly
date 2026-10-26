@@ -29,14 +29,10 @@ const poster = media.type === "bilibili" ? media.poster : undefined;
 			</div>
 			<div class="moment-video-stage" data-video-stage>
 				<div class="moment-video-frame" data-video-frame></div>
-				<button type="button" class="moment-video-cover" data-video-load>
+				<button type="button" class="moment-video-cover" data-video-load aria-label="加载视频" data-i18n-zh="加载视频" data-i18n-en="Load video" data-i18n-attr="aria-label">
 					{poster && <img src={poster.src} alt={poster.alt} width="1200" height="630" loading="lazy" decoding="async" />}
 					<span class="moment-video-cover-shade" aria-hidden="true"></span>
-					<span class="moment-video-load-label">
-						<Icon name="material-symbols:play-arrow-rounded" class="text-4xl" />
-						<strong><LocalizedText zh="加载视频" en="Load video" /></strong>
-						<small><LocalizedText zh="点击后载入，手动播放" en="Click to load, then play manually" /></small>
-					</span>
+					<Icon is:inline name="material-symbols:play-arrow-rounded" class="moment-video-play" aria-hidden="true" />
 				</button>
 			</div>
 			<div class="moment-video-actions">
@@ -70,9 +66,8 @@ const poster = media.type === "bilibili" ? media.poster : undefined;
 	.moment-video-cover:disabled { cursor: progress; }
 	.moment-video-cover img, .moment-video-cover-shade { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: cover; }
 	.moment-video-cover-shade { background: linear-gradient(#0001, #0008); }
-	.moment-video-load-label { position: relative; display: flex; align-items: center; flex-direction: column; gap: .15rem; text-shadow: 0 1px 5px #0008; }
-	.moment-video-load-label strong { font-size: .95rem; }
-	.moment-video-load-label small { font-size: .7rem; }
+	.moment-video-play { position: relative; width: 2.75rem; height: 2.75rem; opacity: .72; filter: drop-shadow(0 2px 5px #0007); transition: opacity 160ms ease; }
+	.moment-video-cover:hover .moment-video-play, .moment-video-cover:focus-visible .moment-video-play { opacity: .9; }
 	.moment-video-actions { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; padding: .65rem .8rem; background: var(--card-bg); }
 	.moment-video-actions a, .moment-video-actions button, .moment-link { font-size: .8rem; color: var(--primary); border-radius: .5rem; padding: .35rem .5rem; transition: background-color 160ms ease; }
 	.moment-video-actions button:disabled { opacity: .45; cursor: not-allowed; }
@@ -82,7 +77,7 @@ const poster = media.type === "bilibili" ? media.poster : undefined;
 	.moment-link { display: inline-flex; gap: .25rem; max-width: 100%; margin-top: .75rem; overflow-wrap: anywhere; }
 	:global(html.has-moment-video-dialog) { overflow: hidden; }
 	@media (max-width: 767px) { .moment-video { width: 90%; max-width: 28.8rem; } }
-	@media (prefers-reduced-motion: reduce) { .moment-video-frame :global(iframe), .moment-video-actions a, .moment-video-actions button, .moment-link { transition: none; } }
+	@media (prefers-reduced-motion: reduce) { .moment-video-play, .moment-video-frame :global(iframe), .moment-video-actions a, .moment-video-actions button, .moment-link { transition: none; } }
 </style>
 
 <script>

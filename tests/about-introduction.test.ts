@@ -7,7 +7,7 @@ const aboutPage = readFileSync(
 	"utf8",
 );
 const addedParagraphs = [
-	"目前最喜欢使用的Agent产品是ChatGPT Codex以及DeepSeek Harness。我已经在Codex上使用超过90亿Token。",
+	"目前最喜欢使用的Agent产品是ChatGPT Codex以及DeepSeek Harness。我已经在Codex上使用超过130亿Token。",
 	"感觉我还是非常情绪稳定的喵！",
 	"（永远）烟酒不沾，与烟酒为敌。也请别拿什么礼貌应酬和我说事...",
 	"嘻嘻，我还是白纸一张喵~",
@@ -46,7 +46,7 @@ test("each new paragraph has its own line and an English counterpart", () => {
 		assert.match(block[1], /\ben="[^"]+"/);
 		assert.match(block[2], /<br\s*\/>/);
 	}
-	assert.match(aboutPage, /over 9 billion tokens in Codex/);
+	assert.match(aboutPage, /over 13 billion tokens in Codex/);
 });
 
 test("the quoted wish follows the contact sentence on its own line", () => {

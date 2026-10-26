@@ -121,17 +121,17 @@ test("adds screenshot updates in order with real feature links and label-only hi
 		}
 	}
 	assert.equal((changelog.match(/^## /gm) ?? []).length, sections.size);
-	assert.equal(
-		(changelog.match(/<mark class="theme-highlight">重要更新<\/mark>：/g) ?? [])
-			.length,
-		9,
-	);
+	const chineseHighlights = (
+		changelog.match(/<mark class="theme-highlight">重要更新<\/mark>：/g) ?? []
+	).length;
+	// Preserve the backfilled labels while allowing later major updates.
+	assert.ok(chineseHighlights >= 9);
 	assert.equal(
 		(
 			english.match(/<mark class="theme-highlight">Major update<\/mark>:/g) ??
 			[]
 		).length,
-		9,
+		chineseHighlights,
 	);
 });
 

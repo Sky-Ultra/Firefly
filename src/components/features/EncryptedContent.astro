@@ -103,6 +103,7 @@ const labels = {
   var cacheKey = 'pw:' + slug;
   var failureKey = 'firefly:password-failures:v1:' + window.location.pathname;
   var MAX_FAILURES = 6;
+  var RESET_HOUR = 4;
 
   var ui = document.getElementById('password-ui');
   var form = document.getElementById('password-form');
@@ -134,7 +135,12 @@ const labels = {
   }
   function getState() {
     var now = new Date();
-    var day = dayOf(now);
+    var nextReset = new Date(now.getFullYear(), now.getMonth(), now.getDate(), RESET_HOUR, 0, 0, 0);
+    var beforeReset = now.getTime() < nextReset.getTime();
+    var periodDate = new Date(now.getTime());
+    if (beforeReset) periodDate.setDate(periodDate.getDate() - 1);
+    else nextReset.setDate(nextReset.getDate() + 1);
+    var day = dayOf(periodDate);
     var record = memory.get(failureKey);
     if (storageWorking) {
       try {
@@ -142,11 +148,17 @@ const labels = {
         try { record = stored ? JSON.parse(stored) : null; } catch (_) { record = null; }
       } catch (_) { storageWorking = false; }
     }
-    var failures = record && record.day === day && Number.isInteger(record.failures)
+    // Carry existing midnight-based records into the current 04:00 period.
+    var legacyDay = beforeReset && record && record.day === dayOf(now);
+    var failures = record && (record.day === day || legacyDay) && Number.isInteger(record.failures)
       ? Math.min(MAX_FAILURES, Math.max(0, record.failures)) : 0;
     memory.set(failureKey, { day: day, failures: failures });
+    if (legacyDay && storageWorking) {
+      try { failureStorage.setItem(failureKey, JSON.stringify({ day: day, failures: failures })); }
+      catch (_) { storageWorking = false; }
+    }
     return { day: day, failures: failures, locked: failures >= MAX_FAILURES,
-      resetAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0).getTime() };
+      resetAt: nextReset.getTime() };
   }
   function recordFailure() {
     var state = getState();
@@ -169,7 +181,7 @@ const labels = {
     var hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
     var minutes = String(Math.floor(seconds / 60) % 60).padStart(2, '0');
     var rest = String(seconds % 60).padStart(2, '0');
-    countdownEl.textContent = text('明日 00:00 重置（当地时间） · ', 'Resets at local midnight · ') + hours + ':' + minutes + ':' + rest;
+    countdownEl.textContent = text('每天 04:00 重置（当地时间） · ', 'Resets at 04:00 local time · ') + hours + ':' + minutes + ':' + rest;
   }
   function refresh() {
     if (disposed || unlocked) return;
@@ -187,7 +199,7 @@ const labels = {
       : state.failures > 0
         ? text('本篇今日已输错 ' + state.failures + ' 次，还可尝试 ' + (MAX_FAILURES - state.failures) + ' 次。',
           state.failures + ' incorrect today. ' + (MAX_FAILURES - state.failures) + ' attempts remaining.')
-        : text('本篇每天输错超过 5 次将锁定，次日 00:00 重置。', 'More than 5 incorrect passwords locks this article until local midnight.');
+        : text('本篇每天输错超过 5 次将锁定，每天凌晨 04:00 重置（当地时间）。', 'More than 5 incorrect passwords locks this article until the next 04:00 local-time reset.');
     if (!storageWorking) message += text(' 浏览器未允许保存记录，仅保留本次页面会话计数。', ' Browser storage is unavailable; the count lasts for this page session.');
     if (statusEl.textContent !== message) statusEl.textContent = message;
     if (state.locked) { input.value = ''; hideError(); }
