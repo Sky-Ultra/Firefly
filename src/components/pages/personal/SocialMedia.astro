@@ -55,7 +55,7 @@ const poster = media.type === "bilibili" ? media.poster : undefined;
 ))}
 
 <style>
-	.moment-video { display: block; width: 100%; max-width: 32rem; margin-top: 1rem; }
+	.moment-video { display: block; width: 85%; max-width: 27.2rem; margin-top: 1rem; }
 	.moment-video-window { position: relative; inset: auto; display: block; width: 100%; max-width: none; padding: 0; margin: 0; border: 1px solid var(--line-divider); border-radius: .9rem; background: var(--card-bg); color: inherit; overflow: hidden; }
 	.moment-video-window[data-expanded="true"] { position: fixed; inset: 0; margin: auto; width: min(94vw, 68.75rem); max-height: calc(100dvh - 2rem); overflow: auto; box-shadow: 0 1.5rem 5rem #0005; }
 	.moment-video-window::backdrop { background: #1119; backdrop-filter: blur(3px); }
@@ -81,6 +81,7 @@ const poster = media.type === "bilibili" ? media.poster : undefined;
 	.moment-video-status { font-size: .75rem; padding: 0 1rem .75rem; margin: 0; }
 	.moment-link { display: inline-flex; gap: .25rem; max-width: 100%; margin-top: .75rem; overflow-wrap: anywhere; }
 	:global(html.has-moment-video-dialog) { overflow: hidden; }
+	@media (max-width: 767px) { .moment-video { width: 90%; max-width: 28.8rem; } }
 	@media (prefers-reduced-motion: reduce) { .moment-video-frame :global(iframe), .moment-video-actions a, .moment-video-actions button, .moment-link { transition: none; } }
 </style>
 

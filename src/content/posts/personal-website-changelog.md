@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-10-25
+updated: 2026-10-27
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -160,3 +160,7 @@ draft: false
 ## 2026.10.25
 
 - 我们为[评论区](/guestbook/#post-comments)全新增加了匿名评论功能，在该功能下，你的评论不会被其他人看见
+
+## 2026.10.27
+
+- <mark class="theme-highlight">重要更新</mark>：为[朋友圈模块](/moments/)新增了可以直接放置视频的功能，提升整体体验。

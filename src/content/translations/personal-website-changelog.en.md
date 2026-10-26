@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:c616fa7f1bf382e1b491dd8e52d32bcf861878fc12f53c77b1dcd6fd77e51ee6
+sourceHash: sha256:0fb6fc7b9a94f62ccde3c07b69fd9776a7dd1535cfeb00704b561f96db25f539
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -149,3 +149,7 @@ This article provides a brief record of updates to my personal website, beginnin
 ## October 25, 2026
 
 - Added an anonymous-comment feature to the [comment section](/guestbook/#post-comments). Comments sent using this feature cannot be seen by other visitors
+
+## October 27, 2026
+
+- <mark class="theme-highlight">Major update</mark>: Added support for placing videos directly in [Moments](/moments/), improving the overall experience.
