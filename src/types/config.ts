@@ -36,6 +36,7 @@ export type {
 	MomentItem,
 	PersonalPagesConfig,
 	SocialImage,
+	SocialMedia,
 } from "./personalPagesConfig";
 export type { Live2DWidgetConfig, SpineModelConfig } from "./pioConfig";
 export type {

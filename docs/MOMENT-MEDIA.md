@@ -1,0 +1,56 @@
+# 朋友圈视频、链接与指定位置表情
+
+2026-10-26 增加可选媒体。未填写这些字段的文字、图片、标签和永久链接保持原来的渲染方式。
+
+## 视频小窗
+
+在对应 MomentItem 中填写：
+
+```ts
+media: {
+  type: "bilibili",
+  url: "https://www.bilibili.com/video/BV16TH36XEQz/",
+  title: "峰哥在马驹桥体验做日结的一天",
+  poster: {
+    src: "/assets/images/moments/bilibili-BV16TH36XEQz.jpg",
+    alt: "视频封面",
+  },
+}
+```
+
+- 初始只显示本地封面和加载按钮，没有 iframe，也不请求 B 站播放器。
+- 点击后才创建唯一 iframe；采用 [B 站官方外链播放器参数](https://player.bilibili.com/)，强制 autoplay=0，并不授予 autoplay 权限。
+- 窗口保持 16:9，内联最大宽度 32rem，手机按可用宽度缩小。播放器载入后支持放大；使用原生 dialog 的模态层，避免卡片动画和容器裁切。
+- 放大与收起不搬移、复制或重新设置 iframe 地址。Esc、点击遮罩和“收起视频”均可返回，并恢复焦点和页面滚动。
+- 始终提供新标签页“去 B 站播放”；加载较慢时保留当前播放器，提供等待和重新加载，避免超时打断已开始的播放。实际视频能力和可用性由 B 站提供，不下载或转存视频本体。
+- 离开动态页会清理播放器、监听与加载定时器，防止后台继续播放。
+
+视频地址只接收明确的 BV 号及 B 站标准 /video/BV... 链接；保留分 P 参数，移除其他跟踪参数，不接受任意 iframe 地址或嵌入 HTML。
+
+## 仅链接
+
+同一字段选择另一种类型即可，不出现封面或播放器：
+
+```ts
+media: {
+  type: "link",
+  url: "https://www.bilibili.com/video/BV16TH36XEQz/",
+  label: "去 B 站看这段视频",
+}
+```
+
+链接只允许 HTTP/HTTPS，不接受脚本地址或包含账号密码的地址。不要把嵌入代码写进纯文字 content。
+
+## 指定位置表情
+
+```ts
+inlineEmoji: {
+  src: "/assets/emojis/moments/grassroots-sigh.jpg",
+  alt: "无奈",
+  altEn: "A weary sigh",
+}
+```
+
+该字段只在指定动态的正文末尾渲染约 3em、最大 48px 的行内表情。不作为图片网格、灯箱或全局表情，不加入首页/文章随机图库，也不传播到“最近发生的事”的文本摘要中。以后只在用户明确指定的位置增加引用。
+
+本次表情保留用户原始 JPEG 字节，封面取自该视频公开页面的 og:image，缓存在本地。新动态时间记录为用户发起本次请求时的 2026-10-26 23:04:32 Australia/Sydney（UTC+11）。

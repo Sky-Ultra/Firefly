@@ -93,6 +93,30 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "grassroots-hardship-video",
+				date: "2026-10-26T23:04:32+11:00",
+				content:
+					"唉……看完只能感觉基层的辛酸和心酸……中国的底层没有半分活力，只剩下对基础生存的需求……\n真的好压抑...看完我都完全不想回国了，有点想继续呆在澳洲或者香港了...\n”勤劳不一定有收获，但是羞辱是肯定的“\n唉，我真的好想带上我喜欢的女孩一起来澳洲或者香港生活啊……",
+				contentEn:
+					"Sigh…… After watching, all I can feel is the hardship and heartbreak of life at the bottom…… For people at the bottom in China, there isn't a trace of vitality left, only the need for basic survival……\nIt's so depressing... Watching it makes me not want to return to China at all. I'm starting to want to stay in Australia or Hong Kong...\n“Hard work may not bring rewards, but humiliation is guaranteed”\nSigh, I really wish I could bring the girl I like to live with me in Australia or Hong Kong……",
+				inlineEmoji: {
+					src: "/assets/emojis/moments/grassroots-sigh.jpg",
+					alt: "无奈",
+					altEn: "A weary sigh",
+				},
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV16TH36XEQz/",
+					title: "峰哥在马驹桥体验做日结的一天",
+					titleEn: "Feng Ge spends a day doing day labor in Majuqiao",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV16TH36XEQz.jpg",
+						alt: "峰哥在马驹桥体验做日结的一天：视频封面",
+						altEn: "Video cover: a day doing day labor in Majuqiao",
+					},
+				},
+			},
+			{
 				id: "warm-snow-and-a-moment",
 				date: "2026-10-24T19:13:00+11:00",
 				content: "淡雪融时阳彩暖，一瞬芳华抵万年",

@@ -21,6 +21,16 @@ export type SocialImage = {
 	altEn?: string;
 };
 
+export type SocialMedia =
+	| {
+			type: "bilibili";
+			url: string;
+			title: string;
+			titleEn?: string;
+			poster?: SocialImage;
+	  }
+	| { type: "link"; url: string; label?: string; labelEn?: string };
+
 export type MomentItem = {
 	id: string;
 	date: string;
@@ -31,6 +41,8 @@ export type MomentItem = {
 	location?: string;
 	locationEn?: string;
 	images?: SocialImage[];
+	media?: SocialMedia;
+	inlineEmoji?: SocialImage;
 };
 
 export type DiaryItem = MomentItem & {

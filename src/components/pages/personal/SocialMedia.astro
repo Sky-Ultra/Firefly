@@ -1,0 +1,90 @@
+---
+import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import type { SocialMedia } from "@/types/personalPagesConfig";
+import { bilibiliVideo, safeSocialLink } from "@/utils/social-media-utils";
+
+interface Props {
+	media: SocialMedia;
+	id: string;
+}
+const { media, id } = Astro.props;
+const video = media.type === "bilibili" ? bilibiliVideo(media.url) : null;
+const href = video?.href ?? safeSocialLink(media.url);
+const title =
+	media.type === "bilibili" ? media.title : (media.label ?? "查看链接");
+const titleEn =
+	media.type === "bilibili"
+		? (media.titleEn ?? media.title)
+		: (media.labelEn ?? media.label ?? "Open link");
+const poster = media.type === "bilibili" ? media.poster : undefined;
+---
+
+{href && (video ? (
+	<moment-video-player class="moment-video" data-player-url={video.player} data-title-zh={title} data-title-en={titleEn}>
+		<dialog open aria-labelledby={`${id}-video-title`} class="moment-video-window" data-video-dialog data-expanded="false">
+			<div class="moment-video-heading">
+				<h3 id={`${id}-video-title`}><LocalizedText zh={title} en={titleEn} /></h3>
+				<span class="moment-video-brand">BILIBILI</span>
+			</div>
+			<div class="moment-video-stage" data-video-stage>
+				<div class="moment-video-frame" data-video-frame></div>
+				<button type="button" class="moment-video-cover" data-video-load>
+					{poster && <img src={poster.src} alt={poster.alt} width="1200" height="630" loading="lazy" decoding="async" />}
+					<span class="moment-video-cover-shade" aria-hidden="true"></span>
+					<span class="moment-video-load-label">
+						<Icon name="material-symbols:play-arrow-rounded" class="text-4xl" />
+						<strong><LocalizedText zh="加载视频" en="Load video" /></strong>
+						<small><LocalizedText zh="点击后载入，手动播放" en="Click to load, then play manually" /></small>
+					</span>
+				</button>
+			</div>
+			<div class="moment-video-actions">
+				<button type="button" data-video-retry hidden><LocalizedText zh="重新加载" en="Retry loading" /></button>
+				<button type="button" data-video-expand aria-expanded="false" disabled>
+					<span data-video-expand-label><LocalizedText zh="放大观看" en="Enlarge" /></span>
+					<span data-video-collapse-label hidden><LocalizedText zh="收起视频" en="Collapse" /></span>
+				</button>
+				<a href={href} target="_blank" rel="noopener noreferrer"><LocalizedText zh="去 B 站播放" en="Watch on Bilibili" /><span aria-hidden="true"> ↗</span></a>
+			</div>
+			<p class="moment-video-status" data-video-status role="status" aria-live="polite" hidden></p>
+		</dialog>
+	</moment-video-player>
+) : (
+	<a class="moment-link" data-social-link href={href} target="_blank" rel="noopener noreferrer"><LocalizedText zh={title} en={titleEn} /><span aria-hidden="true"> ↗</span></a>
+))}
+
+<style>
+	.moment-video { display: block; width: 100%; max-width: 32rem; margin-top: 1rem; }
+	.moment-video-window { position: relative; inset: auto; display: block; width: 100%; max-width: none; padding: 0; margin: 0; border: 1px solid var(--line-divider); border-radius: .9rem; background: var(--card-bg); color: inherit; overflow: hidden; }
+	.moment-video-window[data-expanded="true"] { position: fixed; inset: 0; margin: auto; width: min(94vw, 68.75rem); max-height: calc(100dvh - 2rem); overflow: auto; box-shadow: 0 1.5rem 5rem #0005; }
+	.moment-video-window::backdrop { background: #1119; backdrop-filter: blur(3px); }
+	.moment-video-heading { display: flex; align-items: center; gap: .65rem; padding: .7rem .85rem; }
+	.moment-video-heading h3 { min-width: 0; flex: 1; margin: 0; font-size: .875rem; line-height: 1.5; font-weight: 600; }
+	.moment-video-brand { font-size: .6rem; letter-spacing: .09em; color: var(--primary); }
+	.moment-video-stage { position: relative; aspect-ratio: 16 / 9; background: #17191e; }
+	.moment-video-frame, .moment-video-cover { position: absolute; inset: 0; width: 100%; height: 100%; }
+	.moment-video-frame :global(iframe) { display: block; width: 100%; height: 100%; border: 0; }
+	.moment-video-cover { display: grid; place-items: center; border: 0; padding: 0; color: white; cursor: pointer; background: #20242d; }
+	.moment-video-cover[hidden] { display: none; }
+	.moment-video-cover:disabled { cursor: progress; }
+	.moment-video-cover img, .moment-video-cover-shade { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: cover; }
+	.moment-video-cover-shade { background: linear-gradient(#0001, #0008); }
+	.moment-video-load-label { position: relative; display: flex; align-items: center; flex-direction: column; gap: .15rem; text-shadow: 0 1px 5px #0008; }
+	.moment-video-load-label strong { font-size: .95rem; }
+	.moment-video-load-label small { font-size: .7rem; }
+	.moment-video-actions { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; padding: .65rem .8rem; background: var(--card-bg); }
+	.moment-video-actions a, .moment-video-actions button, .moment-link { font-size: .8rem; color: var(--primary); border-radius: .5rem; padding: .35rem .5rem; transition: background-color 160ms ease; }
+	.moment-video-actions button:disabled { opacity: .45; cursor: not-allowed; }
+	.moment-video-actions a:hover, .moment-video-actions button:not(:disabled):hover, .moment-link:hover { background: var(--btn-regular-bg); }
+	.moment-video-actions :focus-visible, .moment-video-cover:focus-visible, .moment-link:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
+	.moment-video-status { font-size: .75rem; padding: 0 1rem .75rem; margin: 0; }
+	.moment-link { display: inline-flex; gap: .25rem; max-width: 100%; margin-top: .75rem; overflow-wrap: anywhere; }
+	:global(html.has-moment-video-dialog) { overflow: hidden; }
+	@media (prefers-reduced-motion: reduce) { .moment-video-frame :global(iframe), .moment-video-actions a, .moment-video-actions button, .moment-link { transition: none; } }
+</style>
+
+<script>
+	import { registerSocialVideoElement } from "@/utils/social-video-runtime";
+	registerSocialVideoElement();
+</script>
