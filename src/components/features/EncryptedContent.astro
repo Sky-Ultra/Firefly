@@ -61,21 +61,26 @@ const labels = {
           type="password"
           placeholder={labels.placeholder}
           autocomplete="off"
+          aria-label={labels.placeholder}
+          aria-describedby="password-attempt-status password-error"
           class="w-full px-3 py-2 rounded-lg text-sm bg-black/5 dark:bg-white/10
                  border border-black/8 dark:border-white/8
                  text-black/80 dark:text-white/80 placeholder-black/25 dark:placeholder-white/25
-                 outline-none focus:border-(--primary) transition"
+                 outline-none focus:border-(--primary) transition disabled:cursor-not-allowed disabled:opacity-50"
         />
         <button
           type="submit"
+          id="password-submit"
           class="w-full py-2 rounded-lg text-sm font-medium bg-(--primary) text-white dark:text-black/70
-                 hover:opacity-85 active:scale-[0.98] transition-all"
+                 hover:opacity-85 active:scale-[0.98] transition-all disabled:cursor-not-allowed disabled:opacity-50"
         >
           {labels.submit}
         </button>
       </form>
 
-      <p id="password-error" class="text-xs text-red-500 dark:text-red-400 m-0 hidden">{labels.error}</p>
+      <p id="password-error" role="alert" class="text-xs text-red-500 dark:text-red-400 m-0 hidden">{labels.error}</p>
+      <p id="password-attempt-status" role="status" aria-live="polite" aria-atomic="true" class="text-xs leading-relaxed text-black/50 dark:text-white/50 text-center m-0"></p>
+      <p id="password-lock-countdown" aria-hidden="true" class="text-sm tabular-nums text-(--primary) text-center m-0 hidden"></p>
     </div>
   </div>
 
@@ -84,7 +89,7 @@ const labels = {
 </div>
 
 <script is:inline>
-(function() {
+(function initEncryptedContent() {
   var ITERATIONS = 100000;
   var SALT_LEN = 16;
   var IV_LEN = 12;
@@ -96,14 +101,129 @@ const labels = {
   var encryptedData = container.getAttribute('data-encrypted');
   var slug = container.getAttribute('data-slug');
   var cacheKey = 'pw:' + slug;
+  var failureKey = 'firefly:password-failures:v1:' + window.location.pathname;
+  var MAX_FAILURES = 6;
 
   var ui = document.getElementById('password-ui');
   var form = document.getElementById('password-form');
   var input = document.getElementById('password-input');
   var errorEl = document.getElementById('password-error');
   var contentEl = document.getElementById('decrypted-content');
+  var submit = document.getElementById('password-submit');
+  var statusEl = document.getElementById('password-attempt-status');
+  var countdownEl = document.getElementById('password-lock-countdown');
+  if (!ui || !form || !input || !submit || !errorEl || !contentEl || !statusEl || !countdownEl) return;
+
+  if (window.__fireflyEncryptedDispose) window.__fireflyEncryptedDispose();
+  var disposed = false;
+  var unlocked = false;
+  var pending = false;
+  var lockedBefore = false;
+  var resetTimer = null;
+  var countdownTimer = null;
+  var resetAt = 0;
+  var failureStorage = null;
+  var storageWorking = true;
+  var memory = window.__fireflyPasswordFailureMemory || (window.__fireflyPasswordFailureMemory = new Map());
+  try { failureStorage = localStorage; } catch (_) { storageWorking = false; }
+
+  function english() { return document.documentElement.getAttribute('data-language') === 'en'; }
+  function text(zh, en) { return english() ? en : zh; }
+  function dayOf(date) {
+    return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+  }
+  function getState() {
+    var now = new Date();
+    var day = dayOf(now);
+    var record = memory.get(failureKey);
+    if (storageWorking) {
+      try {
+        var stored = failureStorage.getItem(failureKey);
+        try { record = stored ? JSON.parse(stored) : null; } catch (_) { record = null; }
+      } catch (_) { storageWorking = false; }
+    }
+    var failures = record && record.day === day && Number.isInteger(record.failures)
+      ? Math.min(MAX_FAILURES, Math.max(0, record.failures)) : 0;
+    memory.set(failureKey, { day: day, failures: failures });
+    return { day: day, failures: failures, locked: failures >= MAX_FAILURES,
+      resetAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0).getTime() };
+  }
+  function recordFailure() {
+    var state = getState();
+    var record = { day: state.day, failures: Math.min(MAX_FAILURES, state.failures + 1) };
+    memory.set(failureKey, record);
+    if (storageWorking) {
+      try { failureStorage.setItem(failureKey, JSON.stringify(record)); }
+      catch (_) { storageWorking = false; }
+    }
+  }
+  function stopTimers() {
+    clearTimeout(resetTimer);
+    clearInterval(countdownTimer);
+    resetTimer = null;
+    countdownTimer = null;
+  }
+  function updateCountdown() {
+    if (Date.now() >= resetAt) { refresh(); return; }
+    var seconds = Math.max(0, Math.ceil((resetAt - Date.now()) / 1000));
+    var hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    var minutes = String(Math.floor(seconds / 60) % 60).padStart(2, '0');
+    var rest = String(seconds % 60).padStart(2, '0');
+    countdownEl.textContent = text('明日 00:00 重置（当地时间） · ', 'Resets at local midnight · ') + hours + ':' + minutes + ':' + rest;
+  }
+  function refresh() {
+    if (disposed || unlocked) return;
+    if (!container.isConnected) { dispose(); return; }
+    var state = getState();
+    resetAt = state.resetAt;
+    input.disabled = pending || state.locked;
+    submit.disabled = pending || state.locked;
+    form.setAttribute('aria-busy', pending ? 'true' : 'false');
+    container.dataset.passwordLocked = String(state.locked);
+    submit.textContent = state.locked ? text('今日已锁定', 'Locked for today')
+      : pending ? text('验证中…', 'Verifying…') : text('解锁', 'Unlock');
+    var message = state.locked
+      ? text('本篇今日已输错 6 次，输入已锁定。', 'This article is locked after 6 incorrect passwords today.')
+      : state.failures > 0
+        ? text('本篇今日已输错 ' + state.failures + ' 次，还可尝试 ' + (MAX_FAILURES - state.failures) + ' 次。',
+          state.failures + ' incorrect today. ' + (MAX_FAILURES - state.failures) + ' attempts remaining.')
+        : text('本篇每天输错超过 5 次将锁定，次日 00:00 重置。', 'More than 5 incorrect passwords locks this article until local midnight.');
+    if (!storageWorking) message += text(' 浏览器未允许保存记录，仅保留本次页面会话计数。', ' Browser storage is unavailable; the count lasts for this page session.');
+    if (statusEl.textContent !== message) statusEl.textContent = message;
+    if (state.locked) { input.value = ''; hideError(); }
+    else if (lockedBefore) hideError();
+    lockedBefore = state.locked;
+    countdownEl.classList.toggle('hidden', !state.locked);
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(refresh, Math.max(50, state.resetAt - Date.now() + 25));
+    clearInterval(countdownTimer);
+    countdownTimer = null;
+    if (state.locked) {
+      updateCountdown();
+      if (!document.hidden) countdownTimer = setInterval(updateCountdown, 1000);
+    }
+  }
+  function syncStorage(event) { if (event.key === failureKey || event.key === null) refresh(); }
+  function onContentReplaced() { if (!container.isConnected) dispose(); }
+  function dispose() {
+    if (disposed) return;
+    disposed = true;
+    stopTimers();
+    form.removeEventListener('submit', onSubmit);
+    window.removeEventListener('storage', syncStorage);
+    window.removeEventListener('pageshow', refresh);
+    document.removeEventListener('visibilitychange', refresh);
+    document.removeEventListener('firefly:language-change', refresh);
+    document.removeEventListener('swup:contentReplaced', onContentReplaced);
+    document.removeEventListener('astro:before-swap', dispose);
+    if (window.__fireflyEncryptedDispose === dispose) window.__fireflyEncryptedDispose = null;
+  }
+  window.__fireflyEncryptedDispose = dispose;
 
   function showContent(html) {
+    if (disposed || !container.isConnected) return;
+    unlocked = true;
+    stopTimers();
     contentEl.innerHTML = html;
     window.fireflyLanguage?.apply(contentEl);
     contentEl.classList.remove('hidden');
@@ -125,7 +245,7 @@ const labels = {
     }
     // Re-init components after content is in DOM
     setTimeout(function() {
-      document.dispatchEvent(new CustomEvent('password:decrypted'));
+      if (!disposed && container.isConnected) document.dispatchEvent(new CustomEvent('password:decrypted'));
     }, 100);
 
     // 初始化解密内容中图片的 LQIP 淡入
@@ -152,7 +272,8 @@ const labels = {
     }
   }
 
-  function showError() {
+  function showError(message) {
+    errorEl.textContent = message || text('密码错误，请重试。', 'Incorrect password, please try again.');
     errorEl.classList.remove('hidden');
   }
 
@@ -195,28 +316,72 @@ const labels = {
     return new TextDecoder().decode(decrypted);
   }
 
-  // Handle form submit
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var pwd = input.value.trim();
-    if (!pwd) return;
-    hideError();
-    decrypt(pwd).then(function(html) {
-      sessionStorage.setItem(cacheKey, pwd);
-      showContent(html);
-    }).catch(function() {
-      showError();
-    });
-  });
+  function readCached() { try { return sessionStorage.getItem(cacheKey); } catch (_) { return null; } }
+  function cachePassword(pwd) { try { sessionStorage.setItem(cacheKey, pwd); } catch (_) {} }
+  function removeCached() { try { sessionStorage.removeItem(cacheKey); } catch (_) {} }
 
-  // Try cached password
-  var cached = sessionStorage.getItem(cacheKey);
-  if (cached) {
-    decrypt(cached).then(function(html) {
+  async function verifyPassword(pwd, automatic) {
+    if (pending || unlocked || disposed) return;
+    if (getState().locked) { refresh(); return; }
+    pending = true;
+    hideError();
+    refresh();
+    var shouldRefocus = false;
+    var run = async function() {
+      if (disposed || !container.isConnected || getState().locked) return;
+      if (!window.crypto || !window.crypto.subtle) {
+        showError(text('当前环境无法安全解密，请使用 HTTPS 或支持此功能的浏览器。', 'Secure decryption is unavailable. Use HTTPS and a supported browser.'));
+        return;
+      }
+      var html;
+      try { html = await decrypt(pwd); }
+      catch (error) {
+        if (disposed || !container.isConnected) return;
+        if (automatic) { removeCached(); return; }
+        if (error && error.name === 'OperationError') {
+          recordFailure();
+          shouldRefocus = !getState().locked;
+          showError();
+        } else {
+          showError(text('解锁暂时失败，请稍后重试；本次不计入错误次数。', 'Unable to unlock right now. This does not count as an incorrect password.'));
+        }
+        return;
+      }
+      if (disposed || !container.isConnected || getState().locked) return;
+      cachePassword(pwd);
       showContent(html);
-    }).catch(function() {
-      sessionStorage.removeItem(cacheKey);
-    });
+    };
+    try {
+      var lockManager = null;
+      try { lockManager = navigator.locks; } catch (_) {}
+      if (lockManager && typeof lockManager.request === 'function') {
+        var started = false;
+        try { await lockManager.request(failureKey, function() { started = true; return run(); }); }
+        catch (_) { if (!started) await run(); }
+      } else { await run(); }
+    } finally {
+      pending = false;
+      form.setAttribute('aria-busy', 'false');
+      refresh();
+      if (shouldRefocus && !disposed && !unlocked && !getState().locked && !document.hidden
+        && (document.activeElement === document.body || form.contains(document.activeElement))) { input.focus(); input.select(); }
+    }
   }
+  function onSubmit(event) {
+    event.preventDefault();
+    var pwd = input.value.trim();
+    if (!pwd || pending || unlocked || disposed) return;
+    void verifyPassword(pwd, false);
+  }
+  form.addEventListener('submit', onSubmit);
+  window.addEventListener('storage', syncStorage);
+  window.addEventListener('pageshow', refresh);
+  document.addEventListener('visibilitychange', refresh);
+  document.addEventListener('firefly:language-change', refresh);
+  document.addEventListener('swup:contentReplaced', onContentReplaced);
+  document.addEventListener('astro:before-swap', dispose);
+  refresh();
+  var cached = readCached();
+  if (cached && !getState().locked) void verifyPassword(cached, true);
 })();
 </script>

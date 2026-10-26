@@ -174,7 +174,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 是否启用壁纸轮播；关闭时保持每次刷新随机显示一张
 			enable: true,
 			// 首页每个设备参与轮播的图片数，从各自图库中随机选取
-			count: 16,
+			count: 21,
 			// 轮播切换间隔（毫秒）
 			interval: 6500,
 			// 过渡效果: 'fade' 渐变 | 'zoom' 缩放 | 'slide' 滑动 | 'kenburns' 旋转木马

@@ -118,19 +118,19 @@ function fixture(initialHidden = false) {
 	};
 }
 
-test("sixteen slots per device load only current and next, retaining at most three decoded slides", async () => {
-	assert.equal(backgroundWallpaper.common?.carousel?.count, 16);
+test("twenty-one slots per device load only current and next, retaining at most three decoded slides", async () => {
+	assert.equal(backgroundWallpaper.common?.carousel?.count, 21);
 	const f = fixture();
 	try {
 		await flush();
-		assert.equal(f.slides("desktop").length, 16);
-		assert.equal(f.slides("mobile").length, 16);
+		assert.equal(f.slides("desktop").length, 21);
+		assert.equal(f.slides("mobile").length, 21);
 		assert.equal(f.loaded("desktop").length, 2);
 		assert.equal(f.loaded("mobile").length, 0);
-		for (let index = 0; index < 20; index++) {
+		for (let index = 0; index < 26; index++) {
 			f.key("ArrowRight");
 			await flush();
-			assert.equal(f.active("desktop"), (index + 1) % 16);
+			assert.equal(f.active("desktop"), (index + 1) % 21);
 			assert.ok(f.loaded("desktop").length <= 3);
 			assert.equal(f.timers.size, 1);
 		}
