@@ -1,26 +1,34 @@
 ---
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import { encryptContent, resolveContentPassword } from "@utils/crypto-utils";
+import {
+	encryptContent,
+	getPasswordLength,
+	resolveContentPassword,
+	type SealedContent,
+} from "@utils/crypto-utils";
 import { Icon } from "astro-icon/components";
 
 interface Props {
 	password: string;
 	slug: string;
 	hint?: string;
+	sealedContent?: SealedContent;
 }
 
-const { password, slug, hint = "" } = Astro.props;
+const { password, slug, hint = "", sealedContent } = Astro.props;
 const [hintText, ...hintDetails] = hint.split(/\r?\n/);
 
 const rawHtml = await Astro.slots.render("default");
-const encryptedData = encryptContent(
-	rawHtml,
-	resolveContentPassword(password, {
-		PRIVATE_POST_PASSWORD: import.meta.env.PRIVATE_POST_PASSWORD,
-	}),
-	slug,
-);
+const resolvedPassword = sealedContent
+	? ""
+	: resolveContentPassword(password, {
+			PRIVATE_POST_PASSWORD: import.meta.env.PRIVATE_POST_PASSWORD,
+		});
+const passwordLength =
+	sealedContent?.passwordLength ?? getPasswordLength(resolvedPassword);
+const encryptedData =
+	sealedContent?.payload ?? encryptContent(rawHtml, resolvedPassword, slug);
 
 const labels = {
 	protected: i18n(I18nKey.passwordProtected),
@@ -36,6 +44,7 @@ const labels = {
   id="encrypted-container"
   data-encrypted={encryptedData}
   data-slug={slug}
+  data-password-length={passwordLength}
 >
   <!-- Lock UI -->
   <div id="password-ui" class="flex justify-center py-16 px-4">
@@ -59,9 +68,9 @@ const labels = {
           id="password-input"
           name="password"
           type="password"
-          placeholder={labels.placeholder}
+          placeholder={`${labels.placeholder}：${passwordLength}位数`}
           autocomplete="off"
-          aria-label={labels.placeholder}
+          aria-label={`${labels.placeholder}：${passwordLength}位数`}
           aria-describedby="password-attempt-status password-error"
           class="w-full px-3 py-2 rounded-lg text-sm bg-black/5 dark:bg-white/10
                  border border-black/8 dark:border-white/8
@@ -86,6 +95,7 @@ const labels = {
 
   <!-- Decrypted content injected here -->
   <div id="decrypted-content" class="hidden"></div>
+  {sealedContent && <template data-encrypted-extras set:html={rawHtml} />}
 </div>
 
 <script is:inline>
@@ -103,6 +113,7 @@ const labels = {
   var cacheKey = 'pw:' + slug;
   var failureKey = 'firefly:password-failures:v1:' + window.location.pathname;
   var MAX_FAILURES = 6;
+  var passwordLength = Number(container.getAttribute('data-password-length'));
   var RESET_HOUR = 4;
 
   var ui = document.getElementById('password-ui');
@@ -187,6 +198,11 @@ const labels = {
     if (disposed || unlocked) return;
     if (!container.isConnected) { dispose(); return; }
     var state = getState();
+    if (Number.isInteger(passwordLength) && passwordLength > 0) {
+      var placeholder = text('请输入密码：' + passwordLength + '位数', 'Enter password: ' + passwordLength + ' characters');
+      input.setAttribute('placeholder', placeholder);
+      input.setAttribute('aria-label', placeholder);
+    }
     resetAt = state.resetAt;
     input.disabled = pending || state.locked;
     submit.disabled = pending || state.locked;
@@ -237,6 +253,8 @@ const labels = {
     unlocked = true;
     stopTimers();
     contentEl.innerHTML = html;
+    var extras = container.querySelector('template[data-encrypted-extras]');
+    if (extras) contentEl.appendChild(extras.content.cloneNode(true));
     window.fireflyLanguage?.apply(contentEl);
     contentEl.classList.remove('hidden');
     ui.classList.add('hidden');

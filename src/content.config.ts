@@ -24,6 +24,8 @@ type PostData = {
 	comment: boolean;
 	password: string;
 	passwordHint: string;
+	sealedContent?: { payload: string; passwordLength: number };
+	sealedReadingStats?: { words: number; minutes: number };
 	prevTitle: string;
 	prevTitleEn: string;
 	prevSlug: string;
@@ -58,6 +60,21 @@ const postsCollection: ReturnType<
 		comment: z.boolean().optional().default(false),
 		password: z.string().optional().default(""),
 		passwordHint: z.string().optional().default(""),
+		sealedContent: z
+			.object({
+				payload: z
+					.string()
+					.min(60)
+					.regex(/^[A-Za-z0-9+/]+={0,2}$/),
+				passwordLength: z.number().int().min(1).max(1024),
+			})
+			.optional(),
+		sealedReadingStats: z
+			.object({
+				words: z.number().int().nonnegative(),
+				minutes: z.number().int().positive(),
+			})
+			.optional(),
 
 		/* For internal use */
 		prevTitle: z.string().default(""),

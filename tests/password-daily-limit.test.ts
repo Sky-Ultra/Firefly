@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 import { Window } from "happy-dom";
-import { encryptContent } from "../src/utils/crypto-utils";
+import { encryptContent, sealContent } from "../src/utils/crypto-utils";
 
 const component = readFileSync(
 	new URL("../src/components/features/EncryptedContent.astro", import.meta.url),
@@ -41,6 +41,9 @@ function fixture(
 		path?: string;
 		clock?: { now: number };
 		fault?: boolean;
+		sealedPayload?: string;
+		passwordLength?: number;
+		extras?: string;
 		locks?: {
 			request: (key: string, task: () => Promise<void>) => Promise<void>;
 		};
@@ -69,7 +72,7 @@ function fixture(
 			return clock.now;
 		}
 	}
-	view.document.body.innerHTML = `<div id="encrypted-container" data-slug="test" data-encrypted="${payload}"><div id="password-ui"><form id="password-form"><input id="password-input" type="password"><button id="password-submit">解锁</button></form><p id="password-error" class="hidden"></p><p id="password-attempt-status"></p><p id="password-lock-countdown" class="hidden"></p></div><div id="decrypted-content" class="hidden"></div></div>`;
+	view.document.body.innerHTML = `<div id="encrypted-container" data-slug="test" data-password-length="${options.passwordLength ?? 0}" data-encrypted="${options.sealedPayload ?? payload}"><div id="password-ui"><form id="password-form"><input id="password-input" type="password"><button id="password-submit">解锁</button></form><p id="password-error" class="hidden"></p><p id="password-attempt-status"></p><p id="password-lock-countdown" class="hidden"></p></div><div id="decrypted-content" class="hidden"></div>${options.extras ? `<template data-encrypted-extras>${options.extras}</template>` : ""}</div>`;
 	let decryptCalls = 0;
 	const subtle = new Proxy(webcrypto.subtle, {
 		get(target, key) {
@@ -189,6 +192,56 @@ function fixture(
 		},
 	};
 }
+
+test("placeholders and accessible names reflect actual lengths and follow the page language", async () => {
+	for (const length of [4, 8]) {
+		const f = fixture({ passwordLength: length });
+		try {
+			assert.equal(f.input.placeholder, `请输入密码：${length}位数`);
+			assert.equal(f.input.getAttribute("aria-label"), f.input.placeholder);
+			assert.equal(
+				f.input.maxLength,
+				-1,
+				"the hint must not impose an input limit",
+			);
+			f.view.document.documentElement.setAttribute("data-language", "en");
+			f.view.document.dispatchEvent(
+				new f.view.CustomEvent("firefly:language-change"),
+			);
+			assert.equal(f.input.placeholder, `Enter password: ${length} characters`);
+		} finally {
+			await f.close();
+		}
+	}
+});
+
+test("sealed bodies retain highlights and attach sharing extras only after successful decryption", async () => {
+	const sealed = sealContent(
+		'<div data-reading-body><p>Test body <mark class="theme-highlight">marked</mark></p></div>',
+		"01234567",
+	);
+	const f = fixture({
+		sealedPayload: sealed.payload,
+		passwordLength: sealed.passwordLength,
+		extras: '<button id="test-share">Share test content</button>',
+	});
+	try {
+		assert.equal(f.view.document.getElementById("test-share"), null);
+		await f.submit("wrong");
+		assert.equal(f.view.document.querySelector("[data-reading-body]"), null);
+		await f.submit("01234567");
+		assert.ok(f.unlocked());
+		assert.equal(
+			f.view.document.querySelector("mark.theme-highlight")?.textContent,
+			"marked",
+		);
+		assert.equal(f.view.document.querySelectorAll("#test-share").length, 1);
+		await f.submit("01234567");
+		assert.equal(f.view.document.querySelectorAll("#test-share").length, 1);
+	} finally {
+		await f.close();
+	}
+});
 
 test("the first five failures remain retryable; the sixth locks and refresh cannot reset it", async () => {
 	const store = storage();

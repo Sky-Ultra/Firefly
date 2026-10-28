@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:0fb6fc7b9a94f62ccde3c07b69fd9776a7dd1535cfeb00704b561f96db25f539
+sourceHash: sha256:de2662bef5526e0a175d3db90384111f56fa0e319f460508e5d555654e4a2b3f
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -153,3 +153,7 @@ This article provides a brief record of updates to my personal website, beginnin
 ## October 27, 2026
 
 - <mark class="theme-highlight">Major update</mark>: Added support for placing videos directly in [Moments](/moments/), improving the overall experience.
+
+## October 28, 2026
+
+- Published the article [“A Love Letter from ⌈Long Night⌋”](/posts/long-night-love-letter/)

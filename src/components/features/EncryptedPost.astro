@@ -1,10 +1,12 @@
 ---
+import type { SealedContent } from "@/utils/crypto-utils";
 import EncryptedContent from "./EncryptedContent.astro";
 
 interface Props {
 	password: string;
 	slug: string;
 	hint?: string;
+	sealedContent?: SealedContent;
 }
 ---
 

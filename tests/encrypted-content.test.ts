@@ -4,7 +4,9 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
 	encryptContent,
+	getPasswordLength,
 	resolveContentPassword,
+	sealContent,
 } from "../src/utils/crypto-utils";
 
 async function decrypt(payload: string, password: string): Promise<string> {
@@ -42,6 +44,30 @@ test("build password references preserve leading zeroes and retain literal-passw
 		"0123",
 	);
 	assert.equal(resolveContentPassword("literal-demo", {}), "literal-demo");
+});
+
+test("password lengths use actual keys, including leading zeroes and Unicode characters", () => {
+	assert.equal(
+		getPasswordLength(
+			resolveContentPassword("env:TEST_KEY", { TEST_KEY: "0123" }),
+		),
+		4,
+	);
+	assert.equal(getPasswordLength("01234567"), 8);
+	assert.equal(getPasswordLength("a❤😀"), 3);
+});
+
+test("source-sealed content carries only ciphertext and actual length with fresh nonces", async () => {
+	const html =
+		'<div data-reading-body><p>Private test body <mark class="theme-highlight">highlight</mark></p></div>';
+	const first = sealContent(html, "01234567");
+	const second = sealContent(html, "01234567");
+	assert.deepEqual(Object.keys(first).sort(), ["passwordLength", "payload"]);
+	assert.equal(first.passwordLength, 8);
+	assert.notEqual(first.payload, second.payload);
+	assert.equal(await decrypt(first.payload, "01234567"), html);
+	await assert.rejects(decrypt(first.payload, "wrong"));
+	assert.throws(() => sealContent(html, ""));
 });
 
 test("missing or malformed password references fail closed without exposing values", () => {

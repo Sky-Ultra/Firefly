@@ -302,7 +302,8 @@ const relatedPosts = await getRelatedPosts(entry, 5);
       }
 
       {entry.data.password ? (
-        <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint}>
+        <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint} sealedContent={entry.data.sealedContent}>
+		  {!entry.data.sealedContent && <>
 		  <div data-language-only="zh-CN" data-pagefind-body data-reading-body>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <Content />
@@ -314,6 +315,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 			</Markdown>
 		  </div>
 
+          </>}
           {/* 分享按钮 */}
           {
             siteConfig.post.sharePoster && (

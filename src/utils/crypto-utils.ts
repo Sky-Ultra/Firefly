@@ -1,4 +1,27 @@
-import { createCipheriv, createHmac, pbkdf2Sync } from "node:crypto";
+import {
+	createCipheriv,
+	createHmac,
+	pbkdf2Sync,
+	randomUUID,
+} from "node:crypto";
+
+export interface SealedContent {
+	payload: string;
+	passwordLength: number;
+}
+
+export function getPasswordLength(password: string): number {
+	return Array.from(password).length;
+}
+
+/** Seal private HTML before committing it; the password and plaintext stay local. */
+export function sealContent(html: string, password: string): SealedContent {
+	if (!password) throw new Error("An encrypted article requires a password.");
+	return {
+		payload: encryptContent(html, password, randomUUID()),
+		passwordLength: getPasswordLength(password),
+	};
+}
 
 const PBKDF2_ITERATIONS = 100000;
 const SALT_LENGTH = 16;

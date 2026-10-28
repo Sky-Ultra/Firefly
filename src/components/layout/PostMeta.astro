@@ -28,6 +28,7 @@ export interface Props {
 	pinned?: boolean;
 	password?: boolean;
 	words?: number;
+	wordsEn?: number;
 	minutes?: number;
 	showWords?: boolean;
 	showReadingTime?: boolean;
@@ -53,6 +54,7 @@ const {
 	customPath,
 	pinned,
 	words,
+	wordsEn,
 	minutes,
 	showWords = false,
 	showReadingTime = false,
@@ -264,12 +266,12 @@ const visibleTagsEn =
 
   {
     showWords && typeof words === "number" && (
-      <div class="flex items-center">
+      <div data-post-word-count class="flex items-center whitespace-nowrap">
         <div class="meta-icon">
           <Icon is:inline name="material-symbols:notes-rounded" class="text-xl" />
         </div>
         <span class="text-50 text-sm font-medium">
-          {words} {i18n(words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}
+          <LocalizedText zh={`${words} 字`} en={`${wordsEn ?? words} ${(wordsEn ?? words) === 1 ? "word" : "words"}`} />
         </span>
       </div>
     )

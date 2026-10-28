@@ -10,6 +10,7 @@ import PostStats from "@/components/layout/PostStats.astro";
 import { siteConfig } from "@/config";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
 import { getPostDecoration } from "@/utils/post-decoration";
+import { getPostTranslation } from "@/utils/post-translations";
 import { isRandomCoverImage } from "@/utils/random-cover-utils";
 import "@/styles/post-card-decoration.css";
 import "@/styles/post-card-motion.css";
@@ -108,6 +109,7 @@ const usesPrimaryTitleColor =
 const { remarkPluginFrontmatter } = await render(entry);
 const descriptionText = description || remarkPluginFrontmatter.excerpt || "";
 const words = remarkPluginFrontmatter.words;
+const wordsEn = getPostTranslation(entry.id).words;
 const minutes = remarkPluginFrontmatter.minutes;
 ---
 
@@ -171,10 +173,11 @@ const minutes = remarkPluginFrontmatter.minutes;
       pinned={pinned}
       password={password}
       words={words}
+      wordsEn={wordsEn}
       minutes={minutes}
       showWords={metaShowWords}
       showReadingTime={metaShowReadingTime}
-      className="mb-4 post-meta card-header-meta"
+      className="mb-4 post-meta card-header-meta gap-x-2! gap-y-1!"
     />
 
     <!-- description -->
