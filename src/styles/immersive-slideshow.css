@@ -12,18 +12,27 @@ html.immersive-playback, html.immersive-playback body { overflow: hidden !import
 .immersive-pictures { overflow: hidden; }
 .immersive-pictures img { object-fit: cover; opacity: 0; transform: scale(1.025); transition: opacity 900ms ease, transform 6500ms linear; }
 .immersive-pictures img[data-active] { opacity: 1; transform: scale(1); }
+.immersive-copy { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; pointer-events: none; color: white; }
+.immersive-copy[hidden] { display: none; }
+.immersive-copy-inner { width: min(80%, 70rem); text-align: center; }
+.immersive-title { font-weight: 700; line-height: 1.25; margin-bottom: .8rem; }
+.immersive-subtitle { min-height: 1.5em; font-size: min(var(--immersive-subtitle-size, 1.5rem), 4.5vw); line-height: 1.6; color: rgb(255 255 255 / 90%); text-wrap: pretty; }
+.immersive-subtitle[data-typing]::after { content: "|"; margin-left: 2px; animation: immersive-caret 1s step-end infinite; }
 .immersive-controls {
   position: absolute; z-index: 2; top: max(1rem, env(safe-area-inset-top)); right: max(1rem, env(safe-area-inset-right));
-  display: flex; align-items: center; gap: .25rem; padding: .35rem;
+  display: flex; align-items: center; gap: .125rem; padding: .25rem;
   border: 1px solid rgb(255 255 255 / 20%); border-radius: 999px;
   background: rgb(25 23 34 / 38%); backdrop-filter: blur(12px);
   transition: opacity 300ms ease, transform 300ms ease;
 }
-.immersive-controls button { display: flex; align-items: center; justify-content: center; gap: .35rem; min-width: 2.75rem; height: 2.75rem; padding: 0 .6rem; color: white; font-size: 1.8rem; line-height: 1; border: 0; border-radius: 999px; background: transparent; cursor: pointer; }
+.immersive-controls button { display: flex; align-items: center; justify-content: center; gap: .25rem; min-width: 2.125rem; height: 2.125rem; padding: 0 .35rem; color: white; font-size: 1.5rem; line-height: 1; border: 0; border-radius: 999px; background: transparent; cursor: pointer; }
 .immersive-controls button:hover { background: rgb(255 255 255 / 14%); }
 .immersive-controls button:focus-visible { outline: 2px solid white; outline-offset: -2px; }
 .immersive-controls [data-immersive-pause] { font-size: 1rem; }
-.immersive-escape { font-size: .75rem; opacity: .7; }
+.immersive-escape { display: none; }
+.immersive-text-option { display: flex; align-items: center; gap: .35rem; min-height: 2.125rem; padding: 0 .35rem; font-size: .75rem; white-space: nowrap; cursor: pointer; user-select: none; }
+.immersive-text-option input { width: .875rem; height: .875rem; margin: 0; accent-color: var(--primary); cursor: pointer; }
+.immersive-text-option input:focus-visible { outline: 2px solid white; outline-offset: 3px; }
 .immersive-divider { width: 1px; height: 1.25rem; margin: 0 .25rem; background: rgb(255 255 255 / 25%); }
 .immersive-hint { position: absolute; bottom: 16vh; left: 0; right: 0; text-align: center; font-size: .8rem; letter-spacing: .03em; text-shadow: 0 1px 10px #000; transition: opacity 300ms ease; }
 .immersive-viewer[data-controls-hidden] { cursor: none; }
@@ -38,12 +47,13 @@ html.immersive-playback, html.immersive-playback body { overflow: hidden !import
 .immersive-waves use:nth-child(3) { opacity: .65; animation-duration: 13s; animation-delay: -4s; }
 .immersive-waves use:nth-child(4) { opacity: .75; animation-duration: 20s; animation-delay: -5s; }
 .immersive-viewer[data-suspended] .immersive-waves use { animation-play-state: paused; }
+@keyframes immersive-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 @keyframes immersive-wave { from { transform: translateX(-90px); } to { transform: translateX(85px); } }
 @keyframes immersive-enter { from { opacity: 0; } to { opacity: 1; } }
 @keyframes immersive-leave { from { opacity: 1; } to { opacity: 0; } }
-@media (max-width: 640px) { .immersive-controls { gap: 0; } .immersive-escape { display: none; } .immersive-hint { padding: 0 1rem; font-size: .75rem; } }
+@media (max-width: 640px) { .immersive-controls { gap: 0; top: max(.65rem, env(safe-area-inset-top)); right: max(.65rem, env(safe-area-inset-right)); } .immersive-controls button, .immersive-text-option { min-height: 2.75rem; } .immersive-controls button { min-width: 2.25rem; } .immersive-escape { display: none; } .immersive-hint { padding: 0 1rem; font-size: .75rem; } }
 @media (prefers-reduced-motion: reduce) {
-  .immersive-viewer[open], .immersive-viewer[data-closing], .immersive-waves use { animation: none; }
+  .immersive-viewer[open], .immersive-viewer[data-closing], .immersive-waves use, .immersive-subtitle[data-typing]::after { animation: none; }
   .immersive-pictures img { transform: none; transition: opacity 150ms linear; }
   .immersive-controls, .immersive-hint { transition: none; }
 }

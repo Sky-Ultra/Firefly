@@ -52,7 +52,7 @@ function fixture(
 	const normal = view.document.createElement("div");
 	normal.id = "banner-images-container";
 	normal.innerHTML =
-		'<div class="slide-item lg:block active" data-wallpaper-src="/desktop-1.webp"></div><div class="slide-item lg:hidden active" data-wallpaper-src="/mobile-1.webp"></div>';
+		'<div class="slide-item lg:block active" data-wallpaper-src="/desktop-1.webp"></div><div class="slide-item lg:hidden active" data-wallpaper-src="/mobile-1.webp"></div><div id="banner-subtitle"><span class="typewriter">现有欢迎词</span></div>';
 	view.document.body.append(normal);
 	const trigger = view.document.createElement("button");
 	trigger.id = "display-settings-switch";
@@ -61,7 +61,7 @@ function fixture(
 	const dialog = view.document.createElement("dialog");
 	dialog.dataset.interval = "6500";
 	dialog.innerHTML =
-		"<img data-immersive-image><img data-immersive-image><div data-immersive-controls><button data-immersive-prev></button><button data-immersive-pause><span data-immersive-pause-icon></span></button><button data-immersive-next></button><button data-immersive-exit></button></div><p data-immersive-hint></p><p data-immersive-status></p>";
+		'<img data-immersive-image><img data-immersive-image><div data-immersive-copy><div class="banner-title">Sky</div><span data-immersive-subtitle></span></div><div data-immersive-controls><label><input type="checkbox" data-immersive-text checked>显示中间文字</label><button data-immersive-prev></button><button data-immersive-pause><span data-immersive-pause-icon></span></button><button data-immersive-next></button><button data-immersive-exit></button></div><p data-immersive-hint></p><p data-immersive-status></p>';
 	view.document.body.append(dialog);
 	dialog.showModal = () => {
 		dialog.open = true;
@@ -406,6 +406,133 @@ test("subsequent entries pick up additions to the shared library without changin
 		await flush();
 		assert.equal(f.dialog.dataset.poolCount, "6");
 		assert.equal(f.normal.querySelectorAll(".slide-item").length, 2);
+	} finally {
+		await f.close();
+	}
+});
+
+test("center text is shown by default and mirrors the live welcome text without altering the original", async () => {
+	const f = fixture();
+	try {
+		const script = f.view.document.createElement("script");
+		script.textContent = "test-only-component-script-must-not-appear";
+		f.normal.querySelector("#banner-subtitle")?.append(script);
+		f.open();
+		await flush();
+		assert.ok(!f.dialog.textContent?.includes(script.textContent));
+		const copy = f.dialog.querySelector<HTMLElement>("[data-immersive-copy]");
+		const option = f.dialog.querySelector<HTMLInputElement>(
+			"[data-immersive-text]",
+		);
+		assert.equal(copy?.hidden, false);
+		assert.equal(option?.checked, true);
+		assert.equal(
+			f.dialog.querySelector("[data-immersive-subtitle]")?.textContent,
+			"现有欢迎词",
+		);
+		const source = f.normal.querySelector(".typewriter");
+		assert.ok(source);
+		source.textContent = "正在输入新的欢迎词";
+		await flush();
+		assert.equal(
+			f.dialog.querySelector("[data-immersive-subtitle]")?.textContent,
+			source.textContent,
+		);
+		f.key("Escape");
+		f.tick(230);
+		source.textContent = "退出后原文继续";
+		await flush();
+		assert.equal(
+			f.dialog.querySelector("[data-immersive-subtitle]")?.textContent,
+			"正在输入新的欢迎词",
+			"closed viewers detach the observer",
+		);
+		assert.equal(source.textContent, "退出后原文继续");
+	} finally {
+		await f.close();
+	}
+});
+test("the text checkbox controls only the immersive copy and remembers its own preference", async () => {
+	const f = fixture();
+	try {
+		f.view.localStorage.setItem("bannerTitleEnabled", "false");
+		f.open();
+		await flush();
+		const option = f.dialog.querySelector<HTMLInputElement>(
+			"[data-immersive-text]",
+		);
+		assert.ok(option);
+		assert.equal(
+			option.checked,
+			true,
+			"normal title settings must not hide immersive copy",
+		);
+		option.checked = false;
+		option.dispatchEvent(new f.view.Event("change", { bubbles: true }));
+		assert.equal(
+			f.dialog.querySelector<HTMLElement>("[data-immersive-copy]")?.hidden,
+			true,
+		);
+		assert.equal(
+			f.normal.querySelector(".typewriter")?.textContent,
+			"现有欢迎词",
+		);
+		assert.equal(f.view.localStorage.getItem("bannerTitleEnabled"), "false");
+		assert.equal(
+			f.view.localStorage.getItem("firefly:immersive:center-text"),
+			"false",
+		);
+		f.key("Escape");
+		f.tick(230);
+		f.open();
+		await flush();
+		assert.equal(option.checked, false);
+		option.checked = true;
+		option.dispatchEvent(new f.view.Event("change", { bubbles: true }));
+		assert.equal(
+			f.dialog.querySelector<HTMLElement>("[data-immersive-copy]")?.hidden,
+			false,
+		);
+		const key = new f.view.KeyboardEvent("keydown", {
+			key: " ",
+			bubbles: true,
+			cancelable: true,
+		});
+		option.dispatchEvent(key);
+		assert.equal(
+			key.defaultPrevented,
+			false,
+			"space on the checkbox retains native keyboard behavior",
+		);
+		assert.equal(
+			f.hasPlayback(),
+			true,
+			"the text checkbox must not pause playback",
+		);
+	} finally {
+		await f.close();
+	}
+});
+
+test("static welcome text excludes embedded component scripts and remains safe text", async () => {
+	const f = fixture();
+	try {
+		const source = f.normal.querySelector("#banner-subtitle");
+		assert.ok(source);
+		source.innerHTML =
+			"<span>固定欢迎词 &lt;3</span><script>component-code</script><style>.example{}</style>";
+		f.open();
+		await flush();
+		assert.equal(
+			f.dialog.querySelector("[data-immersive-subtitle]")?.textContent,
+			"固定欢迎词 <3",
+		);
+		assert.equal(
+			f.dialog
+				.querySelector("[data-immersive-subtitle]")
+				?.querySelectorAll("script,style").length,
+			0,
+		);
 	} finally {
 		await f.close();
 	}

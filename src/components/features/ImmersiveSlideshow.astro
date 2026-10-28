@@ -1,8 +1,13 @@
 ---
+import { backgroundWallpaper } from "@/config";
+
 interface Props {
 	interval: number;
 }
 const { interval } = Astro.props;
+const homeText = backgroundWallpaper.common?.homeText;
+const subtitles = homeText?.subtitle;
+const firstSubtitle = Array.isArray(subtitles) ? subtitles[0] : subtitles;
 
 import "@/styles/immersive-slideshow.css";
 ---
@@ -14,10 +19,22 @@ import "@/styles/immersive-slideshow.css";
       <img data-immersive-image alt="" decoding="async" />
       <img data-immersive-image alt="" decoding="async" />
     </div>
+    <div class="immersive-copy" data-immersive-copy data-i18n-skip
+      style={{ "--banner-title-size": homeText?.titleSize || "3.8rem", "--immersive-subtitle-size": homeText?.subtitleSize || "1.5rem" }}>
+      <div class="immersive-copy-inner">
+        <div class="banner-title immersive-title">{homeText?.title || "Sky"}</div>
+        <div class="banner-subtitle immersive-subtitle"><span data-immersive-subtitle>{firstSubtitle}</span></div>
+      </div>
+    </div>
     <div class="immersive-controls" data-immersive-controls>
       <button type="button" data-immersive-prev aria-label="上一张" title="上一张 / ←">‹</button>
       <button type="button" data-immersive-pause aria-label="暂停播放" title="暂停 / 空格"><span data-immersive-pause-icon aria-hidden="true">Ⅱ</span></button>
       <button type="button" data-immersive-next aria-label="下一张" title="下一张 / →">›</button>
+      <span class="immersive-divider" aria-hidden="true"></span>
+      <label class="immersive-text-option" title="显示中间文字" data-i18n-zh="显示中间文字" data-i18n-en="Show center text" data-i18n-attr="title">
+        <input type="checkbox" data-immersive-text checked aria-label="显示中间文字" />
+        <span data-i18n-zh="显示中间文字" data-i18n-en="Center text">显示中间文字</span>
+      </label>
       <span class="immersive-divider" aria-hidden="true"></span>
       <button type="button" data-immersive-exit aria-label="退出沉浸式播放" title="退出 / Esc"><span aria-hidden="true">×</span><span class="immersive-escape" aria-hidden="true">Esc</span></button>
     </div>

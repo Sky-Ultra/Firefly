@@ -56,6 +56,19 @@ export function mountImmersiveSlideshow(dialog: HTMLDialogElement): () => void {
 	const pause = pauseElement;
 	const pauseIcon = pauseIconElement;
 	const hint = hintElement;
+	const centerCopy = dialog.querySelector<HTMLElement>("[data-immersive-copy]");
+	const centerSubtitle = dialog.querySelector<HTMLElement>(
+		"[data-immersive-subtitle]",
+	);
+	const textOption = dialog.querySelector<HTMLInputElement>(
+		"[data-immersive-text]",
+	);
+	const textStorageKey = "firefly:immersive:center-text";
+	let showCenterText = true;
+	try {
+		showCenterText = window.localStorage.getItem(textStorageKey) !== "false";
+	} catch {}
+	let subtitleObserver: MutationObserver | null = null;
 	const scope = new AbortController();
 	const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
 	const interval = Math.max(3000, Number(dialog.dataset.interval) || 6500);
@@ -104,7 +117,53 @@ export function mountImmersiveSlideshow(dialog: HTMLDialogElement): () => void {
 				3200,
 			);
 	}
+	function syncCenterText() {
+		subtitleObserver?.disconnect();
+		subtitleObserver = null;
+		if (textOption) textOption.checked = showCenterText;
+		if (centerCopy) centerCopy.hidden = !showCenterText;
+		if (!active || closing || !showCenterText || !centerSubtitle) return;
+		const target = centerSubtitle;
+		const source = document.getElementById("banner-subtitle");
+		if (!source) return;
+		const sync = () => {
+			const typing = source.querySelector<HTMLElement>(".typewriter");
+			if (typing) target.textContent = typing.textContent || "";
+			else {
+				// Astro can emit its component script inside the subtitle wrapper.
+				// Copy display text only; scripts must never become visible text.
+				const copy = source.cloneNode(true) as HTMLElement;
+				copy
+					.querySelectorAll("script, style, template, noscript")
+					.forEach((node) => {
+						node.remove();
+					});
+				target.textContent = copy.textContent?.trim() || "";
+			}
+			target.parentElement?.toggleAttribute("data-typing", !!typing);
+		};
+		sync();
+		subtitleObserver = new window.MutationObserver(sync);
+		subtitleObserver.observe(source, {
+			childList: true,
+			characterData: true,
+			subtree: true,
+		});
+	}
+	function onTextChange() {
+		if (!textOption) return;
+		showCenterText = textOption.checked;
+		try {
+			window.localStorage.setItem(textStorageKey, String(showCenterText));
+		} catch {}
+		syncCenterText();
+		showControls();
+	}
 	function syncLabels() {
+		textOption?.setAttribute(
+			"aria-label",
+			text("显示中间文字", "Show center text"),
+		);
 		pause.setAttribute(
 			"aria-label",
 			paused
@@ -236,6 +295,8 @@ export function mountImmersiveSlideshow(dialog: HTMLDialogElement): () => void {
 		if (!active) return;
 		active = false;
 		closing = false;
+		subtitleObserver?.disconnect();
+		subtitleObserver = null;
 		generation++;
 		if (dialog.open) dialog.close();
 		dialog.removeAttribute("data-closing");
@@ -316,6 +377,7 @@ export function mountImmersiveSlideshow(dialog: HTMLDialogElement): () => void {
 		dialog.toggleAttribute("data-suspended", document.hidden);
 		status.textContent = text("正在展开画面…", "Opening the view…");
 		syncLabels();
+		syncCenterText();
 		emit(true);
 		dialog.focus({ preventScroll: true });
 		showControls();
@@ -348,7 +410,10 @@ export function mountImmersiveSlideshow(dialog: HTMLDialogElement): () => void {
 			showControls();
 		} else if (
 			event.key === " " &&
-			!(event.target instanceof Element && event.target.closest("button"))
+			!(
+				event.target instanceof Element &&
+				event.target.closest("button, input, select, textarea")
+			)
 		) {
 			event.preventDefault();
 			paused = !paused;
@@ -374,6 +439,7 @@ export function mountImmersiveSlideshow(dialog: HTMLDialogElement): () => void {
 	const options = { signal: scope.signal };
 	window.addEventListener("firefly:immersive-open", open, options);
 	dialog.addEventListener("click", onClick, options);
+	textOption?.addEventListener("change", onTextChange, options);
 	dialog.addEventListener("pointermove", showControls, options);
 	dialog.addEventListener(
 		"pointerdown",
