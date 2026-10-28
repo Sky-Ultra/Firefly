@@ -93,6 +93,8 @@ export default defineConfig({
 	integrations: [
 		swup({
 			theme: false,
+			// Navigation must be ready without waiting for wallpapers or widgets.
+			loadOnIdle: false,
 			animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
 			// the default value `transition-` cause transition delay
 			// when the Tailwind class `transition-all` is used
