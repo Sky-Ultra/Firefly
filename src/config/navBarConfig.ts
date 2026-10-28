@@ -67,6 +67,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 游戏
 			LinkPresets.Games,
 
+			// 小说
+			LinkPresets.Novels,
+
 			// 友链
 			LinkPresets.Friends,
 
@@ -176,6 +179,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/games/",
 		icon: "material-symbols:sports-esports-rounded",
 		pageKey: "games",
+	},
+	Novels: {
+		name: "小说",
+		nameEn: "Books",
+		url: "/novels/",
+		icon: "material-symbols:menu-book-rounded",
 	},
 	Gallery: {
 		name: "相册",

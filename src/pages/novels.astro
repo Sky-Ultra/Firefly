@@ -1,0 +1,105 @@
+---
+import { Icon } from "astro-icon/components";
+import JellyMotion from "@/components/common/JellyMotion.astro";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
+import { novels, novelsUpdated } from "@/config/novelsConfig";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import {
+	novelAccessLabel,
+	novelCategories,
+	novelSources,
+	novelStatusLabel,
+} from "@/utils/novel-utils";
+import "@/styles/novels.css";
+
+const sourceEntries = Object.entries(novelSources);
+const categoryEntries = Object.entries(novelCategories);
+const stats = [
+	{
+		value: novels.length,
+		zh: "收录作品",
+		en: "Works",
+		icon: "material-symbols:menu-book-rounded",
+	},
+	{
+		value: new Set(novels.map((book) => book.author)).size,
+		zh: "作者署名",
+		en: "Author credits",
+		icon: "material-symbols:person",
+	},
+	{
+		value: sourceEntries.length,
+		zh: "阅读来源",
+		en: "Reading sites",
+		icon: "material-symbols:stacks-rounded",
+	},
+	{
+		value: novels.filter((book) =>
+			book.sources.some((source) => source.access === "open"),
+		).length,
+		zh: "开放直读",
+		en: "Open reading",
+		icon: "material-symbols:open-in-new-rounded",
+	},
+];
+---
+<MainGridLayout title="我看过的小说推荐墙" description="腹有诗书气自华。收藏读过与推荐的文学作品，在书页之间相遇。">
+ <JellyMotion />
+ <novels-wall class="novels-wall">
+  <header class="novels-heading">
+   <div class="novels-heading-line"><span class="novels-heading-icon"><Icon is:inline name="material-symbols:menu-book-rounded" /></span><h1><LocalizedText zh="我看过的小说推荐墙" en="Books I've Read & Recommend" /></h1></div>
+   <p class="novels-subtitle"><LocalizedText zh="腹有诗书气自华" en="A mind enriched by books shines from within." /></p>
+   <p class="novels-updated"><LocalizedText zh={`共 ${novels.length} 部作品`} en={`${novels.length} works`} /><span aria-hidden="true">·</span><LocalizedText zh="更新于" en="Updated" /> <time datetime={novelsUpdated}>{novelsUpdated}</time></p>
+  </header>
+  <dl class="novels-stats">{stats.map(stat => <div><span class="novels-stat-icon" aria-hidden="true"><Icon is:inline name={stat.icon} /></span><div><dt><LocalizedText zh={stat.zh} en={stat.en} /></dt><dd>{stat.value}</dd></div></div>)}</dl>
+  <div class="novels-tools" data-novel-tools hidden>
+   <div class="novels-search-row">
+    <label class="novels-search"><Icon is:inline name="material-symbols:search-rounded" aria-hidden="true" /><span class="sr-only"><LocalizedText zh="搜索书名、作者或简介" en="Search titles, authors or descriptions" /></span><input data-novel-search type="search" placeholder="搜索书名、作者或简介…" aria-label="搜索书名、作者或简介" data-i18n-zh="搜索书名、作者或简介…" data-i18n-en="Search titles, authors or descriptions…" data-i18n-attr="placeholder" /></label>
+    <select data-novel-sort aria-label="作品排序" data-i18n-zh="作品排序" data-i18n-en="Sort books" data-i18n-attr="aria-label">
+     <option value="original" data-i18n-zh="书单顺序" data-i18n-en="Shelf order" data-i18n-attr="content">书单顺序</option>
+     <option value="title" data-i18n-zh="按书名排序" data-i18n-en="By title" data-i18n-attr="content">按书名排序</option>
+     <option value="author" data-i18n-zh="按作者排序" data-i18n-en="By author" data-i18n-attr="content">按作者排序</option>
+    </select>
+   </div>
+   <div class="novels-filter-row" role="group" aria-label="阅读来源" data-i18n-zh="阅读来源" data-i18n-en="Reading source" data-i18n-attr="aria-label">
+    <span class="novels-filter-label"><LocalizedText zh="来源" en="Source" /></span>
+    <div class="novels-filter-options"><button type="button" data-novel-source="all" aria-pressed="true"><LocalizedText zh="全部" en="All" /><span data-filter-count>{novels.length}</span></button>{sourceEntries.map(([id,source]) => <button type="button" data-novel-source={id} aria-pressed="false"><LocalizedText zh={source.zh} en={source.en} /><span data-filter-count>{novels.filter(b=>b.sources.some(s=>s.site===id)).length}</span></button>)}</div>
+   </div>
+   <div class="novels-filter-row" role="group" aria-label="作品分类" data-i18n-zh="作品分类" data-i18n-en="Literary categories" data-i18n-attr="aria-label">
+    <span class="novels-filter-label"><LocalizedText zh="分类" en="Category" /></span>
+    <div class="novels-filter-options"><button type="button" data-novel-category="all" aria-pressed="true"><LocalizedText zh="全部" en="All" /><span data-filter-count>{novels.length}</span></button>{categoryEntries.map(([id,category]) => <button type="button" data-novel-category={id} aria-pressed="false"><LocalizedText zh={category.zh} en={category.en} /><span data-filter-count>{novels.filter(b=>b.categories.includes(id)).length}</span></button>)}</div>
+   </div>
+   <div class="novels-filter-summary"><span data-novel-results role="status" aria-live="polite" aria-atomic="true">共 {novels.length} 部作品</span><button type="button" data-novel-reset><LocalizedText zh="重置筛选" en="Reset filters" /></button></div>
+  </div>
+  <div class="novels-grid" data-novel-grid>
+   {novels.map((book,index) => <jelly-hover data-jelly-profile="card" data-novel-item data-title={book.title} data-author={book.author} data-sources={book.sources.map(source=>source.site).join(" ")} data-categories={book.categories.join(" ")} data-default-href={book.sources[0].url} data-default-access={book.sources[0].access} data-search={[book.title,book.author,book.description,book.genre,...(book.aliases||[])].join(" ")}>
+    <article class="novel-card sidebar-decorated-card" data-jelly-surface aria-labelledby={`title-${book.id}`}>
+     <SidebarDecoration motif="quote" />
+     <a href={book.sources[0].url} data-primary-reading class="novel-cover-link" target="_blank" rel="noopener noreferrer" aria-label={`阅读《${book.title}》`}><img src={book.cover} alt={`《${book.title}》封面`} width="100" height="150" loading={index<4?"eager":"lazy"} decoding="async" /></a>
+     <div class="novel-card-content">
+      <h2 id={`title-${book.id}`}><a data-primary-reading href={book.sources[0].url} target="_blank" rel="noopener noreferrer">{book.title}<span aria-hidden="true">↗</span></a></h2>
+      <p class="novel-author">{book.author}</p>
+      <div class="novel-tags"><span>{book.genre}</span><span class="novel-access-status" data-novel-access-status data-access={book.sources[0].access} data-i18n-zh={novelStatusLabel(book.sources[0].access).zh} data-i18n-en={novelStatusLabel(book.sources[0].access).en} data-i18n-attr="content">{novelStatusLabel(book.sources[0].access).zh}</span></div>
+      <p class="novel-description">{book.description}</p>
+      <div class="novel-links" aria-label="阅读入口">{book.sources.map(source => <a data-novel-reading-source={source.site} data-novel-access={source.access} href={source.url} target="_blank" rel="noopener noreferrer" title={source.note || (source.access==='preview'?'可试读；完整阅读范围以平台为准':novelAccessLabel(source).zh+'在线阅读；开放范围见来源站说明')}><LocalizedText zh={novelSources[source.site].zh} en={novelSources[source.site].en} /><span class="novel-access"><LocalizedText zh={novelAccessLabel(source).zh} en={novelAccessLabel(source).en} /></span><span aria-hidden="true">↗</span></a>)}</div>
+      {book.sources.some(source=>source.note)&&<p class="novel-version-note">{book.sources.find(source=>source.note)?.note}</p>}
+     </div>
+    </article>
+   </jelly-hover>)}
+  </div>
+  <div class="novels-empty" data-novel-empty hidden><Icon is:inline name="material-symbols:search-rounded" aria-hidden="true" /><h2><LocalizedText zh="还没有找到这本书" en="No matching books" /></h2><p><LocalizedText zh="可以换个关键词，或重置来源与分类再看看。" en="Try another keyword, or reset the source and category filters." /></p><button type="button" data-novel-reset><LocalizedText zh="重置筛选" en="Reset filters" /></button></div>
+  <nav class="novels-pagination" data-novel-pagination hidden aria-label="书单分页"><button type="button" data-novel-previous><LocalizedText zh="上一页" en="Previous" /></button><span data-novel-page></span><button type="button" data-novel-next><LocalizedText zh="下一页" en="Next" /></button></nav>
+  <p class="novels-reading-note"><LocalizedText zh="来源与分类共同筛选。中文免费入口优先，外文版与部分篇目单独标明；平台的实际开放范围以页面说明为准。" en="Source and category filters work together. Free Chinese editions are prioritized; other languages and partial editions are labeled. Availability follows the source site." /></p>
+  <blockquote class="novels-quote sidebar-decorated-card"><SidebarDecoration motif="constellation" /><Icon is:inline name="material-symbols:format-quote-rounded" aria-hidden="true" /><p><LocalizedText zh="我的征途，是星辰大海！！" en="My journey is the sea of stars!!" /></p><cite><LocalizedText zh="——《银河英雄传说》" en="— Legend of the Galactic Heroes" /></cite></blockquote>
+ </novels-wall>
+<script>
+ import { mountNovelWall } from "@/utils/novel-wall";
+ class NovelsWall extends HTMLElement {
+  private dispose?:()=>void;
+  connectedCallback(){if(!this.dispose)this.dispose=mountNovelWall(this);}
+  disconnectedCallback(){this.dispose?.();this.dispose=undefined;}
+ }
+ if(!customElements.get("novels-wall"))customElements.define("novels-wall",NovelsWall);
+</script>
+</MainGridLayout>

@@ -69,7 +69,10 @@ test("the changelog records only the article publication under October 28", () =
 		),
 		"utf8",
 	);
-	const section = changelog.split("## 2026.10.28\n")[1]?.trim();
+	const section = changelog
+		.split("## 2026.10.28\n")[1]
+		?.split(/\n## /)[0]
+		.trim();
 	assert.equal(
 		section,
 		"- 更新了文章：[⌈长夜⌋的情书](/posts/long-night-love-letter/)",

@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:de2662bef5526e0a175d3db90384111f56fa0e319f460508e5d555654e4a2b3f
+sourceHash: sha256:5a0aa2e98c2b8b85aadbb478259f1ad912fd3aea6b67fff39889391ee6ab7a71
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -157,3 +157,7 @@ This article provides a brief record of updates to my personal website, beginnin
 ## October 28, 2026
 
 - Published the article [“A Love Letter from ⌈Long Night⌋”](/posts/long-night-love-letter/)
+
+## October 29, 2026
+
+- <mark class="theme-highlight">Major update</mark>: Added [My - Books](/novels/), a new section collecting books I have read and recommend. You're welcome to explore.

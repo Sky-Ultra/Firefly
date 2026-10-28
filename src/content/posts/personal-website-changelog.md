@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-10-28
+updated: 2026-10-29
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -168,3 +168,7 @@ draft: false
 ## 2026.10.28
 
 - 更新了文章：[⌈长夜⌋的情书](/posts/long-night-love-letter/)
+
+## 2026.10.29
+
+- <mark class="theme-highlight">重要更新</mark>：全新增加[我的-小说](/novels/)板块，这里面记录了我曾经阅读过和推荐阅读的书籍，欢迎查阅
