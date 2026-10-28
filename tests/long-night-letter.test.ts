@@ -41,7 +41,7 @@ test("the new letter has the requested public metadata while its source contains
 
 test("sealed reading statistics describe the actual body rather than the short locked-page notice", () => {
 	const plugin = remarkReadingTime();
-	const stats = { words: 3854, minutes: 19 };
+	const stats = { words: 3805, minutes: 19 };
 	const file = {
 		data: { astro: { frontmatter: { sealedReadingStats: stats } } },
 	};

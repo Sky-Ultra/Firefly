@@ -1,0 +1,51 @@
+---
+interface Props {
+	interval: number;
+}
+const { interval } = Astro.props;
+
+import "@/styles/immersive-slideshow.css";
+---
+
+<immersive-slideshow>
+  <dialog id="immersive-slideshow" class="immersive-viewer" data-interval={interval}
+    aria-label="沉浸式播放" data-i18n-zh="沉浸式播放" data-i18n-en="Immersive playback" data-i18n-attr="aria-label" tabindex="-1">
+    <div class="immersive-pictures" aria-hidden="true">
+      <img data-immersive-image alt="" decoding="async" />
+      <img data-immersive-image alt="" decoding="async" />
+    </div>
+    <div class="immersive-controls" data-immersive-controls>
+      <button type="button" data-immersive-prev aria-label="上一张" title="上一张 / ←">‹</button>
+      <button type="button" data-immersive-pause aria-label="暂停播放" title="暂停 / 空格"><span data-immersive-pause-icon aria-hidden="true">Ⅱ</span></button>
+      <button type="button" data-immersive-next aria-label="下一张" title="下一张 / →">›</button>
+      <span class="immersive-divider" aria-hidden="true"></span>
+      <button type="button" data-immersive-exit aria-label="退出沉浸式播放" title="退出 / Esc"><span aria-hidden="true">×</span><span class="immersive-escape" aria-hidden="true">Esc</span></button>
+    </div>
+    <p class="immersive-hint" data-immersive-hint>Esc 退出 · ← → 切换 · 空格暂停</p>
+    <p class="immersive-status" data-immersive-status role="status" aria-live="polite"></p>
+    <div class="immersive-waves" aria-hidden="true">
+      <svg viewBox="0 24 150 28" preserveAspectRatio="none">
+        <defs><path id="immersive-gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v48h-352z" /></defs>
+        <g>
+          <use href="#immersive-gentle-wave" x="48" y="0" />
+          <use href="#immersive-gentle-wave" x="48" y="3" />
+          <use href="#immersive-gentle-wave" x="48" y="5" />
+          <use href="#immersive-gentle-wave" x="48" y="7" />
+        </g>
+      </svg>
+    </div>
+  </dialog>
+</immersive-slideshow>
+
+<script>
+import { mountImmersiveSlideshow } from "@/utils/immersive-slideshow";
+class ImmersiveSlideshow extends HTMLElement {
+  private dispose?: () => void;
+  connectedCallback() {
+    const dialog = this.querySelector<HTMLDialogElement>("dialog");
+    if (dialog && !this.dispose) this.dispose = mountImmersiveSlideshow(dialog);
+  }
+  disconnectedCallback() { this.dispose?.(); this.dispose = undefined; }
+}
+if (!customElements.get("immersive-slideshow")) customElements.define("immersive-slideshow", ImmersiveSlideshow);
+</script>

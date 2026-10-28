@@ -42,7 +42,7 @@ function fixture() {
 	wallpaper.id = "banner-images-container";
 	wallpaper.dataset.wallpaperAwaitingAssignment = "true";
 	for (const device of ["mobile", "desktop"]) {
-		for (let index = 0; index < 21; index++) {
+		for (let index = 0; index < (device === "desktop" ? 32 : 21); index++) {
 			const slide = view.document.createElement("div");
 			slide.className = `slide-item ${device === "mobile" ? "lg:hidden" : "lg:block"} ${index === 3 ? "active" : ""}`;
 			slide.dataset.index = String(index);
@@ -93,7 +93,7 @@ test("a direct non-home entry assigns both full libraries before reserving artic
 					),
 				)
 				.map((el) => el.getAttribute("data-wallpaper-src"));
-			assert.equal(new Set(sources).size, 21);
+			assert.equal(new Set(sources).size, device === "desktop" ? 32 : 21);
 			assert.ok(
 				sources.every(
 					(src) =>

@@ -302,6 +302,13 @@ function toggleBannerTitleEnabled() {
 	setBannerTitleEnabled(bannerTitleEnabled);
 }
 
+function startImmersivePlayback() {
+	document
+		.getElementById("display-setting")
+		?.classList.add("float-panel-closed");
+	window.dispatchEvent(new CustomEvent("firefly:immersive-open"));
+}
+
 function toggleBannerCarouselEnabled() {
 	bannerCarouselEnabled = !bannerCarouselEnabled;
 	setBannerCarouselEnabled(bannerCarouselEnabled);
@@ -627,6 +634,15 @@ $effect(() => {
         </div>
     {/if}
 
+    <div class="mt-2 mb-2">
+        <button type="button" data-immersive-start
+            class="w-full btn-regular rounded-md py-2.5 px-3 flex items-center gap-3 text-left active:scale-95 transition-all"
+            aria-haspopup="dialog" aria-controls="immersive-slideshow" onclick={startImmersivePlayback}>
+            <Icon icon="material-symbols:fullscreen-rounded" class="text-[1.25rem] shrink-0" />
+            <span class="flex-1 text-sm" data-i18n-zh="沉浸式播放" data-i18n-en="Immersive playback">沉浸式播放</span>
+            <span class="text-xs opacity-55" aria-hidden="true">↗</span>
+        </button>
+    </div>
     <!-- Banner Settings Section -->
     {#if (wallpaperMode === WALLPAPER_BANNER || wallpaperMode === WALLPAPER_FULLSCREEN) && hasBannerSettings}
         <div class="mt-2 mb-2">

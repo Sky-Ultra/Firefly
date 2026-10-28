@@ -18,6 +18,14 @@ interface Props {
 
 const { password, slug, hint = "", sealedContent } = Astro.props;
 const [hintText, ...hintDetails] = hint.split(/\r?\n/);
+const birthdayExample =
+	(
+		{
+			"long-night-love-letter": "20070427",
+			liking: "0427",
+			"love-tree-guide": "0427",
+		} as Record<string, string>
+	)[slug.replace(/\.(md|mdx)$/, "")] ?? "";
 
 const rawHtml = await Astro.slots.render("default");
 const resolvedPassword = sealedContent
@@ -45,6 +53,7 @@ const labels = {
   data-encrypted={encryptedData}
   data-slug={slug}
   data-password-length={passwordLength}
+  data-password-example={birthdayExample || undefined}
 >
   <!-- Lock UI -->
   <div id="password-ui" class="flex justify-center py-16 px-4">
@@ -87,6 +96,7 @@ const labels = {
         </button>
       </form>
 
+      <p id="password-example-notice" role="status" aria-live="polite" class="password-example-notice hidden"></p>
       <p id="password-error" role="alert" class="text-xs text-red-500 dark:text-red-400 m-0 hidden">{labels.error}</p>
       <p id="password-attempt-status" role="status" aria-live="polite" aria-atomic="true" class="text-xs leading-relaxed text-black/50 dark:text-white/50 text-center m-0"></p>
       <p id="password-lock-countdown" aria-hidden="true" class="text-sm tabular-nums text-(--primary) text-center m-0 hidden"></p>
@@ -115,6 +125,9 @@ const labels = {
   var MAX_FAILURES = 6;
   var passwordLength = Number(container.getAttribute('data-password-length'));
   var RESET_HOUR = 4;
+  var examplePassword = container.getAttribute('data-password-example');
+  var exampleNotice = document.getElementById('password-example-notice');
+  var noticeTimer = null;
 
   var ui = document.getElementById('password-ui');
   var form = document.getElementById('password-form');
@@ -237,6 +250,7 @@ const labels = {
     if (disposed) return;
     disposed = true;
     stopTimers();
+    clearTimeout(noticeTimer);
     form.removeEventListener('submit', onSubmit);
     window.removeEventListener('storage', syncStorage);
     window.removeEventListener('pageshow', refresh);
@@ -371,7 +385,18 @@ const labels = {
         if (error && error.name === 'OperationError') {
           recordFailure();
           shouldRefocus = !getState().locked;
-          showError();
+          if (examplePassword && pwd === examplePassword && exampleNotice) {
+            exampleNotice.textContent = text('请你不要输入我的生日呀！！', "Please don't enter my birthday!!");
+            exampleNotice.classList.remove('hidden');
+            exampleNotice.style.animation = 'none';
+            void exampleNotice.offsetWidth;
+            exampleNotice.style.animation = '';
+            clearTimeout(noticeTimer);
+            noticeTimer = setTimeout(function() { exampleNotice.classList.add('hidden'); }, 6000);
+          } else {
+            if (exampleNotice) exampleNotice.classList.add('hidden');
+            showError();
+          }
         } else {
           showError(text('解锁暂时失败，请稍后重试；本次不计入错误次数。', 'Unable to unlock right now. This does not count as an incorrect password.'));
         }
@@ -415,3 +440,20 @@ const labels = {
   if (cached && !getState().locked) void verifyPassword(cached, true);
 })();
 </script>
+
+<style>
+.password-example-notice {
+  padding: .65rem .9rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
+  border-radius: .8rem .8rem .8rem .2rem;
+  color: var(--btn-content);
+  background: var(--btn-regular-bg);
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: center;
+  animation: birthday-notice-in 320ms cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes birthday-notice-in { from { opacity: 0; transform: translateY(5px) scale(.97); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .password-example-notice { animation: none; } }
+</style>

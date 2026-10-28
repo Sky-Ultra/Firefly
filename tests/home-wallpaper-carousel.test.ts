@@ -40,8 +40,12 @@ function fixture(
 	container.dataset.carouselInterval = "6500";
 	container.dataset.carouselEffect = "zoom";
 	if (options.awaiting) container.dataset.wallpaperAwaitingAssignment = "true";
-	const count = backgroundWallpaper.common?.carousel?.count ?? 0;
+	const desktopCount = backgroundWallpaper.common?.carousel?.count ?? 0;
 	for (const device of ["mobile", "desktop"]) {
+		const count =
+			device === "mobile"
+				? (backgroundWallpaper.common?.carousel?.mobileCount ?? desktopCount)
+				: desktopCount;
 		for (let index = 0; index < count; index++) {
 			const slide = view.document.createElement("div");
 			slide.className = `slide-item ${device === "mobile" ? "block lg:hidden" : "hidden lg:block"} ${index === 0 ? "active" : ""}`;
@@ -151,19 +155,19 @@ function fixture(
 	};
 }
 
-test("twenty-one slots per device load only current and next, retaining at most three decoded slides", async () => {
-	assert.equal(backgroundWallpaper.common?.carousel?.count, 21);
+test("32 desktop and 21 mobile slots load only current and next, retaining at most three decoded slides", async () => {
+	assert.equal(backgroundWallpaper.common?.carousel?.count, 32);
 	const f = fixture();
 	try {
 		await flush();
-		assert.equal(f.slides("desktop").length, 21);
+		assert.equal(f.slides("desktop").length, 32);
 		assert.equal(f.slides("mobile").length, 21);
 		assert.equal(f.loaded("desktop").length, 2);
 		assert.equal(f.loaded("mobile").length, 0);
 		for (let index = 0; index < 26; index++) {
 			f.key("ArrowRight");
 			await flush();
-			assert.equal(f.active("desktop"), (index + 1) % 21);
+			assert.equal(f.active("desktop"), (index + 1) % 32);
 			assert.ok(f.loaded("desktop").length <= 3);
 			assert.equal(f.timers.size, 1);
 		}
@@ -320,3 +324,44 @@ test("a homepage first opened in the background starts autoplay when it becomes 
 		await f.close();
 	}
 });
+
+for (const initiallyPaused of [false, true]) {
+	test(`immersive playback freezes normal sources and position, then restores ${initiallyPaused ? "pause" : "play"}`, async () => {
+		const f = fixture();
+		try {
+			await flush();
+			f.key("ArrowRight");
+			await flush();
+			if (initiallyPaused) f.key(" ");
+			const before = f.active("desktop");
+			const sources = f
+				.slides("desktop")
+				.map((s) => s.getAttribute("data-wallpaper-src"));
+			const immersion = (active: boolean) =>
+				f.view.dispatchEvent(
+					new f.view.CustomEvent("firefly:immersive-change", {
+						detail: { active },
+					}),
+				);
+			immersion(true);
+			assert.equal(f.timers.size, 0);
+			f.key("ArrowRight");
+			await flush();
+			assert.equal(f.active("desktop"), before);
+			f.hide(true);
+			f.hide(false);
+			await flush();
+			assert.equal(f.timers.size, 0);
+			immersion(false);
+			await flush();
+			assert.equal(f.active("desktop"), before);
+			assert.deepEqual(
+				f.slides("desktop").map((s) => s.getAttribute("data-wallpaper-src")),
+				sources,
+			);
+			assert.equal(f.timers.size, initiallyPaused ? 0 : 1);
+		} finally {
+			await f.close();
+		}
+	});
+}

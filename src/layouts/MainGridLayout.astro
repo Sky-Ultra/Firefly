@@ -12,6 +12,7 @@ import LocalizedText from "@/components/common/LocalizedText.astro";
 import FloatingControls from "@/components/controls/FloatingControls.astro";
 import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro";
 import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
+import ImmersiveSlideshow from "@/components/features/ImmersiveSlideshow.astro";
 import RandomCoverProvider from "@/components/features/RandomCoverProvider.astro";
 import TypewriterText from "@/components/features/TypewriterText.astro";
 import CategoryBar from "@/components/layout/CategoryBar.astro";
@@ -131,11 +132,18 @@ const homeWallpaperSlideCount = Math.max(
 	1,
 	Math.floor(backgroundWallpaper.common?.carousel?.count ?? 21),
 );
+const mobileHomeWallpaperSlideCount = Math.max(
+	1,
+	Math.floor(
+		backgroundWallpaper.common?.carousel?.mobileCount ??
+			homeWallpaperSlideCount,
+	),
+);
 const desktopHomeWallpaperUrls = homeRandomCoverImages
 	.slice(-homeWallpaperSlideCount)
 	.map((image) => image.wallpaperUrl ?? image.originalUrl);
 const mobileHomeWallpaperUrls = mobileHomeWallpaperImages
-	.slice(-homeWallpaperSlideCount)
+	.slice(-mobileHomeWallpaperSlideCount)
 	.map((image) => image.wallpaperUrl ?? image.originalUrl);
 const backgroundImages =
 	desktopHomeWallpaperUrls.length > 0
@@ -316,6 +324,7 @@ const hasMultipleImages =
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug}>
+<ImmersiveSlideshow interval={bannerCarouselInterval} />
 <RandomCoverProvider
 	images={homeRandomCoverImages}
 	mobileHomeWallpaperImages={mobileHomeWallpaperImages}
@@ -462,6 +471,8 @@ const hasMultipleImages =
             var effect = container.dataset.carouselEffect || 'fade';
             var FADE_MS = 800;
             var transitioning = false;
+            var immersiveActive = false;
+            var resumeAfterImmersive = false;
 			var transitionGeneration = 0;
 			var slideLoadPromises = new WeakMap();
 			var awaitingAssignments = container.dataset.wallpaperAwaitingAssignment === 'true';
@@ -631,7 +642,7 @@ const hasMultipleImages =
 			}
 
 			function prepareCurrentAndNext() {
-				if (awaitingAssignments || !isWallpaperVisible()) return;
+				if (immersiveActive || awaitingAssignments || !isWallpaperVisible()) return;
 				var slides = getVisibleSlides();
 				if (slides.length === 0) return;
 				var currentIndex = getCurrentIndex(slides);
@@ -667,7 +678,7 @@ const hasMultipleImages =
 
 			function changeToSlide(targetIndex, resetProgress) {
 				var slides = getVisibleSlides();
-				if (slides.length <= 1 || transitioning) return Promise.resolve(false);
+				if (immersiveActive || slides.length <= 1 || transitioning) return Promise.resolve(false);
 
 				var nextIndex = ((targetIndex % slides.length) + slides.length) % slides.length;
 				if (nextIndex === getCurrentIndex(slides)) return Promise.resolve(false);
@@ -737,7 +748,7 @@ const hasMultipleImages =
 
             function startAutoPlay() {
                 stopAutoPlay();
-                if (!isCarouselEnabled()) return;
+                if (immersiveActive || !isCarouselEnabled()) return;
                 if (!isBannerWallpaperMode()) return;
 				if (awaitingAssignments) return;
 				if (!isWallpaperVisible()) { resumeWhenWallpaperVisible = true; return; }
@@ -767,7 +778,7 @@ const hasMultipleImages =
 
             // 键盘控制
             document.addEventListener('keydown', function(e) {
-                if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+                if (immersiveActive || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
                 if (e.target && e.target.closest && e.target.closest('input, textarea, select, button, a, [role="textbox"], [contenteditable]:not([contenteditable="false"])')) return;
                 if (!isBannerWallpaperMode() || !isCarouselEnabled()) return;
                 if (e.key === 'ArrowRight') {
@@ -784,9 +795,11 @@ const hasMultipleImages =
 
             // 触屏滑动
             document.addEventListener('touchstart', function(e) {
+                if (immersiveActive) return;
                 appState.touchStartX = e.changedTouches[0].screenX;
             }, { passive: true });
             document.addEventListener('touchend', function(e) {
+                if (immersiveActive) return;
                 appState.touchEndX = e.changedTouches[0].screenX;
                 var diff = appState.touchEndX - appState.touchStartX;
                 if (Math.abs(diff) > 50) {
@@ -796,6 +809,22 @@ const hasMultipleImages =
                 }
             }, { passive: true });
 
+            // Keep the normal carousel frozen while the independent viewer is open.
+            window.addEventListener('firefly:immersive-change', function(e) {
+                var active = !!(e.detail && e.detail.active);
+                if (active === immersiveActive) return;
+                immersiveActive = active;
+                if (active) {
+                    resumeAfterImmersive = appState.isPlaying || resumeOnVisibility || resumeWhenWallpaperVisible;
+                    transitionGeneration++;
+                    transitioning = false;
+                    stopAutoPlay();
+                } else {
+                    prepareCurrentAndNext();
+                    if (resumeAfterImmersive) startAutoPlay();
+                    resumeAfterImmersive = false;
+                }
+            });
             // 事件监听
             window.addEventListener('bannerCarouselChange', function(e) {
                 e.detail && e.detail.enabled ? startAutoPlay() : stopAutoPlay();

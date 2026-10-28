@@ -43,6 +43,7 @@ function fixture(
 		fault?: boolean;
 		sealedPayload?: string;
 		passwordLength?: number;
+		examplePassword?: string;
 		extras?: string;
 		locks?: {
 			request: (key: string, task: () => Promise<void>) => Promise<void>;
@@ -72,7 +73,7 @@ function fixture(
 			return clock.now;
 		}
 	}
-	view.document.body.innerHTML = `<div id="encrypted-container" data-slug="test" data-password-length="${options.passwordLength ?? 0}" data-encrypted="${options.sealedPayload ?? payload}"><div id="password-ui"><form id="password-form"><input id="password-input" type="password"><button id="password-submit">解锁</button></form><p id="password-error" class="hidden"></p><p id="password-attempt-status"></p><p id="password-lock-countdown" class="hidden"></p></div><div id="decrypted-content" class="hidden"></div>${options.extras ? `<template data-encrypted-extras>${options.extras}</template>` : ""}</div>`;
+	view.document.body.innerHTML = `<div id="encrypted-container" data-slug="test" data-password-example="${options.examplePassword ?? ""}" data-password-length="${options.passwordLength ?? 0}" data-encrypted="${options.sealedPayload ?? payload}"><div id="password-ui"><form id="password-form"><input id="password-input" type="password"><button id="password-submit">解锁</button></form><p id="password-example-notice" class="hidden"></p><p id="password-error" class="hidden"></p><p id="password-attempt-status"></p><p id="password-lock-countdown" class="hidden"></p></div><div id="decrypted-content" class="hidden"></div>${options.extras ? `<template data-encrypted-extras>${options.extras}</template>` : ""}</div>`;
 	let decryptCalls = 0;
 	const subtle = new Proxy(webcrypto.subtle, {
 		get(target, key) {
@@ -446,5 +447,40 @@ test("tabs share the same daily article limit while other articles remain indepe
 		await first.close();
 		await second.close();
 		await other.close();
+	}
+});
+
+for (const examplePassword of ["20070427", "0427"]) {
+	test(`birthday example ${examplePassword} displays the requested notice and retains normal failure counting`, async () => {
+		const f = fixture({ examplePassword });
+		try {
+			await f.submit(examplePassword);
+			const notice = f.view.document.getElementById("password-example-notice");
+			assert.equal(notice?.textContent, "请你不要输入我的生日呀！！");
+			assert.equal(notice?.classList.contains("hidden"), false);
+			assert.equal(f.record().failures, 1);
+			assert.equal(f.unlocked(), false);
+			await f.submit("ordinary-wrong");
+			assert.equal(notice?.classList.contains("hidden"), true);
+			assert.equal(f.record().failures, 2);
+			await f.submit(secret);
+			assert.equal(f.unlocked(), true);
+		} finally {
+			await f.close();
+		}
+	});
+}
+test("the example notice cannot bypass the six-failure daily lock", async () => {
+	const f = fixture({ examplePassword: "0427" });
+	try {
+		for (let i = 0; i < 6; i++) await f.submit("0427");
+		assert.equal(f.locked(), true);
+		assert.equal(f.record().failures, 6);
+		const calls = f.calls();
+		await f.submit(secret);
+		assert.equal(f.calls(), calls);
+		assert.equal(f.unlocked(), false);
+	} finally {
+		await f.close();
 	}
 });
