@@ -15,7 +15,14 @@ const runtime = layout.match(
 assert.ok(runtime);
 const flush = () => new Promise<void>((resolve) => setImmediate(resolve));
 
-function fixture(initialHidden = false) {
+function fixture(
+	initialHidden = false,
+	options: {
+		awaiting?: boolean;
+		wrapperHidden?: boolean;
+		mobileNonHome?: boolean;
+	} = {},
+) {
 	const view = new Window({
 		url: "https://example.test/",
 		settings: { enableImageFileLoading: false },
@@ -32,6 +39,7 @@ function fixture(initialHidden = false) {
 	container.dataset.carouselEnabled = "true";
 	container.dataset.carouselInterval = "6500";
 	container.dataset.carouselEffect = "zoom";
+	if (options.awaiting) container.dataset.wallpaperAwaitingAssignment = "true";
 	const count = backgroundWallpaper.common?.carousel?.count ?? 0;
 	for (const device of ["mobile", "desktop"]) {
 		for (let index = 0; index < count; index++) {
@@ -53,7 +61,25 @@ function fixture(initialHidden = false) {
 			container.appendChild(slide);
 		}
 	}
-	view.document.body.appendChild(container);
+	const wrapper = view.document.createElement("div");
+	wrapper.id = "wallpaper-wrapper";
+	if (options.mobileNonHome) {
+		wrapper.classList.add("mobile-hide-banner");
+		const getComputedStyle = view.getComputedStyle.bind(view);
+		view.getComputedStyle = (element) =>
+			element === wrapper
+				? ({
+						display:
+							view.innerWidth < 1024 &&
+							wrapper.classList.contains("mobile-hide-banner")
+								? "none"
+								: "block",
+					} as ReturnType<typeof getComputedStyle>)
+				: getComputedStyle(element);
+	}
+	if (options.wrapperHidden) wrapper.style.display = "none";
+	wrapper.appendChild(container);
+	view.document.body.appendChild(wrapper);
 	const timers = new Map<number, () => void>();
 	let nextTimer = 0;
 	const math = Object.create(Math);
@@ -80,6 +106,7 @@ function fixture(initialHidden = false) {
 		);
 	return {
 		view,
+		wrapper,
 		timers,
 		slides,
 		loaded: (device: string) =>
@@ -108,6 +135,12 @@ function fixture(initialHidden = false) {
 			});
 			view.dispatchEvent(new view.Event("resize"));
 		},
+		assign: () => {
+			container.dataset.wallpaperAwaitingAssignment = "false";
+			view.dispatchEvent(
+				new view.CustomEvent("firefly:wallpaper-assignments-ready"),
+			);
+		},
 		tick: () => {
 			const entry = timers.entries().next().value;
 			assert.ok(entry);
@@ -134,6 +167,80 @@ test("twenty-one slots per device load only current and next, retaining at most 
 			assert.ok(f.loaded("desktop").length <= 3);
 			assert.equal(f.timers.size, 1);
 		}
+	} finally {
+		await f.close();
+	}
+});
+
+test("direct-entry slides wait for their library assignments instead of loading fallback images", async () => {
+	const f = fixture(false, { awaiting: true });
+	try {
+		await flush();
+		assert.equal(f.loaded("desktop").length, 0);
+		assert.equal(f.timers.size, 0);
+		f.assign();
+		await flush();
+		assert.equal(f.loaded("desktop").length, 2);
+		assert.equal(f.timers.size, 1);
+		f.key(" ");
+		f.assign();
+		await flush();
+		assert.equal(
+			f.timers.size,
+			0,
+			"repeated readiness events must preserve manual pause",
+		);
+	} finally {
+		await f.close();
+	}
+});
+
+test("hidden mobile page backgrounds defer loading and resume the same slide when returning home", async () => {
+	const f = fixture(false, { awaiting: true, wrapperHidden: true });
+	try {
+		f.resize(390);
+		f.assign();
+		await flush();
+		assert.equal(f.loaded("mobile").length, 0);
+		assert.equal(f.timers.size, 0);
+		f.wrapper.style.display = "block";
+		await flush();
+		assert.equal(f.loaded("mobile").length, 2);
+		assert.equal(f.timers.size, 1);
+		f.key("ArrowRight");
+		await flush();
+		const current = f.active("mobile");
+		f.wrapper.style.display = "none";
+		await flush();
+		assert.equal(f.timers.size, 0);
+		f.wrapper.style.display = "block";
+		await flush();
+		assert.equal(f.active("mobile"), current);
+		assert.equal(f.timers.size, 1);
+		f.key(" ");
+		f.wrapper.style.display = "none";
+		await flush();
+		f.wrapper.style.display = "block";
+		await flush();
+		assert.equal(f.timers.size, 0, "navigation must not undo manual pause");
+	} finally {
+		await f.close();
+	}
+});
+
+test("a CSS-only breakpoint hiding the wallpaper can resume on a subsequent homepage visit", async () => {
+	const f = fixture(false, { mobileNonHome: true });
+	try {
+		await flush();
+		assert.equal(f.timers.size, 1);
+		f.resize(390);
+		await flush();
+		assert.equal(f.loaded("mobile").length, 0);
+		assert.equal(f.timers.size, 0);
+		f.wrapper.classList.remove("mobile-hide-banner");
+		await flush();
+		assert.equal(f.loaded("mobile").length, 2);
+		assert.equal(f.timers.size, 1);
 	} finally {
 		await f.close();
 	}

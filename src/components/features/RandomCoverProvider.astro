@@ -6,6 +6,8 @@ interface Props {
 	useHomeWallpaper?: boolean;
 	useOriginalForArticles?: boolean;
 	mobileHomeWallpaperImages?: RandomCoverImage[];
+	wallpaperOnly?: boolean;
+	sharedPool?: boolean;
 }
 
 const {
@@ -13,12 +15,16 @@ const {
 	useHomeWallpaper = false,
 	useOriginalForArticles = false,
 	mobileHomeWallpaperImages = [],
+	wallpaperOnly = false,
+	sharedPool = false,
 } = Astro.props;
 ---
 
 <div
 	hidden
-	data-random-cover-pool={JSON.stringify(images)}
+	data-random-cover-pool={sharedPool ? undefined : JSON.stringify(images)}
+	data-random-cover-shared={sharedPool ? "true" : undefined}
+	data-random-cover-wallpaper-only={wallpaperOnly ? "true" : undefined}
 	data-random-cover-home-wallpaper={useHomeWallpaper ? "true" : undefined}
 	data-random-cover-mobile-home-wallpaper={
 		mobileHomeWallpaperImages.length > 0
@@ -218,8 +224,11 @@ const {
 			if (!candidate) break;
 			for (const slide of slides) {
 				if (slide.dataset.index === slideIndexes[offset]) {
-					slide.dataset.wallpaperSrc = candidate.wallpaperUrl ?? candidate.originalUrl;
-					slide.dataset.wallpaperLoadState = "idle";
+					const source = candidate.wallpaperUrl ?? candidate.originalUrl;
+					if (slide.dataset.wallpaperSrc !== source) {
+						slide.dataset.wallpaperSrc = source;
+						slide.dataset.wallpaperLoadState = "idle";
+					}
 				}
 			}
 		}
@@ -275,6 +284,7 @@ const {
 				runtime.mobileHomeWallpaperAssignments = mobileWallpapers;
 				assignWallpaperSlides(mobileSlides, mobileWallpapers);
 			}
+			wallpaper.dataset.wallpaperAwaitingAssignment = "false";
 			window.dispatchEvent(
 				new CustomEvent("firefly:wallpaper-assignments-ready"),
 			);
@@ -317,22 +327,30 @@ const {
 		}
 	}
 
-	function initRandomCovers() {
-		const poolCarrier = document.querySelector<HTMLElement>(
-			"[data-random-cover-pool]",
-		);
-		if (!poolCarrier || poolCarrier.dataset.randomCoverAssigned === "true") {
+	function assignRandomCovers(poolCarrier: HTMLElement) {
+		if (poolCarrier.dataset.randomCoverAssigned === "true") {
 			return;
 		}
 
 		let images: RandomCoverCandidate[] = [];
 		try {
-			images = JSON.parse(poolCarrier.dataset.randomCoverPool || "[]");
+			const shared = document.querySelector<HTMLElement>(
+				"[data-random-cover-wallpaper-only][data-random-cover-pool]",
+			);
+			images = JSON.parse(
+				poolCarrier.dataset.randomCoverPool || shared?.dataset.randomCoverPool || "[]",
+			);
 		} catch {
 			console.error("随机封面图片池数据无法解析。");
 			return;
 		}
 		if (images.length === 0) return;
+		const runtime = getRandomCoverRuntime();
+		if (poolCarrier.dataset.randomCoverWallpaperOnly === "true") {
+			assignHomeWallpaper(poolCarrier, images, runtime);
+			poolCarrier.dataset.randomCoverAssigned = "true";
+			return;
+		}
 
 		const containers = Array.from(
 			document.querySelectorAll<HTMLElement>("[data-random-cover-key]"),
@@ -352,7 +370,6 @@ const {
 			);
 		}
 
-		const runtime = getRandomCoverRuntime();
 		const useOriginalForArticles =
 			poolCarrier.dataset.randomCoverOriginalArticles === "true";
 		for (const [key, matches] of containersByPost) {
@@ -365,6 +382,12 @@ const {
 
 		assignHomeWallpaper(poolCarrier, images, runtime);
 		poolCarrier.dataset.randomCoverAssigned = "true";
+	}
+
+	function initRandomCovers() {
+		document.querySelectorAll<HTMLElement>(
+			"[data-random-cover-pool], [data-random-cover-shared]",
+		).forEach(assignRandomCovers);
 	}
 
 	initRandomCovers();

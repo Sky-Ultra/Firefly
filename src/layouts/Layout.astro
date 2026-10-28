@@ -1554,6 +1554,7 @@ function disableAnimation() {
   // 初始化滚动状态（例如从历史位置恢复时）
   scrollFunction();
 
+  let wallpaperDesktopViewport = window.innerWidth >= 1024;
   window.onresize = () => {
     // calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
     let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
@@ -1562,6 +1563,13 @@ function disableAnimation() {
       "--banner-height-extend",
       `${offset}px`
     );
+    const desktopViewport = window.innerWidth >= 1024;
+    if (desktopViewport !== wallpaperDesktopViewport) {
+      wallpaperDesktopViewport = desktopViewport;
+      // Reconcile visibility and content position after crossing the mobile
+      // breakpoint; the initial route's inline display must not remain stuck.
+      initWallpaperMode();
+    }
   };
 
   // 页面加载完成后初始化banner和内容溢出容器

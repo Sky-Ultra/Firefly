@@ -12,6 +12,7 @@ import LocalizedText from "@/components/common/LocalizedText.astro";
 import FloatingControls from "@/components/controls/FloatingControls.astro";
 import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro";
 import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
+import RandomCoverProvider from "@/components/features/RandomCoverProvider.astro";
 import TypewriterText from "@/components/features/TypewriterText.astro";
 import CategoryBar from "@/components/layout/CategoryBar.astro";
 import {
@@ -122,12 +123,10 @@ const shouldRenderGradient =
 
 // 检查是否为首页
 const isHomePageCheck = isHomePage(Astro.url.pathname);
-const homeRandomCoverImages = isHomePageCheck
-	? await getRandomCoverImages()
-	: [];
-const mobileHomeWallpaperImages = isHomePageCheck
-	? await getMobileHomeWallpaperImages()
-	: [];
+// The wallpaper wrapper survives Swup navigation, so every entry route must
+// render the same library-backed slots and initialize them exactly once.
+const homeRandomCoverImages = await getRandomCoverImages();
+const mobileHomeWallpaperImages = await getMobileHomeWallpaperImages();
 const homeWallpaperSlideCount = Math.max(
 	1,
 	Math.floor(backgroundWallpaper.common?.carousel?.count ?? 21),
@@ -139,7 +138,7 @@ const mobileHomeWallpaperUrls = mobileHomeWallpaperImages
 	.slice(-homeWallpaperSlideCount)
 	.map((image) => image.wallpaperUrl ?? image.originalUrl);
 const backgroundImages =
-	isHomePageCheck && desktopHomeWallpaperUrls.length > 0
+	desktopHomeWallpaperUrls.length > 0
 		? {
 				desktop: desktopHomeWallpaperUrls,
 				mobile:
@@ -317,6 +316,12 @@ const hasMultipleImages =
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug}>
+<RandomCoverProvider
+	images={homeRandomCoverImages}
+	mobileHomeWallpaperImages={mobileHomeWallpaperImages}
+	useHomeWallpaper={true}
+	wallpaperOnly={true}
+/>
 
 
 <!-- 为全屏壁纸模式添加body类 -->
@@ -368,6 +373,7 @@ const hasMultipleImages =
     <div class:list={["relative h-full w-full bg-black", `effect-${bannerCarouselEffect}`]} id="banner-images-container"
          style={`z-index: 5; --carousel-interval: ${bannerCarouselInterval}ms`}
          data-carousel-enabled={bannerCarouselEnabledDefault}
+         data-wallpaper-awaiting-assignment="true"
          data-carousel-switchable={bannerCarouselSwitchable}
          data-carousel-interval={bannerCarouselInterval}
          data-carousel-effect={bannerCarouselEffect}>
@@ -383,7 +389,7 @@ const hasMultipleImages =
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchpriority={index === 0 ? "high" : undefined}
                     quality={mobileQuality}
-					deferSrc={isHomePageCheck}
+					deferSrc={true}
                 />
             </div>
         ))}
@@ -400,7 +406,7 @@ const hasMultipleImages =
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchpriority={index === 0 ? "high" : undefined}
                     quality={configQuality}
-					deferSrc={isHomePageCheck}
+					deferSrc={true}
                 />
             </div>
         ))}
@@ -458,6 +464,12 @@ const hasMultipleImages =
             var transitioning = false;
 			var transitionGeneration = 0;
 			var slideLoadPromises = new WeakMap();
+			var awaitingAssignments = container.dataset.wallpaperAwaitingAssignment === 'true';
+			var wallpaperWrapper = document.getElementById('wallpaper-wrapper');
+			var resumeWhenWallpaperVisible = false;
+			function isWallpaperVisible() {
+				return !wallpaperWrapper || window.getComputedStyle(wallpaperWrapper).display !== 'none';
+			}
 
             // 创建过渡遮罩（用于 kenburns 效果的 LQIP 桥接）
             var overlay = null;
@@ -619,6 +631,7 @@ const hasMultipleImages =
 			}
 
 			function prepareCurrentAndNext() {
+				if (awaitingAssignments || !isWallpaperVisible()) return;
 				var slides = getVisibleSlides();
 				if (slides.length === 0) return;
 				var currentIndex = getCurrentIndex(slides);
@@ -726,6 +739,8 @@ const hasMultipleImages =
                 stopAutoPlay();
                 if (!isCarouselEnabled()) return;
                 if (!isBannerWallpaperMode()) return;
+				if (awaitingAssignments) return;
+				if (!isWallpaperVisible()) { resumeWhenWallpaperVisible = true; return; }
 				if (document.hidden) { resumeOnVisibility = true; return; }
 
                 appState.isPlaying = true;
@@ -792,7 +807,32 @@ const hasMultipleImages =
                     stopAutoPlay();
                 }
             });
-			window.addEventListener('firefly:wallpaper-assignments-ready', prepareCurrentAndNext);
+			window.addEventListener('firefly:wallpaper-assignments-ready', function() {
+				var wasWaiting = awaitingAssignments;
+				awaitingAssignments = false;
+				prepareCurrentAndNext();
+				if (wasWaiting) startAutoPlay();
+			});
+
+			var wallpaperWasVisible = isWallpaperVisible();
+			function syncWallpaperVisibility() {
+					var visible = isWallpaperVisible();
+					if (visible === wallpaperWasVisible) return;
+					wallpaperWasVisible = visible;
+					if (!visible) {
+						resumeWhenWallpaperVisible = resumeWhenWallpaperVisible || appState.isPlaying || resumeOnVisibility;
+						stopAutoPlay();
+					} else {
+						prepareCurrentAndNext();
+						if (resumeWhenWallpaperVisible) {
+							resumeWhenWallpaperVisible = false;
+							startAutoPlay();
+						}
+					}
+			}
+			if (wallpaperWrapper) {
+				new window.MutationObserver(syncWallpaperVisibility).observe(wallpaperWrapper, { attributes: true, attributeFilter: ['style', 'class'] });
+			}
 
 			var resumeOnVisibility = false;
 			document.addEventListener('visibilitychange', function() {
@@ -816,6 +856,7 @@ const hasMultipleImages =
 				stopAutoPlay();
 				prepareCurrentAndNext();
 				if (wasPlaying) startAutoPlay();
+				syncWallpaperVisibility();
 			});
 
             // 随机首张
