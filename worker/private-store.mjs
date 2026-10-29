@@ -5,6 +5,7 @@ import {
 	counterSummary,
 	finishCounter,
 	reserveCounter,
+	trafficCounter,
 	verifyPassword,
 } from "./private-core.mjs";
 
@@ -34,6 +35,12 @@ export class PrivateArticleBackend extends DurableObject {
 	async fetch(request) {
 		const input = await request.json();
 		const now = Date.now();
+		if (input.op === "traffic")
+			return this.ctx.storage.transactionSync(() => {
+				const next = trafficCounter(this.read("traffic"), now);
+				this.write("traffic", next.state);
+				return Response.json(next.result);
+			});
 		if (input.op === "key") {
 			let value = this.read("session-key");
 			if (!value) {

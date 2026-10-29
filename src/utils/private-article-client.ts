@@ -212,6 +212,14 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 					show(data.html);
 					return;
 				}
+				if (response.status === 429 && data.error === "rate_limited") {
+					error.textContent = text(
+						"请求过于频繁，请稍后重试。",
+						"Too many requests. Please try again shortly.",
+					);
+					error.hidden = false;
+					return;
+				}
 				if (response.status === 401 || response.status === 429) {
 					state = data;
 					ready = true;

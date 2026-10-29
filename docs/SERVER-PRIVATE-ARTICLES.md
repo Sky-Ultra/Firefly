@@ -7,6 +7,7 @@
 - 受保护文章：`liking`、`love-tree-guide`、`long-night-love-letter`。公开 Markdown 和英文翻译只保留元数据、实际阅读统计及占位文字，不含正文、密码校验值或旧密文。
 - `ServerProtectedContent.astro` 与 `private-article-client.ts` 只调用同源后端。前端不解密，不保存密码，不使用本地计数控制权限。
 - Cloudflare `PrivateArticleBackend` 使用 SQLite-backed Durable Objects。私有 HTML、PBKDF2 校验值及会话签名密钥只存在私有存储，不放进静态资产或公开 Git 文件。
+- 私密 API 另有每 IP 每分钟 60 次的请求节流，防止反复清除浏览器标识刷无效请求；它不代替每天五次错误的硬限制。
 - IP 使用 Cloudflare 设置的 CF-Connecting-IP；不信任浏览器传来的 IP 参数。浏览器令牌及文章会话是 Secure/HttpOnly/SameSite=Strict 的签名 Cookie。删除 Cookie 不清除同 IP 的服务器计数，换 IP 不清除保留下来的浏览器标识计数。
 - 每个计数对象通过 SQLite 同步事务预留验证名额。预留名额与错误次数合计不得超过五，避免并发多试。验证服务失败尽量释放未验证名额；未完成的预留过期后保守计入错误，避免通过中断请求刷无限次数。
 - 授权会话两小时有效，按文章、浏览器标识及私有内容版本绑定。修改/重新导入文章版本后旧会话失效。未授权时正文接口返回 401；锁定返回 429；存储不可用返回 503，绝不回退到公开密文。
@@ -33,6 +34,7 @@ node scripts/private-article-owner.mjs --home <外部私有资料目录> --actio
 
 - 迁移阶段 `worker/site-state.mjs` 为 false，整个网站保持维护状态，仅正确签名的所有者导入接口可用。
 - 私有数据导入、内容校验、并发限次及浏览器验证通过后，才切换该状态并恢复正常构建。
+- 如果以后再次停站，必须同时切换 PUBLIC_SITE_ONLINE=false、assets.run_worker_first=true 和维护构建；只改状态常量不能拦截原本直接返回的静态资产。发布检查会验证这两者一致。
 - 正常 Worker 先处理 `/api/private/*`，其他公开静态资产直接沿用原有路径，保留原站布局/主题/轮播。
 - 必须保留 `PRIVATE_ARTICLES` 绑定、`PrivateArticleBackend` 导出及 `private-article-v1` 迁移历史。不要通过改命名空间、类名或清库来重置计数。
 - 历史预览 URL 持续关闭，不恢复旧的纯前端保护部署。`docs/TEMPORARY-OFFLINE.md` 的原版本记录仅用于历史追溯。

@@ -72,16 +72,17 @@ test("offline output removes old generated pages and retains only standalone mai
 	}
 });
 
-test("public builds remain offline and the Worker runs before all assets", () => {
+test("the secured release restores normal assets while keeping private APIs behind the Worker", () => {
 	const pkg = JSON.parse(
 		readFileSync(new URL("../package.json", import.meta.url), "utf8"),
 	);
 	const config = JSON.parse(
 		readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8"),
 	);
-	assert.match(pkg.scripts.build, /check-post-translations.*build-maintenance/);
-	assert.match(pkg.scripts["build:site"], /astro build/);
+	assert.match(pkg.scripts.build, /check-private-articles/);
+	assert.match(pkg.scripts.build, /astro build/);
+	assert.equal(pkg.scripts["build:site"], undefined);
 	assert.equal(config.main, "worker/index.mjs");
-	assert.equal(config.assets.run_worker_first, true);
+	assert.deepEqual(config.assets.run_worker_first, ["/api/private/*"]);
 	assert.equal(config.preview_urls, false);
 });

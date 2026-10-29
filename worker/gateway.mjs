@@ -154,6 +154,14 @@ export async function privateRequest(
 	const cookies = [];
 	const now = Date.now();
 	try {
+		const traffic = await rpc(env, `traffic:${await sha256(ip)}`, {
+			op: "traffic",
+		});
+		if (!traffic.ok)
+			return json(
+				{ error: "rate_limited", retryAfter: traffic.retryAfter },
+				429,
+			);
 		const health = await rpc(env, `content:${article}`, { op: "health" });
 		if (!health.ready) return json({ error: "backend_unavailable" }, 503);
 		const secret = (await rpc(env, "authority", { op: "key" })).key;

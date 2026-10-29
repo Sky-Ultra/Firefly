@@ -1,6 +1,17 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { ARTICLES, passwordLengths } from "../worker/private-core.mjs";
+import { PUBLIC_SITE_ONLINE } from "../worker/site-state.mjs";
+
+const deployment = JSON.parse(readFileSync(resolve("wrangler.jsonc"), "utf8"));
+if (!PUBLIC_SITE_ONLINE && deployment.assets.run_worker_first !== true)
+	throw Error("Offline mode must run the Worker before every asset.");
+if (
+	PUBLIC_SITE_ONLINE &&
+	deployment.assets.run_worker_first !== true &&
+	!deployment.assets.run_worker_first?.includes("/api/private/*")
+)
+	throw Error("Private API routes must run through the Worker before assets.");
 
 const directory = resolve("src/content/posts");
 for (const name of readdirSync(directory)) {

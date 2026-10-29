@@ -16,6 +16,7 @@ import {
 	finishCounter,
 	periodAt,
 	reserveCounter,
+	trafficCounter,
 	verifyPassword,
 } from "../worker/private-core.mjs";
 
@@ -28,6 +29,7 @@ function fixture() {
 			article?: typeof record;
 			counter?: ReturnType<typeof counterState>;
 			nonces?: Set<string>;
+			traffic?: ReturnType<typeof trafficCounter>["state"];
 		}
 	>();
 	const salt = randomBytes(24);
@@ -55,6 +57,11 @@ function fixture() {
 					const state = states.get(name) || {};
 					states.set(name, state);
 					const now = Date.now();
+					if (input.op === "traffic") {
+						const next = trafficCounter(state.traffic, now);
+						state.traffic = next.state;
+						return Response.json(next.result);
+					}
 					if (input.op === "key") {
 						state.key ||= b64url(randomBytes(32));
 						return Response.json({ key: state.key });
@@ -408,4 +415,15 @@ test("owner import requires a valid signature, bounded timestamp and unique nonc
 		).status,
 		403,
 	);
+});
+
+test("API traffic is bounded independently of the five incorrect-password quota", () => {
+	let state: ReturnType<typeof trafficCounter>["state"] | undefined;
+	for (let i = 0; i < 60; i++) {
+		const next = trafficCounter(state, 100000);
+		state = next.state;
+		assert.equal(next.result.ok, true);
+	}
+	assert.equal(trafficCounter(state, 100001).result.ok, false);
+	assert.equal(trafficCounter(state, 160001).result.ok, true);
 });

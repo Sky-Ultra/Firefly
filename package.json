@@ -7,7 +7,7 @@
 		"start": "astro dev",
 		"check": "node scripts/check-private-articles.mjs && tsx scripts/check-post-translations.ts && astro check",
 		"check:translations": "tsx scripts/check-post-translations.ts",
-		"build": "node scripts/check-private-articles.mjs && tsx scripts/check-post-translations.ts && node scripts/build-maintenance.mjs",
+		"build": "node scripts/check-private-articles.mjs && node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && tsx scripts/check-post-translations.ts && astro build && node scripts/ensure-random-cover-originals.mjs && npx tsx scripts/subset-fonts.ts && pagefind --site dist",
 		"preview": "astro preview",
 		"astro": "astro",
 		"type-check": "tsc --noEmit --isolatedDeclarations",
@@ -17,8 +17,7 @@
 		"lint": "biome check --write ./src",
 		"preinstall": "npx only-allow pnpm",
 		"icons": "node scripts/generate-icons.js",
-		"lqips": "npx tsx scripts/generate-lqips.ts",
-		"build:site": "node scripts/check-private-articles.mjs && node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && tsx scripts/check-post-translations.ts && astro build && node scripts/ensure-random-cover-originals.mjs && npx tsx scripts/subset-fonts.ts && pagefind --site dist"
+		"lqips": "npx tsx scripts/generate-lqips.ts"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.9",

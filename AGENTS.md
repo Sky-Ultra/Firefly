@@ -1,8 +1,8 @@
 # Repository Guidelines
 
-## Current temporary offline state
+## Private article server protection
 
-The owner requested on 2026-10-30 that the site remain offline, and subsequently explicitly authorized reopening after the server-side private-article migration is complete and tested. Passwords must stay unchanged; daily attempts reset at 04:00 Asia/Shanghai. Keep the site offline until private content has been imported and all security checks pass. Keep the maintenance build and Worker guard active during other edits. Do not automatically restore normal publishing, switch deployment versions back, or serve the normal site until that instruction arrives. Read `docs/TEMPORARY-OFFLINE.md` for the preserved online state and restoration steps.
+The owner explicitly authorized reopening after the 2026-10-30 server migration, with existing passwords unchanged and the daily limit reset at 04:00 Asia/Shanghai. Published password-protected articles must use the private backend; never restore or publish their plaintext, offline-decryptable ciphertext, password verifiers or management signing key in public sources/assets. Keep the private namespace/binding/migration stable and historical preview URLs disabled. See `docs/SERVER-PRIVATE-ARTICLES.md`. Old pre-migration deployment records are for recovery reference, not a safe public rollback target.
 
 ## Project Structure & Module Organization
 

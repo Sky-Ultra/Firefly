@@ -4,6 +4,19 @@ export const RESERVATION_MS = 60000;
 export const SESSION_MS = 2 * 60 * 60 * 1000;
 export const DEVICE_MS = 30 * DAY;
 export const DEVICE_COOKIE = "__Host-firefly-reader";
+export function trafficCounter(previous, now) {
+	const times = (previous?.times || []).filter((time) => time > now - 60000);
+	if (times.length >= 60)
+		return {
+			state: { times },
+			result: {
+				ok: false,
+				retryAfter: Math.max(1, Math.ceil((times[0] + 60000 - now) / 1000)),
+			},
+		};
+	times.push(now);
+	return { state: { times }, result: { ok: true } };
+}
 export const ARTICLES = ["liking", "love-tree-guide", "long-night-love-letter"];
 export const passwordLengths = {
 	liking: 4,
@@ -139,7 +152,7 @@ export async function verifyToken(token, secret, type, now) {
 	}
 }
 export function readCookies(request) {
-	const cookies = {};
+	const cookies = Object.create(null);
 	for (const pair of (request.headers.get("Cookie") || "").split(";")) {
 		const i = pair.indexOf("=");
 		if (i > 0) cookies[pair.slice(0, i).trim()] = pair.slice(i + 1).trim();
@@ -166,9 +179,10 @@ export function json(data, status = 200, cookies = []) {
 		headers.set(
 			"Retry-After",
 			String(
-				data.reason === "busy"
-					? 2
-					: Math.max(1, Math.ceil((data.resetAt - Date.now()) / 1000)),
+				data.retryAfter ??
+					(data.reason === "busy"
+						? 2
+						: Math.max(1, Math.ceil((data.resetAt - Date.now()) / 1000))),
 			),
 		);
 	return new Response(JSON.stringify(data), { status, headers });
