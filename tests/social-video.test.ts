@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 import { Window } from "happy-dom";
+import sharp from "sharp";
 import { personalPagesConfig } from "../src/config/personalPagesConfig";
 import { buildActivityFeed } from "../src/utils/activity-feed";
 import { bilibiliVideo, safeSocialLink } from "../src/utils/social-media-utils";
@@ -241,7 +242,7 @@ test("the new moment preserves all 31 earlier records, exact text and the reques
 	assert.equal(moment.media?.type, "bilibili");
 });
 
-test("the user emoji appears only on its assigned moment and never enters timeline media or image pools", () => {
+test("the transparent user emoji preserves white details and stays on its assigned moment", async () => {
 	const items = personalPagesConfig.moments.items;
 	const decorated = items.filter((item) => item.inlineEmoji);
 	assert.deepEqual(
@@ -250,13 +251,56 @@ test("the user emoji appears only on its assigned moment and never enters timeli
 	);
 	const emoji = decorated[0].inlineEmoji;
 	assert.ok(emoji);
-	assert.equal(emoji.src, "/assets/emojis/moments/grassroots-sigh.jpg");
+	assert.equal(emoji.src, "/assets/emojis/moments/grassroots-sigh.webp");
 	const path = new URL(`../public${emoji.src}`, import.meta.url);
 	assert.ok(existsSync(path));
+	const originalPath = new URL(
+		"../public/assets/emojis/moments/grassroots-sigh.jpg",
+		import.meta.url,
+	);
 	assert.equal(
-		createHash("sha256").update(readFileSync(path)).digest("hex"),
+		createHash("sha256").update(readFileSync(originalPath)).digest("hex"),
 		"9ba6bd74dc6bc818eddf617b4292d7608099f5fcb9346e1c609dc273a6941fd0",
 	);
+	const metadata = await sharp(readFileSync(path)).metadata();
+	assert.equal(metadata.hasAlpha, true);
+	assert.equal(metadata.width, 240);
+	assert.equal(metadata.height, 240);
+	const pixels = await sharp(readFileSync(path)).ensureAlpha().raw().toBuffer();
+	const original = await sharp(readFileSync(originalPath))
+		.removeAlpha()
+		.raw()
+		.toBuffer();
+	for (const [x, y] of [
+		[0, 0],
+		[239, 0],
+		[0, 239],
+		[239, 239],
+	])
+		assert.equal(pixels[(y * 240 + x) * 4 + 3], 0);
+	// White hair must stay opaque, with its original colors preserved.
+	for (const [x, y] of [
+		[120, 80],
+		[120, 100],
+		[120, 40],
+	]) {
+		const index = y * 240 + x;
+		assert.equal(pixels[index * 4 + 3], 255);
+		for (let channel = 0; channel < 3; channel++)
+			assert.ok(
+				Math.abs(pixels[index * 4 + channel] - original[index * 3 + channel]) <=
+					2,
+			);
+	}
+	let clear = 0;
+	let antialiased = 0;
+	for (let index = 3; index < pixels.length; index += 4) {
+		if (pixels[index] === 0) clear++;
+		else if (pixels[index] < 255) antialiased++;
+	}
+	assert.ok(clear > 10000);
+	assert.ok(antialiased > 0);
+
 	const activity = buildActivityFeed([], items, {
 		post: (id) => `/posts/${id}/`,
 		moment: (id) => `/moments/#${id}`,

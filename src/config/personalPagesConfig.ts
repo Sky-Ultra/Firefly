@@ -100,7 +100,7 @@ export const personalPagesConfig: PersonalPagesConfig = {
 				contentEn:
 					"Sigh…… After watching, all I can feel is the hardship and heartbreak of life at the bottom…… For people at the bottom in China, there isn't a trace of vitality left, only the need for basic survival……\nIt's so depressing... Watching it makes me not want to return to China at all. I'm starting to want to stay in Australia or Hong Kong...\n“Hard work may not bring rewards, but humiliation is guaranteed”\nSigh, I really wish I could bring the girl I like to live with me in Australia or Hong Kong……",
 				inlineEmoji: {
-					src: "/assets/emojis/moments/grassroots-sigh.jpg",
+					src: "/assets/emojis/moments/grassroots-sigh.webp",
 					alt: "无奈",
 					altEn: "A weary sigh",
 				},
