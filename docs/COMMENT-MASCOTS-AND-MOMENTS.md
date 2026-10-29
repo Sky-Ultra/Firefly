@@ -5,7 +5,7 @@
 - 输入框右下角背景装饰参考 https://blog.almango.cn/post/260912a 及其 Mello 仓库的 `waline.css`；本站仍使用 Twikoo，未迁移评论服务。聚焦或已有输入时隐藏装饰，不占交互位置。
 - 私密发送仍在原有禁止网络与存储的沙盒内运行。装饰由父页面提供公共图片 data URL，严格验证格式；未扩大 CSP 或沙盒权限，不携带评论内容。
 - 仅 `variant="moment"` 且 `media.type="bilibili"` 的卡片显示折叠评论。展开前不创建 iframe，不请求评论系统；首次展开后保留同一个独立评论页面，收起不会清除草稿。
-- 动态评论页面 `/moment-comments/{id}/`，Twikoo 数据路径固定为 `/moments/{id}`，与文章及其他动态隔离。保留此稳定 ID；修改文案和视频地址不会换评论串。生成路由只针对配置中的视频动态，noindex 并从 sitemap 排除。
+- 动态评论页面 `/moment-comments/{id}/`，Twikoo 数据路径固定为 `/moments/{id}`，与文章及其他动态隔离。Twikoo 的 href 明确指向原始 `/moments/#id`，通知和管理端链接不会指向内嵌页面。保留此稳定 ID；修改文案和视频地址不会换评论串。生成路由只针对配置中的视频动态，noindex 并从 sitemap 排除。
 - 跨窗口仅发送主题配置与布局高度；双向核验同源和来源窗口。高度是正文实际尺寸，避免嵌套滚动。现有 Twikoo 后端和公开发送流程沿用；不要在生产环境发布测试评论。
 
 

@@ -93,6 +93,8 @@ test("only video moments receive independent comment threads and overlay is a va
 	const page = source("src/pages/moment-comments/[id].astro");
 	assert.match(page, /`\/moments\/\$\{Astro.params.id\}`/);
 	assert.match(page, /fixedPath/);
+	assert.match(page, /`\/moments\/#\$\{Astro.params.id\}`/);
+	assert.match(page, /href=\{href\}/);
 	assert.match(page, /noindex,nofollow/);
 	const layout = source("src/layouts/MainGridLayout.astro");
 	assert.match(

@@ -7,10 +7,11 @@ export function getStaticPaths() {
 		.map((item) => ({ params: { id: item.id } }));
 }
 const path = `/moments/${Astro.params.id}`;
+const href = new URL(`/moments/#${Astro.params.id}`, Astro.site).href;
 ---
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="robots" content="noindex,nofollow" /><title>动态评论</title></head>
- <body><Twikoo path={path} fixedPath /><noscript>请启用 JavaScript 后使用评论。</noscript></body>
+<html lang="zh-CN"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="robots" content="noindex,nofollow" /><link rel="canonical" href={href} /><title>动态评论</title></head>
+ <body><Twikoo path={path} href={href} fixedPath /><noscript>请启用 JavaScript 后使用评论。</noscript></body>
 </html>
 <style is:global>
  :root { --primary:#e875a0; --card-bg:#fff; --card-bg-transparent:#ffffff80; --line-divider:#e5e7eb; --deep-text:#333; --content-meta:#888; --btn-content:#7c5263; --btn-regular-bg:#fceaf1; }

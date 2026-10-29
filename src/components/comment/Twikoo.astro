@@ -7,6 +7,7 @@ import CommentMascot from "./CommentMascot.astro";
 interface Props {
 	path: string;
 	fixedPath?: boolean;
+	href?: string;
 }
 
 const twikooConfig = commentConfig.twikoo ?? { envId: "" };
@@ -19,6 +20,7 @@ const config = {
 	el: "#tcomment",
 	path: Astro.props.path,
 	fixedPath: Astro.props.fixedPath === true,
+	href: Astro.props.href,
 };
 ---
 
