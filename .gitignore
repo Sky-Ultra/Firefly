@@ -38,3 +38,10 @@ cache/
 package/
 .obsidian/
 .worktrees/
+
+# Private article import material is never public source
+.private/
+private-article-vault/
+.wrangler/
+*owner-private-key*.pem
+worker/local-test.mjs

@@ -1,15 +1,16 @@
 ---
 import type { SealedContent } from "@/utils/crypto-utils";
 import EncryptedContent from "./EncryptedContent.astro";
+import ServerProtectedContent from "./ServerProtectedContent.astro";
 
 interface Props {
 	password: string;
 	slug: string;
 	hint?: string;
 	sealedContent?: SealedContent;
+	serverProtected?: boolean;
+	passwordLength?: number;
 }
 ---
 
-<EncryptedContent {...Astro.props}>
-  <slot />
-</EncryptedContent>
+{Astro.props.serverProtected ? <ServerProtectedContent slug={Astro.props.slug} hint={Astro.props.hint} passwordLength={Astro.props.passwordLength || 0}><slot /></ServerProtectedContent> : <EncryptedContent {...Astro.props}><slot /></EncryptedContent>}

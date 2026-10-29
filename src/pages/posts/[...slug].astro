@@ -302,8 +302,8 @@ const relatedPosts = await getRelatedPosts(entry, 5);
       }
 
       {entry.data.password ? (
-        <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint} sealedContent={entry.data.sealedContent}>
-		  {!entry.data.sealedContent && <>
+        <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint} sealedContent={entry.data.sealedContent} serverProtected={entry.data.serverProtected} passwordLength={entry.data.serverPasswordLength}>
+		  {!entry.data.sealedContent && !entry.data.serverProtected && <>
 		  <div data-language-only="zh-CN" data-pagefind-body data-reading-body>
 			<Markdown class="mb-6 markdown-content onload-animation">
 			  <Content />

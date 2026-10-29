@@ -53,7 +53,7 @@ test("translation validation gates check and build", () => {
 	);
 	assert.match(
 		packageJson.scripts.check,
-		/^tsx scripts\/check-post-translations\.ts && astro check$/,
+		/check-post-translations\.ts && astro check$/,
 	);
 	assert.ok(
 		siteBuild.indexOf("tsx scripts/check-post-translations.ts") <

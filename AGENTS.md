@@ -2,7 +2,7 @@
 
 ## Current temporary offline state
 
-The owner requested on 2026-10-30 that the site remain offline until they explicitly ask to bring it back online. Keep the maintenance build and Worker guard active during other edits. Do not automatically restore normal publishing, switch deployment versions back, or serve the normal site until that instruction arrives. Read `docs/TEMPORARY-OFFLINE.md` for the preserved online state and restoration steps.
+The owner requested on 2026-10-30 that the site remain offline, and subsequently explicitly authorized reopening after the server-side private-article migration is complete and tested. Passwords must stay unchanged; daily attempts reset at 04:00 Asia/Shanghai. Keep the site offline until private content has been imported and all security checks pass. Keep the maintenance build and Worker guard active during other edits. Do not automatically restore normal publishing, switch deployment versions back, or serve the normal site until that instruction arrives. Read `docs/TEMPORARY-OFFLINE.md` for the preserved online state and restoration steps.
 
 ## Project Structure & Module Organization
 

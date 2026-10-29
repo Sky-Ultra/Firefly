@@ -5,9 +5,9 @@
 	"scripts": {
 		"dev": "astro dev",
 		"start": "astro dev",
-		"check": "tsx scripts/check-post-translations.ts && astro check",
+		"check": "node scripts/check-private-articles.mjs && tsx scripts/check-post-translations.ts && astro check",
 		"check:translations": "tsx scripts/check-post-translations.ts",
-		"build": "tsx scripts/check-post-translations.ts && node scripts/build-maintenance.mjs",
+		"build": "node scripts/check-private-articles.mjs && tsx scripts/check-post-translations.ts && node scripts/build-maintenance.mjs",
 		"preview": "astro preview",
 		"astro": "astro",
 		"type-check": "tsc --noEmit --isolatedDeclarations",
@@ -18,7 +18,7 @@
 		"preinstall": "npx only-allow pnpm",
 		"icons": "node scripts/generate-icons.js",
 		"lqips": "npx tsx scripts/generate-lqips.ts",
-		"build:site": "node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && tsx scripts/check-post-translations.ts && astro build && node scripts/ensure-random-cover-originals.mjs && npx tsx scripts/subset-fonts.ts && pagefind --site dist"
+		"build:site": "node scripts/check-private-articles.mjs && node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && tsx scripts/check-post-translations.ts && astro build && node scripts/ensure-random-cover-originals.mjs && npx tsx scripts/subset-fonts.ts && pagefind --site dist"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.9",

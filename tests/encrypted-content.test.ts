@@ -96,13 +96,13 @@ test("browser-compatible decryption retains bilingual markup and rejects the wro
 	await assert.rejects(decrypt(payload, "wrong-password"));
 });
 
-test("the requested two posts share a build-secret reference and the exact two-line hint", () => {
+test("the migrated posts use server access while preserving the original public hint", () => {
 	for (const slug of ["liking", "love-tree-guide"]) {
 		const source = readFileSync(
 			new URL(`../src/content/posts/${slug}.md`, import.meta.url),
 			"utf8",
 		).replaceAll("\r\n", "\n");
-		assert.match(source, /^password: env:PRIVATE_POST_PASSWORD$/m);
+		assert.match(source, /^password: server$/m);
 		assert.match(source, /^passwordHint: \|-\n {2}⌈她⌋的诞日\n {2}例:0427$/m);
 	}
 });

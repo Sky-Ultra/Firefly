@@ -24,6 +24,8 @@ type PostData = {
 	comment: boolean;
 	password: string;
 	passwordHint: string;
+	serverProtected: boolean;
+	serverPasswordLength?: number;
 	sealedContent?: { payload: string; passwordLength: number };
 	sealedReadingStats?: { words: number; minutes: number };
 	prevTitle: string;
@@ -60,6 +62,8 @@ const postsCollection: ReturnType<
 		comment: z.boolean().optional().default(false),
 		password: z.string().optional().default(""),
 		passwordHint: z.string().optional().default(""),
+		serverProtected: z.boolean().optional().default(false),
+		serverPasswordLength: z.number().int().min(1).max(128).optional(),
 		sealedContent: z
 			.object({
 				payload: z

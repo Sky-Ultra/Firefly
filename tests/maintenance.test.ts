@@ -81,7 +81,7 @@ test("public builds remain offline and the Worker runs before all assets", () =>
 	);
 	assert.match(pkg.scripts.build, /check-post-translations.*build-maintenance/);
 	assert.match(pkg.scripts["build:site"], /astro build/);
-	assert.equal(config.main, "scripts/maintenance-worker.mjs");
+	assert.equal(config.main, "worker/index.mjs");
 	assert.equal(config.assets.run_worker_first, true);
 	assert.equal(config.preview_urls, false);
 });
