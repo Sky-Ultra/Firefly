@@ -45,6 +45,8 @@ test("new-post scaffolds paired Markdown and MDX translations", () => {
 });
 
 test("translation validation gates check and build", () => {
+	const siteBuild =
+		packageJson.scripts["build:site"] ?? packageJson.scripts.build;
 	assert.equal(
 		packageJson.scripts["check:translations"],
 		"tsx scripts/check-post-translations.ts",
@@ -54,8 +56,7 @@ test("translation validation gates check and build", () => {
 		/^tsx scripts\/check-post-translations\.ts && astro check$/,
 	);
 	assert.ok(
-		packageJson.scripts.build.indexOf(
-			"tsx scripts/check-post-translations.ts",
-		) < packageJson.scripts.build.indexOf("astro build"),
+		siteBuild.indexOf("tsx scripts/check-post-translations.ts") <
+			siteBuild.indexOf("astro build"),
 	);
 });

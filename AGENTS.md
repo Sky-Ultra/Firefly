@@ -1,5 +1,9 @@
 # Repository Guidelines
 
+## Current temporary offline state
+
+The owner requested on 2026-10-30 that the site remain offline until they explicitly ask to bring it back online. Keep the maintenance build and Worker guard active during other edits. Do not automatically restore normal publishing, switch deployment versions back, or serve the normal site until that instruction arrives. Read `docs/TEMPORARY-OFFLINE.md` for the preserved online state and restoration steps.
+
 ## Project Structure & Module Organization
 
 Firefly is an Astro 7 site with Svelte islands and TypeScript configuration. Main source code lives in `src/`: routes in `src/pages`, layouts in `src/layouts`, reusable UI in `src/components`, styles in `src/styles`, content in `src/content`, helpers in `src/utils`, and Markdown/HTML plugins in `src/plugins`. Site configuration is split across `src/config` with matching type definitions in `src/types`; prefer imports from `@/config` when available. Static files served directly belong in `public`, source-managed images in `src/assets`, docs in `docs` and `Firefly-Docs`, and automation in `scripts`.
