@@ -30,6 +30,8 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	let wanted = "";
 	let loadTimer: number | undefined;
 	let lastProgress = "";
+	let motionHeight = 0;
+	let motionWidth = 0;
 	let sourceObserver: MutationObserver | undefined;
 	let scrollScope: AbortController | undefined;
 	let retryTimer: number | undefined;
@@ -61,6 +63,16 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 			""
 		);
 	}
+	function stableMotionHeight() {
+		if (window.innerWidth >= 1024) return window.innerHeight;
+		// Mobile browser chrome changes innerHeight during a swipe. Keep the
+		// scroll timeline tied to the stable hero, recalibrating on rotation.
+		if (!motionHeight || motionWidth !== window.innerWidth) {
+			motionWidth = window.innerWidth;
+			motionHeight = wrapper?.clientHeight || window.innerHeight;
+		}
+		return motionHeight;
+	}
 	function syncImage() {
 		const source = visibleSource();
 		if (
@@ -75,6 +87,10 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 		window.clearTimeout(loadTimer);
 		const next = displayed === 0 ? 1 : 0;
 		const image = images[next];
+		if (displayed >= 0)
+			images.forEach((item) => {
+				item.classList.remove("is-initial");
+			});
 		let settled = false;
 		const finish = (success: boolean) => {
 			if (!active || token !== generation || settled) return;
@@ -92,6 +108,13 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 				return;
 			}
 			current = source;
+			// Show a decoded first frame fully before retiring the original
+			// banner; crossfade only subsequent slides, never through the canvas.
+			image.classList.toggle("is-initial", displayed < 0);
+			root.style.setProperty(
+				"--fairytale-canvas-image",
+				`url(${JSON.stringify(image.src)})`,
+			);
 			images.forEach((item, index) => {
 				item.classList.toggle("is-visible", index === next);
 			});
@@ -115,7 +138,7 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	function update() {
 		frame = 0;
 		if (!active) return;
-		const motion = fairytaleMotion(window.scrollY, window.innerHeight);
+		const motion = fairytaleMotion(window.scrollY, stableMotionHeight());
 		const next = `${motion.blurProgress.toFixed(3)}:${motion.titleOpacity.toFixed(3)}`;
 		if (next !== lastProgress) {
 			root.style.setProperty(
@@ -145,11 +168,13 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 		images.forEach((image) => {
 			image.onload = image.onerror = null;
 			image.removeAttribute("src");
-			image.classList.remove("is-visible");
+			image.classList.remove("is-visible", "is-initial");
 		});
 		current = wanted = "";
 		displayed = -1;
 		lastProgress = "";
+		motionHeight = motionWidth = 0;
+		root.style.removeProperty("--fairytale-canvas-image");
 		backdrop.hidden = true;
 		delete root.dataset.fairytaleReady;
 		root.style.removeProperty("--fairytale-progress");

@@ -109,7 +109,7 @@ test("every presentation selector requires both fullscreen and fairytale, with n
 	);
 });
 
-async function fixture(layout = "classic") {
+async function fixture(layout = "classic", width = 1440) {
 	const view = new Window({
 		url: "https://example.test/",
 		settings: { enableImageFileLoading: false },
@@ -119,7 +119,7 @@ async function fixture(layout = "classic") {
 	view.document.body.classList.add("is-home");
 	view.document.body.innerHTML =
 		'<div id="wallpaper-wrapper"><div id="banner-images-container"><div class="slide-item hidden lg:block active" data-wallpaper-src="/desktop-a.webp"><img></div><div class="slide-item hidden lg:block" data-wallpaper-src="/desktop-b.webp"><img></div><div class="slide-item block lg:hidden active" data-wallpaper-src="/mobile.webp"><img></div></div></div><main id="main-grid"></main><fairytale-layout hidden><img data-fairytale-image><img data-fairytale-image></fairytale-layout>';
-	Object.defineProperty(view, "innerWidth", { value: 1440, writable: true });
+	Object.defineProperty(view, "innerWidth", { value: width, writable: true });
 	Object.defineProperty(view, "innerHeight", { value: 1000, writable: true });
 	Object.defineProperty(view, "scrollY", { value: 0, writable: true });
 	const timers = new Map<number, () => void>();
@@ -206,6 +206,13 @@ test("classic creates no image requests or scroll work; enabling copies only the
 			f.view.document.documentElement.dataset.fairytaleReady,
 			"true",
 		);
+		assert.equal(image.classList.contains("is-initial"), true);
+		assert.match(
+			f.view.document.documentElement.style.getPropertyValue(
+				"--fairytale-canvas-image",
+			),
+			/desktop-a\.webp/,
+		);
 		assert.equal(
 			f.view.document.getElementById("banner-images-container")?.innerHTML,
 			f.original,
@@ -223,6 +230,12 @@ test("classic creates no image requests or scroll work; enabling copies only the
 		await f.flush();
 		assert.equal(f.backdrop.hidden, true);
 		assert.equal(f.backdrop.querySelectorAll("img[src]").length, 0);
+		assert.equal(
+			f.view.document.documentElement.style.getPropertyValue(
+				"--fairytale-canvas-image",
+			),
+			"",
+		);
 		assert.equal(
 			f.view.document.documentElement.style.getPropertyValue(
 				"--fairytale-progress",
@@ -285,4 +298,44 @@ test("reference Hero timing keeps the top sharp even at maximum blur and separat
 	assert.match(panel, /role="tablist"/);
 	assert.match(panel, /max=\{20\} step=\{0.5\}/);
 	assert.doesNotMatch(panel, /童话壁纸透明度/);
+});
+
+test("mobile scroll progress stays stable through browser chrome resizing and recalibrates after rotation", async () => {
+	const f = await fixture("fairytale", 390);
+	const progress = () =>
+		f.view.document.documentElement.style.getPropertyValue(
+			"--fairytale-blur-progress",
+		);
+	try {
+		await f.flush();
+		f.view.scrollY = 320;
+		f.view.dispatchEvent(new f.view.Event("scroll"));
+		await f.flush();
+		assert.equal(progress(), "0.400");
+		Object.defineProperty(f.view, "innerHeight", {
+			value: 1120,
+			writable: true,
+		});
+		f.view.dispatchEvent(new f.view.Event("resize"));
+		await f.flush();
+		assert.equal(progress(), "0.400");
+		Object.defineProperty(f.view, "innerWidth", { value: 844, writable: true });
+		Object.defineProperty(f.view, "innerHeight", {
+			value: 390,
+			writable: true,
+		});
+		f.view.dispatchEvent(new f.view.Event("resize"));
+		await f.flush();
+		assert.equal(progress(), "1.000");
+		f.view.scrollY = -80;
+		f.view.dispatchEvent(new f.view.Event("scroll"));
+		await f.flush();
+		assert.equal(progress(), "0.000");
+		f.view.document.documentElement.dataset.fullscreenLayout = "classic";
+		await f.flush();
+		assert.equal(f.frames.size, 0);
+		assert.equal(f.timers.size, 0);
+	} finally {
+		await f.close();
+	}
 });

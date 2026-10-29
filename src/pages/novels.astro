@@ -75,7 +75,7 @@ const stats = [
      <div class="novel-card-content">
       <h2 id={`title-${book.id}`}><a data-primary-reading href={book.sources[0].url} target="_blank" rel="noopener noreferrer">{book.title}<span aria-hidden="true">↗</span></a></h2>
       <p class="novel-author">{book.author}</p>
-      <div class="novel-tags"><span>{book.genre}</span><span class="novel-read-status"><LocalizedText zh="看过" en="Read" /></span></div>
+      <div class="novel-tags"><span>{book.genre}</span><LocalizedText class="novel-read-status" zh="看过" en="Read" /></div>
       <p class="novel-description">{book.description}</p>
       <div class="novel-links" aria-label="阅读入口">{book.sources.map(source => <a data-novel-reading-source={source.site} data-novel-access={source.access} href={source.url} target="_blank" rel="noopener noreferrer" title={source.note || (source.access==='preview'?'可试读；完整阅读范围以平台为准':novelAccessLabel(source).zh+'在线阅读；开放范围见来源站说明')}><LocalizedText zh={novelSources[source.site].zh} en={novelSources[source.site].en} /><span class="novel-access"><LocalizedText zh={novelAccessLabel(source).zh} en={novelAccessLabel(source).en} /></span><span aria-hidden="true">↗</span></a>)}</div>
       {book.sources.some(source=>source.note)&&<p class="novel-version-note">{book.sources.find(source=>source.note)?.note}</p>}

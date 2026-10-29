@@ -6,6 +6,7 @@ html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fair
 	position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transform: scale(1.05); transform-origin: center; filter: blur(calc(var(--fairytale-blur,10px) * var(--fairytale-blur-progress,0))); transition: opacity 1.2s cubic-bezier(.2,0,0,1);
 }
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img.is-visible { opacity: 1; }
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img.is-initial { transition: none; }
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper.wallpaper-fullscreen {
 	display: block !important; position: relative !important; top: 0 !important; height: 100svh !important; min-height: 100svh !important; max-height: 100svh !important; background: transparent !important;
 }
@@ -29,6 +30,29 @@ html.dark[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] 
 	}
 }
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] .novels-wall .novel-card { background-color: transparent; }
+/* Stable compositor surface and canvas fallback for mobile browser chrome
+ * and elastic overscroll. No touch interception, scroll container or body lock. */
+@media (max-width:1023px) {
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"],
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] body { overscroll-behavior-y: none; }
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] {
+		background-image: var(--fairytale-canvas-image,none); background-position: center; background-size: cover; background-repeat: no-repeat; background-attachment: fixed;
+	}
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop {
+		top: -24px; bottom: auto; height: calc(100vh + 48px); height: calc(100lvh + 48px); transform: translate3d(0,0,0); backface-visibility: hidden; -webkit-backface-visibility: hidden; contain: paint;
+	}
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img {
+		transition: opacity 1.2s cubic-bezier(.2,0,0,1), filter 120ms linear;
+	}
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img.is-initial { transition: filter 120ms linear; }
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-home-text-overlay,
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-page-title-overlay,
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-post-meta-overlay { transition: opacity 120ms linear; }
+}
 @media(prefers-reduced-motion:reduce) {
-	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img { transition: none; }
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img,
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img.is-initial,
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-home-text-overlay,
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-page-title-overlay,
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-post-meta-overlay { transition: none; }
 }
