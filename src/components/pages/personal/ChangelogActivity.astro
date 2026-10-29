@@ -1,0 +1,14 @@
+---
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import type { ChangelogActivity } from "@/utils/activity-feed";
+
+interface Props {
+	item: ChangelogActivity;
+}
+const { item } = Astro.props;
+---
+<div class="activity-changelog">
+ <div data-language-only="zh-CN" lang="zh-CN" set:html={item.html} />
+ <div data-language-only="en" lang="en" hidden set:html={item.htmlEn} />
+ <a href={item.href} data-i18n-zh={item.href} data-i18n-en={item.hrefEn} data-i18n-attr="href" class="activity-moment-link elastic-link"><LocalizedText class="elastic-label" zh="查看当天更新日志" en="View this day's changelog" /><span aria-hidden="true">↗</span></a>
+</div>

@@ -207,3 +207,15 @@ html.dark .activity-timeline {
 		transition: none;
 	}
 }
+
+.activity-changelog { padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb,var(--primary) 16%,var(--line-divider)); border-radius: .85rem; background: color-mix(in srgb,var(--primary) 4%,var(--card-bg)); color: var(--activity-text); font-size: .9rem; line-height: 1.9; overflow-wrap: anywhere; }
+.activity-changelog [hidden] { display: none !important; }
+.activity-changelog ul, .activity-changelog ol { padding-left: 1.2rem; list-style: disc; }
+.activity-changelog li + li { margin-top: .45rem; }
+.activity-changelog p { margin: .4rem 0; }
+.activity-changelog mark.theme-highlight { background-color: var(--selection-bg); color: inherit; padding: .1em .2em; border-radius: .2em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.activity-changelog a { color: var(--primary); }
+.activity-changelog [data-language-only] a { background: linear-gradient(var(--primary),var(--primary)) left bottom / 0 1px no-repeat; transition: background-size 650ms ease; }
+.activity-changelog [data-language-only] a:hover, .activity-changelog [data-language-only] a:focus-visible { background-size: 100% 1px; }
+@media(max-width:479px){.activity-changelog { padding: .8rem .85rem; font-size: .88rem; }}
+@media(prefers-reduced-motion:reduce){.activity-changelog a{transition:none!important;}}

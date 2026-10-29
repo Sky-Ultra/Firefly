@@ -131,63 +131,37 @@ function fixture() {
 test("the wall paginates without losing books and resets pages when filters change", async () => {
 	const f = fixture();
 	try {
-		assert.equal(f.visible().length, 12);
+		assert.equal(f.visible().length, 20);
 		assert.equal(f.visible()[0], "红楼梦");
 		const seen = new Set(f.visible());
-		for (let p = 1; p < 5; p++) {
+		for (let p = 1; p < 3; p++) {
 			f.click("[data-novel-next]");
 			f.visible().forEach((title) => {
 				seen.add(title);
 			});
 		}
 		assert.equal(seen.size, 60);
-		f.click('[data-novel-source="gutenberg"]');
-		assert.equal(f.visible().length, 12);
-		assert.match(
-			f.wall.querySelector("[data-novel-page]")?.textContent || "",
-			/第 1/,
-		);
+		f.click('[data-novel-category="drama"]');
+		assert.equal(f.visible().length, 4);
 	} finally {
 		await f.close();
 	}
 });
-test("two filter rows preserve each other's selection and update contextual counts", async () => {
+test("category counts combine with search without a source filter", async () => {
 	const f = fixture();
 	try {
-		f.click('[data-novel-source="gutenberg"]');
 		f.click('[data-novel-category="drama"]');
+		assert.equal(f.visible().length, 4);
+		f.search("莎士比亚");
 		assert.deepEqual(f.visible(), ["哈姆雷特", "罗密欧与朱丽叶"]);
 		assert.equal(
 			f.wall
-				.querySelector('[data-novel-source="gutenberg"]')
-				?.getAttribute("aria-pressed"),
-			"true",
-		);
-		assert.equal(
-			f.wall
 				.querySelector('[data-novel-category="drama"]')
 				?.getAttribute("aria-pressed"),
 			"true",
 		);
-		assert.equal(
-			f.wall.querySelector<HTMLButtonElement>(
-				'[data-novel-category="classics"]',
-			)?.disabled,
-			true,
-		);
-		assert.equal(
-			f.wall.querySelector('[data-novel-source="all"] [data-filter-count]')
-				?.textContent,
-			"4",
-		);
-		f.click('[data-novel-source="all"]');
-		assert.equal(f.visible().length, 4);
-		assert.equal(
-			f.wall
-				.querySelector('[data-novel-category="drama"]')
-				?.getAttribute("aria-pressed"),
-			"true",
-		);
+		f.click('[data-novel-category="all"]');
+		assert.equal(f.visible().length, 2);
 	} finally {
 		await f.close();
 	}
@@ -204,7 +178,7 @@ test("search supports aliases, empty states and resetting the complete combinati
 			false,
 		);
 		f.click("[data-novel-reset]");
-		assert.equal(f.visible().length, 12);
+		assert.equal(f.visible().length, 20);
 		assert.equal(
 			f.wall.querySelector<HTMLElement>("[data-novel-empty]")?.hidden,
 			true,
@@ -229,7 +203,7 @@ test("sorting changes keyboard/DOM order and counters respond to the site langua
 					sensitivity: "base",
 				}).compare(a.title, b.title),
 			)
-			.slice(0, 12)
+			.slice(0, 20)
 			.map((b) => b.title);
 		assert.deepEqual(f.visible(), expected);
 		f.view.document.documentElement.lang = "en";
@@ -243,25 +217,17 @@ test("sorting changes keyboard/DOM order and counters respond to the site langua
 	}
 });
 
-test("choosing a source makes cover/title links open that source and All restores the default", async () => {
+test("rendering preserves the preferred reading link independently of category and language", async () => {
 	const f = fixture();
 	try {
-		f.click('[data-novel-source="weread"]');
 		const first = f.grid.querySelector('[data-title="红楼梦"]');
 		assert.ok(first);
+		f.click('[data-novel-category="classics"]');
 		assert.equal(
 			first.querySelector<HTMLAnchorElement>("[data-primary-reading]")?.href,
-			novels[0].sources.find((s) => s.site === "weread")?.url,
+			novels[0].sources[0].url,
 		);
-		assert.equal(
-			first.querySelector("[data-novel-access-status]")?.textContent,
-			"平台试读",
-		);
-		f.click('[data-novel-source="all"]');
-		assert.equal(
-			first.querySelector("[data-novel-access-status]")?.textContent,
-			"可直读",
-		);
+		f.view.document.dispatchEvent(new f.view.Event("firefly:language-change"));
 		assert.equal(
 			first.querySelector<HTMLAnchorElement>("[data-primary-reading]")?.href,
 			novels[0].sources[0].url,

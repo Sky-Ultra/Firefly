@@ -62,6 +62,11 @@ export function registerPrivateComments(
 			const { signal } = this.controller;
 			this.toggle.checked = false;
 			this.toggle.addEventListener("change", this.changeMode, { signal });
+			this.closest("comment-mascot")?.addEventListener(
+				"firefly:comment-mascot-ready",
+				this.configureFrames,
+				{ signal },
+			);
 			this.addEventListener(
 				"focusin",
 				(event) => {
@@ -307,6 +312,10 @@ export function registerPrivateComments(
 					};
 				});
 			return {
+				mascotImage:
+					this.closest<HTMLElement>("comment-mascot")?.style.getPropertyValue(
+						"--comment-mascot-image",
+					) || "",
 				fontSize: textStyle.fontSize,
 				fontFamily: textStyle.fontFamily,
 				showExtras: !!this.querySelector(".tk-comment .tk-extras"),

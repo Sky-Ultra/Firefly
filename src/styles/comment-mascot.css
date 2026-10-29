@@ -1,0 +1,12 @@
+/* A decorative background, following the reference's editor treatment. */
+comment-mascot { display: block; }
+comment-mascot .tk-input .el-textarea__inner {
+	min-height: 148px !important;
+	background-image: var(--comment-mascot-image, none);
+	background-size: 92px 92px;
+	background-repeat: no-repeat;
+	background-position: right 10px bottom 20px;
+}
+comment-mascot .tk-input .el-textarea__inner:focus,
+comment-mascot .tk-input .el-textarea__inner:not(:placeholder-shown) { background-image: none; }
+@media (max-width: 640px) { comment-mascot .tk-input .el-textarea__inner { background-size: 74px 74px; } }

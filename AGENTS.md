@@ -27,7 +27,7 @@ Highlight every “重要更新” label with `<mark class="theme-highlight">重
 
 ### Site-specific visual consistency
 
-New sidebar widgets and card-style components must continue the site's pale outline motif and gentle hover finish. Reuse `SidebarDecoration.astro` and the existing styles; choose a motif relevant to the component, with the blossom fallback for new widgets. Keep card backgrounds opaque, decorations non-interactive and hidden from assistive technology, and retain reduced-motion support. Article cards share this finish via `post-card-decoration.css`. Do not add decoration over reading content or obscure controls.
+New sidebar widgets and card-style components must continue the site's pale outline motif and gentle hover finish. Reuse `SidebarDecoration.astro` and the existing styles; choose a motif relevant to the component, with the blossom fallback for new widgets. Keep card backgrounds opaque in normal wallpaper modes; in fullscreen transparent (overlay) mode, sidebar cards follow the shared --card-bg-transparent value, like article cards. Keep decorations non-interactive and hidden from assistive technology, and retain reduced-motion support. Article cards share this finish via `post-card-decoration.css`. Do not add decoration over reading content or obscure controls.
 
 The homepage banner title stays plain, without stickers or character companions. Do not restore the removed homepage sticker, nine-character row, or characters flanking the homepage title. Preserve the profile card's two character companions and reusable draggable-sticker support unless the user asks to remove them.
 

@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:5a0aa2e98c2b8b85aadbb478259f1ad912fd3aea6b67fff39889391ee6ab7a71
+sourceHash: sha256:f92f2295d554da5062f6aa3f776439c55c799e680485eaaff78583760dbe939c
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -161,3 +161,4 @@ This article provides a brief record of updates to my personal website, beginnin
 ## October 29, 2026
 
 - <mark class="theme-highlight">Major update</mark>: Added [My - Books](/novels/), a new section collecting books I have read and recommend. You're welcome to explore.
+- Added immersive playback, which displays the full wallpaper library in an adjustable fullscreen view. Find it in the theme panel at the top right.

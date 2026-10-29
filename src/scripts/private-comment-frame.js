@@ -21,7 +21,7 @@
 	let icons = [];
 	let showExtras = false;
 	const presentation = document.createElement("style");
-	presentation.textContent = `body{font-size:var(--pc-font-size,16px);font-family:var(--pc-font-family,Arial,"Microsoft YaHei",sans-serif)}textarea{font-size:14px}.private-comment{border:0;padding:16px 0}.private-comment .main{position:relative}.comment-heading{padding-right:110px;min-height:24px}.nick{font-size:1em;font-weight:700}.date{font-size:.8em;margin-left:4px}.content{font-size:1em;line-height:1.5;margin:8px 0}.comment-actions{position:absolute;right:0;top:0;gap:8px;align-items:center}.comment-actions button{display:inline-flex;align-items:center;gap:3px;font-size:12px;line-height:24px}.comment-actions svg{width:16px;height:16px}.extras{font-size:.875em;line-height:1.5;color:var(--pc-muted,#909399);margin:8px 0 0}`;
+	presentation.textContent = `body{font-size:var(--pc-font-size,16px);font-family:var(--pc-font-family,Arial,"Microsoft YaHei",sans-serif)}textarea{font-size:14px}#comment{min-height:148px;background-image:var(--comment-mascot-image,none);background-repeat:no-repeat;background-size:92px 92px;background-position:right 10px bottom 20px}#comment:focus,#comment:not(:placeholder-shown){background-image:none}@media(max-width:640px){#comment{background-size:74px 74px}}.private-comment{border:0;padding:16px 0}.private-comment .main{position:relative}.comment-heading{padding-right:110px;min-height:24px}.nick{font-size:1em;font-weight:700}.date{font-size:.8em;margin-left:4px}.content{font-size:1em;line-height:1.5;margin:8px 0}.comment-actions{position:absolute;right:0;top:0;gap:8px;align-items:center}.comment-actions button{display:inline-flex;align-items:center;gap:3px;font-size:12px;line-height:24px}.comment-actions svg{width:16px;height:16px}.extras{font-size:.875em;line-height:1.5;color:var(--pc-muted,#909399);margin:8px 0 0}`;
 	document.head.append(presentation);
 	const avatar =
 		'<svg viewBox="0 0 24 24" aria-hidden="true" width="100%" height="100%"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m0 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6m0 15a8 8 0 0 1-6.4-3.2C5.7 14.7 9.9 13.5 12 13.5s6.3 1.2 6.4 3.3A8 8 0 0 1 12 20"/></svg>';
@@ -43,6 +43,17 @@
 		resize();
 	}
 	function configure(config) {
+		const mascot =
+			typeof config.mascotImage === "string" &&
+			/^url\("data:image\/(?:gif|webp|png);base64,[A-Za-z0-9+/=]+"\)$/.test(
+				config.mascotImage,
+			)
+				? config.mascotImage
+				: "none";
+		document.documentElement.style.setProperty(
+			"--comment-mascot-image",
+			mascot,
+		);
 		icons = Array.isArray(config.icons) ? config.icons.slice(0, 3) : [];
 		showExtras = config.showExtras === true;
 		if (typeof config.fontSize === "string")

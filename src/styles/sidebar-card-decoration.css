@@ -15,8 +15,7 @@
 
 /* Override the wallpaper surface in its own cascade layer. */
 @layer components {
-	.sidebar-decorated-card.card-base,
-	.wallpaper-transparent .sidebar-decorated-card.card-base {
+	body:not(.wallpaper-transparent) .sidebar-decorated-card.card-base {
 		background-color: var(--card-bg) !important;
 		backdrop-filter: none !important;
 		-webkit-backdrop-filter: none !important;
@@ -165,4 +164,8 @@ html.dark .sidebar-decorated-card {
 	.sidebar-decorated-card:hover > .sidebar-card-decoration::before {
 		transform: none;
 	}
+}
+
+@layer components {
+ .wallpaper-transparent .sidebar-decorated-card.card-base { background-color: var(--card-bg-transparent) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
 }

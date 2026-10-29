@@ -1,4 +1,4 @@
-import { normalizeNovelTitle, novelStatusLabel } from "@/utils/novel-utils";
+import { normalizeNovelTitle } from "@/utils/novel-utils";
 
 export interface NovelFacetRecord {
 	sources: readonly string[];
@@ -61,14 +61,11 @@ export function mountNovelWall(wall: HTMLElement): () => void {
 		categories: (element.dataset.categories || "").split(" "),
 		search: element.dataset.search || "",
 	}));
-	const sourceButtons = Array.from(
-		wall.querySelectorAll<HTMLButtonElement>("[data-novel-source]"),
-	);
 	const categoryButtons = Array.from(
 		wall.querySelectorAll<HTMLButtonElement>("[data-novel-category]"),
 	);
 	const filters: NovelFilters = { source: "all", category: "all", query: "" };
-	const PAGE_SIZE = 12;
+	const PAGE_SIZE = 20;
 	let page = 1;
 	let searchTimer: number | undefined;
 	const scope = new AbortController();
@@ -94,49 +91,14 @@ export function mountNovelWall(wall: HTMLElement): () => void {
 		);
 		list.forEach((book) => {
 			book.element.hidden = !visible.has(book);
-			const selectedSource =
-				filters.source === "all"
-					? null
-					: book.element.querySelector<HTMLAnchorElement>(
-							`[data-novel-reading-source="${filters.source}"]`,
-						);
-			const destination =
-				selectedSource?.href || book.element.dataset.defaultHref;
-			const status = book.element.querySelector<HTMLElement>(
-				"[data-novel-access-status]",
-			);
-			const access =
-				selectedSource?.dataset.novelAccess ||
-				book.element.dataset.defaultAccess ||
-				"preview";
-			if (
-				status &&
-				(access === "open" || access === "partial" || access === "preview")
-			) {
-				const label = novelStatusLabel(access);
-				status.dataset.access = access;
-				status.setAttribute("data-i18n-zh", label.zh);
-				status.setAttribute("data-i18n-en", label.en);
-				status.textContent = english() ? label.en : label.zh;
-			}
-			if (destination)
-				book.element
-					.querySelectorAll<HTMLAnchorElement>("[data-primary-reading]")
-					.forEach((link) => {
-						link.href = destination;
-					});
 		});
 		// DOM order follows the visual and keyboard order; hidden records stay available without JS.
 		grid?.append(...selected.map((book) => book.element));
 		for (const [buttons, dimension] of [
-			[sourceButtons, "source"],
 			[categoryButtons, "category"],
 		] as const) {
 			for (const button of buttons) {
-				const value =
-					dimension === "source"
-						? button.dataset.novelSource
-						: button.dataset.novelCategory;
+				const value = button.dataset.novelCategory;
 				if (!value) continue;
 				const count = list.filter((book) =>
 					matchesNovelFilters(book, { ...filters, [dimension]: value }),
@@ -186,11 +148,7 @@ export function mountNovelWall(wall: HTMLElement): () => void {
 			reset();
 			return;
 		}
-		if (target.dataset.novelSource) {
-			filters.source = target.dataset.novelSource;
-			page = 1;
-			render();
-		} else if (target.dataset.novelCategory) {
+		if (target.dataset.novelCategory) {
 			filters.category = target.dataset.novelCategory;
 			page = 1;
 			render();

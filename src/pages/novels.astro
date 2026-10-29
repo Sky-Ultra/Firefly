@@ -9,7 +9,6 @@ import {
 	novelAccessLabel,
 	novelCategories,
 	novelSources,
-	novelStatusLabel,
 } from "@/utils/novel-utils";
 import "@/styles/novels.css";
 
@@ -62,10 +61,6 @@ const stats = [
      <option value="author" data-i18n-zh="按作者排序" data-i18n-en="By author" data-i18n-attr="content">按作者排序</option>
     </select>
    </div>
-   <div class="novels-filter-row" role="group" aria-label="阅读来源" data-i18n-zh="阅读来源" data-i18n-en="Reading source" data-i18n-attr="aria-label">
-    <span class="novels-filter-label"><LocalizedText zh="来源" en="Source" /></span>
-    <div class="novels-filter-options"><button type="button" data-novel-source="all" aria-pressed="true"><LocalizedText zh="全部" en="All" /><span data-filter-count>{novels.length}</span></button>{sourceEntries.map(([id,source]) => <button type="button" data-novel-source={id} aria-pressed="false"><LocalizedText zh={source.zh} en={source.en} /><span data-filter-count>{novels.filter(b=>b.sources.some(s=>s.site===id)).length}</span></button>)}</div>
-   </div>
    <div class="novels-filter-row" role="group" aria-label="作品分类" data-i18n-zh="作品分类" data-i18n-en="Literary categories" data-i18n-attr="aria-label">
     <span class="novels-filter-label"><LocalizedText zh="分类" en="Category" /></span>
     <div class="novels-filter-options"><button type="button" data-novel-category="all" aria-pressed="true"><LocalizedText zh="全部" en="All" /><span data-filter-count>{novels.length}</span></button>{categoryEntries.map(([id,category]) => <button type="button" data-novel-category={id} aria-pressed="false"><LocalizedText zh={category.zh} en={category.en} /><span data-filter-count>{novels.filter(b=>b.categories.includes(id)).length}</span></button>)}</div>
@@ -80,7 +75,7 @@ const stats = [
      <div class="novel-card-content">
       <h2 id={`title-${book.id}`}><a data-primary-reading href={book.sources[0].url} target="_blank" rel="noopener noreferrer">{book.title}<span aria-hidden="true">↗</span></a></h2>
       <p class="novel-author">{book.author}</p>
-      <div class="novel-tags"><span>{book.genre}</span><span class="novel-access-status" data-novel-access-status data-access={book.sources[0].access} data-i18n-zh={novelStatusLabel(book.sources[0].access).zh} data-i18n-en={novelStatusLabel(book.sources[0].access).en} data-i18n-attr="content">{novelStatusLabel(book.sources[0].access).zh}</span></div>
+      <div class="novel-tags"><span>{book.genre}</span><span class="novel-read-status"><LocalizedText zh="看过" en="Read" /></span></div>
       <p class="novel-description">{book.description}</p>
       <div class="novel-links" aria-label="阅读入口">{book.sources.map(source => <a data-novel-reading-source={source.site} data-novel-access={source.access} href={source.url} target="_blank" rel="noopener noreferrer" title={source.note || (source.access==='preview'?'可试读；完整阅读范围以平台为准':novelAccessLabel(source).zh+'在线阅读；开放范围见来源站说明')}><LocalizedText zh={novelSources[source.site].zh} en={novelSources[source.site].en} /><span class="novel-access"><LocalizedText zh={novelAccessLabel(source).zh} en={novelAccessLabel(source).en} /></span><span aria-hidden="true">↗</span></a>)}</div>
       {book.sources.some(source=>source.note)&&<p class="novel-version-note">{book.sources.find(source=>source.note)?.note}</p>}
@@ -88,9 +83,9 @@ const stats = [
     </article>
    </jelly-hover>)}
   </div>
-  <div class="novels-empty" data-novel-empty hidden><Icon is:inline name="material-symbols:search-rounded" aria-hidden="true" /><h2><LocalizedText zh="还没有找到这本书" en="No matching books" /></h2><p><LocalizedText zh="可以换个关键词，或重置来源与分类再看看。" en="Try another keyword, or reset the source and category filters." /></p><button type="button" data-novel-reset><LocalizedText zh="重置筛选" en="Reset filters" /></button></div>
+  <div class="novels-empty" data-novel-empty hidden><Icon is:inline name="material-symbols:search-rounded" aria-hidden="true" /><h2><LocalizedText zh="还没有找到这本书" en="No matching books" /></h2><p><LocalizedText zh="可以换个关键词，或重置分类再看看。" en="Try another keyword, or reset the category filter." /></p><button type="button" data-novel-reset><LocalizedText zh="重置筛选" en="Reset filters" /></button></div>
   <nav class="novels-pagination" data-novel-pagination hidden aria-label="书单分页"><button type="button" data-novel-previous><LocalizedText zh="上一页" en="Previous" /></button><span data-novel-page></span><button type="button" data-novel-next><LocalizedText zh="下一页" en="Next" /></button></nav>
-  <p class="novels-reading-note"><LocalizedText zh="来源与分类共同筛选。中文免费入口优先，外文版与部分篇目单独标明；平台的实际开放范围以页面说明为准。" en="Source and category filters work together. Free Chinese editions are prioritized; other languages and partial editions are labeled. Availability follows the source site." /></p>
+  <p class="novels-reading-note"><LocalizedText zh="可按分类与关键词筛选。中文免费入口优先，外文版与部分篇目单独标明；平台的实际开放范围以页面说明为准。" en="Filter by category and keyword. Free Chinese editions are prioritized; other languages and partial editions are labeled. Availability follows the source site." /></p>
   <blockquote class="novels-quote sidebar-decorated-card"><SidebarDecoration motif="constellation" /><Icon is:inline name="material-symbols:format-quote-rounded" aria-hidden="true" /><p><LocalizedText zh="我的征途，是星辰大海！！" en="My journey is the sea of stars!!" /></p><cite><LocalizedText zh="——《银河英雄传说》" en="— Legend of the Galactic Heroes" /></cite></blockquote>
  </novels-wall>
 <script>

@@ -76,3 +76,5 @@
  .novels-filter-options button { min-height: 34px; font-size: 12px; }
  .novels-search input { font-size: 13px; }
 }
+
+.novel-tags .novel-read-status { background: color-mix(in srgb,#36b392 12%,var(--card-bg)); color: #229777; }

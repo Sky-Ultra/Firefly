@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import MomentComments from "@/components/comment/MomentComments.astro";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import { profileConfig } from "@/config";
@@ -117,6 +118,7 @@ const dateLabel = new Intl.DateTimeFormat("zh-CN", {
 			</div>
 		</div>
 	</div>
+	{variant === "moment" && item.media?.type === "bilibili" && <MomentComments id={item.id} />}
 </article>
 
 <style>

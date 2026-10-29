@@ -29,7 +29,14 @@ export type MomentActivity = ActivityBase & {
 	contentEn: string;
 };
 
-export type ActivityItem = PostActivity | MomentActivity;
+export type ChangelogActivity = ActivityBase & {
+	kind: "changelog";
+	html: string;
+	htmlEn: string;
+	hrefEn: string;
+};
+
+export type ActivityItem = PostActivity | MomentActivity | ChangelogActivity;
 
 export type ActivityLinks = {
 	post: (id: string) => string;
@@ -41,6 +48,7 @@ export function buildActivityFeed(
 	posts: readonly ActivityPost[],
 	moments: readonly MomentItem[],
 	links: ActivityLinks,
+	changelog: readonly ChangelogActivity[] = [],
 ): ActivityItem[] {
 	const activities: ActivityItem[] = [];
 	const publicationTimes = new Map<string, number>();
@@ -69,6 +77,10 @@ export function buildActivityFeed(
 			content: moment.content,
 			contentEn: moment.contentEn ?? moment.content,
 		});
+	}
+	for (const entry of changelog) {
+		if (Number.isFinite(new Date(entry.date).getTime()))
+			activities.push({ ...entry });
 	}
 	return activities.sort((a, b) => {
 		const timeOf = (item: ActivityItem) =>

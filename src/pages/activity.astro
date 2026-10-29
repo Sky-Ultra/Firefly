@@ -3,24 +3,39 @@ import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
+import ChangelogActivity from "@/components/pages/personal/ChangelogActivity.astro";
 import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
 import { personalPagesConfig, profileConfig } from "@/config";
+import changelogZh from "@/content/posts/personal-website-changelog.md?raw";
+import changelogEn from "@/content/translations/personal-website-changelog.en.md?raw";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import { buildActivityFeed } from "@/utils/activity-feed";
+import { buildChangelogActivities } from "@/utils/changelog-activity";
 import { getSortedPosts } from "@/utils/content-utils";
 import { getPostUrlBySlug, url } from "@/utils/url-utils";
 import "@/styles/activity-timeline.css";
 import "@/styles/elastic-links.css";
 
 const title = "最近发生的事";
-const description = "新文章、生活片刻，沿着时间慢慢生长。";
+const description = "新文章、生活片刻与网站更新，沿着时间慢慢生长。";
 const posts = (await getSortedPosts()).map(({ id, data }) => ({ id, data }));
-const activities = buildActivityFeed(posts, personalPagesConfig.moments.items, {
-	post: getPostUrlBySlug,
-	moment: (id) => `${url("/moments/#")}${id}`,
-});
+const changelog = await buildChangelogActivities(
+	changelogZh,
+	changelogEn,
+	url("/posts/personal-website-changelog/"),
+);
+const activities = buildActivityFeed(
+	posts,
+	personalPagesConfig.moments.items,
+	{
+		post: getPostUrlBySlug,
+		moment: (id) => `${url("/moments/#")}${id}`,
+	},
+	changelog,
+);
 const postCount = activities.filter((item) => item.kind === "post").length;
-const momentCount = activities.length - postCount;
+const momentCount = activities.filter((item) => item.kind === "moment").length;
+const changelogCount = changelog.length;
 ---
 
 <MainGridLayout title={title} description={description}>
@@ -30,29 +45,29 @@ const momentCount = activities.length - postCount;
 			title={title}
 			titleEn="Recent activity"
 			description={description}
-			descriptionEn="New posts and little moments, growing along a timeline."
+			descriptionEn="New posts, little moments and site updates, growing along a timeline."
 			icon="material-symbols:history-rounded"
 		/>
 		<p class="text-sm text-neutral-500 dark:text-neutral-400">
-			<LocalizedText zh={`${postCount} 篇文章 · ${momentCount} 条动态`} en={`${postCount} posts · ${momentCount} moments`} />
+			<LocalizedText zh={`${postCount} 篇文章 · ${momentCount} 条动态 · ${changelogCount} 天更新日志`} en={`${postCount} posts · ${momentCount} moments · ${changelogCount} changelog days`} />
 		</p>
 	</section>
 
 	<section class="activity-timeline card-base" aria-labelledby="activity-timeline-title">
-		<h2 id="activity-timeline-title" class="sr-only"><LocalizedText zh="文章与生活时间线" en="A timeline of posts and moments" /></h2>
+		<h2 id="activity-timeline-title" class="sr-only"><LocalizedText zh="文章、生活与网站更新时间线" en="A timeline of posts, moments and site updates" /></h2>
 		{activities.length > 0 ? (
 			<ol class="activity-list" role="list">
 				{activities.map((item) => (
 					<li class:list={["activity-item", `activity-item-${item.kind}`]}>
 						<span class="activity-marker" aria-hidden="true">
-							<Icon is:inline name={item.kind === "post" ? "material-symbols:description-outline-rounded" : "material-symbols:format-quote-rounded"} />
+							<Icon is:inline name={item.kind === "post" ? "material-symbols:description-outline-rounded" : item.kind === "changelog" ? "material-symbols:history-rounded" : "material-symbols:format-quote-rounded"} />
 						</span>
 						<div class="activity-entry">
 							<div class="activity-meta">
-								<time datetime={item.date}>{item.kind === "post" ? item.date : item.date.slice(0, 16).replace("T", " ")}</time>
-								<span class="activity-kind"><LocalizedText zh={item.kind === "post" ? "文章" : "生活片刻"} en={item.kind === "post" ? "Post" : "Moment"} /></span>
+								<time datetime={item.date}>{item.kind !== "moment" ? item.date : item.date.slice(0, 16).replace("T", " ")}</time>
+								<span class="activity-kind"><LocalizedText zh={item.kind === "post" ? "文章" : item.kind === "changelog" ? "网站更新" : "生活片刻"} en={item.kind === "post" ? "Post" : item.kind === "changelog" ? "Site update" : "Moment"} /></span>
 							</div>
-							{item.kind === "post" ? (
+							{item.kind === "changelog" ? <ChangelogActivity item={item} /> : item.kind === "post" ? (
 								<p class="activity-post">
 									<span class="activity-published"><LocalizedText zh="发布了" en="Published" /></span>{" "}
 									<a href={item.href} class="activity-post-link elastic-link"><LocalizedText class="elastic-label" zh={item.title} en={item.titleEn} /></a>

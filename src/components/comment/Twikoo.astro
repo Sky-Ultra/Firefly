@@ -2,9 +2,11 @@
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import { commentConfig } from "@/config/commentConfig";
 import { url } from "@/utils/url-utils";
+import CommentMascot from "./CommentMascot.astro";
 
 interface Props {
 	path: string;
+	fixedPath?: boolean;
 }
 
 const twikooConfig = commentConfig.twikoo ?? { envId: "" };
@@ -16,14 +18,15 @@ const config = {
 	...twikooConfig,
 	el: "#tcomment",
 	path: Astro.props.path,
+	fixedPath: Astro.props.fixedPath === true,
 };
 ---
 
-<private-comment-branch>
+<CommentMascot><private-comment-branch>
   <label class="private-send-toggle"><input type="checkbox" data-private-toggle autocomplete="off" disabled /><LocalizedText zh="私密发送" en="Private send" /></label>
   <div data-private-mount></div>
   <div data-public-comments><div id="tcomment"></div></div>
-</private-comment-branch>
+</private-comment-branch></CommentMascot>
 <script>
   import frameScript from "@/scripts/private-comment-frame.js?raw";
   import { registerPrivateComments } from "@/utils/private-comments";
@@ -45,6 +48,7 @@ const config = {
 <script is:inline define:vars={{ config }}>
   // 获取当前页面路径
   function getCurrentPath() {
+    if (config.fixedPath) return config.path;
     const pathname = window.location.pathname;
     return pathname.endsWith("/") && pathname.length > 1
       ? pathname.slice(0, -1)
