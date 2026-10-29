@@ -49,6 +49,7 @@ import {
 	setFairytaleSettings,
 	setFullscreenLayout,
 } from "@/utils/fullscreen-layout";
+import FairytaleDisplayPanel from "./FairytaleDisplayPanel.svelte";
 
 type OverlaySliderItem = {
 	key: "opacity" | "blur" | "cardOpacity";
@@ -233,8 +234,13 @@ function resetWallpaperMode() {
 }
 
 function chooseFullscreenLayout(layout: FullscreenLayout) {
+	const panel = document.getElementById("display-setting");
+	const wasOpen = panel && !panel.classList.contains("float-panel-closed");
 	fullscreenLayout = layout;
 	setFullscreenLayout(layout);
+	// The clicked mode control is replaced; keep the feature panel open after outside-click handling.
+	if (wasOpen)
+		requestAnimationFrame(() => panel?.classList.remove("float-panel-closed"));
 }
 function resetFairytaleSettings() {
 	fairytaleBlur = FAIRYTALE_DEFAULTS.blur;
@@ -541,7 +547,15 @@ $effect(() => {
 </script>
 
 {#if hasAnyContent}
-<div id="display-setting" class:has-fullscreen-layout={wallpaperMode === WALLPAPER_FULLSCREEN} class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-4 py-2">
+<div id="display-setting" class:has-fullscreen-layout={wallpaperMode === WALLPAPER_FULLSCREEN} class:fairytale-controls-open={wallpaperMode === WALLPAPER_FULLSCREEN && fullscreenLayout === "fairytale"} class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-4 py-2">
+    {#if wallpaperMode === WALLPAPER_FULLSCREEN && fullscreenLayout === "fairytale"}
+        <FairytaleDisplayPanel {hue} blur={fairytaleBlur} cardOpacity={fairytaleCardOpacity} layout={currentLayout} {wallpaperMode}
+            titleEnabled={bannerTitleEnabled} carouselEnabled={bannerCarouselEnabled} {sakuraEnabled}
+            allowLayout={allowLayoutSwitch} allowMasonry={allowMasonryLayout} allowTitle={isBannerTitleSwitchable} allowCarousel={isBannerCarouselSwitchable} allowSakura={isSakuraSwitchable}
+            onResetHue={resetHue} onResetLayout={resetLayout} {defaultHue} defaultLayout={effectiveDefaultLayout} onHueChange={(value) => hue = value} onBlurChange={(value) => fairytaleBlur = value} onCardOpacityChange={(value) => fairytaleCardOpacity = value}
+            onClassic={() => chooseFullscreenLayout("classic")} onWallpaperChange={switchWallpaperMode} onResetTransparency={resetFairytaleSettings}
+            onLayoutChange={switchLayout} onTitleToggle={toggleBannerTitleEnabled} onCarouselToggle={toggleBannerCarouselEnabled} onSakuraToggle={toggleSakuraEnabled} onImmersive={startImmersivePlayback} />
+    {:else}
     <!-- Theme Color Section -->
     {#if showThemeColor}
     <div class="mt-2 mb-2">
@@ -889,11 +903,20 @@ $effect(() => {
             </div>
         </div>
     {/if}
+    {/if}
 </div>
 {/if}
 
 
 <style lang="stylus">
+    #display-setting.fairytale-controls-open
+        padding 0.5rem
+        width 20rem
+        max-width calc(100vw - 2rem)
+        border-radius 1rem
+        background var(--card-bg)
+        transition opacity 0.25s cubic-bezier(0.2, 0, 0, 1), transform 0.25s cubic-bezier(0.2, 0, 0, 1)
+
     #display-setting.has-fullscreen-layout
         max-height calc(100dvh - 6rem)
         overflow-y auto

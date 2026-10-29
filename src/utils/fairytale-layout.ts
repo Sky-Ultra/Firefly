@@ -1,3 +1,16 @@
+/** Hero scroll ratios adapted from fqzlr/shirone-fq (MIT; LICENSES/Shirone-fq.txt). */
+export function fairytaleMotion(
+	scrollY: number,
+	height: number,
+): { blurProgress: number; titleOpacity: number } {
+	const y = Number.isFinite(scrollY) ? Math.max(0, scrollY) : 0;
+	const viewport = Number.isFinite(height) ? Math.max(1, height) : 1;
+	return {
+		blurProgress: Math.min(1, y / (viewport * 0.8)),
+		titleOpacity: 1 - Math.min(1, y / (viewport * 0.5)),
+	};
+}
+
 /** Independent background presentation. Never changes classic sources, layout preferences or palette. */
 export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	const root = document.documentElement;
@@ -102,13 +115,17 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	function update() {
 		frame = 0;
 		if (!active) return;
-		const progress = Math.max(
-			0,
-			Math.min(1, window.scrollY / Math.max(1, window.innerHeight * 0.65)),
-		);
-		const next = progress.toFixed(3);
+		const motion = fairytaleMotion(window.scrollY, window.innerHeight);
+		const next = `${motion.blurProgress.toFixed(3)}:${motion.titleOpacity.toFixed(3)}`;
 		if (next !== lastProgress) {
-			root.style.setProperty("--fairytale-progress", next);
+			root.style.setProperty(
+				"--fairytale-blur-progress",
+				motion.blurProgress.toFixed(3),
+			);
+			root.style.setProperty(
+				"--fairytale-title-opacity",
+				motion.titleOpacity.toFixed(3),
+			);
 			lastProgress = next;
 		}
 		syncImage();
@@ -136,6 +153,8 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 		backdrop.hidden = true;
 		delete root.dataset.fairytaleReady;
 		root.style.removeProperty("--fairytale-progress");
+		root.style.removeProperty("--fairytale-blur-progress");
+		root.style.removeProperty("--fairytale-title-opacity");
 	}
 	function syncMode() {
 		const next = enabled();

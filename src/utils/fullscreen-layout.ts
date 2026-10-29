@@ -25,7 +25,7 @@ export function normalizeFairytaleSettings(value: unknown): FairytaleSettings {
 			: FAIRYTALE_DEFAULTS[key];
 	};
 	return {
-		blur: number("blur", 0, 24),
+		blur: number("blur", 0, 20),
 		wallpaperOpacity: number("wallpaperOpacity", 0.2, 1),
 		cardOpacity: number("cardOpacity", 0.2, 1),
 	};

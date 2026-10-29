@@ -13,7 +13,7 @@ import {
    const value = JSON.parse(localStorage.getItem(fairytaleSettingsKey) || "null");
    if (value && typeof value === "object") {
     const number = (key, min, max) => typeof value[key] === "number" && Number.isFinite(value[key]) ? Math.max(min, Math.min(max, value[key])) : fairytaleDefaults[key];
-    settings = { blur: number("blur",0,24), wallpaperOpacity: number("wallpaperOpacity",.2,1), cardOpacity: number("cardOpacity",.2,1) };
+    settings = { blur: number("blur",0,20), wallpaperOpacity: number("wallpaperOpacity",.2,1), cardOpacity: number("cardOpacity",.2,1) };
    }
   } catch {}
   const root = document.documentElement;

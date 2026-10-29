@@ -4,6 +4,7 @@ import test from "node:test";
 import { runInNewContext } from "node:vm";
 import { Window } from "happy-dom";
 import { ModuleKind, ScriptTarget, transpileModule } from "typescript";
+import { fairytaleMotion } from "../src/utils/fairytale-layout";
 import {
 	applyFairytaleSettings,
 	FAIRYTALE_DEFAULTS,
@@ -61,7 +62,7 @@ test("new settings are bounded and write only namespaced presentation variables"
 			cardOpacity: Number.NaN,
 		}),
 		{
-			blur: 24,
+			blur: 20,
 			wallpaperOpacity: 0.2,
 			cardOpacity: FAIRYTALE_DEFAULTS.cardOpacity,
 		},
@@ -96,7 +97,7 @@ test("every presentation selector requires both fullscreen and fairytale, with n
 		for (const selector of rule[1].split(/,\s*(?=html)/))
 			assert.match(
 				selector.trim(),
-				/^html\[data-wallpaper-mode="fullscreen"\]\[data-fullscreen-layout="fairytale"\]/,
+				/^html(?:\.dark)?\[data-wallpaper-mode="fullscreen"\]\[data-fullscreen-layout="fairytale"\]/,
 			);
 	}
 	assert.doesNotMatch(css, /:root|font-size|font-family|#navbar|--primary\s*:/);
@@ -214,9 +215,9 @@ test("classic creates no image requests or scroll work; enabling copies only the
 		await f.flush();
 		assert.equal(
 			f.view.document.documentElement.style.getPropertyValue(
-				"--fairytale-progress",
+				"--fairytale-blur-progress",
 			),
-			"1.000",
+			"0.813",
 		);
 		f.view.document.documentElement.dataset.fullscreenLayout = "classic";
 		await f.flush();
@@ -261,4 +262,27 @@ test("rapid carousel changes, device resizing and deactivation cannot display an
 	} finally {
 		await f.close();
 	}
+});
+
+test("reference Hero timing keeps the top sharp even at maximum blur and separates title fading", () => {
+	assert.deepEqual(fairytaleMotion(0, 1000), {
+		blurProgress: 0,
+		titleOpacity: 1,
+	});
+	assert.equal(fairytaleMotion(400, 1000).blurProgress, 0.5);
+	assert.equal(fairytaleMotion(500, 1000).titleOpacity, 0);
+	assert.equal(fairytaleMotion(800, 1000).blurProgress, 1);
+	assert.equal(fairytaleMotion(-50, 1000).blurProgress, 0);
+	assert.ok(Number.isFinite(fairytaleMotion(0, 0).blurProgress));
+	const css = source("src/styles/fairytale-layout.css");
+	assert.match(
+		css,
+		/#header-waves,[\s\S]*#wallpaper-gradient,[\s\S]*display: none !important/,
+	);
+	assert.doesNotMatch(css, /opacity: var\(--fairytale-wallpaper-opacity/);
+	assert.match(css, /1\.2s cubic-bezier\(\.2,0,0,1\)/);
+	const panel = source("src/components/controls/FairytaleDisplayPanel.svelte");
+	assert.match(panel, /role="tablist"/);
+	assert.match(panel, /max=\{20\} step=\{0.5\}/);
+	assert.doesNotMatch(panel, /童话壁纸透明度/);
 });
