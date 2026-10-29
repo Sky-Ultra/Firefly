@@ -1,5 +1,56 @@
 /** Independent desktop-only motion; does not own carousel images or playback. */
 export const FAIRYTALE_PARALLAX_KEY = "firefly:fairytale-parallax";
+export const FAIRYTALE_PARALLAX_STRENGTH_KEY =
+	"firefly:fairytale-parallax-strength";
+export const PARALLAX_DEFAULT_STRENGTH = 115;
+export function normalizeParallaxStrength(value: unknown): number {
+	return typeof value === "number" && Number.isFinite(value)
+		? Math.round(Math.min(200, Math.max(0, value)) / 5) * 5
+		: PARALLAX_DEFAULT_STRENGTH;
+}
+export function readParallaxStrength(
+	storage?: Pick<Storage, "getItem">,
+): number {
+	try {
+		const value = (storage ?? window.localStorage).getItem(
+			FAIRYTALE_PARALLAX_STRENGTH_KEY,
+		);
+		return value?.trim()
+			? normalizeParallaxStrength(Number(value))
+			: PARALLAX_DEFAULT_STRENGTH;
+	} catch {
+		return PARALLAX_DEFAULT_STRENGTH;
+	}
+}
+export function setParallaxStrength(value: number): void {
+	const strength = normalizeParallaxStrength(value);
+	try {
+		localStorage.setItem(FAIRYTALE_PARALLAX_STRENGTH_KEY, String(strength));
+	} catch {
+		/* Optional preference. */
+	}
+	window.dispatchEvent(
+		new CustomEvent("firefly:fairytale-parallax-strength-change", {
+			detail: { strength },
+		}),
+	);
+}
+export function parallaxScale(
+	width: number,
+	height: number,
+	strength: number,
+): number {
+	const factor = normalizeParallaxStrength(strength) / 100;
+	return Math.max(
+		1.035,
+		1 +
+			2 *
+				Math.max(
+					(14 * factor) / Math.max(1, width),
+					(10 * factor) / Math.max(1, height),
+				),
+	);
+}
 export function readFairytaleParallax(
 	storage?: Pick<Storage, "getItem">,
 ): boolean {
@@ -29,10 +80,15 @@ export function parallaxOffset(
 	y: number,
 	width: number,
 	height: number,
+	strength: number = PARALLAX_DEFAULT_STRENGTH,
 ): { x: number; y: number } {
 	const normalized = (value: number, size: number) =>
 		Math.max(-1, Math.min(1, (value / Math.max(1, size)) * 2 - 1));
-	return { x: -normalized(x, width) * 14, y: -normalized(y, height) * 10 };
+	const factor = normalizeParallaxStrength(strength) / 100;
+	return {
+		x: -normalized(x, width) * 14 * factor,
+		y: -normalized(y, height) * 10 * factor,
+	};
 }
 export function mountFairytaleParallax(layer: HTMLElement): () => void {
 	const root = document.documentElement;
@@ -46,6 +102,7 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 	);
 	const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 	let enabled = readFairytaleParallax();
+	let strength = readParallaxStrength();
 	let active = false;
 	let permitted = false;
 	let immersed = false;
@@ -59,6 +116,18 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 	function draw() {
 		layer.style.setProperty("--fairytale-parallax-x", `${x.toFixed(2)}px`);
 		layer.style.setProperty("--fairytale-parallax-y", `${y.toFixed(2)}px`);
+	}
+	function updateScale() {
+		layer.style.setProperty(
+			"--fairytale-parallax-scale",
+			String(
+				parallaxScale(
+					hero.clientWidth || window.innerWidth,
+					hero.clientHeight || window.innerHeight,
+					strength,
+				),
+			),
+		);
 	}
 	function animate(time: number) {
 		frame = 0;
@@ -107,14 +176,17 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 			event.clientY - rect.top,
 			rect.width,
 			rect.height,
+			strength,
 		);
 		targetX = offset.x;
 		targetY = offset.y;
 		schedule();
 	}
 	function sync() {
+		const wasPermitted = permitted;
 		permitted =
 			enabled &&
+			strength > 0 &&
 			fine.matches &&
 			!reduced.matches &&
 			!document.hidden &&
@@ -124,6 +196,7 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 		// Keep the overscan scale while scrolling/reading. Dropping the scale
 		// on the first scroll pixel would create a visible wallpaper zoom jump.
 		layer.toggleAttribute("data-parallax-enabled", permitted);
+		if (permitted && !wasPermitted) updateScale();
 		const next =
 			permitted &&
 			document.body.classList.contains("is-home") &&
@@ -164,10 +237,34 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 		{ signal },
 	);
 	window.addEventListener(
+		"firefly:fairytale-parallax-strength-change",
+		(event) => {
+			const previous = strength;
+			strength = normalizeParallaxStrength(
+				(event as CustomEvent<{ strength: number }>).detail.strength,
+			);
+			if (previous > 0) {
+				targetX *= strength / previous;
+				targetY *= strength / previous;
+			}
+			updateScale();
+			sync();
+			schedule();
+		},
+		{ signal },
+	);
+	window.addEventListener(
 		"storage",
 		(event) => {
-			if (event.key === FAIRYTALE_PARALLAX_KEY || event.key === null) {
+			if (
+				event.key === FAIRYTALE_PARALLAX_KEY ||
+				event.key === FAIRYTALE_PARALLAX_STRENGTH_KEY ||
+				event.key === null
+			) {
 				enabled = readFairytaleParallax();
+				strength = readParallaxStrength();
+				reset(true);
+				updateScale();
 				sync();
 			}
 		},
@@ -186,6 +283,7 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 		"resize",
 		() => {
 			reset(true);
+			updateScale();
 			sync();
 		},
 		{ passive: true, signal },
@@ -206,5 +304,6 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 		layer.removeAttribute("data-parallax-enabled");
 		layer.style.removeProperty("--fairytale-parallax-x");
 		layer.style.removeProperty("--fairytale-parallax-y");
+		layer.style.removeProperty("--fairytale-parallax-scale");
 	};
 }

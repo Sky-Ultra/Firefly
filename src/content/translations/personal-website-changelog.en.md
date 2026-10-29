@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:f92f2295d554da5062f6aa3f776439c55c799e680485eaaff78583760dbe939c
+sourceHash: sha256:6cd147a098afed2beae8b4389a93c3b4e4ddf809d1868af2132516301ea65364
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -162,3 +162,8 @@ This article provides a brief record of updates to my personal website, beginnin
 
 - <mark class="theme-highlight">Major update</mark>: Added [My - Books](/novels/), a new section collecting books I have read and recommend. You're welcome to explore.
 - Added immersive playback, which displays the full wallpaper library in an adjustable fullscreen view. Find it in the theme panel at the top right.
+- <mark class="theme-highlight">Major update</mark>: We have added a brand-new theme: Fairytale. [Visiting the site](/) in this theme offers an outstanding visual experience. We will continue refining its performance and presentation, and plan to make it our default theme in the near future. For now, you can try it from the theme palette at the top right and customize the available settings.
+- <mark class="theme-highlight">Major update</mark>: We have added a [floating music player](/music/) that you can switch on or off, making the site's music experience even better.
+- <mark class="theme-highlight">Major update</mark>: We have added a major [homepage](/) visual effect to the new Fairytale theme. On a computer, moving your mouse produces a visual parallax effect on the wallpaper.
+- Added [comments](/moments/#grassroots-hardship-video) to [Moments](/moments/). Comments are already available on selected updates.
+- <mark class="theme-highlight">Major update</mark>: We have added randomly appearing animated mascots to the [comment section](/guestbook/#post-comments). Is it useless? If it is, that's the point! But it's fun, isn't it...?

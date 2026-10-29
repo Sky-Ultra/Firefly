@@ -2,6 +2,7 @@
 // Structure and motion adapted from fqzlr/shirone-fq DisplaySettings/SegmentedButton (MIT).
 import Icon from "@/components/common/Icon.svelte";
 import type { WALLPAPER_MODE } from "@/types/config";
+import { PARALLAX_DEFAULT_STRENGTH } from "@/utils/fairytale-parallax";
 import FairytaleSlider from "./FairytaleSlider.svelte";
 
 let {
@@ -35,6 +36,8 @@ let {
 	onImmersive,
 	parallaxEnabled,
 	onParallaxToggle,
+	parallaxStrength,
+	onParallaxStrengthChange,
 }: {
 	hue: number;
 	blur: number;
@@ -66,6 +69,8 @@ let {
 	onImmersive: () => void;
 	parallaxEnabled: boolean;
 	onParallaxToggle: () => void;
+	parallaxStrength: number;
+	onParallaxStrengthChange: (value: number) => void;
 } = $props();
 let tab = $state("wallpaper");
 const tabs = [
@@ -145,7 +150,12 @@ const modes: { value: WALLPAPER_MODE; label: string; icon: string }[] = [
 			<section><div class="ft-section-heading"><h3>主题色相</h3>{#if hue!==defaultHue}<button type="button" class="ft-reset" aria-label="恢复默认主题色" onclick={onResetHue}><Icon icon="fa7-solid:arrow-rotate-left" class="text-[.75rem]" /></button>{/if}</div><div class="ft-slider-row"><div class="ft-slider-label"><span>主题色相</span><output>{hue}°</output></div><FairytaleSlider label="主题色相" value={hue} min={0} max={360} step={5} onValueChange={onHueChange} /></div></section>
 			{#if allowLayout}<section><div class="ft-section-heading"><h3>文章布局</h3>{#if layout!==defaultLayout}<button type="button" class="ft-reset" aria-label="恢复默认文章布局" onclick={onResetLayout}><Icon icon="fa7-solid:arrow-rotate-left" class="text-[.75rem]" /></button>{/if}</div><div class="ft-segmented" role="group" aria-label="文章布局">{#each [{value:"list" as const,label:"列表"},{value:"grid" as const,label:"网格"},...(allowMasonry?[{value:"masonry" as const,label:"瀑布流"}]:[])] as item}<label class:chosen={layout===item.value}><input type="radio" name="fairytale-post-layout" checked={layout===item.value} onchange={()=>onLayoutChange(item.value)} /><span>{item.label}</span></label>{/each}</div></section>{/if}
 		{:else}
-			<section class="ft-desktop-motion"><h3>童话动效</h3><button type="button" class="ft-toggle" role="switch" aria-checked={parallaxEnabled} onclick={onParallaxToggle}><span>鼠标视差</span><span class="ft-switch" class:on={parallaxEnabled}><span>{parallaxEnabled?"✓":""}</span></span></button><p class="ft-help">仅电脑端首页生效</p></section>
+			<section class="ft-desktop-motion">
+                <div class="ft-section-heading"><h3>童话动效</h3><button type="button" class="ft-reset" disabled={parallaxStrength===PARALLAX_DEFAULT_STRENGTH} aria-label="恢复默认视差强度" title="恢复默认强度" onclick={()=>onParallaxStrengthChange(PARALLAX_DEFAULT_STRENGTH)}><Icon icon="fa7-solid:arrow-rotate-left" class="text-[.75rem]" /></button></div>
+                <button type="button" class="ft-toggle" role="switch" aria-checked={parallaxEnabled} onclick={onParallaxToggle}><span>鼠标视差</span><span class="ft-switch" class:on={parallaxEnabled}><span>{parallaxEnabled?"✓":""}</span></span></button>
+                <div class="ft-slider-row"><div class="ft-slider-label"><span>视差强度</span><output>{parallaxStrength}%</output></div><FairytaleSlider label="鼠标视差强度" min={0} max={200} step={5} value={parallaxStrength} onValueChange={onParallaxStrengthChange} /></div>
+                <p class="ft-help">仅电脑端首页生效；0% 为静止，默认 {PARALLAX_DEFAULT_STRENGTH}%。</p>
+            </section>
 			<section><h3>特效设置</h3>{#if allowSakura}<button type="button" class="ft-toggle" role="switch" aria-checked={sakuraEnabled} onclick={onSakuraToggle}><span>樱花特效</span><span class="ft-switch" class:on={sakuraEnabled}><span>{sakuraEnabled?"✓":""}</span></span></button>{/if}</section>
 		{/if}
 	</div>
@@ -163,6 +173,7 @@ h3 { margin:0 0 .65rem .25rem; font-size:.875rem; line-height:1.5; font-weight:7
 .ft-section-heading { display:flex; align-items:center; justify-content:space-between; margin-bottom:.45rem; }
 .ft-section-heading h3 { margin-bottom:0; }
 .ft-reset { display:grid; place-items:center; width:1.75rem; height:1.75rem; border:0; border-radius:.5rem; background:transparent; color:var(--ft-text); cursor:pointer; }
+.ft-reset:disabled { opacity:.35; cursor:default; }
 .ft-modes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; }
 .ft-mode { display:flex; align-items:center; justify-content:center; gap:.5rem; padding:.625rem .5rem; border-radius:.75rem; background:var(--ft-high); color:var(--ft-muted); cursor:pointer; font-size:max(.75rem,12px); font-weight:600; }
 .ft-mode.chosen { background:var(--ft-selected); color:var(--ft-text); }
@@ -172,6 +183,7 @@ h3 { margin:0 0 .65rem .25rem; font-size:.875rem; line-height:1.5; font-weight:7
 .ft-segmented label.chosen { background:var(--ft-selected); color:var(--ft-text); }
 .ft-check { transform-origin:bottom left; animation:ft-check-in .15s cubic-bezier(.2,0,0,1); }
 .ft-slider-row { display:flex; flex-direction:column; gap:.25rem; padding:.625rem .75rem; border-radius:.75rem; background:var(--ft-high); }
+.ft-toggle + .ft-slider-row { margin-top:.5rem; }
 .ft-slider-row + .ft-slider-row { margin-top:.5rem; }
 .ft-slider-label { display:flex; align-items:center; justify-content:space-between; gap:.5rem; font-size:max(.75rem,12px); font-weight:600; color:var(--ft-muted); }
 output { font-weight:400; font-variant-numeric:tabular-nums; }

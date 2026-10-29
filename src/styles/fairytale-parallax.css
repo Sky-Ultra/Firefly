@@ -1,6 +1,6 @@
 /* Optional layer only: the carousel and mobile fixed surface remain separate. */
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-parallax] { display: block; position: absolute; inset: 0; }
-html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-parallax][data-parallax-enabled] { transform: translate3d(var(--fairytale-parallax-x,0px),var(--fairytale-parallax-y,0px),0) scale(1.035); }
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-parallax][data-parallax-enabled] { transform: translate3d(var(--fairytale-parallax-x,0px),var(--fairytale-parallax-y,0px),0) scale(var(--fairytale-parallax-scale,1.035)); }
 @media (prefers-reduced-motion:reduce) {
  html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-parallax] { transform: none !important; }
 }

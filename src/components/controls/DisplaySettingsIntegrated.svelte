@@ -43,8 +43,13 @@ import Icon from "@/components/common/Icon.svelte";
 import { backgroundWallpaper, sakuraConfig, siteConfig } from "@/config";
 import type { WALLPAPER_MODE } from "@/types/config";
 import {
+	FAIRYTALE_PARALLAX_KEY,
+	FAIRYTALE_PARALLAX_STRENGTH_KEY,
+	PARALLAX_DEFAULT_STRENGTH,
 	readFairytaleParallax,
+	readParallaxStrength,
 	setFairytaleParallax,
+	setParallaxStrength,
 } from "@/utils/fairytale-parallax";
 import {
 	FAIRYTALE_DEFAULTS,
@@ -84,6 +89,7 @@ let fairytaleBlur = $state(FAIRYTALE_DEFAULTS.blur);
 let fairytaleWallpaperOpacity = $state(FAIRYTALE_DEFAULTS.wallpaperOpacity);
 let fairytaleCardOpacity = $state(FAIRYTALE_DEFAULTS.cardOpacity);
 let fairytaleParallax = $state(true);
+let parallaxStrength = $state(PARALLAX_DEFAULT_STRENGTH);
 let isSmallScreen = $state(
 	typeof window !== "undefined" ? window.innerWidth < 1200 : false,
 );
@@ -425,6 +431,7 @@ onMount(() => {
 	fairytaleWallpaperOpacity = fullscreen.settings.wallpaperOpacity;
 	fairytaleCardOpacity = fullscreen.settings.cardOpacity;
 	fairytaleParallax = readFairytaleParallax();
+	parallaxStrength = readParallaxStrength();
 	checkScreenSize();
 
 	// 从localStorage读取保存的壁纸模式
@@ -464,11 +471,44 @@ onMount(() => {
 			window.innerWidth < 780 ? mobileDefaultLayout : defaultLayout;
 	}
 
+	const syncParallax = (event: Event) => {
+		fairytaleParallax = (event as CustomEvent<{ enabled: boolean }>).detail
+			.enabled;
+	};
+	const syncStrength = (event: Event) => {
+		parallaxStrength = (event as CustomEvent<{ strength: number }>).detail
+			.strength;
+	};
+	const syncParallaxStorage = (event: StorageEvent) => {
+		if (
+			event.key === null ||
+			event.key === FAIRYTALE_PARALLAX_KEY ||
+			event.key === FAIRYTALE_PARALLAX_STRENGTH_KEY
+		) {
+			fairytaleParallax = readFairytaleParallax();
+			parallaxStrength = readParallaxStrength();
+		}
+	};
+	window.addEventListener("firefly:fairytale-parallax-change", syncParallax);
+	window.addEventListener(
+		"firefly:fairytale-parallax-strength-change",
+		syncStrength,
+	);
+	window.addEventListener("storage", syncParallaxStorage);
 	// 监听窗口大小变化
 	window.addEventListener("resize", checkScreenSize);
 
 	return () => {
 		window.removeEventListener("resize", checkScreenSize);
+		window.removeEventListener(
+			"firefly:fairytale-parallax-change",
+			syncParallax,
+		);
+		window.removeEventListener(
+			"firefly:fairytale-parallax-strength-change",
+			syncStrength,
+		);
+		window.removeEventListener("storage", syncParallaxStorage);
 	};
 });
 
@@ -556,7 +596,7 @@ $effect(() => {
 <div id="display-setting" class:has-fullscreen-layout={wallpaperMode === WALLPAPER_FULLSCREEN} class:fairytale-controls-open={wallpaperMode === WALLPAPER_FULLSCREEN && fullscreenLayout === "fairytale"} class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-4 py-2">
     {#if wallpaperMode === WALLPAPER_FULLSCREEN && fullscreenLayout === "fairytale"}
         <FairytaleDisplayPanel {hue} blur={fairytaleBlur} cardOpacity={fairytaleCardOpacity} layout={currentLayout} {wallpaperMode}
-            parallaxEnabled={fairytaleParallax} onParallaxToggle={() => { fairytaleParallax = !fairytaleParallax; setFairytaleParallax(fairytaleParallax); }}
+            {parallaxStrength} onParallaxStrengthChange={(value) => { parallaxStrength = value; setParallaxStrength(value); }} parallaxEnabled={fairytaleParallax} onParallaxToggle={() => { fairytaleParallax = !fairytaleParallax; setFairytaleParallax(fairytaleParallax); }}
             titleEnabled={bannerTitleEnabled} carouselEnabled={bannerCarouselEnabled} {sakuraEnabled}
             allowLayout={allowLayoutSwitch} allowMasonry={allowMasonryLayout} allowTitle={isBannerTitleSwitchable} allowCarousel={isBannerCarouselSwitchable} allowSakura={isSakuraSwitchable}
             onResetHue={resetHue} onResetLayout={resetLayout} {defaultHue} defaultLayout={effectiveDefaultLayout} onHueChange={(value) => hue = value} onBlurChange={(value) => fairytaleBlur = value} onCardOpacityChange={(value) => fairytaleCardOpacity = value}

@@ -1,0 +1,15 @@
+/* Overrides the legacy navbar popup !important backgrounds locally.
+ * Fairytale popovers only. No navbar geometry, font or classic-mode reset. */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] body #navbar .float-panel {
+	--fairytale-menu-surface: color-mix(in srgb,var(--card-bg) clamp(55%,calc(var(--fairytale-card-opacity,.74) * 100%),92%),transparent);
+	background: var(--fairytale-menu-surface) !important;
+	-webkit-backdrop-filter: blur(18px) saturate(1.05);
+	backdrop-filter: blur(18px) saturate(1.05);
+	border-color: color-mix(in srgb,var(--content-meta) 18%,transparent) !important;
+}
+/* The original opaque inner groups must not conceal the new glass surface. */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #display-setting .fairytale-control-panel {
+	--ft-surface: color-mix(in srgb,var(--card-bg) 14%,transparent);
+	--ft-high: color-mix(in srgb,var(--card-bg) 22%,transparent);
+	--ft-selected: color-mix(in srgb,var(--btn-regular-bg-hover) 65%,transparent);
+}
