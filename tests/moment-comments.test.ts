@@ -129,10 +129,10 @@ test("only video moments receive independent comment threads and overlay is a va
 	const layout = source("src/layouts/MainGridLayout.astro");
 	assert.match(
 		layout,
-		/return mode === WALLPAPER_BANNER \|\| mode === 'fullscreen' \|\| mode === 'overlay'/,
+		/return mode === WALLPAPER_BANNER \|\| mode === 'fullscreen' \|\| \(mode === 'overlay' && document\.body\.classList\.contains\('is-home'\)\)/,
 	);
 	assert.match(
 		layout,
-		/e.detail.mode === 'fullscreen' \|\| e.detail.mode === 'overlay'/,
+		/e.detail.mode === 'fullscreen' \|\| \(e.detail.mode === 'overlay' && document\.body\.classList\.contains\('is-home'\)\)/,
 	);
 });

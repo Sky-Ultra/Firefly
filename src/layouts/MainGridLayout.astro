@@ -509,7 +509,7 @@ const hasMultipleImages =
 
             function isBannerWallpaperMode() {
                 var mode = document.documentElement.getAttribute('data-wallpaper-mode');
-                return mode === WALLPAPER_BANNER || mode === 'fullscreen' || mode === 'overlay';
+                return mode === WALLPAPER_BANNER || mode === 'fullscreen' || (mode === 'overlay' && document.body.classList.contains('is-home'));
             }
 
             // 获取当前设备可见的 slide-item
@@ -830,12 +830,24 @@ const hasMultipleImages =
                 e.detail && e.detail.enabled ? startAutoPlay() : stopAutoPlay();
             });
             window.addEventListener('wallpaperModeChange', function(e) {
-                if (e.detail && (e.detail.mode === 'banner' || e.detail.mode === 'fullscreen' || e.detail.mode === 'overlay')) {
+                if (e.detail && (e.detail.mode === 'banner' || e.detail.mode === 'fullscreen' || (e.detail.mode === 'overlay' && document.body.classList.contains('is-home')))) {
                     if (isCarouselEnabled()) startAutoPlay();
                 } else {
                     stopAutoPlay();
                 }
             });
+            // Overlay carousel is a homepage-only enhancement; preserve article wallpaper behavior.
+            var overlayHomeWasActive = document.body.classList.contains('is-home');
+            new window.MutationObserver(function() {
+                var homeActive = document.body.classList.contains('is-home');
+                if (homeActive === overlayHomeWasActive) return;
+                overlayHomeWasActive = homeActive;
+                if (document.documentElement.getAttribute('data-wallpaper-mode') !== 'overlay') return;
+                transitionGeneration++;
+                transitioning = false;
+                stopAutoPlay();
+                if (homeActive && isCarouselEnabled()) startAutoPlay();
+            }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 			window.addEventListener('firefly:wallpaper-assignments-ready', function() {
 				var wasWaiting = awaitingAssignments;
 				awaitingAssignments = false;

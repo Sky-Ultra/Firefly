@@ -155,6 +155,51 @@ function fixture(
 	};
 }
 
+test("overlay homepage rotation stops on article navigation and fullscreen retains its original behavior", async () => {
+	const f = fixture();
+	try {
+		await flush();
+		const mode = (value: string) => {
+			f.view.document.documentElement.setAttribute(
+				"data-wallpaper-mode",
+				value,
+			);
+			f.view.dispatchEvent(
+				new f.view.CustomEvent("wallpaperModeChange", {
+					detail: { mode: value },
+				}),
+			);
+		};
+		mode("overlay");
+		assert.equal(f.timers.size, 0);
+		f.view.document.body.classList.add("is-home");
+		await flush();
+		assert.equal(f.timers.size, 1);
+		f.tick();
+		await flush();
+		const active = f.active("desktop");
+		f.view.document.body.classList.remove("is-home");
+		await flush();
+		assert.equal(f.timers.size, 0);
+		f.key("ArrowRight");
+		await flush();
+		assert.equal(f.active("desktop"), active);
+		f.view.document.body.classList.add("is-home");
+		await flush();
+		assert.equal(f.timers.size, 1);
+		mode("fullscreen");
+		f.view.document.body.classList.remove("is-home");
+		await flush();
+		assert.equal(
+			f.timers.size,
+			1,
+			"fullscreen must keep its existing autoplay behavior",
+		);
+	} finally {
+		await f.close();
+	}
+});
+
 test("32 desktop and 21 mobile slots load only current and next, retaining at most three decoded slides", async () => {
 	assert.equal(backgroundWallpaper.common?.carousel?.count, 32);
 	const f = fixture();

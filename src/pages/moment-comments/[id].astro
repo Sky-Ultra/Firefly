@@ -10,19 +10,22 @@ const path = `/moments/${Astro.params.id}`;
 const href = new URL(`/moments/#${Astro.params.id}`, Astro.site).href;
 ---
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="robots" content="noindex,nofollow" /><link rel="canonical" href={href} /><title>动态评论</title></head>
+<html lang="zh-CN" class="moment-comments-page"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="robots" content="noindex,nofollow" /><link rel="canonical" href={href} /><title>动态评论</title></head>
  <body><Twikoo path={path} href={href} fixedPath /><noscript>请启用 JavaScript 后使用评论。</noscript></body>
 </html>
-<style is:global>
- :root { --primary:#e875a0; --card-bg:#fff; --card-bg-transparent:#ffffff80; --line-divider:#e5e7eb; --deep-text:#333; --content-meta:#888; --btn-content:#7c5263; --btn-regular-bg:#fceaf1; }
- html,body { margin:0; padding:0; background:transparent; font:14px/1.6 system-ui,"Microsoft YaHei",sans-serif; color:var(--deep-text); }
- body { padding:1px 2px 6px; overflow-wrap:anywhere; }
- *,*::before,*::after { box-sizing:border-box; } button,input,textarea { font-family:inherit; }
- [hidden] { display:none!important; }
- .twikoo .tk-comments-title,.twikoo .tk-comments-sort { line-height:1.6; }
- @media(max-width:480px){.twikoo .tk-avatar{width:30px;height:30px}.twikoo .tk-submit{gap:8px}.twikoo .tk-meta-input{flex-wrap:wrap;gap:6px}.twikoo .tk-meta-input .el-input{flex:0 0 auto;width:100%;margin:0}}
+<style is:inline>
+ html.moment-comments-page { --primary:#e875a0; --card-bg:#fff; --card-bg-transparent:#ffffff80; --line-divider:#e5e7eb; --deep-text:#333; --content-meta:#888; --btn-content:#7c5263; --btn-regular-bg:#fceaf1; }
+ html.moment-comments-page, .moment-comments-page body { margin:0; padding:0; background:transparent; font:14px/1.6 system-ui,"Microsoft YaHei",sans-serif; color:var(--deep-text); }
+ .moment-comments-page body { padding:1px 2px 6px; overflow-wrap:anywhere; }
+ .moment-comments-page *, .moment-comments-page *::before, .moment-comments-page *::after { box-sizing:border-box; }
+ .moment-comments-page button, .moment-comments-page input, .moment-comments-page textarea { font-family:inherit; }
+ .moment-comments-page [hidden] { display:none!important; }
+ .moment-comments-page .twikoo .tk-comments-title, .moment-comments-page .twikoo .tk-comments-sort { line-height:1.6; }
+ @media(max-width:480px){.moment-comments-page .twikoo .tk-avatar{width:30px;height:30px}.moment-comments-page .twikoo .tk-submit{gap:8px}.moment-comments-page .twikoo .tk-meta-input{flex-wrap:wrap;gap:6px}.moment-comments-page .twikoo .tk-meta-input .el-input{flex:0 0 auto;width:100%;margin:0}}
 </style>
-<script>
+<script is:inline>
+ (() => {
+ if (!document.documentElement.classList.contains("moment-comments-page")) return;
  const allowed = new Set(["--primary", "--card-bg", "--card-bg-transparent", "--line-divider", "--deep-text", "--content-meta", "--btn-content", "--btn-regular-bg"]);
  window.addEventListener("message", event => {
   if(event.source!==parent || event.origin!==location.origin || event.data?.type!=="firefly:moment-comments-theme")return;
@@ -35,4 +38,5 @@ const href = new URL(`/moments/#${Astro.params.id}`, Astro.site).href;
  const report=()=>parent.postMessage({type:"firefly:moment-comments-size",height:Math.ceil(document.body.getBoundingClientRect().height)+4,ready:!!document.querySelector(".twikoo textarea")},location.origin);
  new ResizeObserver(report).observe(document.body);
  window.addEventListener("load",report);
+ })();
 </script>

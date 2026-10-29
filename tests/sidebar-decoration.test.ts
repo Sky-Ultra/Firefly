@@ -62,10 +62,10 @@ test("decorations stay out of controls, translation and accessibility content", 
 	);
 });
 
-test("sidebar surfaces follow overlay transparency and reduced motion disables movement", () => {
+test("only homepage sidebar surfaces follow overlay transparency and reduced motion disables movement", () => {
 	assert.match(
 		decorationStyles,
-		/@layer components\s*\{[^}]*\.wallpaper-transparent \.sidebar-decorated-card\.card-base\s*\{[^}]*background-color:\s*var\(--card-bg-transparent\) !important/s,
+		/@layer components\s*\{[^}]*body\.is-home\.wallpaper-transparent \.sidebar-decorated-card\.card-base\s*\{[^}]*background-color:\s*var\(--card-bg-transparent\) !important/s,
 	);
 	assert.match(decorationStyles, /backdrop-filter:\s*none !important/);
 	assert.match(

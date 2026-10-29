@@ -27,7 +27,7 @@ Highlight every “重要更新” label with `<mark class="theme-highlight">重
 
 ### Site-specific visual consistency
 
-New sidebar widgets and card-style components must continue the site's pale outline motif and gentle hover finish. Reuse `SidebarDecoration.astro` and the existing styles; choose a motif relevant to the component, with the blossom fallback for new widgets. Keep card backgrounds opaque in normal wallpaper modes; in fullscreen transparent (overlay) mode, sidebar cards follow the shared --card-bg-transparent value, like article cards. Keep decorations non-interactive and hidden from assistive technology, and retain reduced-motion support. Article cards share this finish via `post-card-decoration.css`. Do not add decoration over reading content or obscure controls.
+New sidebar widgets and card-style components must continue the site's pale outline motif and gentle hover finish. Reuse `SidebarDecoration.astro` and the existing styles; choose a motif relevant to the component, with the blossom fallback for new widgets. Keep card backgrounds opaque in normal wallpaper modes; only on the homepage in fullscreen transparent (overlay) mode, sidebar cards follow the shared --card-bg-transparent value. Preserve the original opaque sidebars and wallpaper behavior on article and other pages. Keep decorations non-interactive and hidden from assistive technology, and retain reduced-motion support. Article cards share this finish via `post-card-decoration.css`. Do not add decoration over reading content or obscure controls.
 
 The homepage banner title stays plain, without stickers or character companions. Do not restore the removed homepage sticker, nine-character row, or characters flanking the homepage title. Preserve the profile card's two character companions and reusable draggable-sticker support unless the user asks to remove them.
 
@@ -44,3 +44,5 @@ Use Conventional Commits, matching the current history: `feat: ...`, `fix: ...`,
 ## Security & Configuration Tips
 
 Do not commit secrets, tokens, or service keys in config files. Keep deployment-specific settings in the target platform environment, and review generated files such as `dist`, `src/constants/lqips.json`, and `src/constants/icons.ts` before committing them.
+
+Embedded standalone pages must namespace document styles to their own root class and keep their document-only CSS and bridge scripts inline. Do not let their root font, palette, background, or element resets enter article route assets.
