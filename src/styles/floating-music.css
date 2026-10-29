@@ -544,3 +544,7 @@ html.dark .music-float-player { --on-surface:#eeebf1; --on-surface-variant:#bfb8
 @media(prefers-reduced-motion:reduce) { .music-float-player,.music-float-player * { animation:none!important; transition:none!important; } }
 
 .music-float-player:not(.music-float-player--ready) .music-float-disc__spin { animation-play-state:paused; }
+
+/* The reference's card token already includes its Hero opacity. Apply this
+ * site's independent fairytale opacity locally rather than changing --card-bg. */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] .music-float-player { --fp-surface:color-mix(in srgb,var(--card-bg) calc(var(--fairytale-card-opacity,.74) * 94%),transparent); }

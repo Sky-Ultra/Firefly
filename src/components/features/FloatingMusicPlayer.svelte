@@ -291,7 +291,7 @@ $effect(() => {
 });
 </script>
 
-<div bind:this={root} class="music-float-player" class:music-float-player--ready={ready && !dismissed} class:music-float-player--bar={shape==="bar"} class:music-float-player--pill={shape==="pill"} class:music-float-player--panel-open={panel!==null} class:music-float-player--dragging={dragging} style={`transform:translate(${position.x}px,${position.y}px)`} role="region" aria-label="悬浮音乐播放器" aria-hidden={!ready || dismissed} inert={!ready || dismissed}>
+<div bind:this={root} ontouchstart={(event)=>event.stopPropagation()} ontouchend={(event)=>event.stopPropagation()} class="music-float-player" class:music-float-player--ready={ready && !dismissed} class:music-float-player--bar={shape==="bar"} class:music-float-player--pill={shape==="pill"} class:music-float-player--panel-open={panel!==null} class:music-float-player--dragging={dragging} style={`transform:translate(${position.x}px,${position.y}px)`} role="region" aria-label="悬浮音乐播放器" aria-hidden={!ready || dismissed} inert={!ready || dismissed}>
  <div class="music-float-player__stage">
   <div class="music-float-player__panel" inert={!expanded || !panel} aria-hidden={!expanded || !panel}>
    <div class="music-float-player__panel-clip"><div class="music-float-player__panel-body">
