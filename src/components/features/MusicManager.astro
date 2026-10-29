@@ -629,6 +629,18 @@ const managerConfigStr = JSON.stringify({
     }
 
     // ── Audio events → broadcast ─────────────────────────────
+    // Metadata may arrive while paused, before the first timeupdate. Keep
+    // every connected view's duration/seek control available without autoplay.
+    audio.addEventListener('loadedmetadata', function () {
+        if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+        emit('fm:time', {
+            currentTime: audio.currentTime,
+            duration: audio.duration,
+            progress: (audio.currentTime / audio.duration) * 100,
+            currentTimeStr: formatTime(audio.currentTime),
+            durationStr: formatTime(audio.duration)
+        });
+    });
     audio.addEventListener('timeupdate', function () {
         if (isNaN(audio.duration)) return;
         var ct = audio.currentTime;

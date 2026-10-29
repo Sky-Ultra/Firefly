@@ -12,6 +12,7 @@ import SakuraEffect from "@components/features/SakuraEffect.astro";
 import SiteLikeToast from "@components/features/SiteLikeToast.astro";
 import WelcomeToast from "@components/features/WelcomeToast.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
+import FloatingMusic from "@/components/features/FloatingMusic.astro";
 import FullscreenPreferences from "@/components/features/FullscreenPreferences.astro";
 
 import {
@@ -661,6 +662,7 @@ const siteLang = lang.replace("_", "-");
     {shouldShowTopHighlight && <div class="top-gradient-highlight" />}
     <ConfigCarrier />
     <MusicManager />
+    <FloatingMusic />
     <slot />
 
 

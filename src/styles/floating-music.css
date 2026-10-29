@@ -1,0 +1,546 @@
+/* Adapted from fqzlr/shirone-fq musicSidebarStyles.ts; MIT. */
+.music-float-disc {
+  position: relative;
+  width: 4rem;
+  height: 4rem;
+  flex-shrink: 0;
+}
+.music-float-disc--paused .music-float-disc__spin {
+  animation-play-state: paused;
+}
+.music-float-disc--dragging .music-float-disc__hit {
+  cursor: grabbing;
+}
+.music-float-disc--dragging .music-float-disc__spin {
+  animation-play-state: paused;
+}
+.music-float-disc__hit {
+  pointer-events: auto;
+  position: relative;
+  display: block;
+/* 触屏：按住即可拖动，不触发放页面滚动（避免 pointercancel） */
+  touch-action: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  border-radius: var(--shape-corner-full);
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  outline: none;
+}
+.music-float-disc__hit:focus-visible {
+  box-shadow: 0 0 0 2px var(--page-bg), 0 0 0 4px var(--primary);
+}
+.music-float-disc__spin {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--shape-corner-full);
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  box-shadow: 0 0 0 1.5px var(--surface-container-lowest), 0 0 0 2.5px color-mix(in oklab, var(--primary) 35%, var(--outline-variant) 65%), 0 0.35rem 1rem color-mix(in oklab, var(--on-surface) 18%, transparent);
+  animation: music-cover-playing 8s linear infinite;
+}
+.music-float-disc__spin img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--shape-corner-full);
+}
+.music-float-disc__spin > svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+.music-float-disc__toggle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--shape-corner-full);
+  background: color-mix(in oklab, var(--surface-container-lowest) 82%, transparent);
+  color: var(--on-surface);
+  box-shadow: 0 0.125rem 0.375rem color-mix(in oklab, var(--on-surface) 20%, transparent);
+  transform: translate(-50%, -50%);
+}
+.music-float-disc__toggle > svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+html.motion-reduced .music-float-disc__spin {
+  animation: none;
+}
+/* ─────────────────────────────────────────────────────────────
+   悬浮音乐 dock（复刻 zzwork/my-blog 三态一体布局）：
+   收起 = 左下角唱片；展开 = 唱片骑在信息层（标题/进度）与
+   工具栏胶囊的接缝上，上方再展一层歌单/歌词面板。
+   容器以唱片左上角为原点（transform 定位），面板与舞台
+   绝对定位向上生长，展开/收起全程不改变唱片位置。
+   ───────────────────────────────────────────────────────────── */
+.music-float-player {
+  --fp-disc: 4rem;
+  --fp-bar-h: 3.5rem;
+  --fp-slot-pad: 5rem;
+  --fp-width: 21.25rem;
+  --fp-surface: color-mix(in oklab, var(--card-bg) 94%, transparent);
+  --fp-shadow: 0 0.5rem 1.5rem color-mix(in oklab, var(--on-surface) 14%, transparent);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 61;
+  width: var(--fp-disc);
+  height: var(--fp-bar-h);
+  pointer-events: none;
+  will-change: transform;
+  transition: width 420ms var(--m3e-easing-standard);
+/* 水合定位前隐藏：SSR 阶段它嵌在侧栏卡片内，blur/transform 包含块
+	   会把 fixed 基准变成卡片左上角，出现错位唱片；portal 到 body 并
+	   写入 transform（--ready）后才显示，避免首屏裸奔与跳动 */
+  visibility: hidden;
+/* ── 上展面板：舞台文档流内（不与信息层重叠），由歌单按钮开合 ── */
+/* 面板播放列表：封面缩略图 + 当前项高亮（参考博客样式） */
+/* ── 舞台：面板 + 信息层 + 工具栏 + 唱片，文档流自底向上生长 ── */
+/* 信息层：bar 态显示标题 / 艺术家 / 进度 */
+/* 关闭悬浮球：hover 展开（bar 态）时显示在信息卡片右上角，点击仅隐藏悬浮球 */
+/* 工具栏：胶囊 dock，bar 态上叠在信息层下缘；pill 态变为歌词胶囊 */
+/* 胶囊歌词槽：pill 态显示当前歌词行 */
+/* 音量：悬停弹出垂直滑条，点击按钮切换静音（复刻参考博客） */
+/* 唱片：disc 态贴容器左下；pill 态居中胶囊内；bar 态骑在信息层与工具栏接缝 */
+/* 唱片内封面禁止原生拖拽，保证指针拖动不被 pointercancel 打断 */
+}
+.music-float-player--ready {
+  visibility: visible;
+}
+.music-float-player--bar,
+.music-float-player--pill {
+  width: var(--fp-width);
+}
+.music-float-player--dragging .music-float-disc__hit,
+.music-float-player--dragging .music-float-player__info-surface {
+  cursor: grabbing;
+}
+.music-float-player--dragging .music-float-disc__spin {
+  animation-play-state: paused;
+}
+.music-float-player__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  pointer-events: none;
+  transition: grid-template-rows 420ms var(--m3e-easing-standard);
+}
+.music-float-player--bar.music-float-player--panel-open .music-float-player__panel {
+  grid-template-rows: 1fr;
+  pointer-events: auto;
+}
+.music-float-player__panel-clip {
+  overflow: hidden;
+  min-height: 0;
+}
+.music-float-player__panel-body {
+  display: flex;
+  flex-direction: column;
+  height: 16rem;
+  overflow: hidden;
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-corner-l);
+  background: var(--fp-surface);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--fp-shadow);
+  opacity: 0;
+  transform: translate3d(0, 0.5rem, 0);
+  transition: opacity 200ms ease, transform 280ms var(--m3e-easing-standard);
+}
+.music-float-player--bar.music-float-player--panel-open .music-float-player__panel-body {
+  opacity: 1;
+  transform: none;
+  transition-delay: 120ms;
+}
+.music-float-player__tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem 0;
+  border-bottom: 1px solid var(--outline-variant);
+  flex-shrink: 0;
+}
+.music-float-player__tab {
+  padding: 0.375rem 0.75rem 0.5rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--on-surface-variant);
+  font: var(--m3e-type-label-medium);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--m3e-duration-short) var(--m3e-easing-standard), border-color var(--m3e-duration-short) var(--m3e-easing-standard);
+}
+.music-float-player__tab:hover {
+  color: var(--on-surface);
+}
+.music-float-player__tab--active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+.music-float-player__views {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.5rem;
+}
+.music-float-player__views .music-player__playlist-item {
+  gap: 0.5rem;
+}
+.music-float-player__item-cover {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  overflow: hidden;
+  border-radius: var(--shape-corner-s);
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+.music-float-player__item-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.music-float-player__item-cover svg {
+  width: 1rem;
+  height: 1rem;
+}
+.music-float-player__empty {
+  margin: 0;
+  padding: 1rem;
+  color: var(--on-surface-variant);
+  font: var(--m3e-type-body-small);
+  text-align: center;
+}
+.music-float-player__stage {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.music-float-player__info {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 420ms var(--m3e-easing-standard);
+}
+.music-float-player--bar .music-float-player__info {
+  grid-template-rows: 1fr;
+}
+.music-float-player__info-clip {
+  overflow: hidden;
+  min-height: 0;
+}
+.music-float-player__info-surface {
+  position: relative;
+  margin-inline: 1.25rem;
+/* 容器 pointer-events: none，信息层必须显式打开，否则悬停判定与进度条交互全部穿透 */
+  pointer-events: auto;
+/* 底部 padding 需大于工具栏上叠高度，否则进度条会被遮住 */
+  padding: 0.875rem 1.25rem 1.625rem calc(var(--fp-slot-pad) - 1.25rem);
+/* 按住信息层空白处可拖动（按钮/进度条照常交互）；触屏同理 */
+  cursor: grab;
+  touch-action: none;
+  border-radius: var(--shape-corner-l);
+  background: var(--fp-surface);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--fp-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  opacity: 0;
+  transform: translate3d(0, 0.5rem, 0);
+  transition: opacity 200ms ease, transform 280ms var(--m3e-easing-standard);
+}
+.music-float-player--bar .music-float-player__info-surface {
+  opacity: 1;
+  transform: none;
+  transition-delay: 80ms;
+}
+.music-float-player__title {
+  margin: 0;
+  padding-right: 2rem;
+  color: var(--on-surface);
+  font: var(--m3e-type-title-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.music-float-player__artist {
+  padding-right: 2rem;
+  color: var(--on-surface-variant);
+  font: var(--m3e-type-body-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.music-float-player__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--shape-corner-full);
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.6);
+  transition: opacity var(--m3e-duration-short) var(--m3e-easing-standard), transform var(--m3e-duration-short) var(--m3e-easing-standard), color var(--m3e-duration-short) var(--m3e-easing-standard);
+}
+.music-float-player__close > svg {
+  width: 1rem;
+  height: 1rem;
+}
+.music-float-player--bar .music-float-player__close {
+  opacity: 0.7;
+  pointer-events: auto;
+  transform: scale(1);
+}
+.music-float-player--bar .music-float-player__close:hover {
+  opacity: 1;
+  color: var(--primary);
+}
+.music-float-player__bar {
+  position: relative;
+  z-index: 1;
+  height: var(--fp-bar-h);
+  margin-top: 0;
+  border-radius: var(--shape-corner-full);
+  background: var(--fp-surface);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--fp-shadow);
+  opacity: 0;
+  transform: scale(0.72);
+  pointer-events: none;
+  transition: height 420ms var(--m3e-easing-standard), margin-top 420ms var(--m3e-easing-standard), opacity 200ms ease, transform 200ms ease;
+}
+.music-float-player--pill .music-float-player__bar,
+.music-float-player--bar .music-float-player__bar {
+  opacity: 1;
+  transform: none;
+}
+.music-float-player--bar .music-float-player__bar {
+  margin-top: -1.375rem;
+  pointer-events: auto;
+}
+.music-float-player--pill .music-float-player__bar {
+  height: 4.5rem;
+}
+.music-float-player__pill-text {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--fp-disc) + 0.875rem);
+  right: 1.25rem;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  opacity: 0;
+  transform: translate3d(-0.5rem, 0, 0);
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 260ms var(--m3e-easing-standard);
+}
+.music-float-player--pill .music-float-player__pill-text {
+  opacity: 1;
+  transform: none;
+}
+.music-float-player__pill-label {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--on-surface);
+  font: var(--m3e-type-body-medium);
+  font-weight: 600;
+}
+.music-float-player__toolbar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--fp-slot-pad);
+  right: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  opacity: 0;
+  transform: translate3d(0, 0.375rem, 0);
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 260ms var(--m3e-easing-standard);
+}
+.music-float-player--bar .music-float-player__toolbar {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition-delay: 100ms;
+}
+.music-float-player__volume {
+  position: relative;
+  display: flex;
+/* 按钮与弹出层间隙的悬停桥接，防止移入途中弹层消失 */
+}
+.music-float-player__volume::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 0.5rem;
+}
+.music-float-player__volume-pop {
+  position: absolute;
+  bottom: calc(100% + 0.375rem);
+  right: -0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 2.75rem;
+  padding: 0.75rem 0.5rem 0.875rem;
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-corner-full);
+  background: var(--fp-surface);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--fp-shadow);
+  opacity: 0;
+  transform: translate3d(0, 0.25rem, 0) scale(0.94);
+  transform-origin: 100% 100%;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 240ms var(--m3e-easing-standard);
+}
+.music-float-player__volume:hover .music-float-player__volume-pop,
+.music-float-player__volume:focus-within .music-float-player__volume-pop {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.music-float-player__volume-value {
+  color: var(--on-surface);
+  font: var(--m3e-type-label-small);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.music-float-player__volume-track {
+  position: relative;
+  width: 0.25rem;
+  height: 6.5rem;
+  border-radius: var(--shape-corner-full);
+  background: color-mix(in oklab, var(--on-surface) 14%, transparent);
+  cursor: pointer;
+  touch-action: none;
+}
+.music-float-player__volume-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: var(--primary);
+}
+.music-float-player__volume-thumb {
+  position: absolute;
+  left: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  transform: translate(-50%, 50%);
+  border-radius: var(--shape-corner-full);
+  background: var(--primary);
+}
+.music-float-player__disc {
+  position: absolute;
+  left: 0;
+  bottom: -0.25rem;
+  z-index: 2;
+  width: var(--fp-disc);
+  height: var(--fp-disc);
+  transition: left 420ms var(--m3e-easing-standard), bottom 420ms var(--m3e-easing-standard);
+}
+.music-float-player--bar .music-float-player__disc {
+  left: 0.75rem;
+  bottom: calc(var(--fp-bar-h) - var(--fp-disc) / 2);
+}
+.music-float-player--pill .music-float-player__disc {
+  left: 0.375rem;
+  bottom: 0.25rem;
+}
+.music-float-player__disc img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+html.motion-reduced .music-float-player__close {
+  transition: none;
+}
+.music-float-player__close:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+  box-shadow: 0 0 0 2px var(--page-bg), 0 0 0 4px var(--primary);
+}
+
+/* Geometry and transitions adapted from fqzlr/shirone-fq (MIT; LICENSES/Shirone-fq.txt). */
+.music-float-player { --fp-width:min(21.25rem,calc(100vw - 24px)); --on-surface:#252329; --on-surface-variant:#625d68; --outline-variant:var(--line-divider); --secondary-container:var(--btn-regular-bg); --on-secondary-container:var(--primary); --surface-container-lowest:var(--card-bg); --shape-corner-full:999px; --shape-corner-l:1rem; --shape-corner-s:.4rem; --m3e-easing-standard:cubic-bezier(.2,0,0,1); --m3e-duration-short:160ms; --m3e-type-title-small:600 .875rem/1.5 var(--font-sans,system-ui); --m3e-type-body-small:400 .75rem/1.5 var(--font-sans,system-ui); --m3e-type-body-medium:500 .875rem/1.5 var(--font-sans,system-ui); --m3e-type-label-small:500 .7rem/1.5 var(--font-sans,system-ui); color:var(--on-surface); }
+html.dark .music-float-player { --on-surface:#eeebf1; --on-surface-variant:#bfb8c8; }
+.music-float-player__info-surface { cursor:default; touch-action:auto; }
+.music-float-player__title { display:block; font-size:.875rem; font-weight:600; line-height:1.5; }
+.music-float-player__artist { font-size:.75rem; line-height:1.5; }
+.music-float-player__close svg { width:1rem; height:1rem; }
+.music-float-player .dock-icon { display:grid; place-items:center; flex:none; width:1.5rem; height:2.25rem; border:0; border-radius:999px; padding:0; background:transparent; color:var(--on-surface); cursor:pointer; transition:background 160ms,transform 160ms; }
+.music-float-player .dock-icon svg { width:1.2rem; height:1.2rem; }
+.music-float-player .dock-icon:hover { background:var(--btn-regular-bg-hover); }
+.music-float-player .dock-icon:active { transform:scale(.93); }
+.music-float-player .dock-icon:disabled { opacity:.45; cursor:default; }
+.music-float-player .dock-icon[aria-pressed="true"] { color:var(--primary); }
+.music-float-player .dock-skip { width:1.75rem; }
+.music-float-player .dock-skip svg { width:1.5rem; height:1.5rem; }
+.music-float-player .dock-play { width:3.5rem; height:3.5rem; background:var(--on-surface); color:var(--card-bg); }
+.music-float-player .dock-play:hover { background:var(--on-surface); filter:brightness(1.2); }
+.music-float-player .dock-play svg { width:1.65rem; height:1.65rem; }
+.music-float-player .dock-progress { display:flex; align-items:center; gap:.25rem; min-width:0; font-size:.625rem; font-variant-numeric:tabular-nums; line-height:1.4; }
+.music-float-player .dock-progress span { flex:none; }
+.music-float-player .dock-progress input { width:100%; min-width:0; height:1rem; margin:0; padding:0; appearance:auto; accent-color:var(--on-surface); cursor:pointer; }
+.music-float-player .dock-volume { width:1.5rem; height:6.5rem; padding:0; appearance:auto; writing-mode:vertical-lr; direction:rtl; accent-color:var(--on-surface); }
+.music-float-player__tabs button { padding:.4rem .75rem; background:transparent; color:var(--on-surface-variant); border:0; border-bottom:2px solid transparent; font-size:.75rem; cursor:pointer; }
+.music-float-player__tabs button.active { color:var(--primary); border-color:var(--primary); }
+.music-float-player__views { position:relative; }
+.music-float-player .dock-track { display:flex; align-items:center; gap:.5rem; width:100%; padding:.4rem; border:0; border-radius:.5rem; background:transparent; text-align:left; cursor:pointer; color:var(--on-surface); }
+.music-float-player .dock-track>span:nth-child(2) { min-width:0; flex:1; }
+.music-float-player .dock-track strong,.music-float-player .dock-track small { display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.music-float-player .dock-track strong { font-size:.75rem; }
+.music-float-player .dock-track small { font-size:.65rem; opacity:.65; }
+.music-float-player .dock-track:hover,.music-float-player .dock-track[aria-current="true"] { background:var(--btn-regular-bg); }
+.music-float-player .dock-playing { color:var(--primary); }
+.music-float-player .dock-lyric { display:block; width:100%; border:0; padding:.5rem; color:var(--on-surface-variant); background:transparent; text-align:center; font-size:.8rem; line-height:1.6; cursor:pointer; }
+.music-float-player .dock-lyric[aria-current="true"] { color:var(--primary); font-weight:650; }
+.music-float-player button:focus-visible,.music-float-player input:focus-visible { outline:2px solid var(--primary); outline-offset:2px; }
+.music-float-player [inert] { pointer-events:none; }
+@keyframes music-cover-playing { from {transform:rotate(0deg)} to {transform:rotate(360deg)} }
+@media(prefers-reduced-motion:reduce) { .music-float-player,.music-float-player * { animation:none!important; transition:none!important; } }
+
+.music-float-player:not(.music-float-player--ready) .music-float-disc__spin { animation-play-state:paused; }
