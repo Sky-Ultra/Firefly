@@ -13,6 +13,15 @@ test("video moment comments are deferred, preserve the frame while folded and re
 		url: "https://example.test/moments/",
 		settings: { disableIframePageLoading: true },
 	});
+	const timers = new Map<number, () => void>();
+	let timerId = 0;
+	view.setTimeout = ((callback: () => void) => {
+		timers.set(++timerId, callback);
+		return timerId;
+	}) as typeof view.setTimeout;
+	view.clearTimeout = ((id: number) => {
+		timers.delete(id);
+	}) as typeof view.clearTimeout;
 	const runtime = transpileModule(
 		source("src/utils/moment-comments.ts").replace(/^export /gm, ""),
 		{
@@ -60,7 +69,11 @@ test("video moment comments are deferred, preserve the frame while folded and re
 			new view.MessageEvent("message", {
 				origin: view.location.origin,
 				source: frame.contentWindow,
-				data: { type: "firefly:moment-comments-size", height: 560 },
+				data: {
+					type: "firefly:moment-comments-size",
+					height: 560,
+					ready: true,
+				},
 			}),
 		);
 		assert.equal(frame.style.height, "560px");
@@ -73,13 +86,30 @@ test("video moment comments are deferred, preserve the frame while folded and re
 		);
 		assert.equal(frame.style.height, "560px");
 		view.document.body.innerHTML =
-			'<moment-comments data-frame-url="/moment-comments/early/"><details open><summary>Comments</summary><div data-comment-frame-mount></div></details></moment-comments>';
+			'<moment-comments data-frame-url="/moment-comments/early/"><details open><summary>Comments</summary><p data-comment-loading></p><div data-comment-fallback hidden><button data-comment-retry>Retry</button></div><div data-comment-frame-mount></div></details></moment-comments>';
 		await Promise.resolve();
 		assert.equal(
 			view.document.querySelector("iframe")?.getAttribute("src"),
 			"/moment-comments/early/",
 			"opening before hydration must still initialize comments",
 		);
+		const initialFrame = view.document.querySelector("iframe");
+		for (const [id, callback] of [...timers]) {
+			timers.delete(id);
+			callback();
+		}
+		assert.equal(
+			view.document.querySelector<HTMLElement>("[data-comment-fallback]")
+				?.hidden,
+			false,
+		);
+		view.document
+			.querySelector<HTMLButtonElement>("[data-comment-retry]")
+			?.click();
+		assert.equal(view.document.querySelectorAll("iframe").length, 1);
+		assert.notEqual(view.document.querySelector("iframe"), initialFrame);
+		view.document.body.replaceChildren();
+		assert.equal(timers.size, 0, "navigation clears pending retries");
 	} finally {
 		await view.happyDOM.close();
 	}

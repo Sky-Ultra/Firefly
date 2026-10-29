@@ -13,6 +13,7 @@ const { id } = Astro.props;
   <summary><Icon is:inline name="material-symbols:forum-outline-rounded" aria-hidden="true" /><span class="when-closed"><LocalizedText zh="展开评论" en="Show comments" /></span><span class="when-open"><LocalizedText zh="收起评论" en="Hide comments" /></span><span class="comment-chevron" aria-hidden="true">⌄</span></summary>
   <div class="moment-comments-body">
    <p data-comment-loading role="status"><LocalizedText zh="正在加载评论…" en="Loading comments…" /></p>
+   <div class="comment-load-fallback" data-comment-fallback hidden><p><LocalizedText zh="评论暂未加载完成，可以重试或单独打开。" en="Comments haven't finished loading. Retry or open them separately." /></p><button type="button" data-comment-retry><LocalizedText zh="重试加载" en="Retry loading" /></button><a href={url(`/moment-comments/${id}/`)} target="_blank" rel="noopener noreferrer"><LocalizedText zh="单独打开评论" en="Open comments separately" /> ↗</a></div>
    <div data-comment-frame-mount></div>
    <noscript><a href={url(`/moment-comments/${id}/`)}>打开评论</a></noscript>
   </div>
@@ -32,6 +33,9 @@ const { id } = Astro.props;
  .moment-comments-body { padding-top: .8rem; min-width: 0; }
  [data-comment-loading] { color: var(--content-meta); font-size: .8rem; padding: .6rem 0; }
  [data-comment-loading][hidden] { display: none; }
+ .comment-load-fallback[hidden] { display:none; }
+ .comment-load-fallback { color:var(--content-meta); font-size:.8rem; line-height:1.8; padding:.6rem 0; }
+ .comment-load-fallback button,.comment-load-fallback a { display:inline-flex; margin:.5rem .7rem 0 0; padding:.3rem .6rem; border-radius:.45rem; background:var(--btn-regular-bg); color:var(--btn-content); cursor:pointer; }
  moment-comments :global(iframe[data-moment-comment-frame]) { width: 100%; min-height: 180px; border: 0; display: block; background: transparent; color-scheme: normal; }
  @media(prefers-reduced-motion:reduce) { .comment-chevron { transition: none; } }
 </style>

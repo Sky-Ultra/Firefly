@@ -15,6 +15,7 @@ export function registerMomentComments(): void {
 		private scope?: AbortController;
 		private observer?: MutationObserver;
 		private frame?: HTMLIFrameElement;
+		private timer?: number;
 		connectedCallback() {
 			queueMicrotask(() => {
 				if (this.isConnected && !this.scope) this.connect();
@@ -31,12 +32,41 @@ export function registerMomentComments(): void {
 				this.frame = document.createElement("iframe");
 				this.frame.dataset.momentCommentFrame = "";
 				this.frame.title = "动态评论 / Comments";
-				this.frame.src = src;
 				this.frame.addEventListener("load", this.syncTheme, { signal });
 				this.querySelector("[data-comment-frame-mount]")?.append(this.frame);
+				// Begin navigation after the frame belongs to the active page.
+				this.frame.src = src;
+				this.timer = window.setTimeout(() => {
+					const fallback = this.querySelector<HTMLElement>(
+						"[data-comment-fallback]",
+					);
+					const loading = this.querySelector<HTMLElement>(
+						"[data-comment-loading]",
+					);
+					if (fallback) fallback.hidden = false;
+					if (loading) loading.hidden = true;
+				}, 15000);
 			};
 			details?.addEventListener("toggle", openFrame, { signal });
 			openFrame();
+			this.querySelector("[data-comment-retry]")?.addEventListener(
+				"click",
+				() => {
+					window.clearTimeout(this.timer);
+					this.frame?.remove();
+					this.frame = undefined;
+					const fallback = this.querySelector<HTMLElement>(
+						"[data-comment-fallback]",
+					);
+					const loading = this.querySelector<HTMLElement>(
+						"[data-comment-loading]",
+					);
+					if (fallback) fallback.hidden = true;
+					if (loading) loading.hidden = false;
+					openFrame();
+				},
+				{ signal },
+			);
 			window.addEventListener(
 				"message",
 				(event) => {
@@ -53,7 +83,14 @@ export function registerMomentComments(): void {
 					const loading = this.querySelector<HTMLElement>(
 						"[data-comment-loading]",
 					);
-					if (loading) loading.hidden = true;
+					if (event.data.ready === true) {
+						window.clearTimeout(this.timer);
+						const fallback = this.querySelector<HTMLElement>(
+							"[data-comment-fallback]",
+						);
+						if (fallback) fallback.hidden = true;
+						if (loading) loading.hidden = true;
+					}
 				},
 				{ signal },
 			);
@@ -89,6 +126,7 @@ export function registerMomentComments(): void {
 			);
 		};
 		disconnectedCallback() {
+			window.clearTimeout(this.timer);
 			this.scope?.abort();
 			this.scope = undefined;
 			this.observer?.disconnect();

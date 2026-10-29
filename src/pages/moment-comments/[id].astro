@@ -32,7 +32,7 @@ const href = new URL(`/moments/#${Astro.params.id}`, Astro.site).href;
   for(const [key,value] of Object.entries(event.data.palette||{})) if(allowed.has(key)&&typeof value==="string")document.documentElement.style.setProperty(key,value);
   document.dispatchEvent(new CustomEvent("firefly:language-change"));
  });
- const report=()=>parent.postMessage({type:"firefly:moment-comments-size",height:Math.ceil(document.body.getBoundingClientRect().height)+4},location.origin);
+ const report=()=>parent.postMessage({type:"firefly:moment-comments-size",height:Math.ceil(document.body.getBoundingClientRect().height)+4,ready:!!document.querySelector(".twikoo textarea")},location.origin);
  new ResizeObserver(report).observe(document.body);
  window.addEventListener("load",report);
 </script>
