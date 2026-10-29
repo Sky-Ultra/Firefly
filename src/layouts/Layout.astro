@@ -12,6 +12,7 @@ import SakuraEffect from "@components/features/SakuraEffect.astro";
 import SiteLikeToast from "@components/features/SiteLikeToast.astro";
 import WelcomeToast from "@components/features/WelcomeToast.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
+import FullscreenPreferences from "@/components/features/FullscreenPreferences.astro";
 
 import {
 	analyticsConfig,
@@ -116,6 +117,7 @@ const siteLang = lang.replace("_", "-");
 <html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]" data-wallpaper-mode={backgroundWallpaper.mode}>
   <head>
     <meta charset="UTF-8" />
+    <FullscreenPreferences />
     {analyticsConfig?.googleAnalyticsId && (
             <GoogleAnalytics analyticsId={analyticsConfig.googleAnalyticsId} />
     )}

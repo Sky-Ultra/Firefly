@@ -1,0 +1,25 @@
+---
+import {
+	FAIRYTALE_DEFAULTS,
+	FAIRYTALE_SETTINGS_KEY,
+	FULLSCREEN_LAYOUT_KEY,
+} from "@/utils/fullscreen-layout";
+---
+<script is:inline data-swup-ignore-script define:vars={{ fairytaleDefaults: FAIRYTALE_DEFAULTS, fairytaleSettingsKey: FAIRYTALE_SETTINGS_KEY, fairytaleLayoutKey: FULLSCREEN_LAYOUT_KEY }}>
+ (() => {
+  let layout = "classic", settings = fairytaleDefaults;
+  try {
+   layout = localStorage.getItem(fairytaleLayoutKey) === "fairytale" ? "fairytale" : "classic";
+   const value = JSON.parse(localStorage.getItem(fairytaleSettingsKey) || "null");
+   if (value && typeof value === "object") {
+    const number = (key, min, max) => typeof value[key] === "number" && Number.isFinite(value[key]) ? Math.max(min, Math.min(max, value[key])) : fairytaleDefaults[key];
+    settings = { blur: number("blur",0,24), wallpaperOpacity: number("wallpaperOpacity",.2,1), cardOpacity: number("cardOpacity",.2,1) };
+   }
+  } catch {}
+  const root = document.documentElement;
+  root.dataset.fullscreenLayout = layout;
+  root.style.setProperty("--fairytale-blur", `${settings.blur}px`);
+  root.style.setProperty("--fairytale-wallpaper-opacity", String(settings.wallpaperOpacity));
+  root.style.setProperty("--fairytale-card-opacity", String(settings.cardOpacity));
+ })();
+</script>

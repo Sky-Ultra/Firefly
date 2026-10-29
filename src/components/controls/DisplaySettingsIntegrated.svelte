@@ -42,6 +42,13 @@ import { onMount } from "svelte";
 import Icon from "@/components/common/Icon.svelte";
 import { backgroundWallpaper, sakuraConfig, siteConfig } from "@/config";
 import type { WALLPAPER_MODE } from "@/types/config";
+import {
+	FAIRYTALE_DEFAULTS,
+	type FullscreenLayout,
+	readFullscreenPreferences,
+	setFairytaleSettings,
+	setFullscreenLayout,
+} from "@/utils/fullscreen-layout";
 
 type OverlaySliderItem = {
 	key: "opacity" | "blur" | "cardOpacity";
@@ -67,6 +74,10 @@ const defaultLayout = siteConfig.postListLayout.defaultMode;
 const mobileDefaultLayout =
 	siteConfig.postListLayout.mobileDefaultMode || defaultLayout;
 let mounted = $state(false);
+let fullscreenLayout: FullscreenLayout = $state("classic");
+let fairytaleBlur = $state(FAIRYTALE_DEFAULTS.blur);
+let fairytaleWallpaperOpacity = $state(FAIRYTALE_DEFAULTS.wallpaperOpacity);
+let fairytaleCardOpacity = $state(FAIRYTALE_DEFAULTS.cardOpacity);
 let isSmallScreen = $state(
 	typeof window !== "undefined" ? window.innerWidth < 1200 : false,
 );
@@ -219,6 +230,16 @@ function resetHue() {
 function resetWallpaperMode() {
 	wallpaperMode = defaultWallpaperMode;
 	setWallpaperMode(defaultWallpaperMode);
+}
+
+function chooseFullscreenLayout(layout: FullscreenLayout) {
+	fullscreenLayout = layout;
+	setFullscreenLayout(layout);
+}
+function resetFairytaleSettings() {
+	fairytaleBlur = FAIRYTALE_DEFAULTS.blur;
+	fairytaleWallpaperOpacity = FAIRYTALE_DEFAULTS.wallpaperOpacity;
+	fairytaleCardOpacity = FAIRYTALE_DEFAULTS.cardOpacity;
 }
 
 function resetLayout() {
@@ -387,6 +408,11 @@ function switchLayout(newLayout: PostListLayout) {
 
 onMount(() => {
 	mounted = true;
+	const fullscreen = readFullscreenPreferences();
+	fullscreenLayout = fullscreen.layout;
+	fairytaleBlur = fullscreen.settings.blur;
+	fairytaleWallpaperOpacity = fullscreen.settings.wallpaperOpacity;
+	fairytaleCardOpacity = fullscreen.settings.cardOpacity;
 	checkScreenSize();
 
 	// 从localStorage读取保存的壁纸模式
@@ -490,6 +516,16 @@ $effect(() => {
 });
 
 $effect(() => {
+	if (mounted && fullscreenLayout === "fairytale") {
+		setFairytaleSettings({
+			blur: fairytaleBlur,
+			wallpaperOpacity: fairytaleWallpaperOpacity,
+			cardOpacity: fairytaleCardOpacity,
+		});
+	}
+});
+
+$effect(() => {
 	if (wallpaperMode === WALLPAPER_OVERLAY) {
 		if (isOverlayOpacitySwitchable) {
 			setOverlayOpacity(overlayOpacity);
@@ -505,7 +541,7 @@ $effect(() => {
 </script>
 
 {#if hasAnyContent}
-<div id="display-setting" class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-4 py-2">
+<div id="display-setting" class:has-fullscreen-layout={wallpaperMode === WALLPAPER_FULLSCREEN} class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-4 py-2">
     <!-- Theme Color Section -->
     {#if showThemeColor}
     <div class="mt-2 mb-2">
@@ -592,6 +628,26 @@ $effect(() => {
                 </button>
             </div>
         </div>
+    {/if}
+
+    {#if wallpaperMode === WALLPAPER_FULLSCREEN}
+        <section class="mt-3 mb-3" aria-label="全屏布局">
+            <div class="flex items-center justify-between mb-2 text-sm font-bold text-(--btn-content)">
+                <span data-i18n-zh="全屏布局" data-i18n-en="Fullscreen layout">全屏布局</span>
+            </div>
+            <div class="flex gap-2" role="group" aria-label="全屏布局">
+                <button type="button" class="btn-regular flex-1 rounded-md px-3 py-2 text-sm" aria-pressed={fullscreenLayout === "classic"} class:opacity-60={fullscreenLayout !== "classic"} onclick={() => chooseFullscreenLayout("classic")} data-i18n-zh="经典" data-i18n-en="Classic">经典</button>
+                <button type="button" class="btn-regular flex-1 rounded-md px-3 py-2 text-sm" aria-pressed={fullscreenLayout === "fairytale"} class:opacity-60={fullscreenLayout !== "fairytale"} onclick={() => chooseFullscreenLayout("fairytale")} data-i18n-zh="童话" data-i18n-en="Fairytale">童话</button>
+            </div>
+            {#if fullscreenLayout === "fairytale"}
+                <div class="mt-3 space-y-2" data-fairytale-settings>
+                    <div class="flex items-center justify-between text-xs text-(--content-meta)"><span data-i18n-zh="童话设置" data-i18n-en="Fairytale settings">童话设置</span><button type="button" class="text-(--primary) rounded px-1" onclick={resetFairytaleSettings} data-i18n-zh="恢复默认" data-i18n-en="Reset">恢复默认</button></div>
+                    <label class="block rounded-md bg-(--btn-regular-bg) p-2"><span class="flex justify-between text-xs text-(--btn-content)"><span data-i18n-zh="背景模糊度" data-i18n-en="Background blur">背景模糊度</span><span>{fairytaleBlur.toFixed(1)}px</span></span><input class="slider w-full" type="range" min="0" max="24" step="0.5" bind:value={fairytaleBlur} aria-label="童话背景模糊度" /></label>
+                    <label class="block rounded-md bg-(--btn-regular-bg) p-2"><span class="flex justify-between text-xs text-(--btn-content)"><span data-i18n-zh="壁纸透明度" data-i18n-en="Wallpaper opacity">壁纸透明度</span><span>{Math.round(fairytaleWallpaperOpacity * 100)}%</span></span><input class="slider w-full" type="range" min="0.2" max="1" step="0.01" bind:value={fairytaleWallpaperOpacity} aria-label="童话壁纸透明度" /></label>
+                    <label class="block rounded-md bg-(--btn-regular-bg) p-2"><span class="flex justify-between text-xs text-(--btn-content)"><span data-i18n-zh="卡片透明度" data-i18n-en="Card opacity">卡片透明度</span><span>{Math.round(fairytaleCardOpacity * 100)}%</span></span><input class="slider w-full" type="range" min="0.2" max="1" step="0.01" bind:value={fairytaleCardOpacity} aria-label="童话卡片透明度" /></label>
+                </div>
+            {/if}
+        </section>
     {/if}
 
     <!-- Overlay Settings Section -->
@@ -838,6 +894,11 @@ $effect(() => {
 
 
 <style lang="stylus">
+    #display-setting.has-fullscreen-layout
+        max-height calc(100dvh - 6rem)
+        overflow-y auto
+        overscroll-behavior contain
+
     #display-setting
         input[type="range"]
             -webkit-appearance none

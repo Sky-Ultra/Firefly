@@ -1,0 +1,16 @@
+---
+import "@/styles/fairytale-layout.css";
+---
+<fairytale-layout id="fairytale-backdrop" aria-hidden="true" hidden>
+ <img data-fairytale-image alt="" decoding="async" />
+ <img data-fairytale-image alt="" decoding="async" />
+</fairytale-layout>
+<script>
+ import { mountFairytaleLayout } from "@/utils/fairytale-layout";
+ class FairytaleLayout extends HTMLElement {
+  private dispose?: () => void;
+  connectedCallback() { queueMicrotask(() => { if (this.isConnected && !this.dispose) this.dispose = mountFairytaleLayout(this); }); }
+  disconnectedCallback() { this.dispose?.(); this.dispose = undefined; }
+ }
+ if (!customElements.get("fairytale-layout")) customElements.define("fairytale-layout",FairytaleLayout);
+</script>

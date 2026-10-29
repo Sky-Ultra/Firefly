@@ -1,0 +1,33 @@
+/* Reference: fqzlr's fullscreen Hero presentation. All rules require the explicit opt-in layout. */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop {
+	display: block; position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+	opacity: var(--fairytale-wallpaper-opacity,1);
+	filter: blur(calc(var(--fairytale-blur,10px) * var(--fairytale-progress,0)));
+	transform: scale(1.035); transform-origin: center;
+}
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img {
+	position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transition: opacity 800ms ease;
+}
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img.is-visible { opacity: 1; }
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper.wallpaper-fullscreen {
+	display: block !important; position: relative !important; top: 0 !important; height: 100svh !important; min-height: 100svh !important; max-height: 100svh !important; background: transparent !important;
+}
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"][data-fairytale-ready="true"] #banner-images-container { opacity: 0; }
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] .w-full.z-30.pointer-events-none {
+	position: relative !important; top: 0 !important; margin-top: 1rem !important; z-index: 30;
+}
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #main-grid { transform: none !important; }
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-home-text-overlay,
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-page-title-overlay,
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-post-meta-overlay { opacity: calc(1 - var(--fairytale-progress,0)); }
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #header-waves { opacity: .7; }
+@layer components {
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #main-grid .card-base,
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #main-grid .novels-wall {
+		background-color: color-mix(in srgb,var(--card-bg) calc(var(--fairytale-card-opacity,.74) * 100%),transparent) !important;
+	}
+}
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] .novels-wall .novel-card { background-color: transparent; }
+@media(prefers-reduced-motion:reduce) {
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img { transition: none; }
+}

@@ -12,6 +12,7 @@ import LocalizedText from "@/components/common/LocalizedText.astro";
 import FloatingControls from "@/components/controls/FloatingControls.astro";
 import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro";
 import BackgroundPlayer from "@/components/features/BackgroundPlayer.astro";
+import FairytaleLayout from "@/components/features/FairytaleLayout.astro";
 import ImmersiveSlideshow from "@/components/features/ImmersiveSlideshow.astro";
 import RandomCoverProvider from "@/components/features/RandomCoverProvider.astro";
 import TypewriterText from "@/components/features/TypewriterText.astro";
@@ -325,6 +326,7 @@ const hasMultipleImages =
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug}>
 <ImmersiveSlideshow interval={bannerCarouselInterval} />
+<FairytaleLayout />
 <RandomCoverProvider
 	images={homeRandomCoverImages}
 	mobileHomeWallpaperImages={mobileHomeWallpaperImages}
