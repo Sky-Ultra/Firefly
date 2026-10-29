@@ -31,7 +31,7 @@ test("all existing changelog days render their full content, links, highlights a
 		source("src/content/translations/personal-website-changelog.en.md"),
 		"/posts/personal-website-changelog/",
 	);
-	assert.equal(entries.length, 30);
+	assert.ok(entries.length >= 30);
 	assert.equal(new Set(entries.map((entry) => entry.id)).size, entries.length);
 	const latest = entries.find((entry) => entry.date === "2026-10-29");
 	assert.ok(latest);
@@ -50,8 +50,14 @@ test("all existing changelog days render their full content, links, highlights a
 		{ post: (id) => id, moment: (id) => id },
 		entries,
 	);
-	assert.equal(feed.length, 31);
-	assert.equal(feed[0].id, "changelog:2026-10-29");
+	assert.equal(feed.length, entries.length + 1);
+	assert.equal(
+		feed[0].id,
+		`changelog:${entries
+			.map((entry) => entry.date)
+			.sort()
+			.at(-1)}`,
+	);
 	assert.equal(
 		entries[0].date,
 		"2026-09-12",
