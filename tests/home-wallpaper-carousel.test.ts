@@ -21,10 +21,14 @@ function fixture(
 		awaiting?: boolean;
 		wrapperHidden?: boolean;
 		mobileNonHome?: boolean;
+		fairytale?: boolean;
+		article?: boolean;
 	} = {},
 ) {
 	const view = new Window({
-		url: "https://example.test/",
+		url: options.article
+			? "https://example.test/posts/example/"
+			: "https://example.test/",
 		settings: { enableImageFileLoading: false },
 	});
 	let hidden = initialHidden;
@@ -34,6 +38,8 @@ function fixture(
 		"data-wallpaper-mode",
 		"fullscreen",
 	);
+	if (options.fairytale)
+		view.document.documentElement.dataset.fullscreenLayout = "fairytale";
 	const container = view.document.createElement("div");
 	container.id = "banner-images-container";
 	container.dataset.carouselEnabled = "true";
@@ -410,3 +416,65 @@ for (const initiallyPaused of [false, true]) {
 		}
 	});
 }
+
+test("fairytale articles suspend rotation and resume on leaving while classic keeps rotating", async () => {
+	const f = fixture(false, { fairytale: true });
+	try {
+		await flush();
+		f.tick();
+		await flush();
+		const active = f.active("desktop");
+		f.view.history.pushState({}, "", "/posts/example/");
+		f.view.document.dispatchEvent(new f.view.Event("swup:pageView"));
+		assert.equal(f.timers.size, 0);
+		f.key("ArrowRight");
+		await flush();
+		assert.equal(f.active("desktop"), active);
+		f.hide(true);
+		f.hide(false);
+		await flush();
+		assert.equal(f.timers.size, 0);
+		f.view.history.pushState({}, "", "/novels/");
+		f.view.document.dispatchEvent(new f.view.Event("swup:pageView"));
+		assert.equal(f.timers.size, 1);
+		f.tick();
+		await flush();
+		assert.equal(f.active("desktop"), active + 1);
+		f.key(" ");
+		f.view.history.pushState({}, "", "/posts/example/");
+		f.view.document.dispatchEvent(new f.view.Event("swup:pageView"));
+		f.view.history.pushState({}, "", "/");
+		f.view.document.dispatchEvent(new f.view.Event("swup:pageView"));
+		assert.equal(
+			f.timers.size,
+			0,
+			"leaving an article must preserve a manual pause",
+		);
+	} finally {
+		await f.close();
+	}
+});
+
+test("direct fairytale article entry does not rotate; switching classic restores original behavior", async () => {
+	const f = fixture(false, { fairytale: true, article: true });
+	try {
+		await flush();
+		assert.equal(f.timers.size, 0);
+		f.view.document.documentElement.dataset.fullscreenLayout = "classic";
+		await flush();
+		assert.equal(f.timers.size, 1);
+		f.view.document.documentElement.dataset.fullscreenLayout = "fairytale";
+		await flush();
+		assert.equal(f.timers.size, 0);
+		f.view.dispatchEvent(
+			new f.view.CustomEvent("bannerCarouselChange", {
+				detail: { enabled: false },
+			}),
+		);
+		f.view.history.pushState({}, "", "/");
+		f.view.document.dispatchEvent(new f.view.Event("swup:pageView"));
+		assert.equal(f.timers.size, 0);
+	} finally {
+		await f.close();
+	}
+});

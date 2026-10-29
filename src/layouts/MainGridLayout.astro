@@ -475,6 +475,13 @@ const hasMultipleImages =
             var transitioning = false;
             var immersiveActive = false;
             var resumeAfterImmersive = false;
+            function isFairytaleArticle() {
+                return document.documentElement.getAttribute('data-wallpaper-mode') === 'fullscreen'
+                    && document.documentElement.getAttribute('data-fullscreen-layout') === 'fairytale'
+                    && window.location.pathname.includes('/posts/');
+            }
+            var fairytaleArticlePaused = isFairytaleArticle();
+            var resumeAfterFairytaleArticle = false;
 			var transitionGeneration = 0;
 			var slideLoadPromises = new WeakMap();
 			var awaitingAssignments = container.dataset.wallpaperAwaitingAssignment === 'true';
@@ -720,6 +727,7 @@ const hasMultipleImages =
 							overlay.style.background = getSlideLqipStyle(slides[loadableIndex]);
 							overlay.style.opacity = '1';
 							setTimeout(function() {
+								if (generation !== transitionGeneration) { resolve(false); return; }
 								applySlideChange(slides, loadableIndex);
 								setTimeout(function() {
 									overlay.style.opacity = '0';
@@ -751,6 +759,7 @@ const hasMultipleImages =
             function startAutoPlay() {
                 stopAutoPlay();
                 if (immersiveActive || !isCarouselEnabled()) return;
+                if (fairytaleArticlePaused) { resumeAfterFairytaleArticle = true; return; }
                 if (!isBannerWallpaperMode()) return;
 				if (awaitingAssignments) return;
 				if (!isWallpaperVisible()) { resumeWhenWallpaperVisible = true; return; }
@@ -780,7 +789,7 @@ const hasMultipleImages =
 
             // 键盘控制
             document.addEventListener('keydown', function(e) {
-                if (immersiveActive || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+                if (immersiveActive || fairytaleArticlePaused || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
                 if (e.target && e.target.closest && e.target.closest('input, textarea, select, button, a, [role="textbox"], [contenteditable]:not([contenteditable="false"])')) return;
                 if (!isBannerWallpaperMode() || !isCarouselEnabled()) return;
                 if (e.key === 'ArrowRight') {
@@ -797,11 +806,11 @@ const hasMultipleImages =
 
             // 触屏滑动
             document.addEventListener('touchstart', function(e) {
-                if (immersiveActive) return;
+                if (immersiveActive || fairytaleArticlePaused) return;
                 appState.touchStartX = e.changedTouches[0].screenX;
             }, { passive: true });
             document.addEventListener('touchend', function(e) {
-                if (immersiveActive) return;
+                if (immersiveActive || fairytaleArticlePaused) return;
                 appState.touchEndX = e.changedTouches[0].screenX;
                 var diff = appState.touchEndX - appState.touchStartX;
                 if (Math.abs(diff) > 50) {
@@ -829,7 +838,8 @@ const hasMultipleImages =
             });
             // 事件监听
             window.addEventListener('bannerCarouselChange', function(e) {
-                e.detail && e.detail.enabled ? startAutoPlay() : stopAutoPlay();
+                if (e.detail && e.detail.enabled) startAutoPlay();
+                else { resumeAfterFairytaleArticle = false; stopAutoPlay(); }
             });
             window.addEventListener('wallpaperModeChange', function(e) {
                 if (e.detail && (e.detail.mode === 'banner' || e.detail.mode === 'fullscreen' || (e.detail.mode === 'overlay' && document.body.classList.contains('is-home')))) {
@@ -838,6 +848,36 @@ const hasMultipleImages =
                     stopAutoPlay();
                 }
             });
+            // Article suspension is independent of manual pause, immersive playback and visibility.
+            function syncFairytaleArticlePause() {
+                var paused = isFairytaleArticle();
+                if (paused === fairytaleArticlePaused) return;
+                fairytaleArticlePaused = paused;
+                transitionGeneration++;
+                transitioning = false;
+                if (overlay) overlay.style.opacity = '0';
+                if (paused) {
+                    resumeAfterFairytaleArticle = appState.isPlaying || resumeOnVisibility || resumeWhenWallpaperVisible || resumeAfterImmersive;
+                    stopAutoPlay();
+                } else {
+                    var resume = resumeAfterFairytaleArticle;
+                    resumeAfterFairytaleArticle = false;
+                    if (resume) startAutoPlay();
+                }
+            }
+            var articleNavigationBound = false;
+            function bindArticleNavigation() {
+                if (articleNavigationBound || !window.swup || !window.swup.hooks) return;
+                articleNavigationBound = true;
+                window.swup.hooks.on('content:replace', syncFairytaleArticlePause);
+                window.swup.hooks.on('page:view', syncFairytaleArticlePause);
+            }
+            new window.MutationObserver(syncFairytaleArticlePause).observe(document.documentElement, { attributes: true, attributeFilter: ['data-wallpaper-mode', 'data-fullscreen-layout'] });
+            document.addEventListener('swup:enable', bindArticleNavigation);
+            document.addEventListener('swup:contentReplaced', syncFairytaleArticlePause);
+            document.addEventListener('swup:pageView', syncFairytaleArticlePause);
+            document.addEventListener('astro:page-load', syncFairytaleArticlePause);
+            bindArticleNavigation();
             // Overlay carousel is a homepage-only enhancement; preserve article wallpaper behavior.
             var overlayHomeWasActive = document.body.classList.contains('is-home');
             new window.MutationObserver(function() {
