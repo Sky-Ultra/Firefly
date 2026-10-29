@@ -1,9 +1,12 @@
 ---
 import "@/styles/fairytale-layout.css";
+import FairytaleParallax from "./FairytaleParallax.astro";
 ---
 <fairytale-layout id="fairytale-backdrop" aria-hidden="true" hidden>
+ <FairytaleParallax>
  <img data-fairytale-image alt="" decoding="async" />
  <img data-fairytale-image alt="" decoding="async" />
+ </FairytaleParallax>
 </fairytale-layout>
 <script>
  import { mountFairytaleLayout } from "@/utils/fairytale-layout";

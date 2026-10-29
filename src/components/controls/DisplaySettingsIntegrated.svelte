@@ -43,6 +43,10 @@ import Icon from "@/components/common/Icon.svelte";
 import { backgroundWallpaper, sakuraConfig, siteConfig } from "@/config";
 import type { WALLPAPER_MODE } from "@/types/config";
 import {
+	readFairytaleParallax,
+	setFairytaleParallax,
+} from "@/utils/fairytale-parallax";
+import {
 	FAIRYTALE_DEFAULTS,
 	type FullscreenLayout,
 	readFullscreenPreferences,
@@ -79,6 +83,7 @@ let fullscreenLayout: FullscreenLayout = $state("classic");
 let fairytaleBlur = $state(FAIRYTALE_DEFAULTS.blur);
 let fairytaleWallpaperOpacity = $state(FAIRYTALE_DEFAULTS.wallpaperOpacity);
 let fairytaleCardOpacity = $state(FAIRYTALE_DEFAULTS.cardOpacity);
+let fairytaleParallax = $state(true);
 let isSmallScreen = $state(
 	typeof window !== "undefined" ? window.innerWidth < 1200 : false,
 );
@@ -419,6 +424,7 @@ onMount(() => {
 	fairytaleBlur = fullscreen.settings.blur;
 	fairytaleWallpaperOpacity = fullscreen.settings.wallpaperOpacity;
 	fairytaleCardOpacity = fullscreen.settings.cardOpacity;
+	fairytaleParallax = readFairytaleParallax();
 	checkScreenSize();
 
 	// 从localStorage读取保存的壁纸模式
@@ -550,6 +556,7 @@ $effect(() => {
 <div id="display-setting" class:has-fullscreen-layout={wallpaperMode === WALLPAPER_FULLSCREEN} class:fairytale-controls-open={wallpaperMode === WALLPAPER_FULLSCREEN && fullscreenLayout === "fairytale"} class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-4 py-2">
     {#if wallpaperMode === WALLPAPER_FULLSCREEN && fullscreenLayout === "fairytale"}
         <FairytaleDisplayPanel {hue} blur={fairytaleBlur} cardOpacity={fairytaleCardOpacity} layout={currentLayout} {wallpaperMode}
+            parallaxEnabled={fairytaleParallax} onParallaxToggle={() => { fairytaleParallax = !fairytaleParallax; setFairytaleParallax(fairytaleParallax); }}
             titleEnabled={bannerTitleEnabled} carouselEnabled={bannerCarouselEnabled} {sakuraEnabled}
             allowLayout={allowLayoutSwitch} allowMasonry={allowMasonryLayout} allowTitle={isBannerTitleSwitchable} allowCarousel={isBannerCarouselSwitchable} allowSakura={isSakuraSwitchable}
             onResetHue={resetHue} onResetLayout={resetLayout} {defaultHue} defaultLayout={effectiveDefaultLayout} onHueChange={(value) => hue = value} onBlurChange={(value) => fairytaleBlur = value} onCardOpacityChange={(value) => fairytaleCardOpacity = value}

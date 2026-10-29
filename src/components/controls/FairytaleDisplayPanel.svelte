@@ -33,6 +33,8 @@ let {
 	onCarouselToggle,
 	onSakuraToggle,
 	onImmersive,
+	parallaxEnabled,
+	onParallaxToggle,
 }: {
 	hue: number;
 	blur: number;
@@ -62,6 +64,8 @@ let {
 	onCarouselToggle: () => void;
 	onSakuraToggle: () => void;
 	onImmersive: () => void;
+	parallaxEnabled: boolean;
+	onParallaxToggle: () => void;
 } = $props();
 let tab = $state("wallpaper");
 const tabs = [
@@ -141,6 +145,7 @@ const modes: { value: WALLPAPER_MODE; label: string; icon: string }[] = [
 			<section><div class="ft-section-heading"><h3>主题色相</h3>{#if hue!==defaultHue}<button type="button" class="ft-reset" aria-label="恢复默认主题色" onclick={onResetHue}><Icon icon="fa7-solid:arrow-rotate-left" class="text-[.75rem]" /></button>{/if}</div><div class="ft-slider-row"><div class="ft-slider-label"><span>主题色相</span><output>{hue}°</output></div><FairytaleSlider label="主题色相" value={hue} min={0} max={360} step={5} onValueChange={onHueChange} /></div></section>
 			{#if allowLayout}<section><div class="ft-section-heading"><h3>文章布局</h3>{#if layout!==defaultLayout}<button type="button" class="ft-reset" aria-label="恢复默认文章布局" onclick={onResetLayout}><Icon icon="fa7-solid:arrow-rotate-left" class="text-[.75rem]" /></button>{/if}</div><div class="ft-segmented" role="group" aria-label="文章布局">{#each [{value:"list" as const,label:"列表"},{value:"grid" as const,label:"网格"},...(allowMasonry?[{value:"masonry" as const,label:"瀑布流"}]:[])] as item}<label class:chosen={layout===item.value}><input type="radio" name="fairytale-post-layout" checked={layout===item.value} onchange={()=>onLayoutChange(item.value)} /><span>{item.label}</span></label>{/each}</div></section>{/if}
 		{:else}
+			<section class="ft-desktop-motion"><h3>童话动效</h3><button type="button" class="ft-toggle" role="switch" aria-checked={parallaxEnabled} onclick={onParallaxToggle}><span>鼠标视差</span><span class="ft-switch" class:on={parallaxEnabled}><span>{parallaxEnabled?"✓":""}</span></span></button><p class="ft-help">仅电脑端首页生效</p></section>
 			<section><h3>特效设置</h3>{#if allowSakura}<button type="button" class="ft-toggle" role="switch" aria-checked={sakuraEnabled} onclick={onSakuraToggle}><span>樱花特效</span><span class="ft-switch" class:on={sakuraEnabled}><span>{sakuraEnabled?"✓":""}</span></span></button>{/if}</section>
 		{/if}
 	</div>
@@ -176,6 +181,8 @@ output { font-weight:400; font-variant-numeric:tabular-nums; }
 .ft-switch span { display:grid; place-items:center; width:1.25rem; height:1.25rem; border-radius:50%; background:var(--ft-muted); color:var(--card-bg); font-size:max(.8rem,12px); transition:transform .25s cubic-bezier(.2,0,0,1); }
 .ft-switch.on { background:var(--primary); border-color:var(--primary); }
 .ft-switch.on span { transform:translateX(1.25rem); background:var(--card-bg); color:var(--primary); }
+.ft-help { margin:.4rem .75rem 0; color:var(--ft-muted); font-size:12px; }
+@media(max-width:1023px),(hover:none),(pointer:coarse) { .ft-desktop-motion { display:none; } }
 .ft-immersive { width:100%; display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:.75rem; padding:.5rem; border:1px solid var(--line-divider); border-radius:.75rem; color:var(--ft-text); background:transparent; cursor:pointer; font-size:max(.8rem,12px); }
 button:focus-visible,label:has(input:focus-visible) { outline:2px solid var(--primary); outline-offset:2px; }
 @keyframes ft-check-in { from { opacity:0; transform:scale(.5); } to { opacity:1; transform:scale(1); } }

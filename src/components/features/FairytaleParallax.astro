@@ -1,0 +1,13 @@
+---
+import "@/styles/fairytale-parallax.css";
+---
+<fairytale-parallax data-fairytale-parallax><slot /></fairytale-parallax>
+<script>
+ import { mountFairytaleParallax } from "@/utils/fairytale-parallax";
+ class FairytaleParallax extends HTMLElement {
+  private dispose?: () => void;
+  connectedCallback() { queueMicrotask(() => { if (this.isConnected && !this.dispose) this.dispose = mountFairytaleParallax(this); }); }
+  disconnectedCallback() { this.dispose?.(); this.dispose = undefined; }
+ }
+ if (!customElements.get("fairytale-parallax")) customElements.define("fairytale-parallax", FairytaleParallax);
+</script>
