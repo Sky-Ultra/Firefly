@@ -14,7 +14,7 @@ Firefly is an Astro 7 site with Svelte islands and TypeScript configuration. Mai
 
 ## Build, Test, and Development Commands
 
-Use `pnpm`; the `preinstall` script enforces it.
+Use exactly `pnpm@9.14.4` (the `packageManager` and `engines.pnpm` fields); Cloudflare and GitHub use this version. Do not use a different global pnpm major: it may ignore this project's package-level overrides and security patches. Use Corepack or an isolated official pnpm 9.14.4 installation when needed. Install with `pnpm install --frozen-lockfile`. The `preinstall` script also enforces the pnpm package manager.
 
 - `pnpm dev` or `pnpm start`: run the local Astro dev server.
 - `pnpm check`: run Astro diagnostics.

@@ -40,8 +40,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run Astro Check
-        run: pnpm astro check
+      - name: Run Astro and private-content checks
+        run: pnpm check
+
+      - name: Run TypeScript checks
+        run: pnpm type-check
+
+      - name: Run regression tests
+        run: pnpm test:i18n
 
   build:
     strategy:
@@ -72,4 +78,4 @@ jobs:
       - name: Run Astro Build
         env:
           PRIVATE_POST_PASSWORD: ${{ secrets.PRIVATE_POST_PASSWORD }}
-        run: pnpm astro build
+        run: pnpm build

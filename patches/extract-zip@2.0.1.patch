@@ -1,0 +1,13 @@
+diff --git a/index.js b/index.js
+index 23384ea16bb848616886f356d8d69f94325535bf..fd11e2a68426ba3a0a14a52c28183361f545387c 100644
+--- a/index.js
++++ b/index.js
+@@ -94,6 +94,8 @@ class Extractor {
+     const IFDIR = 16384
+     const IFLNK = 40960
+     const symlink = (mode & IFMT) === IFLNK
++    // Icon imports only require ordinary files; never create archive-supplied links.
++    if (symlink) throw new Error('Symbolic links are not permitted in icon archives')
+     let isDir = (mode & IFMT) === IFDIR
+ 
+     // Failsafe, borrowed from jsZip
