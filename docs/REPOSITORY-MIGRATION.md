@@ -20,6 +20,7 @@ The original repository retains its original GitHub records. The new repository 
 - Local workspace remains `D:/Website/Firefly`. Push normal changes to `origin`, which points to the active Firefly repository; `master` tracks `origin/master`.
 - The `legacy` remote is for recovery reads only; its push URL is disabled.
 - Cloudflare builds the active repository's `master` branch using `pnpm run build` and deploys with `npx wrangler deploy` to the existing Worker named `firefly`.
+- The Cloudflare GitHub App's selected-repository authorization points only to the active repository ID 1439447294. Do not expand it to all repositories or leave its write/deployment authorization on the Legacy backup.
 - Keep the existing domain routes, `PRIVATE_ARTICLES` binding, `PrivateArticleBackend` class, migration history, private namespace and preview-URL restrictions intact. Never recreate these resources merely to change the Git repository.
 - The external Twikoo service and comment identities remain unchanged.
 - GitHub Pages uses the active repository, the same `github-pages` environment and master branch rule, and the existing custom domain. Legacy Actions are disabled to prevent competing publications.
