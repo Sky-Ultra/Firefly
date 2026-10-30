@@ -1,5 +1,9 @@
 # Repository Guidelines
 
+## Active repository and deployment
+
+The active independent repository is `Sky-Ultra/Firefly` (repository ID 1439447294). `Sky-Ultra/Firefly-Legacy` is the retained original fork and backup at `aeb2df630294b088d316aba3f5c999aa222e5b2e`; do not send normal changes or automated deployments there. Local `origin/master` and the existing Cloudflare `firefly` Worker must use the active repository. Preserve the existing Worker, routes, private Durable Object namespace and external comment service when adjusting Git integration. See `docs/REPOSITORY-MIGRATION.md`.
+
 ## Private article server protection
 
 The owner explicitly authorized reopening after the 2026-10-30 server migration, with existing passwords unchanged and the daily limit reset at 04:00 Asia/Shanghai. Equal-password articles share the same five-failure quota per IP/signed browser identity; different passwords count independently. Use the owner import tool to derive private password groups and preserve existing counts. Published password-protected articles must use the private backend; never restore or publish their plaintext, offline-decryptable ciphertext, password verifiers or management signing key in public sources/assets. Keep the private namespace/binding/migration stable and historical preview URLs disabled. See `docs/SERVER-PRIVATE-ARTICLES.md`. Old pre-migration deployment records are for recovery reference, not a safe public rollback target.
