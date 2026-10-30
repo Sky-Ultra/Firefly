@@ -18,14 +18,14 @@ const example =
 		} as Record<string, string>
 	)[id] || "";
 ---
-<private-article-reader class="private-article-reader" data-article={id} data-example={example}>
+<private-article-reader class="private-article-reader" data-article={id} data-example={example} data-password-length={passwordLength}>
  <div data-private-ui class="flex justify-center py-16 px-4">
   <div class="card-base flex flex-col items-center gap-3 max-w-100 w-full p-8">
    <Icon is:inline name="material-symbols:shield-lock" class="text-8xl text-(--primary)" aria-hidden="true" />
    <h2 class="text-lg font-bold text-black/80 dark:text-white/80 m-0" data-i18n-zh="密码保护" data-i18n-en="Password protected">密码保护</h2>
    {hint && <div class="flex flex-col items-center gap-1 text-center"><p class="text-sm leading-relaxed text-black dark:text-white m-0">密码提示：{hintText}</p>{hintDetails.length>0&&<p class="text-xs text-black/30 dark:text-white/30 whitespace-pre-line m-0">{hintDetails.join("\n")}</p>}</div>}
-   <form data-private-form class="w-full mt-2 space-y-2">
-    <input data-private-password type="password" name="password" placeholder={`请输入密码：${passwordLength}位数`} data-i18n-zh={`请输入密码：${passwordLength}位数`} data-i18n-en={`Enter password: ${passwordLength} characters`} data-i18n-attr="placeholder" autocomplete="off" aria-label={`请输入密码：${passwordLength}位数`} aria-describedby={`private-status-${id}`} class="w-full px-3 py-2 rounded-lg text-sm bg-black/5 dark:bg-white/10 border border-black/8 dark:border-white/8 text-black/80 dark:text-white/80 placeholder-black/25 dark:placeholder-white/25 outline-none focus:border-(--primary) transition disabled:opacity-50" disabled />
+   <form data-private-form autocomplete="off" class="w-full mt-2 space-y-2">
+    <input data-private-password type="password" name={`article-passphrase-${id}`} placeholder={`请输入密码：${passwordLength}位数`} data-i18n-zh={`请输入密码：${passwordLength}位数`} data-i18n-en={`Enter password: ${passwordLength} characters`} data-i18n-attr="placeholder" autocomplete="off" aria-label={`请输入密码：${passwordLength}位数`} aria-describedby={`private-status-${id}`} class="w-full px-3 py-2 rounded-lg text-sm bg-black/5 dark:bg-white/10 border border-black/8 dark:border-white/8 text-black/80 dark:text-white/80 placeholder-black/25 dark:placeholder-white/25 outline-none focus:border-(--primary) transition disabled:opacity-50" disabled />
     <button data-private-submit type="submit" class="w-full py-2 rounded-lg text-sm font-medium bg-(--primary) text-white dark:text-black/70 hover:opacity-85 transition disabled:opacity-50" disabled>连接中…</button>
    </form>
    <p data-private-status id={`private-status-${id}`} role="status" aria-live="polite" class="text-xs leading-relaxed text-black/50 dark:text-white/50 text-center m-0">正在连接验证服务…</p>

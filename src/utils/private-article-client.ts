@@ -8,6 +8,7 @@ type AccessState = {
 };
 export function mountPrivateArticleReader(root: HTMLElement): () => void {
 	const article = root.dataset.article || "";
+	const expectedLength = Number(root.dataset.passwordLength || 0);
 	const uiNode = root.querySelector<HTMLElement>("[data-private-ui]");
 	const formNode = root.querySelector<HTMLFormElement>("[data-private-form]");
 	const inputNode = root.querySelector<HTMLInputElement>(
@@ -200,6 +201,23 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 			event.preventDefault();
 			if (busy || !ready || state?.locked || unlocked || !input.value) return;
 			const password = input.value;
+			// Content passphrases are not the visitor's saved site-account password.
+			// Reject impossible lengths locally; the backend still counts all real guesses.
+			if (
+				Number.isInteger(expectedLength) &&
+				expectedLength > 0 &&
+				password.length !== expectedLength
+			) {
+				error.textContent = text(
+					`请输入本篇文章的 ${expectedLength} 位密码；若浏览器自动填入了账户密码，请手动替换。`,
+					`Enter this article's ${expectedLength}-character password. Replace any site-account password filled by your browser.`,
+				);
+				error.hidden = false;
+				if (example) example.hidden = true;
+				input.focus();
+				input.select();
+				return;
+			}
 			busy = true;
 			error.hidden = true;
 			if (example) example.hidden = true;
