@@ -75,6 +75,29 @@ export function counterSummary(state, now) {
 		resetAt: periodAt(now).resetAt,
 	};
 }
+/** Carry pre-group per-article quotas forward without resetting or double charging. */
+export function inheritCounters(previous, now, snapshots) {
+	const own = previous ? structuredClone(previous) : undefined;
+	if (own)
+		for (const id of Object.keys(own.pending))
+			if (id.startsWith("legacy:")) delete own.pending[id];
+	const state = counterState(own, now);
+	const legacy = snapshots.map(({ name, state: old }) => ({
+		name,
+		state: counterState(old, now),
+	}));
+	const failures = Math.min(
+		MAX_FAILURES,
+		legacy.reduce((total, item) => total + item.state.failures, 0),
+	);
+	const delta = Math.max(0, failures - (state.inheritedFailures || 0));
+	state.failures = Math.min(MAX_FAILURES, state.failures + delta);
+	state.inheritedFailures = Math.max(failures, state.inheritedFailures || 0);
+	for (const item of legacy)
+		for (const [id, until] of Object.entries(item.state.pending))
+			state.pending[`legacy:${item.name}:${id}`] = until;
+	return state;
+}
 export function reserveCounter(previous, now, id) {
 	const state = counterState(previous, now);
 	const summary = counterSummary(state, now);

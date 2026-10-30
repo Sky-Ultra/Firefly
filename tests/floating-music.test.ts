@@ -5,6 +5,8 @@ import { runInNewContext } from "node:vm";
 import { Window } from "happy-dom";
 import {
 	clampMusicDock,
+	FLOATING_MUSIC_KEY,
+	FLOATING_MUSIC_MOBILE_KEY,
 	type MusicManager,
 	type MusicSnapshot,
 	readFloatingMusicDismissed,
@@ -44,6 +46,31 @@ test("floating player subscribes to the existing manager without starting a seco
 		unsubscribe();
 		await view.happyDOM.close();
 	}
+});
+test("mobile starts hidden, can opt in, and never inherits the desktop preference", () => {
+	const values = new Map<string, string>();
+	const storage = { getItem: (key: string) => values.get(key) ?? null };
+	assert.equal(readFloatingMusicDismissed(storage, true), true);
+	assert.equal(readFloatingMusicDismissed(storage, false), false);
+	values.set(FLOATING_MUSIC_KEY, "false");
+	assert.equal(readFloatingMusicDismissed(storage, true), true);
+	values.set(FLOATING_MUSIC_MOBILE_KEY, "false");
+	values.set(FLOATING_MUSIC_KEY, "true");
+	assert.equal(readFloatingMusicDismissed(storage, true), false);
+	assert.equal(readFloatingMusicDismissed(storage, false), true);
+	values.set(FLOATING_MUSIC_MOBILE_KEY, "true");
+	assert.equal(readFloatingMusicDismissed(storage, true), true);
+	assert.equal(
+		readFloatingMusicDismissed(
+			{
+				getItem: () => {
+					throw Error("blocked");
+				},
+			},
+			true,
+		),
+		true,
+	);
 });
 test("dismissal is optional and dock bounds keep expanded panels inside a narrow screen", () => {
 	assert.equal(readFloatingMusicDismissed({ getItem: () => "true" }), true);

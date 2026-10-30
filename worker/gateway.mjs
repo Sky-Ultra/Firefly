@@ -96,10 +96,12 @@ async function admin(request, env, publicKey) {
 			return json({
 				ok: true,
 				articles: await Promise.all(
-					ARTICLES.map(async (slug) => ({
-						slug,
-						...(await rpc(env, `content:${slug}`, { op: "health" })),
-					})),
+					ARTICLES.map(async (slug) => {
+						const { limitGroup, ...info } = await rpc(env, `content:${slug}`, {
+							op: "health",
+						});
+						return { slug, ...info, quotaReady: !!limitGroup };
+					}),
 				),
 			});
 		return json({ error: "unknown_action" }, 400);
@@ -162,8 +164,18 @@ export async function privateRequest(
 				{ error: "rate_limited", retryAfter: traffic.retryAfter },
 				429,
 			);
-		const health = await rpc(env, `content:${article}`, { op: "health" });
-		if (!health.ready) return json({ error: "backend_unavailable" }, 503);
+		const registry = await Promise.all(
+			ARTICLES.map(async (slug) => ({
+				slug,
+				...(await rpc(env, `content:${slug}`, { op: "health" })),
+			})),
+		);
+		const health = registry.find((item) => item.slug === article);
+		if (!health.ready || !/^[a-f0-9]{64}$/.test(health.limitGroup || ""))
+			return json({ error: "backend_unavailable" }, 503);
+		const members = registry
+			.filter((item) => item.limitGroup === health.limitGroup)
+			.map((item) => item.slug);
 		const secret = (await rpc(env, "authority", { op: "key" })).key;
 		const incoming = readCookies(request);
 		let device = await verifyToken(
@@ -186,14 +198,26 @@ export async function privateRequest(
 				),
 			);
 		}
-		const names = [
-			`ip:${article}:${await sha256(ip)}`,
-			`device:${article}:${await sha256(device.device)}`,
+		const identities = [
+			{ type: "ip", hash: await sha256(ip) },
+			{ type: "device", hash: await sha256(device.device) },
 		];
+		const names = identities.map(
+			({ type, hash }) => `${type}:password:${health.limitGroup}:${hash}`,
+		);
+		const quotaRpc = (name, input) => {
+			const identity = identities[names.indexOf(name)];
+			return rpc(env, name, {
+				...input,
+				legacyCounters: members.map(
+					(slug) => `${identity.type}:${slug}:${identity.hash}`,
+				),
+			});
+		};
 		const summaries = async () =>
 			combined(
 				await Promise.all(
-					names.map((name) => rpc(env, name, { op: "status" })),
+					names.map((name) => quotaRpc(name, { op: "status" })),
 				),
 			);
 		if (action === "status")
@@ -243,11 +267,11 @@ export async function privateRequest(
 		const reserved = [];
 		try {
 			for (const name of names) {
-				const permit = await rpc(env, name, { op: "reserve", id });
+				const permit = await quotaRpc(name, { op: "reserve", id });
 				if (!permit.ok) {
 					await Promise.all(
 						reserved.map((key) =>
-							rpc(env, key, { op: "finish", id, outcome: "error" }),
+							quotaRpc(key, { op: "finish", id, outcome: "error" }),
 						),
 					);
 					return json(
@@ -261,7 +285,7 @@ export async function privateRequest(
 		} catch (failure) {
 			await Promise.allSettled(
 				reserved.map((key) =>
-					rpc(env, key, { op: "finish", id, outcome: "error" }),
+					quotaRpc(key, { op: "finish", id, outcome: "error" }),
 				),
 			);
 			throw failure;
@@ -277,7 +301,7 @@ export async function privateRequest(
 			outcome = verified.ok ? "correct" : "incorrect";
 		} finally {
 			await Promise.all(
-				reserved.map((key) => rpc(env, key, { op: "finish", id, outcome })),
+				reserved.map((key) => quotaRpc(key, { op: "finish", id, outcome })),
 			);
 		}
 		const state = await summaries();

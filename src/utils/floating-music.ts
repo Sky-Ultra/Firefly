@@ -1,6 +1,9 @@
 export type MusicManager = NonNullable<Window["__fireflyMusic"]>;
 export type MusicSnapshot = ReturnType<MusicManager["getState"]>;
 export const FLOATING_MUSIC_KEY = "firefly:floating-music-dismissed";
+export const FLOATING_MUSIC_MOBILE_KEY =
+	"firefly:floating-music-mobile-dismissed";
+export const FLOATING_MUSIC_MOBILE_QUERY = "(max-width: 1023px)";
 export const FLOATING_MUSIC_POSITION_KEY = "firefly:floating-music-position";
 
 /** A view subscription only: no additional audio, playlist requests or playback state. */
@@ -34,11 +37,15 @@ export function subscribeFloatingMusic(
 
 export function readFloatingMusicDismissed(
 	storage: Pick<Storage, "getItem">,
+	mobile = false,
 ): boolean {
 	try {
-		return storage.getItem(FLOATING_MUSIC_KEY) === "true";
+		const value = storage.getItem(
+			mobile ? FLOATING_MUSIC_MOBILE_KEY : FLOATING_MUSIC_KEY,
+		);
+		return value === "true" ? true : value === "false" ? false : mobile;
 	} catch {
-		return false;
+		return mobile;
 	}
 }
 

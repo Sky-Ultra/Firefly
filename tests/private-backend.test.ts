@@ -8,12 +8,14 @@ import {
 	sign,
 } from "node:crypto";
 import test from "node:test";
+import { passwordQuotaGroup } from "../scripts/password-quota-group.mjs";
 import { privateRequest } from "../worker/gateway.mjs";
 import {
 	b64url,
 	counterState,
 	counterSummary,
 	finishCounter,
+	inheritCounters,
 	periodAt,
 	reserveCounter,
 	trafficCounter,
@@ -21,6 +23,7 @@ import {
 } from "../worker/private-core.mjs";
 
 const TEST_PASSWORD = "test-only-long-password!";
+const OTHER_PASSWORD = "different-test-only-password!";
 function fixture() {
 	const states = new Map<
 		string,
@@ -34,6 +37,7 @@ function fixture() {
 	>();
 	const salt = randomBytes(24);
 	const record = {
+		limitGroup: "a".repeat(64),
 		version: "test-v1",
 		html: "<div data-reading-body><p>Private fixture <mark>highlight</mark></p></div>",
 		verifier: {
@@ -46,6 +50,18 @@ function fixture() {
 	};
 	for (const slug of ["liking", "love-tree-guide", "long-night-love-letter"])
 		states.set(`content:${slug}`, { article: record });
+	states.set("content:long-night-love-letter", {
+		article: {
+			...record,
+			limitGroup: "b".repeat(64),
+			verifier: {
+				...record.verifier,
+				hash: pbkdf2Sync(OTHER_PASSWORD, salt, 100000, 32, "sha256").toString(
+					"base64",
+				),
+			},
+		},
+	});
 	let verifications = 0;
 	const env = {
 		ASSETS: { fetch: async () => new Response("public") },
@@ -70,6 +86,7 @@ function fixture() {
 						return Response.json({
 							ready: !!state.article,
 							version: state.article?.version,
+							limitGroup: state.article?.limitGroup,
 						});
 					if (input.op === "verify") {
 						verifications++;
@@ -97,6 +114,19 @@ function fixture() {
 						state.article = input.record;
 						return Response.json({ ok: true });
 					}
+					if (input.op === "snapshot") {
+						state.counter = counterState(state.counter, now);
+						return Response.json(state.counter);
+					}
+					if (input.legacyCounters)
+						state.counter = inheritCounters(
+							state.counter,
+							now,
+							input.legacyCounters.map((legacy: string) => ({
+								name: legacy,
+								state: states.get(legacy)?.counter,
+							})),
+						);
 					let result:
 						| ReturnType<typeof reserveCounter>
 						| ReturnType<typeof finishCounter>;
@@ -192,6 +222,138 @@ test("Beijing 04:00 boundary uses server time and expired reservations fail clos
 	for (let i = 0; i < 5; i++)
 		state = reserveCounter(state, start, `r${i}`).state;
 	assert.equal(counterState(state, start + 60001).failures, 5);
+});
+test("equal private passwords derive the same stable opaque quota group", () => {
+	const key = generateKeyPairSync("ed25519").privateKey.export({
+		type: "pkcs8",
+		format: "pem",
+	});
+	const same = passwordQuotaGroup(key, TEST_PASSWORD);
+	assert.match(same, /^[a-f0-9]{64}$/);
+	assert.equal(passwordQuotaGroup(key, TEST_PASSWORD), same);
+	assert.notEqual(passwordQuotaGroup(key, OTHER_PASSWORD), same);
+	assert.notEqual(
+		same,
+		createHash("sha256").update(TEST_PASSWORD).digest("hex"),
+	);
+});
+test("same-password articles share five failures while a different password stays independent", async () => {
+	const f = fixture();
+	const cookie = jar(
+		await privateRequest(f.request("status"), f.env, { online: true }),
+	);
+	for (let i = 0; i < 5; i++) {
+		const response = await privateRequest(
+			f.request("unlock", {
+				cookie,
+				password: "wrong",
+				article: i % 2 ? "love-tree-guide" : "liking",
+			}),
+			f.env,
+			{ online: true },
+		);
+		assert.equal(response.status, 401);
+		assert.equal((await response.json()).remaining, 4 - i);
+	}
+	for (const article of ["liking", "love-tree-guide"]) {
+		const response = await privateRequest(
+			f.request("unlock", { cookie: "", password: TEST_PASSWORD, article }),
+			f.env,
+			{ online: true },
+		);
+		assert.equal(response.status, 429);
+	}
+	const other = await privateRequest(
+		f.request("unlock", {
+			cookie,
+			password: OTHER_PASSWORD,
+			article: "long-night-love-letter",
+		}),
+		f.env,
+		{ online: true },
+	);
+	assert.equal(other.status, 200);
+	assert.equal((await other.json()).remaining, 5);
+});
+test("concurrent guesses distributed across matching articles still get at most five verifications", async () => {
+	const f = fixture();
+	const cookie = jar(
+		await privateRequest(f.request("status"), f.env, { online: true }),
+	);
+	const responses = await Promise.all(
+		Array.from({ length: 30 }, (_, i) =>
+			privateRequest(
+				f.request("unlock", {
+					cookie,
+					password: "wrong",
+					article: i % 2 ? "love-tree-guide" : "liking",
+				}),
+				f.env,
+				{ online: true },
+			),
+		),
+	);
+	assert.equal(f.getVerifications(), 5);
+	assert.equal(responses.filter((r) => r.status === 401).length, 5);
+	assert.equal(responses.filter((r) => r.status === 429).length, 25);
+});
+test("pre-existing article failures and pending work carry into the shared quota exactly once", () => {
+	const now = Date.parse("2026-10-30T04:00:00Z");
+	const a = counterState(undefined, now);
+	a.failures = 2;
+	const b = reserveCounter(undefined, now, "old-request").state;
+	b.failures = 1;
+	const snapshots = [
+		{ name: "a", state: a },
+		{ name: "b", state: b },
+	];
+	let state = inheritCounters(undefined, now, snapshots);
+	assert.equal(state.failures, 3);
+	assert.equal(Object.keys(state.pending).length, 1);
+	state = inheritCounters(state, now, snapshots);
+	assert.equal(state.failures, 3);
+	state = reserveCounter(state, now, "new-request").state;
+	assert.equal(reserveCounter(state, now, "overflow").result.ok, false);
+	state = finishCounter(state, now, "new-request", "incorrect").state;
+	state = inheritCounters(state, now + 60001, snapshots);
+	assert.equal(state.failures, 5);
+	state = inheritCounters(state, now + 60002, snapshots);
+	assert.equal(state.failures, 5);
+	assert.equal(
+		inheritCounters(state, periodAt(now).resetAt, snapshots).failures,
+		0,
+	);
+});
+test("legacy per-article server counts are summed before accepting a grouped verification", async () => {
+	const f = fixture();
+	const ipHash = createHash("sha256").update("203.0.113.1").digest("hex");
+	const first = counterState(undefined, Date.now());
+	first.failures = 3;
+	const second = counterState(undefined, Date.now());
+	second.failures = 1;
+	f.states.set(`ip:liking:${ipHash}`, { counter: first });
+	f.states.set(`ip:love-tree-guide:${ipHash}`, { counter: second });
+	const status = await privateRequest(f.request("status"), f.env, {
+		online: true,
+	});
+	assert.equal((await status.json()).remaining, 1);
+	const last = await privateRequest(
+		f.request("unlock", { password: "wrong", article: "love-tree-guide" }),
+		f.env,
+		{ online: true },
+	);
+	assert.equal((await last.json()).remaining, 0);
+	assert.equal(
+		(
+			await privateRequest(
+				f.request("unlock", { password: TEST_PASSWORD }),
+				f.env,
+				{ online: true },
+			)
+		).status,
+		429,
+	);
+	assert.equal(f.getVerifications(), 1);
 });
 test("five wrong passwords lock the IP even after deleting all cookies", async () => {
 	const f = fixture();

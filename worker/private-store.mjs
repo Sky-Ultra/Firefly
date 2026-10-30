@@ -4,6 +4,7 @@ import {
 	counterState,
 	counterSummary,
 	finishCounter,
+	inheritCounters,
 	reserveCounter,
 	trafficCounter,
 	verifyPassword,
@@ -70,6 +71,7 @@ export class PrivateArticleBackend extends DurableObject {
 				typeof record.version !== "string" ||
 				typeof record.verifier?.hash !== "string" ||
 				typeof record.verifier?.salt !== "string" ||
+				!/^[a-f0-9]{64}$/.test(record.limitGroup || "") ||
 				record.verifier.iterations !== 100000
 			)
 				return Response.json({ ok: false }, { status: 400 });
@@ -82,6 +84,9 @@ export class PrivateArticleBackend extends DurableObject {
 				ready: !!r,
 				version: r?.version ?? null,
 				contentHash: r?.contentHash ?? null,
+				limitGroup: /^[a-f0-9]{64}$/.test(r?.limitGroup || "")
+					? r.limitGroup
+					: null,
 			});
 		}
 		if (input.op === "verify") {
@@ -99,9 +104,25 @@ export class PrivateArticleBackend extends DurableObject {
 				? Response.json({ html: r.html, version: r.version })
 				: Response.json({ error: "unauthorized" }, { status: 401 });
 		}
-		if (["status", "reserve", "finish"].includes(input.op)) {
+		if (["status", "snapshot", "reserve", "finish"].includes(input.op)) {
+			const snapshots = await Promise.all(
+				(input.legacyCounters || []).map(async (name) => {
+					const stub = this.env.PRIVATE_ARTICLES.get(
+						this.env.PRIVATE_ARTICLES.idFromName(name),
+					);
+					const response = await stub.fetch("https://private.internal/", {
+						method: "POST",
+						body: JSON.stringify({ op: "snapshot" }),
+					});
+					if (!response.ok) throw Error("legacy_counter_unavailable");
+					return { name, state: await response.json() };
+				}),
+			);
 			return this.ctx.storage.transactionSync(() => {
-				const previous = this.read("counter");
+				const now = Date.now();
+				const previous = input.legacyCounters
+					? inheritCounters(this.read("counter"), now, snapshots)
+					: this.read("counter");
 				let next;
 				if (input.op === "reserve")
 					next = reserveCounter(previous, now, input.id);
@@ -112,6 +133,7 @@ export class PrivateArticleBackend extends DurableObject {
 					next = { state, result: counterSummary(state, now) };
 				}
 				this.write("counter", next.state);
+				if (input.op === "snapshot") return Response.json(next.state);
 				return Response.json(next.result);
 			});
 		}

@@ -80,13 +80,13 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 			);
 		else if (state?.locked)
 			status.textContent = text(
-				"本篇今日已输错 5 次，输入已锁定。每天北京时间 04:00 重置。",
-				"This article is locked after 5 incorrect passwords. Resets at 04:00 Beijing time.",
+				"此密码今日已累计输错 5 次，使用相同密码的文章均已锁定。每天北京时间 04:00 重置。",
+				"This password is locked after 5 incorrect attempts across articles sharing it. Resets at 04:00 Beijing time.",
 			);
 		else
 			status.textContent = text(
-				`本篇今日还可输错 ${state?.remaining ?? 5} 次，每天北京时间 04:00 重置。`,
-				`${state?.remaining ?? 5} incorrect attempts remaining. Resets at 04:00 Beijing time.`,
+				`此密码今日还可输错 ${state?.remaining ?? 5} 次，相同密码的文章共用次数。每天北京时间 04:00 重置。`,
+				`${state?.remaining ?? 5} incorrect attempts remaining, shared by articles with the same password. Resets at 04:00 Beijing time.`,
 			);
 		retry.hidden = ready;
 	}

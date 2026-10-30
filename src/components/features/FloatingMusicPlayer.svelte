@@ -5,6 +5,8 @@ import Icon from "@/components/common/Icon.svelte";
 import {
 	clampMusicDock,
 	FLOATING_MUSIC_KEY,
+	FLOATING_MUSIC_MOBILE_KEY,
+	FLOATING_MUSIC_MOBILE_QUERY,
 	FLOATING_MUSIC_POSITION_KEY,
 	type MusicManager,
 	type MusicSnapshot,
@@ -14,6 +16,7 @@ import {
 
 let snapshot = $state.raw<MusicSnapshot | null>(null);
 let manager: MusicManager | undefined;
+let mobileScreen: MediaQueryList;
 let root: HTMLDivElement;
 let ready = $state(false);
 let dismissed = $state(false);
@@ -89,7 +92,10 @@ function dismiss(value: boolean) {
 	dismissed = value;
 	collapse();
 	try {
-		localStorage.setItem(FLOATING_MUSIC_KEY, String(value));
+		localStorage.setItem(
+			mobileScreen.matches ? FLOATING_MUSIC_MOBILE_KEY : FLOATING_MUSIC_KEY,
+			String(value),
+		);
 	} catch {
 		/* Optional preference. */
 	}
@@ -180,7 +186,8 @@ onMount(() => {
 	const unsubscribe = subscribeFloatingMusic(manager, window, (state) => {
 		snapshot = state;
 	});
-	dismissed = readFloatingMusicDismissed(localStorage);
+	mobileScreen = window.matchMedia(FLOATING_MUSIC_MOBILE_QUERY);
+	dismissed = readFloatingMusicDismissed(localStorage, mobileScreen.matches);
 	position = { x: 24, y: Math.max(90, innerHeight - 152) };
 	try {
 		const stored = JSON.parse(
@@ -197,6 +204,13 @@ onMount(() => {
 	void manager.init();
 	const scope = new AbortController();
 	const { signal } = scope;
+	const syncVisibility = () => {
+		dismissed = readFloatingMusicDismissed(localStorage, mobileScreen.matches);
+		collapse();
+		updateToggles();
+		void tick().then(clamp);
+	};
+	mobileScreen.addEventListener("change", syncVisibility, { signal });
 	document.addEventListener(
 		"click",
 		(event) => {
@@ -244,10 +258,12 @@ onMount(() => {
 	window.addEventListener(
 		"storage",
 		(event) => {
-			if (event.key === FLOATING_MUSIC_KEY || event.key === null) {
-				dismissed = readFloatingMusicDismissed(localStorage);
-				updateToggles();
-			}
+			if (
+				event.key === FLOATING_MUSIC_KEY ||
+				event.key === FLOATING_MUSIC_MOBILE_KEY ||
+				event.key === null
+			)
+				syncVisibility();
 		},
 		{ signal },
 	);

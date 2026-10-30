@@ -2,7 +2,7 @@
 
 ## Private article server protection
 
-The owner explicitly authorized reopening after the 2026-10-30 server migration, with existing passwords unchanged and the daily limit reset at 04:00 Asia/Shanghai. Published password-protected articles must use the private backend; never restore or publish their plaintext, offline-decryptable ciphertext, password verifiers or management signing key in public sources/assets. Keep the private namespace/binding/migration stable and historical preview URLs disabled. See `docs/SERVER-PRIVATE-ARTICLES.md`. Old pre-migration deployment records are for recovery reference, not a safe public rollback target.
+The owner explicitly authorized reopening after the 2026-10-30 server migration, with existing passwords unchanged and the daily limit reset at 04:00 Asia/Shanghai. Equal-password articles share the same five-failure quota per IP/signed browser identity; different passwords count independently. Use the owner import tool to derive private password groups and preserve existing counts. Published password-protected articles must use the private backend; never restore or publish their plaintext, offline-decryptable ciphertext, password verifiers or management signing key in public sources/assets. Keep the private namespace/binding/migration stable and historical preview URLs disabled. See `docs/SERVER-PRIVATE-ARTICLES.md`. Old pre-migration deployment records are for recovery reference, not a safe public rollback target.
 
 ## Project Structure & Module Organization
 
@@ -30,6 +30,8 @@ When publishing changelog entries, link mentioned articles, site pages, and feat
 Highlight every “重要更新” label with `<mark class="theme-highlight">重要更新</mark>` and its English “Major update” counterpart with the same class. Highlight only the label, not the following colon or the rest of the entry, and reuse the existing theme-aware highlighter.
 
 ### Site-specific visual consistency
+
+On screens below 1024px, the floating music player is hidden by default and can be enabled through the music widget's floating-player toggle. Store mobile visibility separately from desktop visibility, remember explicit choices, and keep the shared audio manager unchanged.
 
 New sidebar widgets and card-style components must continue the site's pale outline motif and gentle hover finish. Reuse `SidebarDecoration.astro` and the existing styles; choose a motif relevant to the component, with the blossom fallback for new widgets. Keep card backgrounds opaque in normal wallpaper modes; only on the homepage in fullscreen transparent (overlay) mode, sidebar cards follow the shared --card-bg-transparent value. Preserve the original opaque sidebars and wallpaper behavior on article and other pages in classic mode. The explicit fullscreen-layout="fairytale" opt-in is a separate presentation with its own namespaced background and card-opacity settings; never apply its selectors to classic mode or reset the existing wallpaper preferences. Keep decorations non-interactive and hidden from assistive technology, and retain reduced-motion support. Article cards share this finish via `post-card-decoration.css`. Do not add decoration over reading content or obscure controls.
 

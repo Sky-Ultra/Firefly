@@ -1,8 +1,15 @@
 // Owner-only management: the signing key and vault must be outside this repo.
 
-import { createHash, randomUUID, sign } from "node:crypto";
+import {
+	createHash,
+	pbkdf2Sync,
+	randomUUID,
+	sign,
+	timingSafeEqual,
+} from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { passwordQuotaGroup } from "./password-quota-group.mjs";
 
 const args = process.argv.slice(2);
 const option = (name) => {
@@ -23,13 +30,45 @@ if (
 const action = option("--action") || "health";
 if (!["health", "import"].includes(action))
 	throw Error("Unknown owner action.");
+const privateKey = readFileSync(resolve(home, "owner-private-key.pem"), "utf8");
+const credentials =
+	action === "import"
+		? JSON.parse(
+				readFileSync(resolve(home, "existing-credentials.json"), "utf8"),
+			)
+		: null;
 const body = JSON.stringify(
 	action === "import"
 		? {
 				action,
 				records: JSON.parse(
 					readFileSync(resolve(home, "private-seed.json"), "utf8"),
-				).records,
+				).records.map((item) => {
+					const password = credentials[item.slug];
+					const { verifier } = item.record;
+					const expected = Buffer.from(verifier.hash, "base64");
+					const actual = pbkdf2Sync(
+						password,
+						Buffer.from(verifier.salt, "base64"),
+						verifier.iterations,
+						32,
+						"sha256",
+					);
+					if (
+						expected.length !== actual.length ||
+						!timingSafeEqual(expected, actual)
+					)
+						throw Error(
+							"Private credentials do not match the stored verifier. Import cancelled.",
+						);
+					return {
+						...item,
+						record: {
+							...item.record,
+							limitGroup: passwordQuotaGroup(privateKey, password),
+						},
+					};
+				}),
 			}
 		: { action },
 );
@@ -38,11 +77,9 @@ const nonce = randomUUID();
 const url = new URL("/api/private/_admin", base);
 const digest = createHash("sha256").update(body).digest("hex");
 const message = `POST\n${url.pathname}${url.search}\n${time}\n${nonce}\n${digest}`;
-const signature = sign(
-	null,
-	Buffer.from(message),
-	readFileSync(resolve(home, "owner-private-key.pem"), "utf8"),
-).toString("base64");
+const signature = sign(null, Buffer.from(message), privateKey).toString(
+	"base64",
+);
 const response = await fetch(url, {
 	method: "POST",
 	headers: {
