@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:6cd147a098afed2beae8b4389a93c3b4e4ddf809d1868af2132516301ea65364
+sourceHash: sha256:1440ff52bcc22d223205631d48bf9eca38d70a27b47a2a4a6e27f2ebd7d2dcaa
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -167,3 +167,7 @@ This article provides a brief record of updates to my personal website, beginnin
 - <mark class="theme-highlight">Major update</mark>: We have added a major [homepage](/) visual effect to the new Fairytale theme. On a computer, moving your mouse produces a visual parallax effect on the wallpaper.
 - Added [comments](/moments/#grassroots-hardship-video) to [Moments](/moments/). Comments are already available on selected updates.
 - <mark class="theme-highlight">Major update</mark>: We have added randomly appearing animated mascots to the [comment section](/guestbook/#post-comments). Is it useless? If it is, that's the point! But it's fun, isn't it...?
+
+## November 5, 2026
+
+- Published the article [“I Am Still Waiting, Just No Longer Expecting”](/posts/still-waiting-no-longer-expecting/)

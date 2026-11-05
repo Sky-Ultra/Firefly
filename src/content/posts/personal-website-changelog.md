@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-10-29
+updated: 2026-11-05
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -178,3 +178,7 @@ draft: false
 - <mark class="theme-highlight">重要更新</mark>：我们为全新主题：童话增加了重要的[主页](/)视觉效果，在通过电脑端访问时，滑动鼠标可以感受主页的视觉错位的视差效果
 - 为[朋友圈](/moments/)功能新增[评论区](/moments/#grassroots-hardship-video)，对于部分朋友圈已经开放评论区功能
 - <mark class="theme-highlight">重要更新</mark>：我们为[评论区](/guestbook/#post-comments)功能添加了随机出现的动画表情。没什么用吗？没什么用，那就对了！但是很好玩，不是吗...？
+
+## 2026.11.5
+
+- 更新了文章：[吾仍在等候，只是不再期待](/posts/still-waiting-no-longer-expecting/)
