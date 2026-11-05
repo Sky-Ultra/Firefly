@@ -118,7 +118,7 @@ async function fixture(layout = "classic", width = 1440) {
 	view.document.documentElement.dataset.fullscreenLayout = layout;
 	view.document.body.classList.add("is-home");
 	view.document.body.innerHTML =
-		'<div id="wallpaper-wrapper"><div id="banner-images-container"><div class="slide-item hidden lg:block active" data-wallpaper-src="/desktop-a.webp"><img></div><div class="slide-item hidden lg:block" data-wallpaper-src="/desktop-b.webp"><img></div><div class="slide-item block lg:hidden active" data-wallpaper-src="/mobile.webp"><img></div></div></div><main id="main-grid"></main><fairytale-layout hidden><img data-fairytale-image><img data-fairytale-image></fairytale-layout>';
+		'<div id="wallpaper-wrapper"><div id="banner-images-container"><div class="slide-item hidden lg:block active" data-wallpaper-src="/desktop-a.webp"><img></div><div class="slide-item hidden lg:block" data-wallpaper-src="/desktop-b.webp"><img></div><div class="slide-item block lg:hidden active" data-wallpaper-src="/mobile.webp"><img></div></div></div><main id="main-grid"></main><fairytale-layout data-fairytale-cached-blur hidden><img data-fairytale-image><img data-fairytale-image><div class="fairytale-soft-layer"><div data-fairytale-soft-image></div><div data-fairytale-soft-image></div></div></fairytale-layout>';
 	Object.defineProperty(view, "innerWidth", { value: width, writable: true });
 	Object.defineProperty(view, "innerHeight", { value: 1000, writable: true });
 	Object.defineProperty(view, "scrollY", { value: 0, writable: true });
@@ -207,6 +207,11 @@ test("classic creates no image requests or scroll work; enabling copies only the
 			"true",
 		);
 		assert.equal(image.classList.contains("is-initial"), true);
+		const soft = f.backdrop.querySelector<HTMLElement>(
+			"[data-fairytale-soft-image].is-visible",
+		);
+		assert.ok(soft);
+		assert.match(soft.style.backgroundImage, /desktop-a\.webp/);
 		assert.match(
 			f.view.document.documentElement.style.getPropertyValue(
 				"--fairytale-canvas-image",
@@ -221,15 +226,21 @@ test("classic creates no image requests or scroll work; enabling copies only the
 		f.view.dispatchEvent(new f.view.Event("scroll"));
 		await f.flush();
 		assert.equal(
-			f.view.document.documentElement.style.getPropertyValue(
-				"--fairytale-blur-progress",
-			),
+			f.backdrop.querySelector<HTMLElement>(".fairytale-soft-layer")?.style
+				.opacity,
 			"0.813",
 		);
 		f.view.document.documentElement.dataset.fullscreenLayout = "classic";
 		await f.flush();
 		assert.equal(f.backdrop.hidden, true);
 		assert.equal(f.backdrop.querySelectorAll("img[src]").length, 0);
+		assert.ok(
+			[
+				...f.backdrop.querySelectorAll<HTMLElement>(
+					"[data-fairytale-soft-image]",
+				),
+			].every((layer) => layer.style.backgroundImage === ""),
+		);
 		assert.equal(
 			f.view.document.documentElement.style.getPropertyValue(
 				"--fairytale-canvas-image",
@@ -303,22 +314,23 @@ test("reference Hero timing keeps the top sharp even at maximum blur and separat
 test("mobile scroll progress stays stable through browser chrome resizing and recalibrates after rotation", async () => {
 	const f = await fixture("fairytale", 390);
 	const progress = () =>
-		f.view.document.documentElement.style.getPropertyValue(
-			"--fairytale-blur-progress",
+		Number(
+			f.backdrop.querySelector<HTMLElement>(".fairytale-soft-layer")?.style
+				.opacity,
 		);
 	try {
 		await f.flush();
 		f.view.scrollY = 320;
 		f.view.dispatchEvent(new f.view.Event("scroll"));
 		await f.flush();
-		assert.equal(progress(), "0.400");
+		assert.equal(progress(), 0.4);
 		Object.defineProperty(f.view, "innerHeight", {
 			value: 1120,
 			writable: true,
 		});
 		f.view.dispatchEvent(new f.view.Event("resize"));
 		await f.flush();
-		assert.equal(progress(), "0.400");
+		assert.equal(progress(), 0.4);
 		Object.defineProperty(f.view, "innerWidth", { value: 844, writable: true });
 		Object.defineProperty(f.view, "innerHeight", {
 			value: 390,
@@ -326,15 +338,97 @@ test("mobile scroll progress stays stable through browser chrome resizing and re
 		});
 		f.view.dispatchEvent(new f.view.Event("resize"));
 		await f.flush();
-		assert.equal(progress(), "1.000");
+		assert.equal(progress(), 1);
 		f.view.scrollY = -80;
 		f.view.dispatchEvent(new f.view.Event("scroll"));
 		await f.flush();
-		assert.equal(progress(), "0.000");
+		assert.equal(progress(), 0);
 		f.view.document.documentElement.dataset.fullscreenLayout = "classic";
 		await f.flush();
 		assert.equal(f.frames.size, 0);
 		assert.equal(f.timers.size, 0);
+	} finally {
+		await f.close();
+	}
+});
+
+test("scrolling reuses the selected wallpaper and keeps per-frame styles out of the document root", async () => {
+	const f = await fixture("fairytale");
+	try {
+		await f.flush();
+		const image = f.backdrop.querySelector<HTMLImageElement>("img[src]");
+		assert.ok(image);
+		image.dispatchEvent(new f.view.Event("load"));
+		await f.flush();
+		const container = f.view.document.getElementById("banner-images-container");
+		assert.ok(container);
+		let sourceScans = 0;
+		let rootWrites = 0;
+		const query = container.querySelectorAll.bind(container);
+		container.querySelectorAll = ((selector: string) => {
+			if (selector === ".slide-item.active") sourceScans++;
+			return query(selector);
+		}) as typeof container.querySelectorAll;
+		const style = f.view.document.documentElement.style;
+		const write = style.setProperty.bind(style);
+		style.setProperty = (name, value, priority) => {
+			rootWrites++;
+			return write(name, value, priority);
+		};
+		for (let step = 1; step <= 30; step++) {
+			f.view.scrollY = step * 12;
+			f.view.dispatchEvent(new f.view.Event("scroll"));
+			await f.flush();
+		}
+		assert.deepEqual(
+			{ sourceScans, rootWrites },
+			{ sourceScans: 0, rootWrites: 0 },
+		);
+		assert.equal(
+			f.backdrop.querySelector("img.is-visible")?.getAttribute("src"),
+			"/desktop-a.webp",
+		);
+	} finally {
+		await f.close();
+	}
+});
+
+test("a stationary image-source change and a failed load still schedule source reconciliation", async () => {
+	const f = await fixture("fairytale");
+	try {
+		await f.flush();
+		const first = f.backdrop.querySelector<HTMLImageElement>("img[src]");
+		assert.ok(first);
+		first.dispatchEvent(new f.view.Event("error"));
+		await f.flush();
+		const retry = [...f.timers.values()];
+		assert.equal(retry.length, 1);
+		f.timers.clear();
+		retry.forEach((callback) => {
+			callback();
+		});
+		await f.flush();
+		assert.equal(
+			typeof first.onload,
+			"function",
+			"the retry must actually start another image request",
+		);
+		first.dispatchEvent(new f.view.Event("load"));
+		await f.flush();
+		const active =
+			f.view.document.querySelector<HTMLElement>(".slide-item.active");
+		assert.ok(active);
+		delete active.dataset.wallpaperSrc;
+		await f.flush();
+		const original = active.querySelector("img");
+		assert.ok(original);
+		original.setAttribute("src", "/stationary-change.webp");
+		await f.flush();
+		assert.ok(
+			[...f.backdrop.querySelectorAll("img[src]")].some((image) =>
+				image.getAttribute("src")?.endsWith("/stationary-change.webp"),
+			),
+		);
 	} finally {
 		await f.close();
 	}

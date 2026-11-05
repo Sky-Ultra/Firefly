@@ -112,10 +112,21 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 	let targetX = 0;
 	let targetY = 0;
 	let previousTime = 0;
+	let pointer: { x: number; y: number } | undefined;
+	let lastX = "";
+	let lastY = "";
 	let pointerScope: AbortController | undefined;
 	function draw() {
-		layer.style.setProperty("--fairytale-parallax-x", `${x.toFixed(2)}px`);
-		layer.style.setProperty("--fairytale-parallax-y", `${y.toFixed(2)}px`);
+		const nextX = `${x.toFixed(2)}px`;
+		const nextY = `${y.toFixed(2)}px`;
+		if (nextX !== lastX) {
+			layer.style.setProperty("--fairytale-parallax-x", nextX);
+			lastX = nextX;
+		}
+		if (nextY !== lastY) {
+			layer.style.setProperty("--fairytale-parallax-y", nextY);
+			lastY = nextY;
+		}
 	}
 	function updateScale() {
 		layer.style.setProperty(
@@ -132,6 +143,29 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 	function animate(time: number) {
 		frame = 0;
 		if (!permitted) return;
+		if (pointer && active) {
+			const rect = hero.getBoundingClientRect();
+			const position = pointer;
+			pointer = undefined;
+			if (
+				position.x < rect.left ||
+				position.x > rect.right ||
+				position.y < rect.top ||
+				position.y > rect.bottom
+			) {
+				targetX = targetY = 0;
+			} else {
+				const offset = parallaxOffset(
+					position.x - rect.left,
+					position.y - rect.top,
+					rect.width,
+					rect.height,
+					strength,
+				);
+				targetX = offset.x;
+				targetY = offset.y;
+			}
+		}
 		const dt = previousTime
 			? Math.min(64, Math.max(1, time - previousTime))
 			: 16.67;
@@ -152,6 +186,7 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 		if (permitted && !frame) frame = requestAnimationFrame(animate);
 	}
 	function reset(immediate = false) {
+		pointer = undefined;
 		targetX = targetY = 0;
 		if (immediate) {
 			cancelAnimationFrame(frame);
@@ -163,23 +198,9 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 	}
 	function move(event: PointerEvent) {
 		if (event.pointerType !== "mouse") return;
-		const rect = hero.getBoundingClientRect();
-		if (
-			event.clientX < rect.left ||
-			event.clientX > rect.right ||
-			event.clientY < rect.top ||
-			event.clientY > rect.bottom
-		)
-			return reset();
-		const offset = parallaxOffset(
-			event.clientX - rect.left,
-			event.clientY - rect.top,
-			rect.width,
-			rect.height,
-			strength,
-		);
-		targetX = offset.x;
-		targetY = offset.y;
+		// Coalesce high-frequency pointer events. Geometry is read before any
+		// writes, at most once in the next rendered frame.
+		pointer = { x: event.clientX, y: event.clientY };
 		schedule();
 	}
 	function sync() {
@@ -202,7 +223,7 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 			document.body.classList.contains("is-home") &&
 			window.scrollY <= 1;
 		if (active === next) {
-			if (!permitted) reset(true);
+			if (!permitted && wasPermitted) reset(true);
 			return;
 		}
 		active = next;

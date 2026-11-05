@@ -44,15 +44,18 @@ test("desktop fairytale motion settles, suspends for reading/mobile/immersive an
 	view.document.documentElement.dataset.fullscreenLayout = "classic";
 	const hero = view.document.getElementById("wallpaper-wrapper");
 	assert.ok(hero);
-	hero.getBoundingClientRect = () =>
-		({
+	let geometryReads = 0;
+	hero.getBoundingClientRect = () => {
+		geometryReads++;
+		return {
 			left: 0,
 			top: 0,
 			right: 1000,
 			bottom: 800,
 			width: 1000,
 			height: 800,
-		}) as DOMRect;
+		} as DOMRect;
+	};
 	const fine = new view.EventTarget() as InstanceType<
 		typeof view.EventTarget
 	> & { matches: boolean };
@@ -76,6 +79,12 @@ test("desktop fairytale motion settles, suspends for reading/mobile/immersive an
 	).outputText;
 	const layer = view.document.getElementById("motion");
 	assert.ok(layer);
+	let layerWrites = 0;
+	const writeLayer = layer.style.setProperty.bind(layer.style);
+	layer.style.setProperty = (name, value, priority) => {
+		layerWrites++;
+		return writeLayer(name, value, priority);
+	};
 	const dispose = runInNewContext(
 		`${runtime}\nmountFairytaleParallax(document.getElementById('motion'))`,
 		{
@@ -104,10 +113,23 @@ test("desktop fairytale motion settles, suspends for reading/mobile/immersive an
 	try {
 		move();
 		assert.equal(frames.size, 0);
+		layerWrites = 0;
+		for (let i = 0; i < 30; i++) view.dispatchEvent(new view.Event("scroll"));
+		assert.equal(
+			layerWrites,
+			0,
+			"classic scrolling must not redraw an inactive parallax layer",
+		);
 		view.document.documentElement.dataset.fullscreenLayout = "fairytale";
 		await flush();
 		assert.equal(layer.hasAttribute("data-parallax-active"), true);
-		move();
+		geometryReads = 0;
+		for (let i = 0; i < 80; i++) move();
+		assert.equal(
+			geometryReads,
+			0,
+			"pointer bursts should read layout once in the next animation frame",
+		);
 		assert.equal(frames.size, 1);
 		for (let i = 1; i < 150 && frames.size; i++) {
 			const callbacks = [...frames.values()];
@@ -117,6 +139,7 @@ test("desktop fairytale motion settles, suspends for reading/mobile/immersive an
 			});
 		}
 		assert.equal(frames.size, 0);
+		assert.equal(geometryReads, 1);
 		assert.equal(
 			layer.style.getPropertyValue("--fairytale-parallax-x"),
 			"-16.10px",

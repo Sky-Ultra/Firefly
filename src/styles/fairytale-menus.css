@@ -1,7 +1,7 @@
 /* Overrides the legacy navbar popup !important backgrounds locally.
  * Fairytale popovers only. No navbar geometry, font or classic-mode reset. */
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] body #navbar .float-panel {
-	--fairytale-menu-surface: color-mix(in srgb,var(--card-bg) clamp(55%,calc(var(--fairytale-card-opacity,.74) * 100%),92%),transparent);
+	--fairytale-menu-surface: color-mix(in srgb,var(--fairytale-surface-base,var(--card-bg)) clamp(55%,calc(var(--fairytale-card-opacity,.74) * 100%),92%),transparent);
 	background: var(--fairytale-menu-surface) !important;
 	-webkit-backdrop-filter: blur(18px) saturate(1.05);
 	backdrop-filter: blur(18px) saturate(1.05);

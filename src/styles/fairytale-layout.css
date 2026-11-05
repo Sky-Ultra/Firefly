@@ -21,15 +21,43 @@ html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wall
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #header-waves,
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-gradient,
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #banner-dim-container { display: none !important; }
-html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop::after { content: ""; position:absolute; inset:0; background:rgb(0 0 0 / .11); pointer-events:none; }
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop::after { content: ""; position:absolute; inset:0; z-index: 2; background:rgb(0 0 0 / .11); pointer-events:none; }
 html.dark[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop::after { background:rgb(0 0 0 / .2); }
-@layer components {
-	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #main-grid .card-base,
-	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #main-grid .novels-wall {
-		background-color: color-mix(in srgb,var(--card-bg) calc(var(--fairytale-card-opacity,.74) * 100%),transparent) !important;
-	}
+/* Match the reference's shared translucent surface token. Resolve the opaque
+ * base on body before inheriting the glass token; never mix --card-bg into
+ * itself, and never add an expensive backdrop filter to every card. */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] body {
+	--fairytale-surface-base: #fff;
+	--fairytale-glass-surface: color-mix(in srgb, var(--fairytale-surface-base) calc(var(--fairytale-card-opacity,.74) * 100%), transparent);
+}
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] body.card-follow-theme-hue {
+	--fairytale-surface-base: oklch(1 0.01 var(--hue));
+}
+html.dark[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] body {
+	--fairytale-surface-base: oklch(0.23 0.015 var(--hue));
+}
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #main-grid {
+	--card-bg: var(--fairytale-glass-surface);
+	--float-panel-bg: var(--fairytale-glass-surface);
 }
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] .novels-wall .novel-card { background-color: transparent; }
+/* An already-open page may retain its older custom-element markup across
+ * navigation. Keep its progressive-filter fallback until a full reload. */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop[data-fairytale-cached-blur] img { filter: none; }
+/* A fixed-blur copy shares the decoded wallpaper. Scroll only changes the
+ * layer's opacity, avoiding repeated filters or live backdrop capture. */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] .fairytale-soft-layer {
+	position: absolute; inset: 0; pointer-events: none;
+	filter: blur(var(--fairytale-blur,10px));
+	opacity: 0; will-change: opacity;
+}
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-soft-image] {
+	position: absolute; inset: 0; background-size: cover; background-position: center;
+	transform: scale(1.05); transform-origin: center; opacity: 0;
+	transition: opacity 1.2s cubic-bezier(.2,0,0,1);
+}
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-soft-image].is-visible { opacity: 1; }
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-soft-image].is-initial { transition: none; }
 /* Stable compositor surface and canvas fallback for mobile browser chrome
  * and elastic overscroll. No touch interception, scroll container or body lock. */
 @media (max-width:1023px) {
@@ -50,6 +78,8 @@ html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] .nove
 	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-post-meta-overlay { transition: opacity 120ms linear; }
 }
 @media(prefers-reduced-motion:reduce) {
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-soft-image],
+	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-soft-image].is-initial,
 	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img,
 	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop img.is-initial,
 	html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #wallpaper-wrapper .banner-home-text-overlay,

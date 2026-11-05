@@ -17,9 +17,16 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	const images = Array.from(
 		backdrop.querySelectorAll<HTMLImageElement>("[data-fairytale-image]"),
 	);
+	const softImages = Array.from(
+		backdrop.querySelectorAll<HTMLElement>("[data-fairytale-soft-image]"),
+	);
+	const softLayer = backdrop.querySelector<HTMLElement>(
+		".fairytale-soft-layer",
+	);
 	const wrapper = document.getElementById("wallpaper-wrapper");
 	const container = document.getElementById("banner-images-container");
 	if (images.length !== 2 || !wrapper) return () => {};
+	const titleSurface = wrapper;
 	const scope = new AbortController();
 	const { signal } = scope;
 	let active = false;
@@ -29,7 +36,10 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	let current = "";
 	let wanted = "";
 	let loadTimer: number | undefined;
-	let lastProgress = "";
+	let lastBlur = "";
+	let lastTitle = "";
+	let imageDirty = true;
+	let viewportWidth = window.innerWidth;
 	let motionHeight = 0;
 	let motionWidth = 0;
 	let sourceObserver: MutationObserver | undefined;
@@ -88,7 +98,7 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 		const next = displayed === 0 ? 1 : 0;
 		const image = images[next];
 		if (displayed >= 0)
-			images.forEach((item) => {
+			[...images, ...softImages].forEach((item) => {
 				item.classList.remove("is-initial");
 			});
 		let settled = false;
@@ -99,12 +109,12 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 			image.onload = image.onerror = null;
 			wanted = "";
 			if (visibleSource() !== source) {
-				schedule();
+				requestSourceSync();
 				return;
 			}
 			if (!success) {
 				// Let the normal slideshow skip an unavailable image; retain the last background.
-				retryTimer = window.setTimeout(schedule, 6500);
+				retryTimer = window.setTimeout(requestSourceSync, 6500);
 				return;
 			}
 			current = source;
@@ -115,9 +125,17 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 				"--fairytale-canvas-image",
 				`url(${JSON.stringify(image.src)})`,
 			);
-			images.forEach((item, index) => {
-				item.classList.toggle("is-visible", index === next);
-			});
+			// The source is decoded already. Its cached texture is shared with the
+			// fixed-blur surface; opacity can change without recapturing the page.
+			softImages[next]?.style.setProperty(
+				"background-image",
+				`url(${JSON.stringify(image.src)})`,
+			);
+			softImages[next]?.classList.toggle("is-initial", displayed < 0);
+			for (const group of [images, softImages])
+				group.forEach((item, index) => {
+					item.classList.toggle("is-visible", index === next);
+				});
 			displayed = next;
 			root.dataset.fairytaleReady = "true";
 		};
@@ -139,22 +157,39 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 		frame = 0;
 		if (!active) return;
 		const motion = fairytaleMotion(window.scrollY, stableMotionHeight());
-		const next = `${motion.blurProgress.toFixed(3)}:${motion.titleOpacity.toFixed(3)}`;
-		if (next !== lastProgress) {
-			root.style.setProperty(
-				"--fairytale-blur-progress",
-				motion.blurProgress.toFixed(3),
-			);
-			root.style.setProperty(
-				"--fairytale-title-opacity",
-				motion.titleOpacity.toFixed(3),
-			);
-			lastProgress = next;
+		const blur = motion.blurProgress.toFixed(3);
+		const title = motion.titleOpacity.toFixed(3);
+		// These values change while scrolling. Scope them to the two surfaces
+		// that consume them instead of invalidating inherited styles site-wide.
+		if (blur !== lastBlur) {
+			if (softLayer) softLayer.style.opacity = blur;
+			else backdrop.style.setProperty("--fairytale-blur-progress", blur);
+			lastBlur = blur;
 		}
-		syncImage();
+		if (title !== lastTitle) {
+			titleSurface.style.setProperty("--fairytale-title-opacity", title);
+			lastTitle = title;
+		}
+		// Carousel mutations, assignments and viewport-width changes own source
+		// discovery. Ordinary reading/scrolling never scans the slide collection.
+		if (imageDirty) {
+			imageDirty = false;
+			syncImage();
+		}
 	}
 	function schedule() {
 		if (active && !frame) frame = requestAnimationFrame(update);
+	}
+	function requestSourceSync() {
+		imageDirty = true;
+		schedule();
+	}
+	function resize() {
+		if (viewportWidth !== window.innerWidth) {
+			viewportWidth = window.innerWidth;
+			motionHeight = motionWidth = 0;
+			requestSourceSync();
+		} else schedule();
 	}
 	function stop() {
 		active = false;
@@ -170,9 +205,17 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 			image.removeAttribute("src");
 			image.classList.remove("is-visible", "is-initial");
 		});
+		softImages.forEach((image) => {
+			image.style.removeProperty("background-image");
+			image.classList.remove("is-visible", "is-initial");
+		});
 		current = wanted = "";
 		displayed = -1;
-		lastProgress = "";
+		lastBlur = lastTitle = "";
+		imageDirty = true;
+		backdrop.style.removeProperty("--fairytale-blur-progress");
+		softLayer?.style.removeProperty("opacity");
+		titleSurface.style.removeProperty("--fairytale-title-opacity");
 		motionHeight = motionWidth = 0;
 		root.style.removeProperty("--fairytale-canvas-image");
 		backdrop.hidden = true;
@@ -184,7 +227,7 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	function syncMode() {
 		const next = enabled();
 		if (active === next) {
-			schedule();
+			requestSourceSync();
 			return;
 		}
 		if (!next) {
@@ -198,17 +241,19 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 			passive: true,
 			signal: scrollScope.signal,
 		});
-		window.addEventListener("resize", schedule, {
+		window.addEventListener("resize", resize, {
 			passive: true,
 			signal: scrollScope.signal,
 		});
-		sourceObserver = new MutationObserver(schedule);
+		sourceObserver = new MutationObserver(requestSourceSync);
 		if (container)
 			sourceObserver.observe(container, {
 				subtree: true,
 				attributes: true,
 				attributeFilter: [
 					"class",
+					"src",
+					"srcset",
 					"data-wallpaper-src",
 					"data-wallpaper-load-state",
 				],
@@ -217,7 +262,7 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	}
 	function routeReady() {
 		syncMode();
-		schedule();
+		requestSourceSync();
 	}
 
 	function bindNavigation() {
@@ -237,9 +282,13 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	window.addEventListener("firefly:fairytale-settings-change", schedule, {
 		signal,
 	});
-	window.addEventListener("firefly:wallpaper-assignments-ready", schedule, {
-		signal,
-	});
+	window.addEventListener(
+		"firefly:wallpaper-assignments-ready",
+		requestSourceSync,
+		{
+			signal,
+		},
+	);
 	document.addEventListener("swup:pageView", routeReady, { signal });
 	document.addEventListener("swup:enable", bindNavigation, { signal });
 	document.addEventListener("astro:page-load", routeReady, { signal });

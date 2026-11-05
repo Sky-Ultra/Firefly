@@ -3,10 +3,14 @@ import "@/styles/fairytale-layout.css";
 import "@/styles/fairytale-menus.css";
 import FairytaleParallax from "./FairytaleParallax.astro";
 ---
-<fairytale-layout id="fairytale-backdrop" aria-hidden="true" hidden>
+<fairytale-layout id="fairytale-backdrop" data-fairytale-cached-blur aria-hidden="true" hidden>
  <FairytaleParallax>
  <img data-fairytale-image alt="" decoding="async" />
  <img data-fairytale-image alt="" decoding="async" />
+ <div class="fairytale-soft-layer">
+  <div data-fairytale-soft-image></div>
+  <div data-fairytale-soft-image></div>
+ </div>
  </FairytaleParallax>
 </fairytale-layout>
 <script>
