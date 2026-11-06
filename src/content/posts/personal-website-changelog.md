@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-11-05
+updated: 2026-11-06
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -179,6 +179,28 @@ draft: false
 - 为[朋友圈](/moments/)功能新增[评论区](/moments/#grassroots-hardship-video)，对于部分朋友圈已经开放评论区功能
 - <mark class="theme-highlight">重要更新</mark>：我们为[评论区](/guestbook/#post-comments)功能添加了随机出现的动画表情。没什么用吗？没什么用，那就对了！但是很好玩，不是吗...？
 
+## 2026.10.30
+
+- 更新了部分图片资源
+
+## 2026.11.2
+
+- <mark class="theme-highlight">重要更新</mark>：我们为我们的网站迁移到了全新的 [Github 仓库](https://github.com/Sky-Ultra/Firefly)，并做了多次全链路 debug，大幅度优化了网站的访问体验，并修复了部分 bug
+
+## 2026.11.3
+
+- 我们优化了[童话主题](/)下的部分表现效果
+- 我们优化了[音乐悬浮窗](/music/)的表现效果，并且新增开关
+
+## 2026.11.4
+
+- <mark class="theme-highlight">重要更新</mark>：我们更新了对[部分文章](/posts/liking/)的密码访问安全系数。当前状态下，部分文章的密码访问不再是前端遮罩，而需要进行后端加密验证，并且当验证次数被耗尽之后，需要等待后端重新计时到下一次计时周期。本次更新意义重大，大幅度提升了网站上隐私文章安全性
+
 ## 2026.11.5
 
 - 更新了文章：[吾仍在等候，只是不再期待](/posts/still-waiting-no-longer-expecting/)
+
+## 2026.11.6
+
+- 我们优化了在[童话主题](/)下偶尔出现的滑动卡顿，对其进行了性能调优，大幅度提升了在童话主题下的访问体验
+- 我们优化了在[童话主题](/)下的整体材质表现，当前状态下材质表现更加通透，对背景有更好的映衬和模糊效果

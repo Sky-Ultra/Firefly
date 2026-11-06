@@ -36,6 +36,8 @@ export type MomentItem = {
 	date: string;
 	content: string;
 	contentEn?: string;
+	/** Explicit inline text/emoji order for selected imported moments only. */
+	contentParts?: ({ text: string; textEn?: string } | { emoji: SocialImage })[];
 	tags?: string[];
 	tagsEn?: string[];
 	location?: string;

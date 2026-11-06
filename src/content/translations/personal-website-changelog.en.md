@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:1440ff52bcc22d223205631d48bf9eca38d70a27b47a2a4a6e27f2ebd7d2dcaa
+sourceHash: sha256:c8865a2fb221e8c4d350cd740a6b2cef8f3a309e663d2b723ca39018cca09f8b
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -168,6 +168,28 @@ This article provides a brief record of updates to my personal website, beginnin
 - Added [comments](/moments/#grassroots-hardship-video) to [Moments](/moments/). Comments are already available on selected updates.
 - <mark class="theme-highlight">Major update</mark>: We have added randomly appearing animated mascots to the [comment section](/guestbook/#post-comments). Is it useless? If it is, that's the point! But it's fun, isn't it...?
 
+## October 30, 2026
+
+- Updated some image assets
+
+## November 2, 2026
+
+- <mark class="theme-highlight">Major update</mark>: We migrated the site to a new [GitHub repository](https://github.com/Sky-Ultra/Firefly) and carried out multiple rounds of debugging across the full deployment chain, substantially improving the browsing experience and fixing some bugs
+
+## November 3, 2026
+
+- Improved some visual effects in the [Fairytale theme](/)
+- Improved the [floating music player](/music/) and added a toggle
+
+## November 4, 2026
+
+- <mark class="theme-highlight">Major update</mark>: We improved password-access security for [selected articles](/posts/liking/). Access to these articles now requires encrypted backend verification rather than a frontend overlay. Once the allowed attempts are exhausted, visitors must wait for the backend counter to reset in the next period. This significant update substantially improves the security of private articles on the site
+
 ## November 5, 2026
 
 - Published the article [“I Am Still Waiting, Just No Longer Expecting”](/posts/still-waiting-no-longer-expecting/)
+
+## November 6, 2026
+
+- Tuned performance to reduce occasional scrolling stutters in the [Fairytale theme](/), substantially improving the browsing experience
+- Improved the overall materials in the [Fairytale theme](/). Surfaces are now clearer and more translucent, with better background integration and blur

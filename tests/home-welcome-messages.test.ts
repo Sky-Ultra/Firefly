@@ -18,12 +18,12 @@ const additions = [
 test("the homepage welcome pool includes all eight additions without duplicates", () => {
 	const messages = backgroundWallpaper.common?.homeText?.subtitle;
 	assert.ok(Array.isArray(messages));
-	assert.equal(messages.length, 32);
+	assert.equal(messages.length, 35);
 	assert.equal(new Set(messages).size, messages.length);
 	assert.ok(messages.includes("若有人兮云之际，舞袂翩兮扬玉霓"));
 	assert.ok(messages.includes("既见君兮予所欢，愿随风兮鸣银鸾"));
 	assert.ok(messages.includes("物物而不物于物，念念而不念于念"));
-	assert.deepEqual(messages.slice(-8), additions);
+	assert.deepEqual(messages.slice(-11, -3), additions);
 });
 
 test("the welcome-message showcase includes the added line and the requested attribution", () => {
@@ -39,8 +39,8 @@ test("the welcome-message showcase includes the added line and the requested att
 		/^> 物物而不物于物，念念而不念于念 {2}\n> ——《庄子·山木》$/m,
 	);
 	assert.match(article, /^published: 2026-09-30$/m);
-	assert.match(article, /^updated: 2026-10-25$/m);
-	assert.match(article, /截至2026\.10\.25/);
+	assert.match(article, /^updated: 2026-11-07$/m);
+	assert.match(article, /截至2026\.11\.7/);
 	assert.doesNotMatch(article, /截至2026\.10\.1之前/);
 });
 
@@ -56,7 +56,7 @@ test("the eight new showcase entries preserve the user's words and use only the 
 		const attribution = index === 0 ? "《春江花月夜》" : "Sky";
 		assert.ok(article.includes(`> ${line}  \n> ——${attribution}`), line);
 	}
-	assert.equal((article.match(/^> ——Sky$/gm) ?? []).length, 7);
+	assert.equal((article.match(/^> ——Sky$/gm) ?? []).length, 9);
 });
 
 test("the welcome-message showcase's English revision is synchronized", () => {
@@ -84,7 +84,7 @@ test("the welcome-message showcase's English revision is synchronized", () => {
 	);
 	assert.match(translation, /The Tree on the Mountain/);
 	assert.doesNotMatch(translation, /second half is an elaboration/);
-	assert.match(translation, /October 25, 2026/);
-	assert.equal((translation.match(/^> —Sky$/gm) ?? []).length, 7);
-	assert.equal((translation.match(/^> —/gm) ?? []).length, 32);
+	assert.match(translation, /November 7, 2026/);
+	assert.equal((translation.match(/^> —Sky$/gm) ?? []).length, 9);
+	assert.equal((translation.match(/^> —/gm) ?? []).length, 35);
 });

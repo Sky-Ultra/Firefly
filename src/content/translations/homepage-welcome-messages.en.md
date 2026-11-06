@@ -1,9 +1,9 @@
 ---
 translationOf: homepage-welcome-messages.md
-sourceHash: sha256:3cd2e85fb79d5a67890de889cc7e8e3a70cc7bb1f030c39e23f88c0496359e92
+sourceHash: sha256:e13f42349a1546b8fb125b74b89c775ac9138fbed14bfeed5f0b28c5168bc529
 ---
 
-As time passes, the collection of welcome messages on the homepage keeps growing. The code displays them in a random order without repeating a message before the current round ends, but most visitors probably will not stay long enough to see them all. Here, then, are all the homepage welcome messages collected as of October 25, 2026.
+As time passes, the collection of welcome messages on the homepage keeps growing. The code displays them in a random order without repeating a message before the current round ends, but most visitors probably will not stay long enough to see them all. Here, then, are all the homepage welcome messages collected as of November 7, 2026.
 
 All the welcome messages are listed below, together with their sources:
 
@@ -101,4 +101,13 @@ All the welcome messages are listed below, together with their sources:
 > —Sky
 
 > When the pale snow melts, the sunlight turns warm; a fleeting bloom is worth ten thousand years.  
+> —Sky
+
+> Beautiful days slip away; this fleeting life is like dew.  
+> —*Genshin Impact*, the story quest 《秋津森夜试胆会》, Act III: 「世事流水」
+
+> Phoenix feathers brush the heavens and startle the resting moon; rainbow robes reflect the snow, and heavenly fragrance falls.  
+> —Sky
+
+> I long to ride the clear wind after the setting moon, yet a sea of stars and countless skies lie between us.  
 > —Sky

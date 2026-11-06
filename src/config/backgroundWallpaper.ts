@@ -118,6 +118,9 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				"花开未敢传心事，花落方知春已深",
 				"纵有干般眷恋，终随暮雪入旧年",
 				"淡雪融时阳彩暖，一瞬芳华抵万年",
+				"韶光易过，浮生如露",
+				"凤羽拂霄惊宿月，霓衣映雪落天香",
+				"欲乘清风追落月，奈何星海隔重霄",
 			],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",

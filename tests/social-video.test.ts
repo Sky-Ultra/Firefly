@@ -233,7 +233,9 @@ test("the new moment preserves all 31 earlier records, exact text and the reques
 		moment.content,
 		"唉……看完只能感觉基层的辛酸和心酸……中国的底层没有半分活力，只剩下对基础生存的需求……\n真的好压抑...看完我都完全不想回国了，有点想继续呆在澳洲或者香港了...\n”勤劳不一定有收获，但是羞辱是肯定的“\n唉，我真的好想带上我喜欢的女孩一起来澳洲或者香港生活啊……",
 	);
-	const original = items.filter((item) => item !== moment);
+	const original = items.filter(
+		(item) => new Date(item.date).getTime() < new Date(moment.date).getTime(),
+	);
 	assert.equal(original.length, 31);
 	assert.equal(
 		createHash("sha256").update(JSON.stringify(original)).digest("hex"),
