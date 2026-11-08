@@ -4,6 +4,7 @@ import ImageWrapper from "@/components/common/ImageWrapper.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
 import ChangelogActivity from "@/components/pages/personal/ChangelogActivity.astro";
+import ActivityVideoPreview from "@/components/pages/personal/ActivityVideoPreview.astro";
 import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
 import { personalPagesConfig, profileConfig } from "@/config";
 import changelogZh from "@/content/posts/personal-website-changelog.md?raw";
@@ -85,6 +86,7 @@ const changelogCount = changelog.length;
 										<div class="activity-author">{profileConfig.name}</div>
 										<div class="activity-bubble">
 											<p><LocalizedText zh={item.content} en={item.contentEn} /></p>
+											{item.video && <ActivityVideoPreview video={item.video} href={item.href} />}
 										</div>
 										<a href={item.href} class="activity-moment-link elastic-link"><LocalizedText class="elastic-label" zh="查看这条动态" en="View this moment" /><Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></a>
 									</div>

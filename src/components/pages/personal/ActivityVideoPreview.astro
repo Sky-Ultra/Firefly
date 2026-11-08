@@ -1,0 +1,67 @@
+---
+import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
+import type { ActivityMomentVideo } from "@/utils/activity-feed";
+
+interface Props {
+	video: ActivityMomentVideo;
+	href: string;
+}
+const { video, href } = Astro.props;
+---
+
+<a href={href} class="activity-video-preview sidebar-decorated-card" title={video.title} data-i18n-zh={video.title} data-i18n-en={video.titleEn} data-i18n-attr="title">
+	<SidebarDecoration motif="window" />
+	<span class="activity-video-thumb" aria-hidden="true">
+		{video.poster && <img src={video.poster.src} alt="" width="160" height="90" loading="lazy" decoding="async" />}
+		<Icon is:inline name="material-symbols:play-arrow-rounded" class="activity-video-play" />
+	</span>
+	<span class="activity-video-copy">
+		<span class="activity-video-label"><LocalizedText zh="视频动态" en="Video moment" /><Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></span>
+		<span class="activity-video-title"><LocalizedText zh={video.title} en={video.titleEn} /></span>
+	</span>
+</a>
+
+<style>
+	.activity-video-preview {
+		--sidebar-decor-opacity: .1;
+		--sidebar-decor-hover-opacity: .16;
+		display: flex;
+		align-items: center;
+		gap: .65rem;
+		width: min(100%, 20rem);
+		margin-top: .65rem;
+		padding: .5rem;
+		overflow: hidden;
+		border-radius: .65rem;
+		color: var(--activity-text);
+		background: color-mix(in srgb, var(--card-bg) 65%, transparent);
+		text-decoration: none;
+		transition: border-color 220ms ease, box-shadow 220ms ease;
+	}
+	.activity-video-preview:hover {
+		border-color: color-mix(in srgb, var(--primary) 42%, var(--line-divider));
+		box-shadow: 0 .2rem .65rem color-mix(in srgb, var(--primary) 9%, transparent);
+	}
+	.activity-video-thumb {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 6.25rem;
+		aspect-ratio: 16 / 9;
+		flex: none;
+		overflow: hidden;
+		border-radius: .4rem;
+		background: var(--btn-regular-bg);
+	}
+	.activity-video-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+	.activity-video-play { position: relative; width: 1.5rem; height: 1.5rem; color: white; opacity: .85; filter: drop-shadow(0 1px 3px #0007); }
+	.activity-video-thumb:not(:has(img)) .activity-video-play { color: var(--primary); filter: none; }
+	.activity-video-copy { min-width: 0; flex: 1; }
+	.activity-video-label { display: flex; align-items: center; gap: .3rem; margin-bottom: .2rem; color: var(--primary); font-size: .65rem; line-height: 1.4; }
+	.activity-video-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: .78rem; line-height: 1.55; font-weight: 500; overflow-wrap: anywhere; }
+	.activity-video-preview :global(.sidebar-card-decoration::before) { width: 6rem; height: 4.75rem; right: -.75rem; bottom: -.6rem; }
+	@media (max-width: 479px) { .activity-video-thumb { width: 5rem; } .activity-video-title { -webkit-line-clamp: 3; } }
+	@media (prefers-reduced-motion: reduce) { .activity-video-preview { transition: none; } }
+</style>

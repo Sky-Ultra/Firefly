@@ -148,3 +148,83 @@ test("ignores invalid source dates instead of inventing publication times", () =
 		[],
 	);
 });
+
+test("video previews carry only validated display metadata and preserve their moment destination", () => {
+	const moment = {
+		id: "future-video",
+		date: "2027-01-02T20:00:00+11:00",
+		content: "video text",
+		media: {
+			type: "bilibili" as const,
+			url: "https://www.bilibili.com/video/BV16TH36XEQz/",
+			title: "视频标题",
+			titleEn: "Video title",
+			poster: { src: "/cover.webp", alt: "封面" },
+		},
+	};
+	const original = structuredClone(moment);
+	const [activity] = buildActivityFeed([], [moment], links);
+	assert.equal(activity.kind, "moment");
+	if (activity.kind !== "moment") return;
+	assert.equal(activity.href, "/base/moments/#future-video");
+	assert.deepEqual(activity.video, {
+		title: "视频标题",
+		titleEn: "Video title",
+		poster: { src: "/cover.webp", alt: "封面" },
+	});
+	assert.ok(!("media" in activity));
+	assert.ok(activity.video);
+	assert.ok(!("url" in activity.video));
+	assert.notEqual(activity.video?.poster, moment.media.poster);
+	assert.deepEqual(moment, original);
+});
+
+test("plain moments, link-only moments and invalid video URLs do not gain a video preview", () => {
+	for (const media of [
+		undefined,
+		{
+			type: "link" as const,
+			url: "https://www.bilibili.com/video/BV16TH36XEQz/",
+		},
+		{
+			type: "bilibili" as const,
+			url: "https://evil.test/video/BV16TH36XEQz/",
+			title: "Not a Bilibili video",
+		},
+	]) {
+		const [activity] = buildActivityFeed(
+			[],
+			[
+				{
+					id: "plain",
+					date: "2027-01-01",
+					content: "unchanged",
+					...(media ? { media } : {}),
+				},
+			],
+			links,
+		);
+		assert.ok(!("video" in activity));
+	}
+});
+
+test("video moments without a cover or translation still have a readable title preview", () => {
+	const [activity] = buildActivityFeed(
+		[],
+		[
+			{
+				id: "no-cover",
+				date: "2027-01-01",
+				content: "text",
+				media: { type: "bilibili", url: "BV16TH36XEQz", title: "原始标题" },
+			},
+		],
+		links,
+	);
+	assert.ok(activity.kind === "moment" && activity.video);
+	if (activity.kind === "moment")
+		assert.deepEqual(activity.video, {
+			title: "原始标题",
+			titleEn: "原始标题",
+		});
+});

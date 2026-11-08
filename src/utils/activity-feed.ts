@@ -1,4 +1,5 @@
-import type { MomentItem } from "../types/personalPagesConfig";
+import type { MomentItem, SocialImage } from "../types/personalPagesConfig";
+import { bilibiliVideo } from "./social-media-utils";
 
 export type ActivityPost = {
 	id: string;
@@ -23,10 +24,17 @@ export type PostActivity = ActivityBase & {
 	titleEn: string;
 };
 
+export type ActivityMomentVideo = {
+	title: string;
+	titleEn: string;
+	poster?: SocialImage;
+};
+
 export type MomentActivity = ActivityBase & {
 	kind: "moment";
 	content: string;
 	contentEn: string;
+	video?: ActivityMomentVideo;
 };
 
 export type ChangelogActivity = ActivityBase & {
@@ -69,6 +77,15 @@ export function buildActivityFeed(
 	}
 	for (const moment of moments) {
 		if (!Number.isFinite(new Date(moment.date).getTime())) continue;
+		const media = moment.media;
+		const video: ActivityMomentVideo | undefined =
+			media?.type === "bilibili" && bilibiliVideo(media.url)
+				? {
+						title: media.title,
+						titleEn: media.titleEn ?? media.title,
+						...(media.poster ? { poster: { ...media.poster } } : {}),
+					}
+				: undefined;
 		activities.push({
 			id: `moment:${moment.id}`,
 			kind: "moment",
@@ -76,6 +93,7 @@ export function buildActivityFeed(
 			href: links.moment(moment.id),
 			content: moment.content,
 			contentEn: moment.contentEn ?? moment.content,
+			...(video ? { video } : {}),
 		});
 	}
 	for (const entry of changelog) {
