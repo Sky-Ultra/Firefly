@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:c8865a2fb221e8c4d350cd740a6b2cef8f3a309e663d2b723ca39018cca09f8b
+sourceHash: sha256:d7f6ab3a06d1f19e2d63acfc9c1595c03787ce9f0bce106f0277f8b46d7213ff
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -193,3 +193,7 @@ This article provides a brief record of updates to my personal website, beginnin
 
 - Tuned performance to reduce occasional scrolling stutters in the [Fairytale theme](/), substantially improving the browsing experience
 - Improved the overall materials in the [Fairytale theme](/). Surfaces are now clearer and more translucent, with better background integration and blur
+
+## November 8, 2026
+
+- Published the article [“Stardew Valley MCP Plugin: Integration and Implementation”](/posts/stardew-valley-mcp-plugin/)

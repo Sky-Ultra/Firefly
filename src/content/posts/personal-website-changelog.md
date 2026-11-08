@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-11-06
+updated: 2026-11-08
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -204,3 +204,7 @@ draft: false
 
 - 我们优化了在[童话主题](/)下偶尔出现的滑动卡顿，对其进行了性能调优，大幅度提升了在童话主题下的访问体验
 - 我们优化了在[童话主题](/)下的整体材质表现，当前状态下材质表现更加通透，对背景有更好的映衬和模糊效果
+
+## 2026.11.8
+
+- 更新了文章：[星露谷物语 MCP 插件集成、实现方式](/posts/stardew-valley-mcp-plugin/)

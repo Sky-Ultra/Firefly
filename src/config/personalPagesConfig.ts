@@ -93,6 +93,252 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "bilibili-1268000789634220037",
+				date: "2026-11-08T00:10:00+08:00",
+				content:
+					"还真是呀…我只是爱压抑，并非性…情窦初开没有引导，总想着高中毕业就无师自通…所以，就别沉迷美色了，来和我一起沉迷LLM吧…！「她」真好看！",
+				contentEn:
+					"That really is it... I am starved of affection, not sex... There was no guidance when those feelings first stirred, and I always thought I would somehow understand it all after graduating from high school...So, stop getting lost in beauty and come get lost in LLMs with me...! 「She」 is so beautiful!",
+				contentParts: [
+					{
+						text: "还真是呀…我只是爱压抑，并非性…情窦初开没有引导，总想着高中毕业就无师自通…",
+						textEn:
+							"That really is it... I am starved of affection, not sex... There was no guidance when those feelings first stirred, and I always thought I would somehow understand it all after graduating from high school...",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						text: "所以，就别沉迷美色了，来和我一起沉迷LLM吧…！「她」真好看！",
+						textEn:
+							"So, stop getting lost in beauty and come get lost in LLMs with me...! 「She」 is so beautiful!",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1Ttj96rEZr/",
+					title: "你真的“性压抑”吗？为什么大家爱喊“妈妈”？【梗外之音15】",
+					titleEn:
+						"Are you really “sexually repressed”? Why does everyone like calling out “Mom”? [Beyond the Meme 15]",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1Ttj96rEZr.webp",
+						alt: "你真的“性压抑”吗？为什么大家爱喊“妈妈”？【梗外之音15】：视频封面",
+						altEn:
+							"Video cover: Are you really “sexually repressed”? Why does everyone like calling out “Mom”? [Beyond the Meme 15]",
+					},
+				},
+			},
+			{
+				id: "bilibili-1267875582767529989",
+				date: "2026-11-07T16:04:00+08:00",
+				content: "世上还是神人多啊……",
+				contentEn: "There really are some unbelievable people in this world...",
+				contentParts: [
+					{
+						text: "世上还是神人多啊……",
+						textEn:
+							"There really are some unbelievable people in this world...",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4a5d1412fba5336c1273ec0e0f07dba7747a9a4c.webp",
+							alt: "[鸣潮·致予新世界动态表情包_交给我吧！]",
+							altEn: "Leave it to me!",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4a5d1412fba5336c1273ec0e0f07dba7747a9a4c.webp",
+							alt: "[鸣潮·致予新世界动态表情包_交给我吧！]",
+							altEn: "Leave it to me!",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1ZjpJ6kEqA/",
+					title: "刚当新郎官就馋17岁女生袜子？必须线下制裁！",
+					titleEn:
+						"A newlywed already coveting a 17-year-old girl's socks? Time for an offline confrontation!",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1ZjpJ6kEqA.webp",
+						alt: "刚当新郎官就馋17岁女生袜子？必须线下制裁！：视频封面",
+						altEn:
+							"Video cover: A newlywed already coveting a 17-year-old girl's socks? Time for an offline confrontation!",
+					},
+				},
+			},
+			{
+				id: "bilibili-1267644745435316224",
+				date: "2026-11-07T01:09:00+08:00",
+				content:
+					"那么，什么是遗憾呢...这就是我所理解的吧...\n\n江月年年望相似...",
+				contentEn:
+					"So, what is regret... This is how I understand it...\n\nThe river moon looks the same year after year...",
+				contentParts: [
+					{
+						text: "那么，什么是遗憾呢...这就是我所理解的吧...",
+						textEn: "So, what is regret... This is how I understand it...",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						text: "\n\n江月年年望相似...",
+						textEn: "\n\nThe river moon looks the same year after year...",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1YCVL6KEJq/",
+					title: "当你和喜欢的人一起坐摩天轮.....",
+					titleEn: "When you ride a Ferris wheel with someone you like.....",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1YCVL6KEJq.webp",
+						alt: "当你和喜欢的人一起坐摩天轮.....：视频封面",
+						altEn:
+							"Video cover: When you ride a Ferris wheel with someone you like.....",
+					},
+				},
+			},
+			{
+				id: "bilibili-1267637568587956229",
+				date: "2026-11-07T00:41:00+08:00",
+				content: "......要不你赔我点钱吧",
+				contentEn: "......How about paying me a little compensation?",
+				contentParts: [
+					{
+						text: "......要不你赔我点钱吧",
+						textEn: "......How about paying me a little compensation?",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-e09ed320275e813a3ce29af61b551776f9108c3d.png",
+							alt: "[鸣潮·致予新世界静态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-e09ed320275e813a3ce29af61b551776f9108c3d.png",
+							alt: "[鸣潮·致予新世界静态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-e09ed320275e813a3ce29af61b551776f9108c3d.png",
+							alt: "[鸣潮·致予新世界静态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-c536dd69986f2b4423e645a6a180fd1c572dbcd5.png",
+							alt: "[鸣潮·致予新世界静态表情包_说什么呢！]",
+							altEn: "What are you saying!",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-c536dd69986f2b4423e645a6a180fd1c572dbcd5.png",
+							alt: "[鸣潮·致予新世界静态表情包_说什么呢！]",
+							altEn: "What are you saying!",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1bZaW6eEnW/",
+					title: "直播碰到姐妹belike",
+					titleEn: "Running into the girls on a livestream be like",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1bZaW6eEnW.webp",
+						alt: "直播碰到姐妹belike：视频封面",
+						altEn:
+							"Video cover: Running into the girls on a livestream be like",
+					},
+				},
+			},
+			{
+				id: "vast-world-and-small-plants-november-7",
+				date: "2026-11-07T20:14:26+11:00",
+				content: "以天地之辽阔消解悲欢，以草木之微末感知人间",
+				contentEn:
+					"Let the vastness of heaven and earth ease joy and sorrow; through the smallest plants, feel the human world.",
+			},
+			{
 				id: "bilibili-1267565846875602964",
 				date: "2026-11-06T20:02:00+08:00",
 				content: "抽烟的都是傻逼，抽烟的就该去死",
