@@ -93,6 +93,89 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "bilibili-1268345624013570052",
+				date: "2026-11-08T22:28:00+08:00",
+				content: "好有道理啊……",
+				contentEn: "That makes so much sense...",
+				contentParts: [
+					{
+						text: "好有道理啊……",
+						textEn: "That makes so much sense...",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0e1f8ed486b16ea917c27aa8b18e12552e74bc35.webp",
+							alt: "[鸣潮·致予新世界动态表情包_啊？]",
+							altEn: "Huh?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0e1f8ed486b16ea917c27aa8b18e12552e74bc35.webp",
+							alt: "[鸣潮·致予新世界动态表情包_啊？]",
+							altEn: "Huh?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0e1f8ed486b16ea917c27aa8b18e12552e74bc35.webp",
+							alt: "[鸣潮·致予新世界动态表情包_啊？]",
+							altEn: "Huh?",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV19i4z6NEKv/",
+					title: "懂王惨败，纳指暴跌，美国人为什么这么讨厌数据中心？【差评君】",
+					titleEn:
+						"Trump suffers a defeat, the Nasdaq plunges: why do Americans dislike data centers so much? [Chapingjun]",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV19i4z6NEKv.webp",
+						alt: "懂王惨败，纳指暴跌，美国人为什么这么讨厌数据中心？【差评君】：视频封面",
+						altEn:
+							"Video cover: Trump suffers a defeat, the Nasdaq plunges: why do Americans dislike data centers so much? [Chapingjun]",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268244039399899139",
+				date: "2026-11-08T15:54:00+08:00",
+				content: "圣土化抑制结算动画",
+				contentEn: "The closing animation for suppressing the sanctification",
+				contentParts: [
+					{
+						text: "圣土化抑制结算动画",
+						textEn: "The closing animation for suppressing the sanctification",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1C54E6fEem/",
+					title: "到底是谁想拍的？",
+					titleEn: "Whose idea was this shoot, anyway?",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1C54E6fEem.webp",
+						alt: "到底是谁想拍的？：视频封面",
+						altEn: "Video cover: Whose idea was this shoot, anyway?",
+					},
+				},
+			},
+			{
 				id: "bilibili-1268000789634220037",
 				date: "2026-11-08T00:10:00+08:00",
 				content:
