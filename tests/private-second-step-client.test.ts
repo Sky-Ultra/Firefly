@@ -251,3 +251,62 @@ test("native text keyboard is confined to this article's second step", async () 
 		}
 	}
 });
+
+test("leaving the Chinese second step restores the secure input before a cached element is reused", async () => {
+	const view = new Window({ url: "https://example.test/" });
+	view.document.body.innerHTML =
+		'<div data-article="long-night-love-letter" data-password-length="8"><div data-private-ui><form data-private-form><input data-private-password name="original-passphrase" type="password" inputmode="numeric"><button data-private-submit></button></form><p data-private-status></p><p data-private-error hidden></p><button data-private-retry></button></div><div data-private-content hidden></div></div>';
+	const root = view.document.body.firstElementChild!;
+	const input = root.querySelector<HTMLInputElement>("input")!;
+	const previous = new Map<string, PropertyDescriptor | undefined>();
+	let step = 2;
+	for (const [key, value] of Object.entries({
+		window: view,
+		document: view.document,
+		sessionStorage: view.sessionStorage,
+		fetch: async (url: string) =>
+			url.endsWith("/status")
+				? Response.json({
+						step,
+						steps: 2,
+						passwordLength: 3,
+						hint: "Fixture",
+						remaining: 5,
+						locked: false,
+						resetAt: Date.now() + 3600000,
+					})
+				: Response.json({ error: "unauthorized" }, { status: 401 }),
+	})) {
+		previous.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
+		Object.defineProperty(globalThis, key, {
+			configurable: true,
+			writable: true,
+			value,
+		});
+	}
+	let dispose = mountPrivateArticleReader(root as unknown as HTMLElement);
+	try {
+		await flush();
+		assert.equal(input.type, "text");
+		input.value = "测试中";
+		dispose();
+		assert.equal(input.type, "password");
+		assert.equal(input.getAttribute("inputmode"), "numeric");
+		assert.equal(input.name, "original-passphrase");
+		assert.equal(input.getAttribute("lang"), null);
+		assert.equal(input.value, "");
+		step = 1;
+		dispose = mountPrivateArticleReader(root as unknown as HTMLElement);
+		await flush();
+		assert.equal(input.type, "password");
+		assert.equal(input.getAttribute("inputmode"), "numeric");
+		assert.equal(input.name, "original-passphrase");
+	} finally {
+		dispose();
+		await view.happyDOM.close();
+		for (const [key, descriptor] of previous) {
+			if (descriptor) Object.defineProperty(globalThis, key, descriptor);
+			else Reflect.deleteProperty(globalThis, key);
+		}
+	}
+});

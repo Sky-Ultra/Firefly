@@ -89,6 +89,14 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 	}
 	const expectedLength = () =>
 		state?.step === 2 ? Number(state.passwordLength || 0) : firstLength;
+	function restoreInputPresentation() {
+		input.type = originalType;
+		input.name = firstInputName;
+		for (const [name, value] of originalPresentation) {
+			if (value === null) input.removeAttribute(name);
+			else input.setAttribute(name, value);
+		}
+	}
 	function paint() {
 		if (signal.aborted || unlocked) return;
 		const second = state?.step === 2;
@@ -102,10 +110,7 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 				input.setAttribute("autocapitalize", "off");
 				input.setAttribute("autocorrect", "off");
 			} else {
-				for (const [name, value] of originalPresentation) {
-					if (value === null) input.removeAttribute(name);
-					else input.setAttribute(name, value);
-				}
+				restoreInputPresentation();
 				composing = false;
 				imeConfirming = false;
 			}
@@ -456,5 +461,6 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 		clearTimeout(timer);
 		clearInterval(interval);
 		input.value = "";
+		if (nativeChineseApplied) restoreInputPresentation();
 	};
 }
