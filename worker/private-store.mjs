@@ -7,6 +7,8 @@ import {
 	inheritCounters,
 	reserveCounter,
 	trafficCounter,
+	validSecondStepRecord,
+	validVerifier,
 	verifyPassword,
 } from "./private-core.mjs";
 
@@ -72,7 +74,8 @@ export class PrivateArticleBackend extends DurableObject {
 				typeof record.verifier?.hash !== "string" ||
 				typeof record.verifier?.salt !== "string" ||
 				!/^[a-f0-9]{64}$/.test(record.limitGroup || "") ||
-				record.verifier.iterations !== 100000
+				!validVerifier(record.verifier) ||
+				(record.secondVerifier !== undefined && !validSecondStepRecord(record))
 			)
 				return Response.json({ ok: false }, { status: 400 });
 			this.write("article", record);
@@ -82,6 +85,9 @@ export class PrivateArticleBackend extends DurableObject {
 			const r = this.read("article");
 			return Response.json({
 				ready: !!r,
+				secondReady: validSecondStepRecord(r),
+				secondHint: r?.secondHint,
+				secondPasswordLength: r?.secondPasswordLength,
 				version: r?.version ?? null,
 				contentHash: r?.contentHash ?? null,
 				limitGroup: /^[a-f0-9]{64}$/.test(r?.limitGroup || "")
@@ -92,7 +98,10 @@ export class PrivateArticleBackend extends DurableObject {
 		if (input.op === "verify") {
 			const r = this.read("article");
 			if (!r) return Response.json({ unavailable: true }, { status: 503 });
-			const ok = await verifyPassword(input.password, r.verifier);
+			const verifier = input.step === 2 ? r.secondVerifier : r.verifier;
+			if (!validVerifier(verifier))
+				return Response.json({ unavailable: true }, { status: 503 });
+			const ok = await verifyPassword(input.password, verifier);
 			return Response.json({
 				ok,
 				version: ok ? r.version : undefined,
@@ -100,7 +109,9 @@ export class PrivateArticleBackend extends DurableObject {
 		}
 		if (input.op === "content") {
 			const r = this.read("article");
-			return r && input.version === r.version
+			return r &&
+				input.version === r.version &&
+				(!r.secondVerifier || input.steps === 2)
 				? Response.json({ html: r.html, version: r.version })
 				: Response.json({ error: "unauthorized" }, { status: 401 });
 		}

@@ -3,6 +3,8 @@ export const DAY = 86400000;
 export const RESERVATION_MS = 60000;
 export const SESSION_MS = 2 * 60 * 60 * 1000;
 export const DEVICE_MS = 30 * DAY;
+export const STEP_MS = 10 * 60 * 1000;
+export const SECOND_STEP_ARTICLES = ["long-night-love-letter"];
 export const DEVICE_COOKIE = "__Host-firefly-reader";
 export function trafficCounter(previous, now) {
 	const times = (previous?.times || []).filter((time) => time > now - 60000);
@@ -185,6 +187,9 @@ export function readCookies(request) {
 export function cookie(name, value, seconds) {
 	return `${name}=${value}; Path=/; Max-Age=${seconds}; Secure; HttpOnly; SameSite=Strict`;
 }
+export function stepCookie(article) {
+	return `__Host-firefly-step-${article}`;
+}
 export function sessionCookie(article) {
 	return `__Host-firefly-article-${article}`;
 }
@@ -232,4 +237,31 @@ export async function readBody(request, maximum = 8192) {
 		cursor += part.length;
 	}
 	return new TextDecoder().decode(bytes);
+}
+
+export function validVerifier(value) {
+	try {
+		return (
+			value?.iterations === 100000 &&
+			typeof value.salt === "string" &&
+			typeof value.hash === "string" &&
+			fromB64(value.salt).length >= 16 &&
+			fromB64(value.salt).length <= 64 &&
+			fromB64(value.hash).length === 32
+		);
+	} catch {
+		return false;
+	}
+}
+
+export function validSecondStepRecord(record) {
+	return (
+		validVerifier(record?.secondVerifier) &&
+		Number.isInteger(record.secondPasswordLength) &&
+		record.secondPasswordLength >= 1 &&
+		record.secondPasswordLength <= 256 &&
+		typeof record.secondHint === "string" &&
+		record.secondHint.length > 0 &&
+		record.secondHint.length <= 256
+	);
 }

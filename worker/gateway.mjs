@@ -9,10 +9,14 @@ import {
 	json,
 	readBody,
 	readCookies,
+	SECOND_STEP_ARTICLES,
 	SESSION_MS,
+	STEP_MS,
 	sessionCookie,
 	sha256,
 	signToken,
+	stepCookie,
+	validSecondStepRecord,
 	verifyToken,
 } from "./private-core.mjs";
 import { PUBLIC_SITE_ONLINE } from "./site-state.mjs";
@@ -80,6 +84,11 @@ async function admin(request, env, publicKey) {
 				return json({ error: "invalid_import" }, 400);
 			const results = [];
 			for (const item of input.records) {
+				if (
+					SECOND_STEP_ARTICLES.includes(item.slug) &&
+					!validSecondStepRecord(item.record)
+				)
+					return json({ error: "second_step_required" }, 400);
 				if (!ARTICLES.includes(item.slug))
 					return json({ error: "unknown_article" }, 400);
 				results.push({
@@ -171,6 +180,9 @@ export async function privateRequest(
 			})),
 		);
 		const health = registry.find((item) => item.slug === article);
+		const requiresSecond = SECOND_STEP_ARTICLES.includes(article);
+		if (requiresSecond && !health.secondReady)
+			return json({ error: "backend_unavailable" }, 503);
 		if (!health.ready || !/^[a-f0-9]{64}$/.test(health.limitGroup || ""))
 			return json({ error: "backend_unavailable" }, 503);
 		const members = registry
@@ -198,6 +210,29 @@ export async function privateRequest(
 				),
 			);
 		}
+		const candidateStep = requiresSecond
+			? await verifyToken(incoming[stepCookie(article)], secret, "step", now)
+			: null;
+		const challenge =
+			candidateStep &&
+			candidateStep.article === article &&
+			candidateStep.device === device.device &&
+			candidateStep.version === health.version
+				? candidateStep
+				: null;
+		const step = challenge ? 2 : 1;
+		const access = requiresSecond
+			? {
+					step,
+					steps: 2,
+					...(step === 2
+						? {
+								hint: health.secondHint,
+								passwordLength: health.secondPasswordLength,
+							}
+						: {}),
+				}
+			: {};
 		const identities = [
 			{ type: "ip", hash: await sha256(ip) },
 			{ type: "device", hash: await sha256(device.device) },
@@ -221,7 +256,11 @@ export async function privateRequest(
 				),
 			);
 		if (action === "status")
-			return json({ ok: true, ...(await summaries()) }, 200, cookies);
+			return json(
+				{ ok: true, ...access, ...(await summaries()) },
+				200,
+				cookies,
+			);
 		if (action === "content") {
 			const session = await verifyToken(
 				incoming[sessionCookie(article)],
@@ -233,13 +272,15 @@ export async function privateRequest(
 				!session ||
 				session.article !== article ||
 				session.device !== device.device ||
-				session.version !== health.version
+				session.version !== health.version ||
+				(requiresSecond && session.steps !== 2)
 			)
 				return json({ error: "unauthorized" }, 401, cookies);
 			return json(
 				await rpc(env, `content:${article}`, {
 					op: "content",
 					version: session.version,
+					steps: session.steps,
 				}),
 				200,
 				cookies,
@@ -263,6 +304,12 @@ export async function privateRequest(
 			input.password.length > 256
 		)
 			return json({ error: "invalid_request" }, 400, cookies);
+		if (requiresSecond && (input.step ?? 1) !== step)
+			return json(
+				{ error: "step_changed", ...access, ...(await summaries()) },
+				409,
+				cookies,
+			);
 		const id = crypto.randomUUID();
 		const reserved = [];
 		try {
@@ -275,7 +322,12 @@ export async function privateRequest(
 						),
 					);
 					return json(
-						{ error: "limited", reason: permit.reason, ...(await summaries()) },
+						{
+							error: "limited",
+							reason: permit.reason,
+							...access,
+							...(await summaries()),
+						},
 						429,
 						cookies,
 					);
@@ -297,6 +349,7 @@ export async function privateRequest(
 			verified = await rpc(env, `content:${article}`, {
 				op: "verify",
 				password: input.password,
+				step,
 			});
 			outcome = verified.ok ? "correct" : "incorrect";
 		} finally {
@@ -306,12 +359,43 @@ export async function privateRequest(
 		}
 		const state = await summaries();
 		if (!verified.ok)
-			return json({ error: "incorrect", ...state }, 401, cookies);
+			return json({ error: "incorrect", ...access, ...state }, 401, cookies);
+		if (requiresSecond && step === 1) {
+			const next = {
+				type: "step",
+				article,
+				device: device.device,
+				version: verified.version,
+				exp: now + STEP_MS,
+			};
+			cookies.push(
+				cookie(
+					stepCookie(article),
+					await signToken(next, secret),
+					Math.floor(STEP_MS / 1000),
+				),
+			);
+			cookies.push(cookie(sessionCookie(article), "", 0));
+			return json(
+				{
+					ok: true,
+					step: 2,
+					steps: 2,
+					hint: health.secondHint,
+					passwordLength: health.secondPasswordLength,
+					...state,
+				},
+				200,
+				cookies,
+			);
+		}
+		if (requiresSecond) cookies.push(cookie(stepCookie(article), "", 0));
 		const session = {
 			type: "session",
 			device: device.device,
 			article,
 			version: verified.version,
+			...(requiresSecond ? { steps: 2 } : {}),
 			exp: now + SESSION_MS,
 		};
 		cookies.push(
@@ -328,6 +412,7 @@ export async function privateRequest(
 				...(await rpc(env, `content:${article}`, {
 					op: "content",
 					version: verified.version,
+					steps: requiresSecond ? 2 : undefined,
 				})),
 			},
 			200,

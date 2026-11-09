@@ -1,4 +1,8 @@
 type AccessState = {
+	step?: 1 | 2;
+	steps?: number;
+	passwordLength?: number;
+	hint?: string;
 	remaining: number;
 	locked: boolean;
 	resetAt: number;
@@ -8,7 +12,13 @@ type AccessState = {
 };
 export function mountPrivateArticleReader(root: HTMLElement): () => void {
 	const article = root.dataset.article || "";
-	const expectedLength = Number(root.dataset.passwordLength || 0);
+	const firstLength = Number(root.dataset.passwordLength || 0);
+	const firstHint = (root.dataset.firstHint || "").split(/\r?\n/);
+	const hintText = root.querySelector<HTMLElement>("[data-private-hint-text]");
+	const hintDetails = root.querySelector<HTMLElement>(
+		"[data-private-hint-details]",
+	);
+	const stepNode = root.querySelector<HTMLElement>("[data-private-step]");
 	const uiNode = root.querySelector<HTMLElement>("[data-private-ui]");
 	const formNode = root.querySelector<HTMLFormElement>("[data-private-form]");
 	const inputNode = root.querySelector<HTMLInputElement>(
@@ -39,6 +49,7 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 	const ui = uiNode;
 	const form = formNode;
 	const input = inputNode;
+	const firstInputName = input.name;
 	const submit = submitNode;
 	const status = statusNode;
 	const error = errorNode;
@@ -60,15 +71,44 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 	} catch {
 		/* Optional storage. */
 	}
+	const expectedLength = () =>
+		state?.step === 2 ? Number(state.passwordLength || 0) : firstLength;
 	function paint() {
 		if (signal.aborted || unlocked) return;
+		const second = state?.step === 2;
+		if (stepNode) {
+			stepNode.hidden = state?.steps !== 2;
+			stepNode.textContent = second
+				? text("第二重验证 · 2 / 2", "Second verification · 2 / 2")
+				: text("第一重验证 · 1 / 2", "First verification · 1 / 2");
+		}
+		if (hintText && (firstHint[0] || second))
+			hintText.textContent =
+				text("密码提示：", "Password hint: ") +
+				(second ? state?.hint || "" : firstHint[0]);
+		if (hintDetails) {
+			hintDetails.hidden = second;
+			hintDetails.textContent = second ? "" : firstHint.slice(1).join("\n");
+		}
+		input.name = second ? `${firstInputName}-second` : firstInputName;
+		const length = expectedLength();
+		if (length > 0) {
+			const zh = `请输入密码：${length}位数`;
+			const en = `Enter password: ${length} characters`;
+			input.placeholder = text(zh, en);
+			input.setAttribute("aria-label", text(zh, en));
+			input.dataset.i18nZh = zh;
+			input.dataset.i18nEn = en;
+		}
 		input.disabled = busy || !ready || !!state?.locked;
 		submit.disabled = input.disabled;
 		submit.textContent = busy
 			? text("验证中…", "Verifying…")
 			: state?.locked
 				? text("今日已锁定", "Locked today")
-				: text("解锁", "Unlock");
+				: state?.steps === 2 && !second
+					? text("下一步", "Continue")
+					: text("解锁", "Unlock");
 		if (!ready && busy)
 			status.textContent = text(
 				"正在连接验证服务…",
@@ -79,10 +119,20 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 				"验证服务暂时不可用，请重新连接。",
 				"Verification is unavailable. Please reconnect.",
 			);
+		else if (state?.locked && state.steps === 2)
+			status.textContent = text(
+				"两重验证今日已累计输错 5 次，今日已锁定。每天北京时间 04:00 重置。",
+				"Both verification steps are locked after 5 total incorrect attempts. Resets at 04:00 Beijing time.",
+			);
 		else if (state?.locked)
 			status.textContent = text(
 				"此密码今日已累计输错 5 次，使用相同密码的文章均已锁定。每天北京时间 04:00 重置。",
 				"This password is locked after 5 incorrect attempts across articles sharing it. Resets at 04:00 Beijing time.",
+			);
+		else if (state?.steps === 2)
+			status.textContent = text(
+				`两重验证今日共还可输错 ${state.remaining} 次，共用次数。每天北京时间 04:00 重置。`,
+				`${state.remaining} total incorrect attempts remaining across both steps. Resets at 04:00 Beijing time.`,
 			);
 		else
 			status.textContent = text(
@@ -108,7 +158,12 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 							? {}
 							: { "Content-Type": "application/json" },
 					body:
-						password === undefined ? undefined : JSON.stringify({ password }),
+						password === undefined
+							? undefined
+							: JSON.stringify({
+									password,
+									...(state?.steps === 2 ? { step: state.step ?? 1 } : {}),
+								}),
 					signal: control.signal,
 				},
 			);
@@ -204,13 +259,14 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 			// Content passphrases are not the visitor's saved site-account password.
 			// Reject impossible lengths locally; the backend still counts all real guesses.
 			if (
-				Number.isInteger(expectedLength) &&
-				expectedLength > 0 &&
-				password.length !== expectedLength
+				Number.isInteger(expectedLength()) &&
+				expectedLength() > 0 &&
+				password.length !== expectedLength()
 			) {
+				delete error.dataset.kind;
 				error.textContent = text(
-					`请输入本篇文章的 ${expectedLength} 位密码；若浏览器自动填入了账户密码，请手动替换。`,
-					`Enter this article's ${expectedLength}-character password. Replace any site-account password filled by your browser.`,
+					`请输入本篇文章的 ${expectedLength()} 位密码；若浏览器自动填入了账户密码，请手动替换。`,
+					`Enter this article's ${expectedLength()}-character password. Replace any site-account password filled by your browser.`,
 				);
 				error.hidden = false;
 				if (example) example.hidden = true;
@@ -219,6 +275,7 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 				return;
 			}
 			busy = true;
+			delete error.dataset.kind;
 			error.hidden = true;
 			if (example) example.hidden = true;
 			paint();
@@ -228,6 +285,27 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 				if (response.ok && data.html) {
 					input.value = "";
 					show(data.html);
+					return;
+				}
+				if (
+					(response.ok && data.step === 2) ||
+					(response.status === 409 && data.step)
+				) {
+					state = data;
+					ready = true;
+					input.value = "";
+					error.dataset.kind = "info";
+					error.textContent =
+						response.status === 409
+							? text(
+									"验证阶段已更新，请按当前提示继续。",
+									"Verification step changed. Continue with the current hint.",
+								)
+							: text(
+									"第一重验证通过，请继续输入第二个密码。",
+									"First verification passed. Enter the second password.",
+								);
+					error.hidden = false;
 					return;
 				}
 				if (response.status === 429 && data.error === "rate_limited") {
@@ -250,6 +328,7 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 							: text("密码不正确。", "Incorrect password.");
 					error.hidden = false;
 					if (
+						state?.step !== 2 &&
 						response.status === 401 &&
 						password === root.dataset.example &&
 						example

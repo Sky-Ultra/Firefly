@@ -18,12 +18,17 @@ import {
 	inheritCounters,
 	periodAt,
 	reserveCounter,
+	sessionCookie,
+	signToken,
+	stepCookie,
 	trafficCounter,
+	validSecondStepRecord,
 	verifyPassword,
 } from "../worker/private-core.mjs";
 
 const TEST_PASSWORD = "test-only-long-password!";
 const OTHER_PASSWORD = "different-test-only-password!";
+const SECOND_PASSWORD = "fixture-only-second-secret!";
 function fixture() {
 	const states = new Map<
 		string,
@@ -37,6 +42,11 @@ function fixture() {
 	>();
 	const salt = randomBytes(24);
 	const record = {
+		secondVerifier: undefined as
+			| undefined
+			| { salt: string; hash: string; iterations: number },
+		secondHint: undefined as string | undefined,
+		secondPasswordLength: undefined as number | undefined,
 		limitGroup: "a".repeat(64),
 		version: "test-v1",
 		html: "<div data-reading-body><p>Private fixture <mark>highlight</mark></p></div>",
@@ -54,6 +64,15 @@ function fixture() {
 		article: {
 			...record,
 			limitGroup: "b".repeat(64),
+			secondVerifier: {
+				salt: salt.toString("base64"),
+				iterations: 100000,
+				hash: pbkdf2Sync(SECOND_PASSWORD, salt, 100000, 32, "sha256").toString(
+					"base64",
+				),
+			},
+			secondHint: "Fixture second hint",
+			secondPasswordLength: SECOND_PASSWORD.length,
 			verifier: {
 				...record.verifier,
 				hash: pbkdf2Sync(OTHER_PASSWORD, salt, 100000, 32, "sha256").toString(
@@ -85,6 +104,9 @@ function fixture() {
 					if (input.op === "health")
 						return Response.json({
 							ready: !!state.article,
+							secondReady: validSecondStepRecord(state.article),
+							secondHint: state.article?.secondHint,
+							secondPasswordLength: state.article?.secondPasswordLength,
 							version: state.article?.version,
 							limitGroup: state.article?.limitGroup,
 						});
@@ -92,7 +114,9 @@ function fixture() {
 						verifications++;
 						const ok = await verifyPassword(
 							input.password,
-							state.article.verifier,
+							input.step === 2
+								? state.article.secondVerifier
+								: state.article.verifier,
 						);
 						return Response.json({
 							ok,
@@ -150,12 +174,14 @@ function fixture() {
 		action: string,
 		{
 			password,
+			step,
 			cookie = "",
 			ip = "203.0.113.1",
 			article = "liking",
 			origin = "https://example.test",
 		}: {
 			password?: string;
+			step?: number;
 			cookie?: string;
 			ip?: string;
 			article?: string;
@@ -172,7 +198,10 @@ function fixture() {
 					? {}
 					: { "Content-Type": "application/json" }),
 			},
-			body: password === undefined ? undefined : JSON.stringify({ password }),
+			body:
+				password === undefined
+					? undefined
+					: JSON.stringify({ password, ...(step ? { step } : {}) }),
 		});
 	return {
 		env,
@@ -588,4 +617,318 @@ test("API traffic is bounded independently of the five incorrect-password quota"
 	}
 	assert.equal(trafficCounter(state, 100001).result.ok, false);
 	assert.equal(trafficCounter(state, 160001).result.ok, true);
+});
+
+const secondArticle = "long-night-love-letter";
+test("two stages share exactly five errors; first success reveals no HTML and cannot replenish attempts", async () => {
+	const f = fixture();
+	let cookies = jar(
+		await privateRequest(
+			f.request("status", { article: secondArticle }),
+			f.env,
+			{ online: true },
+		),
+	);
+	for (let i = 0; i < 2; i++) {
+		const r = await privateRequest(
+			f.request("unlock", {
+				article: secondArticle,
+				cookie: cookies,
+				password: "wrong-first",
+				step: 1,
+			}),
+			f.env,
+			{ online: true },
+		);
+		assert.equal(r.status, 401);
+		assert.equal((await r.json()).remaining, 4 - i);
+		cookies = jar(r, cookies);
+	}
+	const first = await privateRequest(
+		f.request("unlock", {
+			article: secondArticle,
+			cookie: cookies,
+			password: OTHER_PASSWORD,
+			step: 1,
+		}),
+		f.env,
+		{ online: true },
+	);
+	cookies = jar(first, cookies);
+	const next = await first.json();
+	assert.equal(next.step, 2);
+	assert.equal(next.remaining, 3);
+	assert.ok(!next.html);
+	assert.ok(!JSON.stringify(next).includes("verifier"));
+	assert.equal(
+		(
+			await privateRequest(
+				f.request("content", { article: secondArticle, cookie: cookies }),
+				f.env,
+				{ online: true },
+			)
+		).status,
+		401,
+	);
+	for (let i = 0; i < 3; i++) {
+		const r = await privateRequest(
+			f.request("unlock", {
+				article: secondArticle,
+				cookie: cookies,
+				password: "wrong-second",
+				step: 2,
+			}),
+			f.env,
+			{ online: true },
+		);
+		assert.equal(r.status, 401);
+		assert.equal((await r.json()).remaining, 2 - i);
+	}
+	const count = f.getVerifications();
+	assert.equal(
+		(
+			await privateRequest(
+				f.request("unlock", {
+					article: secondArticle,
+					cookie: cookies,
+					password: SECOND_PASSWORD,
+					step: 2,
+				}),
+				f.env,
+				{ online: true },
+			)
+		).status,
+		429,
+	);
+	assert.equal(f.getVerifications(), count);
+	assert.equal(
+		(
+			await (
+				await privateRequest(
+					f.request("status", { article: secondArticle }),
+					f.env,
+					{ online: true },
+				)
+			).json()
+		).remaining,
+		0,
+	);
+	assert.equal(
+		(
+			await (
+				await privateRequest(f.request("status"), f.env, { online: true })
+			).json()
+		).remaining,
+		5,
+	);
+});
+test("only the correct two-step chain grants an article-scoped session, with no error charge", async () => {
+	const f = fixture();
+	let cookies = jar(
+		await privateRequest(
+			f.request("status", { article: secondArticle }),
+			f.env,
+			{ online: true },
+		),
+	);
+	const first = await privateRequest(
+		f.request("unlock", {
+			article: secondArticle,
+			cookie: cookies,
+			password: OTHER_PASSWORD,
+			step: 1,
+		}),
+		f.env,
+		{ online: true },
+	);
+	cookies = jar(first, cookies);
+	assert.equal(first.status, 200);
+	assert.ok(
+		first.headers
+			.getSetCookie()
+			.some(
+				(c) =>
+					c.startsWith(stepCookie(secondArticle) + "=") &&
+					c.includes("HttpOnly") &&
+					c.includes("Secure"),
+			),
+	);
+	const second = await privateRequest(
+		f.request("unlock", {
+			article: secondArticle,
+			cookie: cookies,
+			password: SECOND_PASSWORD,
+			step: 2,
+		}),
+		f.env,
+		{ online: true },
+	);
+	cookies = jar(second, cookies);
+	const data = await second.json();
+	assert.equal(second.status, 200);
+	assert.equal(data.html, f.record.html);
+	assert.equal(data.remaining, 5);
+	assert.equal(
+		(
+			await privateRequest(
+				f.request("content", { article: secondArticle, cookie: cookies }),
+				f.env,
+				{ online: true },
+			)
+		).status,
+		200,
+	);
+	assert.equal(
+		(
+			await privateRequest(
+				f.request("content", { article: "liking", cookie: cookies }),
+				f.env,
+				{ online: true },
+			)
+		).status,
+		401,
+	);
+});
+test("missing, expired, cross-device, and tampered step proofs cannot verify stage two or spend quota", async () => {
+	const f = fixture();
+	let cookies = jar(
+		await privateRequest(
+			f.request("status", { article: secondArticle }),
+			f.env,
+			{ online: true },
+		),
+	);
+	const skipped = await privateRequest(
+		f.request("unlock", {
+			article: secondArticle,
+			cookie: cookies,
+			password: SECOND_PASSWORD,
+			step: 2,
+		}),
+		f.env,
+		{ online: true },
+	);
+	assert.equal(skipped.status, 409);
+	assert.equal(f.getVerifications(), 0);
+	const first = await privateRequest(
+		f.request("unlock", {
+			article: secondArticle,
+			cookie: cookies,
+			password: OTHER_PASSWORD,
+			step: 1,
+		}),
+		f.env,
+		{ online: true },
+	);
+	cookies = jar(first, cookies);
+	const stepPair = cookies
+		.split("; ")
+		.find((v) => v.startsWith(stepCookie(secondArticle) + "="));
+	assert.ok(stepPair);
+	const token = stepPair.slice(stepPair.indexOf("=") + 1);
+	const payload = JSON.parse(
+		Buffer.from(token.split(".")[0], "base64url").toString(),
+	);
+	const secret = f.states.get("authority")?.key;
+	assert.ok(secret);
+	const expired = await signToken({ ...payload, exp: Date.now() - 1 }, secret);
+	const oldSession = await signToken(
+		{ ...payload, type: "session", exp: Date.now() + 60000 },
+		secret,
+	);
+	assert.equal(
+		(
+			await privateRequest(
+				f.request("content", {
+					article: secondArticle,
+					cookie:
+						cookies + "; " + sessionCookie(secondArticle) + "=" + oldSession,
+				}),
+				f.env,
+				{ online: true },
+			)
+		).status,
+		401,
+	);
+	for (const bad of [
+		cookies.replace(token, expired),
+		cookies.replace(token, token.slice(0, -5) + "xxxxx"),
+		stepPair,
+	]) {
+		const r = await privateRequest(
+			f.request("unlock", {
+				article: secondArticle,
+				cookie: bad,
+				password: SECOND_PASSWORD,
+				step: 2,
+			}),
+			f.env,
+			{ online: true },
+		);
+		assert.equal(r.status, 409);
+		assert.equal((await r.json()).remaining, 5);
+	}
+	assert.equal(f.getVerifications(), 1);
+});
+test("simultaneous second-stage guesses remain bounded by the same five atomic reservations", async () => {
+	const f = fixture();
+	let cookies = jar(
+		await privateRequest(
+			f.request("status", { article: secondArticle }),
+			f.env,
+			{ online: true },
+		),
+	);
+	const first = await privateRequest(
+		f.request("unlock", {
+			article: secondArticle,
+			cookie: cookies,
+			password: OTHER_PASSWORD,
+			step: 1,
+		}),
+		f.env,
+		{ online: true },
+	);
+	cookies = jar(first, cookies);
+	const results = await Promise.all(
+		Array.from({ length: 12 }, () =>
+			privateRequest(
+				f.request("unlock", {
+					article: secondArticle,
+					cookie: cookies,
+					password: "bad",
+					step: 2,
+				}),
+				f.env,
+				{ online: true },
+			),
+		),
+	);
+	assert.equal(results.filter((r) => r.status === 401).length, 5);
+	assert.equal(results.filter((r) => r.status === 429).length, 7);
+	assert.equal(f.getVerifications(), 6);
+});
+test("required secondary configuration fails closed instead of falling back to the old password", async () => {
+	for (const field of [
+		"secondVerifier",
+		"secondHint",
+		"secondPasswordLength",
+	]) {
+		const f = fixture();
+		const stored = f.states.get(`content:${secondArticle}`);
+		assert.ok(stored?.article);
+		Reflect.deleteProperty(stored.article, field);
+		for (const action of ["status", "content", "unlock"]) {
+			const r = await privateRequest(
+				f.request(action, {
+					article: secondArticle,
+					...(action === "unlock" ? { password: OTHER_PASSWORD } : {}),
+				}),
+				f.env,
+				{ online: true },
+			);
+			assert.equal(r.status, 503);
+		}
+		assert.equal(f.getVerifications(), 0);
+	}
 });

@@ -18,12 +18,13 @@ const example =
 		} as Record<string, string>
 	)[id] || "";
 ---
-<private-article-reader class="private-article-reader" data-article={id} data-example={example} data-password-length={passwordLength}>
+<private-article-reader class="private-article-reader" data-article={id} data-example={example} data-password-length={passwordLength} data-first-hint={hint}>
  <div data-private-ui class="flex justify-center py-16 px-4">
   <div class="card-base flex flex-col items-center gap-3 max-w-100 w-full p-8">
    <Icon is:inline name="material-symbols:shield-lock" class="text-8xl text-(--primary)" aria-hidden="true" />
    <h2 class="text-lg font-bold text-black/80 dark:text-white/80 m-0" data-i18n-zh="密码保护" data-i18n-en="Password protected">密码保护</h2>
-   {hint && <div class="flex flex-col items-center gap-1 text-center"><p class="text-sm leading-relaxed text-black dark:text-white m-0">密码提示：{hintText}</p>{hintDetails.length>0&&<p class="text-xs text-black/30 dark:text-white/30 whitespace-pre-line m-0">{hintDetails.join("\n")}</p>}</div>}
+   <p data-private-step hidden class="text-xs font-medium text-(--primary) m-0" aria-live="polite"></p>
+   {hint && <div class="flex flex-col items-center gap-1 text-center"><p data-private-hint-text class="text-sm leading-relaxed text-black dark:text-white m-0">密码提示：{hintText}</p>{hintDetails.length>0&&<p data-private-hint-details class="text-xs text-black/30 dark:text-white/30 whitespace-pre-line m-0">{hintDetails.join("\n")}</p>}</div>}
    <form data-private-form autocomplete="off" class="w-full mt-2 space-y-2">
     <input data-private-password type="password" name={`article-passphrase-${id}`} placeholder={`请输入密码：${passwordLength}位数`} data-i18n-zh={`请输入密码：${passwordLength}位数`} data-i18n-en={`Enter password: ${passwordLength} characters`} data-i18n-attr="placeholder" autocomplete="off" aria-label={`请输入密码：${passwordLength}位数`} aria-describedby={`private-status-${id}`} class="w-full px-3 py-2 rounded-lg text-sm bg-black/5 dark:bg-white/10 border border-black/8 dark:border-white/8 text-black/80 dark:text-white/80 placeholder-black/25 dark:placeholder-white/25 outline-none focus:border-(--primary) transition disabled:opacity-50" disabled />
     <button data-private-submit type="submit" class="w-full py-2 rounded-lg text-sm font-medium bg-(--primary) text-white dark:text-black/70 hover:opacity-85 transition disabled:opacity-50" disabled>连接中…</button>
@@ -49,6 +50,7 @@ const example =
 <style>
 .private-article-reader { display:block; }
 :global(.private-article-reader [hidden]) { display:none!important; }
+:global(.private-article-reader [data-private-error][data-kind="info"]) { color:var(--primary); }
 .private-example { border:1px solid color-mix(in srgb,var(--primary) 25%,transparent); padding:.55rem .8rem; border-radius:.7rem; background:var(--btn-regular-bg); color:var(--primary); font-size:.85rem; }
 :global(.private-article-reader .private-toc) { margin-bottom:1.5rem; padding:1rem; border-radius:.75rem; background:var(--btn-regular-bg); color:var(--btn-content); }
 :global(.private-article-reader .private-toc summary) { cursor:pointer; font-weight:600; }
