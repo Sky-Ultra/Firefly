@@ -1,8 +1,8 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [ master ]
+  # The canonical site is deployed by Cloudflare. The full site exceeds
+  # GitHub Pages' 1 GB limit, so this optional mirror is manual-only.
   workflow_dispatch:
 
 # Pages 部署需要的权限
@@ -41,6 +41,26 @@ jobs:
         env:
           PRIVATE_POST_PASSWORD: ${{ secrets.PRIVATE_POST_PASSWORD }}
         run: pnpm run build
+
+      - name: Check Pages site size
+        run: |
+          node --input-type=module <<'NODE'
+          import { readdir, stat } from 'node:fs/promises';
+          import path from 'node:path';
+          async function bytes(directory) {
+            let total = 0;
+            for (const item of await readdir(directory, { withFileTypes: true })) {
+              const file = path.join(directory, item.name);
+              total += item.isDirectory() ? await bytes(file) : (await stat(file)).size;
+            }
+            return total;
+          }
+          const size = await bytes('dist');
+          if (size > 1_000_000_000) {
+            console.error('GitHub Pages supports sites up to 1 GB. Use the existing Cloudflare production deployment for this site.');
+            process.exit(1);
+          }
+          NODE
 
       - name: Create .nojekyll file
         run: touch dist/.nojekyll

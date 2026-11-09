@@ -23,7 +23,7 @@ The original repository retains its original GitHub records. The new repository 
 - The Cloudflare GitHub App's selected-repository authorization points only to the active repository ID 1439447294. Do not expand it to all repositories or leave its write/deployment authorization on the Legacy backup.
 - Keep the existing domain routes, `PRIVATE_ARTICLES` binding, `PrivateArticleBackend` class, migration history, private namespace and preview-URL restrictions intact. Never recreate these resources merely to change the Git repository.
 - The external Twikoo service and comment identities remain unchanged.
-- GitHub Pages uses the active repository, the same `github-pages` environment and master branch rule, and the existing custom domain. Legacy Actions are disabled to prevent competing publications.
+- Cloudflare remains the canonical production host. On 2026-11-09 the owner authorized stopping automatic GitHub Pages deployment because the full published site exceeds Pages' 1 GB limit. The optional Pages workflow and existing site are retained; `workflow_dispatch` is available for future use, with a size check before upload. It no longer runs on pushes. Source history, repository backups and Cloudflare auto-deployment remain unchanged. Legacy Actions stay disabled.
 - The existing build variable is configured separately in GitHub and Cloudflare. Never commit its plaintext or private article-management material.
 
 ## Recovery
