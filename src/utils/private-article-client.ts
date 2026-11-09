@@ -50,6 +50,22 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 	const form = formNode;
 	const input = inputNode;
 	const firstInputName = input.name;
+	const originalType = input.type;
+	const presentationAttributes = [
+		"inputmode",
+		"lang",
+		"spellcheck",
+		"autocapitalize",
+		"autocorrect",
+	] as const;
+	const originalPresentation = new Map(
+		presentationAttributes.map((name) => [name, input.getAttribute(name)]),
+	);
+	let nativeChineseApplied = false;
+	let composing = false;
+	let imeConfirming = false;
+	const chineseSecondStep = () =>
+		article === "long-night-love-letter" && state?.step === 2;
 	const submit = submitNode;
 	const status = statusNode;
 	const error = errorNode;
@@ -76,6 +92,25 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 	function paint() {
 		if (signal.aborted || unlocked) return;
 		const second = state?.step === 2;
+		const nativeChinese = chineseSecondStep();
+		if (nativeChinese !== nativeChineseApplied) {
+			input.type = nativeChinese ? "text" : originalType;
+			if (nativeChinese) {
+				input.setAttribute("inputmode", "text");
+				input.setAttribute("lang", "zh-CN");
+				input.setAttribute("spellcheck", "false");
+				input.setAttribute("autocapitalize", "off");
+				input.setAttribute("autocorrect", "off");
+			} else {
+				for (const [name, value] of originalPresentation) {
+					if (value === null) input.removeAttribute(name);
+					else input.setAttribute(name, value);
+				}
+				composing = false;
+				imeConfirming = false;
+			}
+			nativeChineseApplied = nativeChinese;
+		}
 		if (stepNode) {
 			stepNode.hidden = state?.steps !== 2;
 			stepNode.textContent = second
@@ -93,8 +128,12 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 		input.name = second ? `${firstInputName}-second` : firstInputName;
 		const length = expectedLength();
 		if (length > 0) {
-			const zh = `请输入密码：${length}位数`;
-			const en = `Enter password: ${length} characters`;
+			const zh = nativeChinese
+				? `请输入中文密码：${length}个字`
+				: `请输入密码：${length}位数`;
+			const en = nativeChinese
+				? `Enter ${length} Chinese characters`
+				: `Enter password: ${length} characters`;
 			input.placeholder = text(zh, en);
 			input.setAttribute("aria-label", text(zh, en));
 			input.dataset.i18nZh = zh;
@@ -250,10 +289,53 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 			paint();
 		}
 	}
+	if (article === "long-night-love-letter") {
+		input.addEventListener(
+			"compositionstart",
+			() => {
+				if (chineseSecondStep()) composing = true;
+			},
+			{ signal },
+		);
+		input.addEventListener(
+			"compositionend",
+			() => {
+				composing = false;
+			},
+			{ signal },
+		);
+		input.addEventListener(
+			"keydown",
+			(event) => {
+				if (!chineseSecondStep()) return;
+				imeConfirming =
+					(event.isComposing || composing || event.key === "Process") &&
+					(event.key === "Enter" ||
+						event.code === "Enter" ||
+						event.key === "Process");
+			},
+			{ signal },
+		);
+		input.addEventListener(
+			"keyup",
+			() => {
+				imeConfirming = false;
+			},
+			{ signal },
+		);
+		submit.addEventListener(
+			"pointerdown",
+			() => {
+				imeConfirming = false;
+			},
+			{ signal },
+		);
+	}
 	form.addEventListener(
 		"submit",
 		async (event) => {
 			event.preventDefault();
+			if (chineseSecondStep() && (composing || imeConfirming)) return;
 			if (busy || !ready || state?.locked || unlocked || !input.value) return;
 			const password = input.value;
 			// Content passphrases are not the visitor's saved site-account password.

@@ -75,6 +75,8 @@ async function fixture(length?: number) {
 test("a mismatched browser-filled password never reaches verification or spends quota", async () => {
 	const f = await fixture(4);
 	try {
+		assert.equal(f.input.type, "password");
+		assert.equal(f.input.getAttribute("inputmode"), null);
 		await f.submit("accountpw!");
 		assert.equal(f.getUnlocks(), 0);
 		assert.equal(

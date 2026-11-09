@@ -86,11 +86,46 @@ test("sequential reader updates the hint and length, clears secrets, shares rema
 			root.querySelector("[data-private-step]")!.textContent!,
 			/1 \/ 2/,
 		);
+		assert.equal(input.type, "password");
+		assert.equal(input.getAttribute("inputmode"), null);
 		await submit("11111111");
 		assert.equal(requests.length, 1);
 		assert.equal(requests[0].step, 1);
 		assert.equal(input.value, "");
 		assert.match(input.placeholder, /3/);
+		assert.equal(input.type, "text");
+		assert.equal(input.getAttribute("inputmode"), "text");
+		assert.equal(input.lang, "zh-CN");
+		assert.equal(input.hasAttribute("maxlength"), false);
+		input.dispatchEvent(
+			new view.CompositionEvent("compositionstart", { data: "mingzi" }),
+		);
+		await submit("mingzi");
+		assert.equal(
+			requests.length,
+			1,
+			"unfinished IME composition must not submit",
+		);
+		input.dispatchEvent(
+			new view.KeyboardEvent("keydown", {
+				key: "Enter",
+				code: "Enter",
+				isComposing: true,
+			}),
+		);
+		input.dispatchEvent(
+			new view.CompositionEvent("compositionend", { data: "名字甲" }),
+		);
+		await submit("名字甲");
+		assert.equal(
+			requests.length,
+			1,
+			"candidate-confirmation Enter must not consume quota",
+		);
+		input.dispatchEvent(
+			new view.KeyboardEvent("keyup", { key: "Enter", code: "Enter" }),
+		);
+		input.value = "";
 		assert.equal(
 			root.querySelector<HTMLElement>("[data-private-content]")!.hidden,
 			true,
@@ -124,6 +159,8 @@ test("sequential reader updates the hint and length, clears secrets, shares rema
 		expire = true;
 		await submit("名字甲");
 		assert.match(input.placeholder, /8/);
+		assert.equal(input.type, "password");
+		assert.equal(input.getAttribute("inputmode"), null);
 		assert.match(
 			root.querySelector("[data-private-hint-text]")!.textContent!,
 			/First fixture hint/,
@@ -151,6 +188,66 @@ test("sequential reader updates the hint and length, clears secrets, shares rema
 		for (const [key, descriptor] of previous) {
 			if (descriptor) Object.defineProperty(globalThis, key, descriptor);
 			else Reflect.deleteProperty(globalThis, key);
+		}
+	}
+});
+
+test("native text keyboard is confined to this article's second step", async () => {
+	for (const article of [
+		"long-night-love-letter",
+		"liking",
+		"love-tree-guide",
+	]) {
+		const view = new Window({ url: "https://example.test/" });
+		view.document.body.innerHTML =
+			'<div data-article="' +
+			article +
+			'" data-password-length="8"><div data-private-ui><form data-private-form><input data-private-password type="password" inputmode="numeric"><button data-private-submit></button></form><p data-private-status></p><p data-private-error hidden></p><button data-private-retry></button></div><div data-private-content hidden></div></div>';
+		const root = view.document.body.firstElementChild!;
+		const previous = new Map<string, PropertyDescriptor | undefined>();
+		for (const [key, value] of Object.entries({
+			window: view,
+			document: view.document,
+			sessionStorage: view.sessionStorage,
+			fetch: async (url: string) =>
+				url.endsWith("/status")
+					? Response.json({
+							step: 2,
+							steps: 2,
+							passwordLength: 3,
+							hint: "Fixture",
+							remaining: 5,
+							locked: false,
+							resetAt: Date.now() + 3600000,
+						})
+					: Response.json({ error: "unauthorized" }, { status: 401 }),
+		})) {
+			previous.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
+			Object.defineProperty(globalThis, key, {
+				configurable: true,
+				writable: true,
+				value,
+			});
+		}
+		const dispose = mountPrivateArticleReader(root as unknown as HTMLElement);
+		try {
+			await flush();
+			const input = root.querySelector<HTMLInputElement>("input")!;
+			assert.equal(
+				input.type,
+				article === "long-night-love-letter" ? "text" : "password",
+			);
+			assert.equal(
+				input.getAttribute("inputmode"),
+				article === "long-night-love-letter" ? "text" : "numeric",
+			);
+		} finally {
+			dispose();
+			await view.happyDOM.close();
+			for (const [key, descriptor] of previous) {
+				if (descriptor) Object.defineProperty(globalThis, key, descriptor);
+				else Reflect.deleteProperty(globalThis, key);
+			}
 		}
 	}
 });
