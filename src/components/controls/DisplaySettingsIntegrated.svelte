@@ -58,6 +58,10 @@ import {
 	setFairytaleSettings,
 	setFullscreenLayout,
 } from "@/utils/fullscreen-layout";
+import {
+	POST_LAYOUT_ORDER_REVISION,
+	readPostLayoutPreference,
+} from "@/utils/post-layout-preference";
 import FairytaleDisplayPanel from "./FairytaleDisplayPanel.svelte";
 
 type OverlaySliderItem = {
@@ -410,6 +414,7 @@ function switchLayout(newLayout: PostListLayout) {
 	isSwitching = true;
 	currentLayout = newLayout;
 	localStorage.setItem("postListLayout", currentLayout);
+	localStorage.setItem("postListOrderRevision", POST_LAYOUT_ORDER_REVISION);
 
 	// 触发自定义事件，通知页面布局已改变
 	const event = new CustomEvent("layoutChange", {
@@ -458,7 +463,10 @@ onMount(() => {
 	overlayCardOpacity = getStoredOverlayCardOpacity();
 
 	// 从localStorage读取用户偏好布局
-	const savedLayout = localStorage.getItem("postListLayout");
+	const savedLayout = readPostLayoutPreference(
+		localStorage,
+		window.innerWidth >= 780,
+	);
 	if (
 		savedLayout &&
 		(savedLayout === "list" ||

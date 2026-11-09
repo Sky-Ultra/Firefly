@@ -4,12 +4,14 @@ import { getPostUrlBySlug } from "@utils/url-utils";
 import RandomCoverProvider from "@/components/features/RandomCoverProvider.astro";
 import PostCard from "@/components/layout/PostCard.astro";
 import { siteConfig } from "@/config";
+import { POST_LAYOUT_ORDER_REVISION } from "@/utils/post-layout-preference";
 import {
 	getRandomCoverImages,
 	isRandomCoverImage,
 } from "@/utils/random-cover-utils";
 
 const { page } = Astro.props;
+const orderRevision = POST_LAYOUT_ORDER_REVISION;
 
 let delay = 0;
 const interval = 50;
@@ -93,9 +95,16 @@ const getRandomCoverFallback = (entry: PostEntry): string | undefined => {
 )}
 
 <!-- 立即执行脚本：防止刷新时的布局闪烁 -->
-<script is:inline define:vars={{ defaultLayout, mobileDefaultLayout, columnWidth, masonryEnabled }}>
+<script is:inline define:vars={{ defaultLayout, mobileDefaultLayout, columnWidth, masonryEnabled, orderRevision }}>
   (function() {
-    const savedLayout = localStorage.getItem('postListLayout');
+    let savedLayout = null;
+    try {
+      savedLayout = localStorage.getItem('postListLayout');
+      if (window.innerWidth >= 780 && localStorage.getItem('postListOrderRevision') !== orderRevision) {
+        if (savedLayout === 'masonry') { savedLayout = 'grid'; localStorage.setItem('postListLayout', savedLayout); }
+        localStorage.setItem('postListOrderRevision', orderRevision);
+      }
+    } catch { /* Default layout works without optional storage. */ }
     const validSavedLayout =
       savedLayout === 'list' || savedLayout === 'grid' ||
       (savedLayout === 'masonry' && masonryEnabled)
@@ -133,13 +142,14 @@ const getRandomCoverFallback = (entry: PostEntry): string | undefined => {
 </script>
 
 <script>
+  import { readPostLayoutPreference } from "@/utils/post-layout-preference";
   // 动态布局切换脚本
   function initLayout() {
     const postListContainer = document.getElementById("post-list-container");
     if (!postListContainer) return;
 
     // 从localStorage读取用户偏好
-    const savedLayout = localStorage.getItem("postListLayout");
+    const savedLayout = readPostLayoutPreference(localStorage, window.innerWidth >= 780);
     const defaultLayout =
       postListContainer.getAttribute("data-default-layout") || "list";
     const mobileDefaultLayout =

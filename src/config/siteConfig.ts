@@ -131,8 +131,8 @@ export const siteConfig: SiteConfig = {
 
 	// 文章列表布局配置
 	postListLayout: {
-		// PC 端默认使用瀑布流布局
-		defaultMode: "masonry",
+		// PC 端默认逐行按发布时间从左到右排列
+		defaultMode: "grid",
 		// 移动端默认布局模式，不设置则跟随 defaultMode
 		mobileDefaultMode: "grid",
 		// 是否允许用户切换布局
