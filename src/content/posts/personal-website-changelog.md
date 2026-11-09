@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-11-08
+updated: 2026-11-09
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -208,3 +208,7 @@ draft: false
 ## 2026.11.8
 
 - 更新了文章：[星露谷物语 MCP 插件集成、实现方式](/posts/stardew-valley-mcp-plugin/)
+
+## 2026.11.9
+
+- 更新了文章：[你真的“性压抑”吗？为什么有些人爱乱喊“妈妈”？](/posts/love-and-sexual-repression/)

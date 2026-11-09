@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:d7f6ab3a06d1f19e2d63acfc9c1595c03787ce9f0bce106f0277f8b46d7213ff
+sourceHash: sha256:902992ca326017fd96eada618509e214857630a451df5030a8b240b77ecb7059
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -197,3 +197,7 @@ This article provides a brief record of updates to my personal website, beginnin
 ## November 8, 2026
 
 - Published the article [“Stardew Valley MCP Plugin: Integration and Implementation”](/posts/stardew-valley-mcp-plugin/)
+
+## November 9, 2026
+
+- Published the article [“Are You Really “Sexually Repressed”? Why Do Some People Keep Calling Strangers “Mom”?”](/posts/love-and-sexual-repression/)
