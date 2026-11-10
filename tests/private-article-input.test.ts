@@ -8,9 +8,9 @@ const flush = async () => {
 	for (let i = 0; i < 8; i++) await new Promise<void>((r) => setImmediate(r));
 };
 
-async function fixture(length?: number) {
+async function fixture(length?: number, article = "liking") {
 	const view = new Window({ url: "https://example.test/posts/one/" });
-	view.document.body.innerHTML = `<div data-article="liking" ${length ? `data-password-length="${length}"` : ""}><div data-private-ui><form data-private-form><input data-private-password type="password" disabled><button data-private-submit disabled></button></form><p data-private-status></p><p data-private-error hidden></p><button data-private-retry hidden></button></div><div data-private-content hidden></div></div>`;
+	view.document.body.innerHTML = `<div data-article="${article}" ${length ? `data-password-length="${length}"` : ""}><div data-private-ui><form data-private-form><input data-private-password type="password" disabled><button data-private-submit disabled></button></form><p data-private-status></p><p data-private-error hidden></p><button data-private-retry hidden></button></div><div data-private-content hidden></div></div>`;
 	const root = view.document.body.firstElementChild!;
 	const previous = new Map<string, PropertyDescriptor | undefined>();
 	let unlocks = 0;
@@ -122,5 +122,32 @@ test("older cached markup without length metadata remains usable", async () => {
 		assert.equal(f.getUnlocks(), 1);
 	} finally {
 		await f.close();
+	}
+});
+
+test("only the two-step letter receives its own rejection copy without changing quota or input mode", async () => {
+	for (const article of [
+		"long-night-love-letter",
+		"liking",
+		"love-tree-guide",
+	]) {
+		const f = await fixture(8, article);
+		try {
+			await f.submit("99999999");
+			assert.equal(f.getUnlocks(), 1);
+			assert.equal(
+				f.root.querySelector("[data-private-error]")!.textContent,
+				article === "long-night-love-letter"
+					? "欸，看来不是写给你的哦...！"
+					: "密码不正确。",
+			);
+			assert.match(
+				f.root.querySelector("[data-private-status]")!.textContent!,
+				/4/,
+			);
+			assert.equal(f.input.type, "password");
+		} finally {
+			await f.close();
+		}
 	}
 });

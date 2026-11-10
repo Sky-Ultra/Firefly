@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import DoubleEncryptionBadge from "@/components/common/DoubleEncryptionBadge.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import { commentConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
@@ -30,6 +31,7 @@ export interface Props {
 	words?: number;
 	wordsEn?: number;
 	minutes?: number;
+	doubleEncrypted?: boolean;
 	showWords?: boolean;
 	showReadingTime?: boolean;
 }
@@ -56,6 +58,7 @@ const {
 	words,
 	wordsEn,
 	minutes,
+	doubleEncrypted = false,
 	showWords = false,
 	showReadingTime = false,
 } = Astro.props;
@@ -276,6 +279,8 @@ const visibleTagsEn =
       </div>
     )
   }
+
+  {doubleEncrypted && <DoubleEncryptionBadge />}
 
   {
     showReadingTime && typeof minutes === "number" && (

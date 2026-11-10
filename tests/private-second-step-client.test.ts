@@ -149,6 +149,10 @@ test("sequential reader updates the hint and length, clears secrets, shares rema
 			"stale first-step autofill must not spend second-step quota",
 		);
 		await submit("名字错");
+		assert.equal(
+			root.querySelector("[data-private-error]")!.textContent,
+			"欸，看来不是写给你的哦...！",
+		);
 		assert.equal(requests.length, 2);
 		assert.equal(requests[1].step, 2);
 		assert.match(

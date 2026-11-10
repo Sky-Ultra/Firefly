@@ -23,7 +23,7 @@ sealedReadingStats:
   words: 3805
   minutes: 19
 passwordHint: |-
-  ⌈她⌋的诞日...
+  ⌈你⌋的诞日
   例：20070427
 ---
 

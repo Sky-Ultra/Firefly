@@ -412,7 +412,12 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 									"有验证请求正在处理，请稍后再试。",
 									"Verification is in progress. Try again shortly.",
 								)
-							: text("密码不正确。", "Incorrect password.");
+							: article === "long-night-love-letter"
+								? text(
+										"欸，看来不是写给你的哦...！",
+										"Oh, it seems this wasn't written for you...!",
+									)
+								: text("密码不正确。", "Incorrect password.");
 					error.hidden = false;
 					if (
 						state?.step !== 2 &&
