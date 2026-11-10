@@ -1,3 +1,10 @@
+/* Only post-list pages need room for their mouse-driven card translation.
+ * :has follows Swup navigation even though the grid column itself persists.
+ * Keep each card's own rounded image/content clipping unchanged. */
+@media (hover: hover) and (pointer: fine) {
+	[data-main-content-column]:has(#post-list-container) { overflow: visible; }
+}
+
 /* Independent translate leaves the existing page/masonry transforms untouched. */
 magnetic-post-card.post-card-wrapper {
 	translate: var(--card-hover-x, 0px) var(--card-hover-y, 0px);
