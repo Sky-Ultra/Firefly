@@ -47,7 +47,8 @@ html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fair
 /* A fixed-blur copy shares the decoded wallpaper. Scroll only changes the
  * layer's opacity, avoiding repeated filters or live backdrop capture. */
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] .fairytale-soft-layer {
-	position: absolute; inset: 0; pointer-events: none;
+	/* Sharp fade slots use z-index 0–2; the soft pair must cover all of them. */
+	position: absolute; inset: 0; z-index: 3; pointer-events: none;
 	opacity: 0; will-change: opacity;
 }
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-soft-image] {
