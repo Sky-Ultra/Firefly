@@ -118,7 +118,7 @@ async function fixture(layout = "classic", width = 1440) {
 	view.document.documentElement.dataset.fullscreenLayout = layout;
 	view.document.body.classList.add("is-home");
 	view.document.body.innerHTML =
-		'<div id="wallpaper-wrapper"><div id="banner-images-container"><div class="slide-item hidden lg:block active" data-wallpaper-src="/desktop-a.webp"><img></div><div class="slide-item hidden lg:block" data-wallpaper-src="/desktop-b.webp"><img></div><div class="slide-item block lg:hidden active" data-wallpaper-src="/mobile.webp"><img></div></div></div><main id="main-grid"></main><fairytale-layout data-fairytale-cached-blur hidden><img data-fairytale-image><img data-fairytale-image><div class="fairytale-soft-layer"><div data-fairytale-soft-image></div><div data-fairytale-soft-image></div></div></fairytale-layout>';
+		'<div id="wallpaper-wrapper"><div id="banner-images-container"><div class="slide-item hidden lg:block active" data-wallpaper-src="/desktop-a.webp"><img></div><div class="slide-item hidden lg:block" data-wallpaper-src="/desktop-b.webp"><img></div><div class="slide-item block lg:hidden active" data-wallpaper-src="/mobile.webp"><img></div></div></div><main id="main-grid"></main><fairytale-layout data-fairytale-cached-blur hidden><img data-fairytale-image><img data-fairytale-image><div class="fairytale-soft-layer"><img data-fairytale-soft-image><img data-fairytale-soft-image></div></fairytale-layout>';
 	Object.defineProperty(view, "innerWidth", { value: width, writable: true });
 	Object.defineProperty(view, "innerHeight", { value: 1000, writable: true });
 	Object.defineProperty(view, "scrollY", { value: 0, writable: true });
@@ -156,6 +156,7 @@ async function fixture(layout = "classic", width = 1440) {
 			window: view,
 			document: view.document,
 			MutationObserver: view.MutationObserver,
+			getComputedStyle: view.getComputedStyle.bind(view),
 			AbortController: view.AbortController,
 			requestAnimationFrame: request,
 			cancelAnimationFrame: cancel,
@@ -211,7 +212,7 @@ test("classic creates no image requests or scroll work; enabling copies only the
 			"[data-fairytale-soft-image].is-visible",
 		);
 		assert.ok(soft);
-		assert.match(soft.style.backgroundImage, /desktop-a\.webp/);
+		assert.match(soft.getAttribute("src") || "", /desktop-a\.webp/);
 		assert.match(
 			f.view.document.documentElement.style.getPropertyValue(
 				"--fairytale-canvas-image",
@@ -429,6 +430,120 @@ test("a stationary image-source change and a failed load still schedule source r
 				image.getAttribute("src")?.endsWith("/stationary-change.webp"),
 			),
 		);
+	} finally {
+		await f.close();
+	}
+});
+
+test("mobile blur waits for decoding and retains an opaque outgoing pair until a serialized fade finishes", async () => {
+	const f = await fixture("fairytale", 390);
+	try {
+		await f.flush();
+		const sharp = [
+			...f.backdrop.querySelectorAll<HTMLImageElement>(
+				"[data-fairytale-image]",
+			),
+		];
+		const soft = [
+			...f.backdrop.querySelectorAll<HTMLImageElement>(
+				"[data-fairytale-soft-image]",
+			),
+		];
+		assert.equal(sharp.length, 2);
+		let resolveSoft: () => void = () => {};
+		Object.defineProperty(soft[0], "decode", {
+			configurable: true,
+			value: () =>
+				new Promise<void>((r) => {
+					resolveSoft = r;
+				}),
+		});
+		sharp[0].dispatchEvent(new f.view.Event("load"));
+		await f.flush();
+		assert.equal(
+			f.view.document.documentElement.dataset.fairytaleReady,
+			undefined,
+		);
+		resolveSoft();
+		await f.flush();
+		assert.equal(
+			f.view.document.documentElement.dataset.fairytaleReady,
+			"true",
+		);
+		f.view.scrollY = 900;
+		f.view.dispatchEvent(new f.view.Event("scroll"));
+		await f.flush();
+		const active = f.view.document.querySelector<HTMLElement>(
+			".slide-item.lg\\:hidden.active",
+		);
+		assert.ok(active);
+		active.dataset.wallpaperSrc = "/mobile-next.webp";
+		await f.flush();
+		Object.defineProperty(soft[1], "decode", {
+			configurable: true,
+			value: () =>
+				new Promise<void>((r) => {
+					resolveSoft = r;
+				}),
+		});
+		sharp[1].dispatchEvent(new f.view.Event("load"));
+		await f.flush();
+		assert.equal(sharp[0].classList.contains("is-visible"), true);
+		assert.equal(sharp[1].classList.contains("is-visible"), false);
+		resolveSoft();
+		await f.flush();
+		await f.flush();
+		for (const pair of [sharp, soft]) {
+			assert.equal(
+				pair[0].classList.contains("is-visible"),
+				true,
+				"outgoing stays opaque",
+			);
+			assert.equal(
+				pair[1].classList.contains("is-visible"),
+				true,
+				"incoming fades above it",
+			);
+			assert.ok(Number(pair[1].style.zIndex) > Number(pair[0].style.zIndex));
+		}
+		assert.match(
+			f.view.document.documentElement.style.getPropertyValue(
+				"--fairytale-canvas-image",
+			),
+			/mobile\.webp/,
+		);
+		active.dataset.wallpaperSrc = "/mobile-third.webp";
+		await f.flush();
+		assert.ok(
+			sharp[0].src.endsWith("/mobile.webp"),
+			"visible outgoing slot cannot be recycled mid-fade",
+		);
+		assert.equal(f.timers.size, 1);
+		const complete = [...f.timers.values()][0];
+		f.timers.clear();
+		sharp[1].style.opacity = soft[1].style.opacity = "0";
+		complete();
+		await f.flush();
+		assert.equal(
+			sharp[0].classList.contains("is-visible"),
+			true,
+			"delayed compositor cannot expose the canvas after the timeout",
+		);
+		assert.ok(sharp[0].src.endsWith("/mobile.webp"));
+		sharp[1].style.opacity = soft[1].style.opacity = "1";
+		await f.flush();
+		await f.flush();
+		assert.equal(sharp[0].classList.contains("is-visible"), false);
+		assert.ok(sharp[0].src.endsWith("/mobile-third.webp"));
+		assert.match(
+			f.view.document.documentElement.style.getPropertyValue(
+				"--fairytale-canvas-image",
+			),
+			/mobile-next\.webp/,
+		);
+		sharp[0].dispatchEvent(new f.view.Event("error"));
+		await f.flush();
+		assert.equal(sharp[1].classList.contains("is-visible"), true);
 	} finally {
 		await f.close();
 	}

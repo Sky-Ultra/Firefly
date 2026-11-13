@@ -48,14 +48,16 @@ html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fair
  * layer's opacity, avoiding repeated filters or live backdrop capture. */
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] .fairytale-soft-layer {
 	position: absolute; inset: 0; pointer-events: none;
-	filter: blur(var(--fairytale-blur,10px));
 	opacity: 0; will-change: opacity;
 }
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-soft-image] {
-	position: absolute; inset: 0; background-size: cover; background-position: center;
+	position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background-size: cover; background-position: center;
 	transform: scale(1.05); transform-origin: center; opacity: 0;
 	transition: opacity 1.2s cubic-bezier(.2,0,0,1);
 }
+/* Cache each fixed blur separately; fading children inside a filtered parent
+ * would force that large blur to be repainted throughout the transition. */
+html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] #fairytale-backdrop[data-fairytale-cached-blur] [data-fairytale-soft-image] { filter: blur(var(--fairytale-blur,10px)); }
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-soft-image].is-visible { opacity: 1; }
 html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="fairytale"] [data-fairytale-soft-image].is-initial { transition: none; }
 /* Stable compositor surface and canvas fallback for mobile browser chrome

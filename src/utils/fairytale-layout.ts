@@ -36,6 +36,8 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	let current = "";
 	let wanted = "";
 	let loadTimer: number | undefined;
+	let blendTimer: number | undefined;
+	let paintFrame = 0;
 	let lastBlur = "";
 	let lastTitle = "";
 	let imageDirty = true;
@@ -84,6 +86,9 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 		return motionHeight;
 	}
 	function syncImage() {
+		// Reusing the outgoing slot during a live fade would replace a visible
+		// texture. Finish this blend, then reconcile only the latest source.
+		if (blendTimer !== undefined) return;
 		const source = visibleSource();
 		if (
 			!source ||
@@ -94,6 +99,8 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 			return;
 		wanted = source;
 		const token = ++generation;
+		cancelAnimationFrame(paintFrame);
+		paintFrame = 0;
 		window.clearTimeout(loadTimer);
 		const next = displayed === 0 ? 1 : 0;
 		const image = images[next];
@@ -108,6 +115,8 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 			window.clearTimeout(loadTimer);
 			image.onload = image.onerror = null;
 			wanted = "";
+			cancelAnimationFrame(paintFrame);
+			paintFrame = 0;
 			if (visibleSource() !== source) {
 				requestSourceSync();
 				return;
@@ -118,37 +127,89 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 				return;
 			}
 			current = source;
-			// Show a decoded first frame fully before retiring the original
-			// banner; crossfade only subsequent slides, never through the canvas.
-			image.classList.toggle("is-initial", displayed < 0);
-			root.style.setProperty(
-				"--fairytale-canvas-image",
-				`url(${JSON.stringify(image.src)})`,
-			);
-			// The source is decoded already. Its cached texture is shared with the
-			// fixed-blur surface; opacity can change without recapturing the page.
-			softImages[next]?.style.setProperty(
-				"background-image",
-				`url(${JSON.stringify(image.src)})`,
-			);
-			softImages[next]?.classList.toggle("is-initial", displayed < 0);
+			const first = displayed < 0;
+			const retire = () => {
+				paintFrame = 0;
+				if (!active || token !== generation) return;
+				// A throttled tab or mobile compositor can start/advance CSS fades
+				// later than the timer. Keep the old frame until BOTH incoming
+				// surfaces actually reach full opacity; elapsed time is insufficient.
+				if (
+					!first &&
+					!reduced.matches &&
+					[images[next], softImages[next]].some(
+						(item) =>
+							item &&
+							Number.parseFloat(getComputedStyle(item).opacity || "1") < 0.999,
+					)
+				) {
+					paintFrame = requestAnimationFrame(retire);
+					return;
+				}
+				blendTimer = undefined;
+				for (const group of [images, softImages])
+					group.forEach((item, index) => {
+						if (index !== next) {
+							item.classList.add("is-initial");
+							item.classList.remove("is-visible");
+							item.style.zIndex = "0";
+						}
+					});
+				// Update the overscroll fallback only after the incoming image is
+				// fully opaque, never at the beginning of a wallpaper change.
+				root.style.setProperty(
+					"--fairytale-canvas-image",
+					`url(${JSON.stringify(image.src)})`,
+				);
+				requestSourceSync();
+			};
 			for (const group of [images, softImages])
 				group.forEach((item, index) => {
-					item.classList.toggle("is-visible", index === next);
+					item.style.zIndex = index === next ? "2" : "1";
+					if (index === next) {
+						item.classList.toggle("is-initial", first || reduced.matches);
+						item.classList.add("is-visible");
+					}
 				});
+			// Keep the outgoing sharp AND blurred images opaque under the fade.
+			// Fading both out/in simultaneously exposes the canvas midway through.
 			displayed = next;
 			root.dataset.fairytaleReady = "true";
+			if (first || reduced.matches) retire();
+			else blendTimer = window.setTimeout(retire, 1250);
 		};
+		let decoding = false;
 		image.onload = () => {
-			if (typeof image.decode === "function")
-				image
-					.decode()
-					.catch(() => {})
-					.then(() => finish(true));
-			else finish(true);
+			if (decoding) return;
+			decoding = true;
+			const soft = softImages[next] as HTMLImageElement | undefined;
+			const decoded = [image, ...(soft?.tagName === "IMG" ? [soft] : [])].map(
+				(item) =>
+					typeof item.decode === "function" ? item.decode() : Promise.resolve(),
+			);
+			Promise.all(decoded)
+				.then(() => {
+					if (!active || token !== generation || settled) return;
+					if (displayed < 0 || reduced.matches) finish(true);
+					else {
+						// Let the decoded, separately filtered layers reach a paint before
+						// starting their opacity change (especially mobile compositors).
+						paintFrame = requestAnimationFrame(() => {
+							paintFrame = requestAnimationFrame(() => finish(true));
+						});
+					}
+				})
+				.catch(() => finish(false));
 		};
 		image.onerror = () => finish(false);
 		loadTimer = window.setTimeout(() => finish(false), 15000);
+		const soft = softImages[next];
+		if (soft?.tagName === "IMG") (soft as HTMLImageElement).src = source;
+		else
+			soft?.style.setProperty(
+				"background-image",
+				`url(${JSON.stringify(source)})`,
+			);
 		image.src = source;
 		if (image.complete && image.naturalWidth > 0)
 			image.onload?.(new Event("load"));
@@ -197,6 +258,10 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 		cancelAnimationFrame(frame);
 		frame = 0;
 		window.clearTimeout(loadTimer);
+		window.clearTimeout(blendTimer);
+		blendTimer = undefined;
+		cancelAnimationFrame(paintFrame);
+		paintFrame = 0;
 		window.clearTimeout(retryTimer);
 		scrollScope?.abort();
 		sourceObserver?.disconnect();
@@ -204,8 +269,11 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 			image.onload = image.onerror = null;
 			image.removeAttribute("src");
 			image.classList.remove("is-visible", "is-initial");
+			image.style.removeProperty("z-index");
 		});
 		softImages.forEach((image) => {
+			image.removeAttribute("src");
+			image.style.removeProperty("z-index");
 			image.style.removeProperty("background-image");
 			image.classList.remove("is-visible", "is-initial");
 		});
