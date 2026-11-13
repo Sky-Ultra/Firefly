@@ -3,6 +3,8 @@ type AccessState = {
 	steps?: number;
 	passwordLength?: number;
 	hint?: string;
+	maxFailures?: number;
+	resetSchedule?: "daily" | "weekly";
 	remaining: number;
 	locked: boolean;
 	resetAt: number;
@@ -100,6 +102,8 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 	function paint() {
 		if (signal.aborted || unlocked) return;
 		const second = state?.step === 2;
+		const weekly = state?.resetSchedule === "weekly";
+		const limit = state?.maxFailures ?? 5;
 		const nativeChinese = chineseSecondStep();
 		if (nativeChinese !== nativeChineseApplied) {
 			input.type = nativeChinese ? "text" : originalType;
@@ -149,7 +153,9 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 		submit.textContent = busy
 			? text("验证中…", "Verifying…")
 			: state?.locked
-				? text("今日已锁定", "Locked today")
+				? weekly
+					? text("本周已锁定", "Locked this week")
+					: text("今日已锁定", "Locked today")
 				: state?.steps === 2 && !second
 					? text("下一步", "Continue")
 					: text("解锁", "Unlock");
@@ -164,25 +170,45 @@ export function mountPrivateArticleReader(root: HTMLElement): () => void {
 				"Verification is unavailable. Please reconnect.",
 			);
 		else if (state?.locked && state.steps === 2)
-			status.textContent = text(
-				"两重验证今日已累计输错 5 次，今日已锁定。每天北京时间 04:00 重置。",
-				"Both verification steps are locked after 5 total incorrect attempts. Resets at 04:00 Beijing time.",
-			);
+			status.textContent = weekly
+				? text(
+						`两重验证本周已累计输错 ${limit} 次，本周已锁定。每周一北京时间 04:00 重置。`,
+						`Both steps are locked after ${limit} total incorrect attempts this week. Resets Monday at 04:00 Beijing time.`,
+					)
+				: text(
+						"两重验证今日已累计输错 5 次，今日已锁定。每天北京时间 04:00 重置。",
+						"Both verification steps are locked after 5 total incorrect attempts. Resets at 04:00 Beijing time.",
+					);
 		else if (state?.locked)
-			status.textContent = text(
-				"此密码今日已累计输错 5 次，使用相同密码的文章均已锁定。每天北京时间 04:00 重置。",
-				"This password is locked after 5 incorrect attempts across articles sharing it. Resets at 04:00 Beijing time.",
-			);
+			status.textContent = weekly
+				? text(
+						`此密码本周已累计输错 ${limit} 次，使用相同密码的文章均已锁定。每周一北京时间 04:00 重置。`,
+						`This password is locked after ${limit} incorrect attempts this week. Resets Monday at 04:00 Beijing time.`,
+					)
+				: text(
+						"此密码今日已累计输错 5 次，使用相同密码的文章均已锁定。每天北京时间 04:00 重置。",
+						"This password is locked after 5 incorrect attempts across articles sharing it. Resets at 04:00 Beijing time.",
+					);
 		else if (state?.steps === 2)
-			status.textContent = text(
-				`两重验证今日共还可输错 ${state.remaining} 次，共用次数。每天北京时间 04:00 重置。`,
-				`${state.remaining} total incorrect attempts remaining across both steps. Resets at 04:00 Beijing time.`,
-			);
+			status.textContent = weekly
+				? text(
+						`两重验证本周共还可输错 ${state.remaining} 次，共用次数。每周一北京时间 04:00 重置。`,
+						`${state.remaining} total incorrect attempts remaining across both steps this week. Resets Monday at 04:00 Beijing time.`,
+					)
+				: text(
+						`两重验证今日共还可输错 ${state.remaining} 次，共用次数。每天北京时间 04:00 重置。`,
+						`${state.remaining} total incorrect attempts remaining across both steps. Resets at 04:00 Beijing time.`,
+					);
 		else
-			status.textContent = text(
-				`此密码今日还可输错 ${state?.remaining ?? 5} 次，相同密码的文章共用次数。每天北京时间 04:00 重置。`,
-				`${state?.remaining ?? 5} incorrect attempts remaining, shared by articles with the same password. Resets at 04:00 Beijing time.`,
-			);
+			status.textContent = weekly
+				? text(
+						`此密码本周还可输错 ${state?.remaining ?? limit} 次，相同密码的文章共用次数。每周一北京时间 04:00 重置。`,
+						`${state?.remaining ?? limit} incorrect attempts remaining this week, shared by articles with this password. Resets Monday at 04:00 Beijing time.`,
+					)
+				: text(
+						`此密码今日还可输错 ${state?.remaining ?? 5} 次，相同密码的文章共用次数。每天北京时间 04:00 重置。`,
+						`${state?.remaining ?? 5} incorrect attempts remaining, shared by articles with the same password. Resets at 04:00 Beijing time.`,
+					);
 		retry.hidden = ready;
 	}
 	async function api(action: string, password?: string) {

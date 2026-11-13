@@ -7,6 +7,7 @@ import {
 	DEVICE_MS,
 	fromB64,
 	json,
+	quotaPolicyForArticles,
 	readBody,
 	readCookies,
 	SECOND_STEP_ARTICLES,
@@ -33,12 +34,14 @@ async function rpc(env, name, input) {
 	if (!result.ok) throw Error(data.error || "backend_unavailable");
 	return data;
 }
-function combined(states) {
+function combined(states, policy) {
 	return {
 		remaining: Math.min(...states.map((s) => s.remaining)),
 		locked: states.some((s) => s.locked),
 		resetAt: Math.max(...states.map((s) => s.resetAt)),
 		timezone: "Asia/Shanghai",
+		maxFailures: policy.maxFailures,
+		resetSchedule: policy.resetSchedule,
 	};
 }
 async function admin(request, env, publicKey) {
@@ -188,6 +191,7 @@ export async function privateRequest(
 		const members = registry
 			.filter((item) => item.limitGroup === health.limitGroup)
 			.map((item) => item.slug);
+		const policy = quotaPolicyForArticles(members);
 		const secret = (await rpc(env, "authority", { op: "key" })).key;
 		const incoming = readCookies(request);
 		let device = await verifyToken(
@@ -244,6 +248,7 @@ export async function privateRequest(
 			const identity = identities[names.indexOf(name)];
 			return rpc(env, name, {
 				...input,
+				quotaPolicy: policy.resetSchedule,
 				legacyCounters: members.map(
 					(slug) => `${identity.type}:${slug}:${identity.hash}`,
 				),
@@ -254,6 +259,7 @@ export async function privateRequest(
 				await Promise.all(
 					names.map((name) => quotaRpc(name, { op: "status" })),
 				),
+				policy,
 			);
 		if (action === "status")
 			return json(

@@ -18,10 +18,12 @@ test("sequential reader updates the hint and length, clears secrets, shares rema
 	const requests: { password: string; step: number }[] = [];
 	let phase = 1;
 	let expire = false;
-	let remaining = 5;
+	let remaining = 6;
 	const state = () => ({
 		step: phase,
 		steps: 2,
+		maxFailures: 6,
+		resetSchedule: "weekly",
 		remaining,
 		locked: false,
 		resetAt: Date.now() + 3600000,
@@ -88,6 +90,10 @@ test("sequential reader updates the hint and length, clears secrets, shares rema
 		);
 		assert.equal(input.type, "password");
 		assert.equal(input.getAttribute("inputmode"), null);
+		assert.match(
+			root.querySelector("[data-private-status]")!.textContent!,
+			/本周共还可输错 6 次.*每周一北京时间 04:00/,
+		);
 		await submit("11111111");
 		assert.equal(requests.length, 1);
 		assert.equal(requests[0].step, 1);
@@ -157,7 +163,7 @@ test("sequential reader updates the hint and length, clears secrets, shares rema
 		assert.equal(requests[1].step, 2);
 		assert.match(
 			root.querySelector("[data-private-status]")!.textContent!,
-			/4/,
+			/本周共还可输错 5 次/,
 		);
 		assert.equal(input.value, "");
 		expire = true;

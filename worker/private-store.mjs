@@ -3,8 +3,10 @@ import {
 	b64url,
 	counterState,
 	counterSummary,
+	DAILY_QUOTA,
 	finishCounter,
 	inheritCounters,
+	LETTER_WEEKLY_QUOTA,
 	reserveCounter,
 	trafficCounter,
 	validSecondStepRecord,
@@ -116,6 +118,8 @@ export class PrivateArticleBackend extends DurableObject {
 				: Response.json({ error: "unauthorized" }, { status: 401 });
 		}
 		if (["status", "snapshot", "reserve", "finish"].includes(input.op)) {
+			const policy =
+				input.quotaPolicy === "weekly" ? LETTER_WEEKLY_QUOTA : DAILY_QUOTA;
 			const snapshots = await Promise.all(
 				(input.legacyCounters || []).map(async (name) => {
 					const stub = this.env.PRIVATE_ARTICLES.get(
@@ -123,7 +127,10 @@ export class PrivateArticleBackend extends DurableObject {
 					);
 					const response = await stub.fetch("https://private.internal/", {
 						method: "POST",
-						body: JSON.stringify({ op: "snapshot" }),
+						body: JSON.stringify({
+							op: "snapshot",
+							quotaPolicy: input.quotaPolicy,
+						}),
 					});
 					if (!response.ok) throw Error("legacy_counter_unavailable");
 					return { name, state: await response.json() };
@@ -132,16 +139,16 @@ export class PrivateArticleBackend extends DurableObject {
 			return this.ctx.storage.transactionSync(() => {
 				const now = Date.now();
 				const previous = input.legacyCounters
-					? inheritCounters(this.read("counter"), now, snapshots)
+					? inheritCounters(this.read("counter"), now, snapshots, policy)
 					: this.read("counter");
 				let next;
 				if (input.op === "reserve")
-					next = reserveCounter(previous, now, input.id);
+					next = reserveCounter(previous, now, input.id, policy);
 				else if (input.op === "finish")
-					next = finishCounter(previous, now, input.id, input.outcome);
+					next = finishCounter(previous, now, input.id, input.outcome, policy);
 				else {
-					const state = counterState(previous, now);
-					next = { state, result: counterSummary(state, now) };
+					const state = counterState(previous, now, policy);
+					next = { state, result: counterSummary(state, now, policy) };
 				}
 				this.write("counter", next.state);
 				if (input.op === "snapshot") return Response.json(next.state);

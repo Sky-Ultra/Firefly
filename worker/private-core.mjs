@@ -52,72 +52,128 @@ export async function verifyPassword(password, verifier) {
 		difference |= actual[i] ^ (expected[i] ?? 0);
 	return difference === 0;
 }
-export function periodAt(now) {
+/** @type {{ readonly maxFailures: number, readonly resetSchedule: "daily" | "weekly" }} */
+export const DAILY_QUOTA = Object.freeze({
+	maxFailures: 5,
+	resetSchedule: "daily",
+});
+export const LETTER_WEEKLY_QUOTA = Object.freeze({
+	maxFailures: 6,
+	resetSchedule: "weekly",
+});
+const WEEK = 7 * DAY;
+// 1970-01-05 04:00 Asia/Shanghai (Monday), expressed in UTC.
+const WEEK_ANCHOR = Date.UTC(1970, 0, 4, 20);
+export function quotaPolicyForArticles(articles) {
+	return articles.includes("long-night-love-letter")
+		? LETTER_WEEKLY_QUOTA
+		: DAILY_QUOTA;
+}
+function effectiveQuota(previous, policy = DAILY_QUOTA) {
+	// A rolling-deploy request without policy metadata must not downgrade or
+	// reset a counter already migrated to the weekly rule.
+	return previous?.resetSchedule === "weekly" ||
+		policy.resetSchedule === "weekly"
+		? LETTER_WEEKLY_QUOTA
+		: DAILY_QUOTA;
+}
+export function periodAt(now, policy = DAILY_QUOTA) {
+	if (policy.resetSchedule === "weekly") {
+		const period = Math.floor((now - WEEK_ANCHOR) / WEEK);
+		return { period, resetAt: WEEK_ANCHOR + (period + 1) * WEEK };
+	}
 	const period = Math.floor((now + 4 * 3600000) / DAY);
 	return { period, resetAt: (period + 1) * DAY - 4 * 3600000 };
 }
-export function counterState(previous, now) {
-	const time = periodAt(now);
+export function counterState(previous, now, requested = DAILY_QUOTA) {
+	const policy = effectiveQuota(previous, requested);
+	const time = periodAt(now, policy);
+	const oldSchedule = previous?.resetSchedule || "daily";
+	const samePeriod =
+		oldSchedule === policy.resetSchedule && previous?.period === time.period;
+	// Preserve today's stored failures and pending reservations when first
+	// moving this existing password group to weekly. Never clear the namespace.
+	const migrateToday =
+		oldSchedule === "daily" &&
+		policy.resetSchedule === "weekly" &&
+		previous?.period === periodAt(now).period;
 	const state =
-		previous?.period === time.period
+		samePeriod || migrateToday
 			? structuredClone(previous)
 			: { period: time.period, failures: 0, pending: {} };
+	state.period = time.period;
+	if (policy.resetSchedule === "weekly") state.resetSchedule = "weekly";
 	for (const [id, until] of Object.entries(state.pending))
 		if (until <= now) {
 			delete state.pending[id];
-			state.failures = Math.min(MAX_FAILURES, state.failures + 1);
+			state.failures = Math.min(policy.maxFailures, state.failures + 1);
 		}
 	return state;
 }
-export function counterSummary(state, now) {
+export function counterSummary(state, now, requested = DAILY_QUOTA) {
+	const policy = effectiveQuota(state, requested);
 	return {
 		failures: state.failures,
-		remaining: Math.max(0, MAX_FAILURES - state.failures),
-		locked: state.failures >= MAX_FAILURES,
-		resetAt: periodAt(now).resetAt,
+		remaining: Math.max(0, policy.maxFailures - state.failures),
+		locked: state.failures >= policy.maxFailures,
+		resetAt: periodAt(now, policy).resetAt,
 	};
 }
 /** Carry pre-group per-article quotas forward without resetting or double charging. */
-export function inheritCounters(previous, now, snapshots) {
+export function inheritCounters(
+	previous,
+	now,
+	snapshots,
+	requested = DAILY_QUOTA,
+) {
+	const policy = effectiveQuota(previous, requested);
 	const own = previous ? structuredClone(previous) : undefined;
 	if (own)
 		for (const id of Object.keys(own.pending))
 			if (id.startsWith("legacy:")) delete own.pending[id];
-	const state = counterState(own, now);
+	const state = counterState(own, now, policy);
 	const legacy = snapshots.map(({ name, state: old }) => ({
 		name,
-		state: counterState(old, now),
+		state: counterState(old, now, policy),
 	}));
 	const failures = Math.min(
-		MAX_FAILURES,
+		policy.maxFailures,
 		legacy.reduce((total, item) => total + item.state.failures, 0),
 	);
 	const delta = Math.max(0, failures - (state.inheritedFailures || 0));
-	state.failures = Math.min(MAX_FAILURES, state.failures + delta);
+	state.failures = Math.min(policy.maxFailures, state.failures + delta);
 	state.inheritedFailures = Math.max(failures, state.inheritedFailures || 0);
 	for (const item of legacy)
 		for (const [id, until] of Object.entries(item.state.pending))
 			state.pending[`legacy:${item.name}:${id}`] = until;
 	return state;
 }
-export function reserveCounter(previous, now, id) {
-	const state = counterState(previous, now);
-	const summary = counterSummary(state, now);
+export function reserveCounter(previous, now, id, requested = DAILY_QUOTA) {
+	const policy = effectiveQuota(previous, requested);
+	const state = counterState(previous, now, policy);
+	const summary = counterSummary(state, now, policy);
 	if (summary.locked)
 		return { state, result: { ...summary, ok: false, reason: "locked" } };
-	if (state.failures + Object.keys(state.pending).length >= MAX_FAILURES)
+	if (state.failures + Object.keys(state.pending).length >= policy.maxFailures)
 		return { state, result: { ...summary, ok: false, reason: "busy" } };
 	state.pending[id] = now + RESERVATION_MS;
 	return { state, result: { ...summary, ok: true } };
 }
-export function finishCounter(previous, now, id, outcome) {
-	const state = counterState(previous, now);
+export function finishCounter(
+	previous,
+	now,
+	id,
+	outcome,
+	requested = DAILY_QUOTA,
+) {
+	const policy = effectiveQuota(previous, requested);
+	const state = counterState(previous, now, policy);
 	if (Object.hasOwn(state.pending, id)) {
 		delete state.pending[id];
 		if (outcome === "incorrect")
-			state.failures = Math.min(MAX_FAILURES, state.failures + 1);
+			state.failures = Math.min(policy.maxFailures, state.failures + 1);
 	}
-	return { state, result: counterSummary(state, now) };
+	return { state, result: counterSummary(state, now, policy) };
 }
 export function b64url(bytes) {
 	let str = "";

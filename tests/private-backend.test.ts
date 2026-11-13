@@ -14,8 +14,10 @@ import {
 	b64url,
 	counterState,
 	counterSummary,
+	DAILY_QUOTA,
 	finishCounter,
 	inheritCounters,
+	LETTER_WEEKLY_QUOTA,
 	periodAt,
 	reserveCounter,
 	sessionCookie,
@@ -138,8 +140,10 @@ function fixture() {
 						state.article = input.record;
 						return Response.json({ ok: true });
 					}
+					const policy =
+						input.quotaPolicy === "weekly" ? LETTER_WEEKLY_QUOTA : DAILY_QUOTA;
 					if (input.op === "snapshot") {
-						state.counter = counterState(state.counter, now);
+						state.counter = counterState(state.counter, now, policy);
 						return Response.json(state.counter);
 					}
 					if (input.legacyCounters)
@@ -150,22 +154,29 @@ function fixture() {
 								name: legacy,
 								state: states.get(legacy)?.counter,
 							})),
+							policy,
 						);
 					let result:
 						| ReturnType<typeof reserveCounter>
 						| ReturnType<typeof finishCounter>;
 					if (input.op === "reserve") {
-						result = reserveCounter(state.counter, now, input.id);
+						result = reserveCounter(state.counter, now, input.id, policy);
 						state.counter = result.state;
 						return Response.json(result.result);
 					}
 					if (input.op === "finish") {
-						result = finishCounter(state.counter, now, input.id, input.outcome);
+						result = finishCounter(
+							state.counter,
+							now,
+							input.id,
+							input.outcome,
+							policy,
+						);
 						state.counter = result.state;
 						return Response.json(result.result);
 					}
-					state.counter = counterState(state.counter, now);
-					return Response.json(counterSummary(state.counter, now));
+					state.counter = counterState(state.counter, now, policy);
+					return Response.json(counterSummary(state.counter, now, policy));
 				},
 			}),
 		},
@@ -302,7 +313,7 @@ test("same-password articles share five failures while a different password stay
 		{ online: true },
 	);
 	assert.equal(other.status, 200);
-	assert.equal((await other.json()).remaining, 5);
+	assert.equal((await other.json()).remaining, 6);
 });
 test("concurrent guesses distributed across matching articles still get at most five verifications", async () => {
 	const f = fixture();
@@ -620,7 +631,7 @@ test("API traffic is bounded independently of the five incorrect-password quota"
 });
 
 const secondArticle = "long-night-love-letter";
-test("two stages share exactly five errors; first success reveals no HTML and cannot replenish attempts", async () => {
+test("two stages share exactly six weekly errors; first success reveals no HTML and cannot replenish attempts", async () => {
 	const f = fixture();
 	let cookies = jar(
 		await privateRequest(
@@ -641,7 +652,7 @@ test("two stages share exactly five errors; first success reveals no HTML and ca
 			{ online: true },
 		);
 		assert.equal(r.status, 401);
-		assert.equal((await r.json()).remaining, 4 - i);
+		assert.equal((await r.json()).remaining, 5 - i);
 		cookies = jar(r, cookies);
 	}
 	const first = await privateRequest(
@@ -657,7 +668,7 @@ test("two stages share exactly five errors; first success reveals no HTML and ca
 	cookies = jar(first, cookies);
 	const next = await first.json();
 	assert.equal(next.step, 2);
-	assert.equal(next.remaining, 3);
+	assert.equal(next.remaining, 4);
 	assert.ok(!next.html);
 	assert.ok(!JSON.stringify(next).includes("verifier"));
 	assert.equal(
@@ -670,7 +681,7 @@ test("two stages share exactly five errors; first success reveals no HTML and ca
 		).status,
 		401,
 	);
-	for (let i = 0; i < 3; i++) {
+	for (let i = 0; i < 4; i++) {
 		const r = await privateRequest(
 			f.request("unlock", {
 				article: secondArticle,
@@ -682,7 +693,7 @@ test("two stages share exactly five errors; first success reveals no HTML and ca
 			{ online: true },
 		);
 		assert.equal(r.status, 401);
-		assert.equal((await r.json()).remaining, 2 - i);
+		assert.equal((await r.json()).remaining, 3 - i);
 	}
 	const count = f.getVerifications();
 	assert.equal(
@@ -767,7 +778,7 @@ test("only the correct two-step chain grants an article-scoped session, with no 
 	const data = await second.json();
 	assert.equal(second.status, 200);
 	assert.equal(data.html, f.record.html);
-	assert.equal(data.remaining, 5);
+	assert.equal(data.remaining, 6);
 	assert.equal(
 		(
 			await privateRequest(
@@ -866,11 +877,11 @@ test("missing, expired, cross-device, and tampered step proofs cannot verify sta
 			{ online: true },
 		);
 		assert.equal(r.status, 409);
-		assert.equal((await r.json()).remaining, 5);
+		assert.equal((await r.json()).remaining, 6);
 	}
 	assert.equal(f.getVerifications(), 1);
 });
-test("simultaneous second-stage guesses remain bounded by the same five atomic reservations", async () => {
+test("simultaneous second-stage guesses remain bounded by the same six weekly atomic reservations", async () => {
 	const f = fixture();
 	let cookies = jar(
 		await privateRequest(
@@ -904,9 +915,9 @@ test("simultaneous second-stage guesses remain bounded by the same five atomic r
 			),
 		),
 	);
-	assert.equal(results.filter((r) => r.status === 401).length, 5);
-	assert.equal(results.filter((r) => r.status === 429).length, 7);
-	assert.equal(f.getVerifications(), 6);
+	assert.equal(results.filter((r) => r.status === 401).length, 6);
+	assert.equal(results.filter((r) => r.status === 429).length, 6);
+	assert.equal(f.getVerifications(), 7);
 });
 test("required secondary configuration fails closed instead of falling back to the old password", async () => {
 	for (const field of [
