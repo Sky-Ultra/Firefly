@@ -104,7 +104,8 @@ const descriptionClampLines = String(descriptionLines);
 const shouldClampDescription = descriptionLines > 0;
 const usesPrimaryTitleColor =
 	entry.id === "personal-website-introduction" ||
-	entry.id === "personal-website-changelog";
+	entry.id === "personal-website-changelog" ||
+	entry.id === "long-night-love-letter";
 
 const { remarkPluginFrontmatter } = await render(entry);
 const descriptionText = description || remarkPluginFrontmatter.excerpt || "";

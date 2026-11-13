@@ -1045,7 +1045,7 @@ const hasMultipleImages =
         <div class="banner-post-meta-overlay absolute inset-0 z-20 hidden lg:flex items-center justify-center pointer-events-none">
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
                 <div class="flex flex-col items-center gap-3">
-                    <div class="banner-post-title font-bold text-white leading-tight">
+                    <div class="banner-post-title font-bold text-white leading-tight" style={postSlug === "long-night-love-letter" ? "color: var(--primary);" : undefined}>
                         <LocalizedText zh={bannerPostMeta.title} en={bannerPostMeta.titleEn} />
                     </div>
                     <div class="banner-post-meta-list flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-white/90 text-sm md:text-base">
