@@ -93,6 +93,2306 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "bilibili-1270486635114397731",
+				date: "2026-11-14T16:57:01+08:00",
+				content: "依旧句句不提，依旧句句不离",
+				contentEn:
+					"Still never saying it outright, yet never talking about anything else",
+				contentParts: [
+					{
+						text: "依旧句句不提，依旧句句不离",
+						textEn:
+							"Still never saying it outright, yet never talking about anything else",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0677df2c369315a08477c7ae60fef9b4d179b984.webp",
+							alt: "[鸣潮·致予新世界动态表情包_好奇怪...]",
+							altEn: "So strange...",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0677df2c369315a08477c7ae60fef9b4d179b984.webp",
+							alt: "[鸣潮·致予新世界动态表情包_好奇怪...]",
+							altEn: "So strange...",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1r8WB6zEdP/",
+					title: "当管理者是一群精神变态，人口锐减成为了发展必然。",
+					titleEn:
+						"When the people in charge are psychopaths, population decline becomes inevitable.",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1r8WB6zEdP.webp",
+						alt: "当管理者是一群精神变态，人口锐减成为了发展必然。：视频封面",
+						altEn:
+							"Video cover: When the people in charge are psychopaths, population decline becomes inevitable.",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270474506137239560",
+				date: "2026-11-14T16:09:57+08:00",
+				content: "不用暧昧了，孩子直接叫哈基维利吧",
+				contentEn:
+					"No need for ambiguity anymore. The kids can just call him Hakivelli",
+				contentParts: [
+					{
+						text: "不用暧昧了，孩子直接叫哈基维利吧",
+						textEn:
+							"No need for ambiguity anymore. The kids can just call him Hakivelli",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1kXWD6GEq2/",
+					title: "好像有点暧昧了",
+					titleEn: "This seems a little romantic",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1kXWD6GEq2.webp",
+						alt: "好像有点暧昧了：视频封面",
+						altEn: "Video cover: This seems a little romantic",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270253044698710053",
+				date: "2026-11-14T01:50:34+08:00",
+				content: "就许愿😭就许愿😭就许愿😭",
+				contentEn: "Just wishing 😭 Just wishing 😭 Just wishing 😭",
+				contentParts: [
+					{
+						text: "就许愿😭就许愿😭就许愿😭",
+						textEn: "Just wishing 😭 Just wishing 😭 Just wishing 😭",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1gPWo6gE1R/",
+					title: "在Vibe Coding时候能不能别纯许愿…",
+					titleEn: "Could we stop treating Vibe Coding as pure wish-making…",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1gPWo6gE1R.webp",
+						alt: "在Vibe Coding时候能不能别纯许愿…：视频封面",
+						altEn:
+							"Video cover: Could we stop treating Vibe Coding as pure wish-making…",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270236260026286082",
+				date: "2026-11-14T00:45:26+08:00",
+				content:
+					"这就是漂泊的终点呀…岸宝谢谢你…我永远爱你…所以挚友是什么意思呢…爱你一遍又一遍啦",
+				contentEn:
+					"So this is where the journey ends…Thank you, Shorekeeper…I will always love you…So what exactly does “dearest friend” mean…Loving you over and over again",
+				contentParts: [
+					{
+						text: "这就是漂泊的终点呀…",
+						textEn: "So this is where the journey ends…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-23b19246702e841f43fb28c307406bd3fbe54046.webp",
+							alt: "[鸣潮·致予新世界动态表情包_哇哦~]",
+							altEn: "Wow",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-23b19246702e841f43fb28c307406bd3fbe54046.webp",
+							alt: "[鸣潮·致予新世界动态表情包_哇哦~]",
+							altEn: "Wow",
+						},
+					},
+					{
+						text: "岸宝谢谢你…",
+						textEn: "Thank you, Shorekeeper…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						text: "我永远爱你…",
+						textEn: "I will always love you…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						text: "所以挚友是什么意思呢…",
+						textEn: "So what exactly does “dearest friend” mean…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-87f8d3511a71e47b14e63a5b5a39cff85c4a48e1.webp",
+							alt: "[鸣潮·致予新世界动态表情包_拜托拜托！]",
+							altEn: "Please, please!",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-87f8d3511a71e47b14e63a5b5a39cff85c4a48e1.webp",
+							alt: "[鸣潮·致予新世界动态表情包_拜托拜托！]",
+							altEn: "Please, please!",
+						},
+					},
+					{
+						text: "爱你一遍又一遍啦",
+						textEn: "Loving you over and over again",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-2dacb2fd47c53ee201539c79ee1e296ccc643d05.webp",
+							alt: "[鸣潮·致予新世界动态表情包_为你打call]",
+							altEn: "Cheering for you",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-2dacb2fd47c53ee201539c79ee1e296ccc643d05.webp",
+							alt: "[鸣潮·致予新世界动态表情包_为你打call]",
+							altEn: "Cheering for you",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1XTWB6sE2U/",
+					title: "【大鸣王潮1566】爱你一遍又一遍",
+					titleEn:
+						"[The Great Wuthering Dynasty 1566] Loving you again and again",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1XTWB6sE2U.webp",
+						alt: "【大鸣王潮1566】爱你一遍又一遍：视频封面",
+						altEn:
+							"Video cover: [The Great Wuthering Dynasty 1566] Loving you again and again",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270215927644815382",
+				date: "2026-11-13T23:26:32+08:00",
+				content: "甜甜甜甜!",
+				contentEn: "So, so, so sweet!",
+				contentParts: [
+					{
+						text: "甜甜甜甜!",
+						textEn: "So, so, so sweet!",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0d607209dee106aa4df6904c11ac3cdd9d70c26f.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_捏捏]",
+							altEn: "Squish",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0d607209dee106aa4df6904c11ac3cdd9d70c26f.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_捏捏]",
+							altEn: "Squish",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0d607209dee106aa4df6904c11ac3cdd9d70c26f.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_捏捏]",
+							altEn: "Squish",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1rzWy6oEo2/",
+					title: "【星穹铁道】如何召唤阿哈",
+					titleEn: "[Honkai: Star Rail] How to summon Aha",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1rzWy6oEo2.webp",
+						alt: "【星穹铁道】如何召唤阿哈：视频封面",
+						altEn: "Video cover: [Honkai: Star Rail] How to summon Aha",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270214317020545041",
+				date: "2026-11-13T23:20:17+08:00",
+				content: "正常来说这是三创音乐，但是你不能创死我啊……",
+				contentEn:
+					"Normally this would be a third-generation remix, but you can't remix me into the grave……",
+				contentParts: [
+					{
+						text: "正常来说这是三创音乐，但是你不能创死我啊……",
+						textEn:
+							"Normally this would be a third-generation remix, but you can't remix me into the grave……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-be882665ddea29ce845459f160fbc988aa8609be.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_大手]",
+							altEn: "Big hands",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-be882665ddea29ce845459f160fbc988aa8609be.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_大手]",
+							altEn: "Big hands",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-be882665ddea29ce845459f160fbc988aa8609be.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_大手]",
+							altEn: "Big hands",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1eDp16LELi/",
+					title: "《肘我》司凤版丨转发给你喜欢仇远的朋友并什么也不说",
+					titleEn:
+						"“Elbow Me,” Sifeng version: share it with your friend who likes Qiuyuan and say nothing",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1eDp16LELi.webp",
+						alt: "《肘我》司凤版丨转发给你喜欢仇远的朋友并什么也不说：视频封面",
+						altEn:
+							"Video cover: “Elbow Me,” Sifeng version: share it with your friend who likes Qiuyuan and say nothing",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270195827191578629",
+				date: "2026-11-13T22:08:32+08:00",
+				content: "对的对的对的，99",
+				contentEn: "Yes, yes, yes—may you stay together forever",
+				contentParts: [
+					{
+						text: "对的对的对的，99",
+						textEn: "Yes, yes, yes—may you stay together forever",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-2dacb2fd47c53ee201539c79ee1e296ccc643d05.webp",
+							alt: "[鸣潮·致予新世界动态表情包_为你打call]",
+							altEn: "Cheering for you",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-2dacb2fd47c53ee201539c79ee1e296ccc643d05.webp",
+							alt: "[鸣潮·致予新世界动态表情包_为你打call]",
+							altEn: "Cheering for you",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1QJW96aEYu/",
+					title: "根本不可能有这样的阿哈！",
+					titleEn: "There is no way Aha would be like this!",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1QJW96aEYu.webp",
+						alt: "根本不可能有这样的阿哈！：视频封面",
+						altEn: "Video cover: There is no way Aha would be like this!",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270192696134205457",
+				date: "2026-11-13T21:56:23+08:00",
+				content: "看完这个视频，怎么感觉脑袋都轻了不少……",
+				contentEn:
+					"Why does my head feel so much lighter after watching this……",
+				contentParts: [
+					{
+						text: "看完这个视频，怎么感觉脑袋都轻了不少……",
+						textEn:
+							"Why does my head feel so much lighter after watching this……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1MYxm6jEKv/",
+					title: "决战智力之巅😄",
+					titleEn: "A showdown at the peak of intelligence 😄",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1MYxm6jEKv.webp",
+						alt: "决战智力之巅😄：视频封面",
+						altEn: "Video cover: A showdown at the peak of intelligence 😄",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270188929447886889",
+				date: "2026-11-13T21:41:46+08:00",
+				content: "气笑了…\n我将立即行动",
+				contentEn:
+					"I'm laughing out of sheer exasperation…\nI shall act immediately",
+				contentParts: [
+					{
+						text: "气笑了…",
+						textEn: "I'm laughing out of sheer exasperation…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						text: "\n我将立即行动",
+						textEn: "\nI shall act immediately",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-174f78bd569805a883dc738e3cb8492c5d5526d7.webp",
+							alt: "[鸣潮·致予新世界动态表情包_知道啦~]",
+							altEn: "Got it",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-174f78bd569805a883dc738e3cb8492c5d5526d7.webp",
+							alt: "[鸣潮·致予新世界动态表情包_知道啦~]",
+							altEn: "Got it",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1tsWQ6nEPu/",
+					title: "“表白神曲”《我只对你没感觉》适合转发给对象或好友！",
+					titleEn:
+						"The “confession anthem” No Feelings for You: perfect for sending to your partner or friends!",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1tsWQ6nEPu.webp",
+						alt: "“表白神曲”《我只对你没感觉》适合转发给对象或好友！：视频封面",
+						altEn:
+							"Video cover: The “confession anthem” No Feelings for You: perfect for sending to your partner or friends!",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270154131612368903",
+				date: "2026-11-13T19:26:44+08:00",
+				content: "神作啊",
+				contentEn: "A masterpiece",
+				contentParts: [
+					{
+						text: "神作啊",
+						textEn: "A masterpiece",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1fpWX66E7b/",
+					title: "“别把我留在没有你的地狱”",
+					titleEn: "“Don't leave me in a hell without you”",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1fpWX66E7b.webp",
+						alt: "“别把我留在没有你的地狱”：视频封面",
+						altEn: "Video cover: “Don't leave me in a hell without you”",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270136698356891665",
+				date: "2026-11-13T18:19:05+08:00",
+				content: "我tm犯天条了吗？两个刀子一起吃……",
+				contentEn:
+					"What heavenly law did I break? Two emotional knives at once……",
+				contentParts: [
+					{
+						text: "我tm犯天条了吗？两个刀子一起吃……",
+						textEn:
+							"What heavenly law did I break? Two emotional knives at once……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4e9230d000172902485f8c20e5afde07bed12e66.webp",
+							alt: "[鸣潮·致予新世界动态表情包_说什么呢！]",
+							altEn: "What are you saying?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4e9230d000172902485f8c20e5afde07bed12e66.webp",
+							alt: "[鸣潮·致予新世界动态表情包_说什么呢！]",
+							altEn: "What are you saying?",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1k9WD6rEhg/",
+					title: "《崩坏三》动画短片：「你好，世界」",
+					titleEn: "Honkai Impact 3rd animated short: Hello, World",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1k9WD6rEhg.webp",
+						alt: "《崩坏三》动画短片：「你好，世界」：视频封面",
+						altEn:
+							"Video cover: Honkai Impact 3rd animated short: Hello, World",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270118002377883649",
+				date: "2026-11-13T17:06:32+08:00",
+				content: "这野史哪里野了…？正的很啊\n依旧想看什么自己剪",
+				contentEn:
+					"What's so unofficial about this version of history…? It seems perfectly legitimate\nAs always, edit whatever you want to see yourself",
+				contentParts: [
+					{
+						text: "这野史哪里野了…？正的很啊",
+						textEn:
+							"What's so unofficial about this version of history…? It seems perfectly legitimate",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						text: "\n依旧想看什么自己剪",
+						textEn: "\nAs always, edit whatever you want to see yourself",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV19hWX6NECh/",
+					title: "流萤:布兑!剧本不是这样的Σ(ﾟДﾟ)",
+					titleEn: "Firefly: Wait! This isn't how the script goes Σ(ﾟДﾟ)",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV19hWX6NECh.webp",
+						alt: "流萤:布兑!剧本不是这样的Σ(ﾟДﾟ)：视频封面",
+						altEn:
+							"Video cover: Firefly: Wait! This isn't how the script goes Σ(ﾟДﾟ)",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270112333009518613",
+				date: "2026-11-13T16:44:32+08:00",
+				content: "能想出这个视频的，家里真得请高人了……",
+				contentEn:
+					"Whoever dreamed up this video really needs an exorcist at home……",
+				contentParts: [
+					{
+						text: "能想出这个视频的，家里真得请高人了……",
+						textEn:
+							"Whoever dreamed up this video really needs an exorcist at home……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1zFW96LEU2/",
+					title: "⚡️蛋载派对《蛋载之爱》⚡️",
+					titleEn: "⚡ Eggy Party: Eggy Love ⚡",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1zFW96LEU2.webp",
+						alt: "⚡️蛋载派对《蛋载之爱》⚡️：视频封面",
+						altEn: "Video cover: ⚡ Eggy Party: Eggy Love ⚡",
+					},
+				},
+			},
+			{
+				id: "bilibili-1270111817645948965",
+				date: "2026-11-13T16:42:32+08:00",
+				content: "再度和你",
+				contentEn: "With you once more",
+				contentParts: [
+					{
+						text: "再度和你",
+						textEn: "With you once more",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1SeWU62Emq/",
+					title: "【崩铁动画】一同迈向明天",
+					titleEn: "[Star Rail Animation] Toward Tomorrow Together",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1SeWU62Emq.webp",
+						alt: "【崩铁动画】一同迈向明天：视频封面",
+						altEn:
+							"Video cover: [Star Rail Animation] Toward Tomorrow Together",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269896983359782917",
+				date: "2026-11-13T02:48:52+08:00",
+				content: "简单，社会存在决定社会意识…\n",
+				contentEn:
+					"Simple: social existence determines social consciousness…\n",
+				contentParts: [
+					{
+						text: "简单，社会存在决定社会意识…",
+						textEn: "Simple: social existence determines social consciousness…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-56f703b8c38b9aeab668338e64e88e7b16175239.webp",
+							alt: "[鸣潮·致予新世界动态表情包_认真]",
+							altEn: "Taking this seriously",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-56f703b8c38b9aeab668338e64e88e7b16175239.webp",
+							alt: "[鸣潮·致予新世界动态表情包_认真]",
+							altEn: "Taking this seriously",
+						},
+					},
+					{
+						text: "\n",
+						textEn: "\n",
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1piKH6SEG2/",
+					title: "为什么很多描写女性的词都会被污名化？",
+					titleEn: "Why do so many words describing women become stigmatized?",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1piKH6SEG2.webp",
+						alt: "为什么很多描写女性的词都会被污名化？：视频封面",
+						altEn:
+							"Video cover: Why do so many words describing women become stigmatized?",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269884356118183940",
+				date: "2026-11-13T01:59:52+08:00",
+				content: "呵呵，可这就是这片土地的文化底色……",
+				contentEn: "Heh, but this is the cultural foundation of this land……",
+				contentParts: [
+					{
+						text: "呵呵，可这就是这片土地的文化底色……",
+						textEn: "Heh, but this is the cultural foundation of this land……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0677df2c369315a08477c7ae60fef9b4d179b984.webp",
+							alt: "[鸣潮·致予新世界动态表情包_好奇怪...]",
+							altEn: "So strange...",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0677df2c369315a08477c7ae60fef9b4d179b984.webp",
+							alt: "[鸣潮·致予新世界动态表情包_好奇怪...]",
+							altEn: "So strange...",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1FuHV6cEkZ/",
+					title: "击鼓传花，原来是很多人童年焦虑的起点",
+					titleEn:
+						"Pass the parcel: where many people's childhood anxiety began",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1FuHV6cEkZ.webp",
+						alt: "击鼓传花，原来是很多人童年焦虑的起点：视频封面",
+						altEn:
+							"Video cover: Pass the parcel: where many people's childhood anxiety began",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269878807026728965",
+				date: "2026-11-13T01:38:20+08:00",
+				content:
+					"老一辈见过饿死的，没见过睡不够猝死的，而我们见过猝死的，没见过饿死的……更何况，从根本而言，老一辈只是想让你听话而已……呵呵",
+				contentEn:
+					"The older generation saw people starve, not people die from too little sleep; we've seen people die from exhaustion, not from starvation……Besides, at the heart of it, the older generation simply wants you to obey…… heh",
+				contentParts: [
+					{
+						text: "老一辈见过饿死的，没见过睡不够猝死的，而我们见过猝死的，没见过饿死的……",
+						textEn:
+							"The older generation saw people starve, not people die from too little sleep; we've seen people die from exhaustion, not from starvation……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						text: "更何况，从根本而言，老一辈只是想让你听话而已……呵呵",
+						textEn:
+							"Besides, at the heart of it, the older generation simply wants you to obey…… heh",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-346deace16b660643b67da13d98202e2ed6d83a8.webp",
+							alt: "[鸣潮·致予新世界动态表情包_啊...我吗？]",
+							altEn: "Huh... me?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-346deace16b660643b67da13d98202e2ed6d83a8.webp",
+							alt: "[鸣潮·致予新世界动态表情包_啊...我吗？]",
+							altEn: "Huh... me?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-174f78bd569805a883dc738e3cb8492c5d5526d7.webp",
+							alt: "[鸣潮·致予新世界动态表情包_知道啦~]",
+							altEn: "Got it",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1Yan36kEDX/",
+					title: "老一辈为什么 对你睡懒觉有这么大执念",
+					titleEn: "Why are older people so obsessed with you sleeping in?",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1Yan36kEDX.webp",
+						alt: "老一辈为什么 对你睡懒觉有这么大执念：视频封面",
+						altEn:
+							"Video cover: Why are older people so obsessed with you sleeping in?",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269873184960675846",
+				date: "2026-11-13T01:16:31+08:00",
+				content: "我真得发明时光机了",
+				contentEn: "I really need to invent a time machine",
+				contentParts: [
+					{
+						text: "我真得发明时光机了",
+						textEn: "I really need to invent a time machine",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1gkxd6GEeR/",
+					title: "挑战在澳洲第一大学穿奶蛙放雨爱不被发现",
+					titleEn:
+						"Trying to wear a frog costume and play Rainy Love at Australia's top university without being noticed",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1gkxd6GEeR.webp",
+						alt: "挑战在澳洲第一大学穿奶蛙放雨爱不被发现：视频封面",
+						altEn:
+							"Video cover: Trying to wear a frog costume and play Rainy Love at Australia's top university without being noticed",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269862537737797637",
+				date: "2026-11-13T00:35:12+08:00",
+				content: "这说的是人话吗…？这话也太糙了……",
+				contentEn:
+					"Is this something a human would say…?That is far too coarse……",
+				contentParts: [
+					{
+						text: "这说的是人话吗…？",
+						textEn: "Is this something a human would say…?",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-87f8d3511a71e47b14e63a5b5a39cff85c4a48e1.webp",
+							alt: "[鸣潮·致予新世界动态表情包_拜托拜托！]",
+							altEn: "Please, please!",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-87f8d3511a71e47b14e63a5b5a39cff85c4a48e1.webp",
+							alt: "[鸣潮·致予新世界动态表情包_拜托拜托！]",
+							altEn: "Please, please!",
+						},
+					},
+					{
+						text: "这话也太糙了……",
+						textEn: "That is far too coarse……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1nxW16xEzN/",
+					title: "【天空岛TV】判罚之钉是尼伯龙根的格调",
+					titleEn: "[Celestia TV] The Nail of Judgment is Nibelung's style",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1nxW16xEzN.webp",
+						alt: "【天空岛TV】判罚之钉是尼伯龙根的格调：视频封面",
+						altEn:
+							"Video cover: [Celestia TV] The Nail of Judgment is Nibelung's style",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269819819958468630",
+				date: "2026-11-12T21:49:26+08:00",
+				content:
+					"我觉得这个已经不能叫享福TV了，应该叫抽卡TV抽到SSR就赢了……然后依旧认为给口饭就叫养育之恩了，哈哈，还是那句话，对自己负责，对孩子负责，对社会负责，养不起就别生",
+				contentEn:
+					"I don't think this can be called Good-Life TV anymore. It should be Gacha TVPull an SSR and you win……And they still think providing a mouthful of food deserves a lifetime debt of gratitude. Ha. As I keep saying: be responsible to yourself, to your children, and to society. If you can't afford to raise children, don't have them",
+				contentParts: [
+					{
+						text: "我觉得这个已经不能叫享福TV了，应该叫抽卡TV",
+						textEn:
+							"I don't think this can be called Good-Life TV anymore. It should be Gacha TV",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-78b0eef60921ff358c08c82c43f5004229aab7c4.webp",
+							alt: "[鸣潮·致予新世界动态表情包_这你都信]",
+							altEn: "You believe that?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-78b0eef60921ff358c08c82c43f5004229aab7c4.webp",
+							alt: "[鸣潮·致予新世界动态表情包_这你都信]",
+							altEn: "You believe that?",
+						},
+					},
+					{
+						text: "抽到SSR就赢了……",
+						textEn: "Pull an SSR and you win……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+					{
+						text: "然后依旧认为给口饭就叫养育之恩了，哈哈，还是那句话，对自己负责，对孩子负责，对社会负责，养不起就别生",
+						textEn:
+							"And they still think providing a mouthful of food deserves a lifetime debt of gratitude. Ha. As I keep saying: be responsible to yourself, to your children, and to society. If you can't afford to raise children, don't have them",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1qUWy6DE1r/",
+					title: "【享福TV】依旧多子多福，依旧人丁兴旺",
+					titleEn:
+						"[Good-Life TV] Still more children, more blessings, and a flourishing family",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1qUWy6DE1r.webp",
+						alt: "【享福TV】依旧多子多福，依旧人丁兴旺：视频封面",
+						altEn:
+							"Video cover: [Good-Life TV] Still more children, more blessings, and a flourishing family",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269803099681193987",
+				date: "2026-11-12T20:44:33+08:00",
+				content:
+					"有点吓人了，国内压力这么大吗……？国内的朋友们，你们一定要好好的呀",
+				contentEn:
+					"This is a little frightening. Is the pressure back home really this intense……?Friends back home, please take good care of yourselves",
+				contentParts: [
+					{
+						text: "有点吓人了，国内压力这么大吗……？",
+						textEn:
+							"This is a little frightening. Is the pressure back home really this intense……?",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						text: "国内的朋友们，你们一定要好好的呀",
+						textEn: "Friends back home, please take good care of yourselves",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1LX4J6XE5H/",
+					title: "《关于室友考研破防了这件事》",
+					titleEn:
+						"My roommate's breakdown over the postgraduate entrance exam",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1LX4J6XE5H.webp",
+						alt: "《关于室友考研破防了这件事》：视频封面",
+						altEn:
+							"Video cover: My roommate's breakdown over the postgraduate entrance exam",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269746277229264904",
+				date: "2026-11-12T17:04:03+08:00",
+				content:
+					"“我说话刻薄吗？只是实话实说罢了，接受不了的人才应该自己反思原因…”",
+				contentEn:
+					"“Am I being harsh? I'm only telling the truth. Those who can't accept it should reflect on their own reasons…”",
+				contentParts: [
+					{
+						text: "“我说话刻薄吗？只是实话实说罢了，接受不了的人才应该自己反思原因…”",
+						textEn:
+							"“Am I being harsh? I'm only telling the truth. Those who can't accept it should reflect on their own reasons…”",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV18yGt6FE9L/",
+					title: "你因为外貌追求我，我因为外貌拒绝你，刻薄在哪？",
+					titleEn:
+						"You pursue me for my looks; I reject you for yours. Where is the cruelty?",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV18yGt6FE9L.webp",
+						alt: "你因为外貌追求我，我因为外貌拒绝你，刻薄在哪？：视频封面",
+						altEn:
+							"Video cover: You pursue me for my looks; I reject you for yours. Where is the cruelty?",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269744739641458694",
+				date: "2026-11-12T16:58:05+08:00",
+				content: "别笑，老一辈觉得这种生活可有烟火气了😋😋",
+				contentEn:
+					"Don't laugh—the older generation thinks this kind of life is wonderfully down-to-earth 😋😋",
+				contentParts: [
+					{
+						text: "别笑，老一辈觉得这种生活可有烟火气了😋😋",
+						textEn:
+							"Don't laugh—the older generation thinks this kind of life is wonderfully down-to-earth 😋😋",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-78b0eef60921ff358c08c82c43f5004229aab7c4.webp",
+							alt: "[鸣潮·致予新世界动态表情包_这你都信]",
+							altEn: "You believe that?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-78b0eef60921ff358c08c82c43f5004229aab7c4.webp",
+							alt: "[鸣潮·致予新世界动态表情包_这你都信]",
+							altEn: "You believe that?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1khW76EEax/",
+					title: "【智人TV】下班看到这一幕，悬着的心可以死了，力工日常",
+					titleEn:
+						"[Homo Sapiens TV] Coming home from manual work to this: the suspense can finally kill you",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1khW76EEax.webp",
+						alt: "【智人TV】下班看到这一幕，悬着的心可以死了，力工日常：视频封面",
+						altEn:
+							"Video cover: [Homo Sapiens TV] Coming home from manual work to this: the suspense can finally kill you",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269715241791389697",
+				date: "2026-11-12T15:03:37+08:00",
+				content: "原神玩家们，我们不打顺风局，咱们改日再战",
+				contentEn:
+					"Genshin players, we don't fight easy victories. Let's come back another day",
+				contentParts: [
+					{
+						text: "原神玩家们，我们不打顺风局，咱们改日再战",
+						textEn:
+							"Genshin players, we don't fight easy victories. Let's come back another day",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4a5d1412fba5336c1273ec0e0f07dba7747a9a4c.webp",
+							alt: "[鸣潮·致予新世界动态表情包_交给我吧！]",
+							altEn: "Leave it to me!",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4a5d1412fba5336c1273ec0e0f07dba7747a9a4c.webp",
+							alt: "[鸣潮·致予新世界动态表情包_交给我吧！]",
+							altEn: "Leave it to me!",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4a5d1412fba5336c1273ec0e0f07dba7747a9a4c.webp",
+							alt: "[鸣潮·致予新世界动态表情包_交给我吧！]",
+							altEn: "Leave it to me!",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV14VWV65EL8/",
+					title: "难绷tv原神蕴藏着宇宙级真相",
+					titleEn:
+						"Can't-Keep-a-Straight-Face TV: Genshin contains cosmic truths",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV14VWV65EL8.webp",
+						alt: "难绷tv原神蕴藏着宇宙级真相：视频封面",
+						altEn:
+							"Video cover: Can't-Keep-a-Straight-Face TV: Genshin contains cosmic truths",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269708880986767392",
+				date: "2026-11-12T14:38:56+08:00",
+				content: "？？",
+				contentEn: "??",
+				contentParts: [
+					{
+						text: "？？",
+						textEn: "??",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1HJW168E9n/",
+					title: "和爱弥斯谈恋爱的好处！",
+					titleEn: "The perks of dating Aemeath!",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1HJW168E9n.webp",
+						alt: "和爱弥斯谈恋爱的好处！：视频封面",
+						altEn: "Video cover: The perks of dating Aemeath!",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269491680165232646",
+				date: "2026-11-12T00:36:05+08:00",
+				content: "这是……梦想啊……",
+				contentEn: "This is…… the dream……",
+				contentParts: [
+					{
+						text: "这是……梦想啊……",
+						textEn: "This is…… the dream……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-9533d4d827199227a205247bf7b9526ea8ae7de2.webp",
+							alt: "[鸣潮·致予新世界动态表情包_摸摸头]",
+							altEn: "Head pats",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-9533d4d827199227a205247bf7b9526ea8ae7de2.webp",
+							alt: "[鸣潮·致予新世界动态表情包_摸摸头]",
+							altEn: "Head pats",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-9533d4d827199227a205247bf7b9526ea8ae7de2.webp",
+							alt: "[鸣潮·致予新世界动态表情包_摸摸头]",
+							altEn: "Head pats",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1TyWT6fEAe/",
+					title: "两个人都干净又纯粹着相爱的恋爱",
+					titleEn:
+						"A love between two people who are both sincere and untainted",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1TyWT6fEAe.webp",
+						alt: "两个人都干净又纯粹着相爱的恋爱：视频封面",
+						altEn:
+							"Video cover: A love between two people who are both sincere and untainted",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269328080595320837",
+				date: "2026-11-11T14:01:14+08:00",
+				content:
+					"我们一般管这种叫老不死的……我一般上去就是一脚，然后反手就是一拳，管你是谁呢呵呵",
+				contentEn:
+					"We usually call people like this old bastards…… I'd normally go straight in with a kick and then a punch. I don't care who you are, heh",
+				contentParts: [
+					{
+						text: "我们一般管这种叫老不死的……我一般上去就是一脚，然后反手就是一拳，管你是谁呢呵呵",
+						textEn:
+							"We usually call people like this old bastards…… I'd normally go straight in with a kick and then a punch. I don't care who you are, heh",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-da70f8576272fcedaefb7e0cb3628b32327d6aa9.webp",
+							alt: "[鸣潮·致予新世界动态表情包_姐有的是钱]",
+							altEn: "I've got the money",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-da70f8576272fcedaefb7e0cb3628b32327d6aa9.webp",
+							alt: "[鸣潮·致予新世界动态表情包_姐有的是钱]",
+							altEn: "I've got the money",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1g34w6ZEbd/",
+					title:
+						"为什么有的长辈一吵架就喜欢给小辈儿跪下磕头？  #科普  #涨知识  #每天跟我涨知识",
+					titleEn:
+						"Why do some elders kneel and kowtow to younger relatives during arguments? #Science #LearnSomethingNew",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1g34w6ZEbd.webp",
+						alt: "为什么有的长辈一吵架就喜欢给小辈儿跪下磕头？  #科普  #涨知识  #每天跟我涨知识：视频封面",
+						altEn:
+							"Video cover: Why do some elders kneel and kowtow to younger relatives during arguments? #Science #LearnSomethingNew",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269124516333748229",
+				date: "2026-11-11T00:51:18+08:00",
+				content: "我的生日怎么突然就不快乐了\n下次朋友过生日就给她放这首歌好吧",
+				contentEn:
+					"Why has my birthday suddenly become so unhappy?\nI'll play this for her next time a friend has a birthday",
+				contentParts: [
+					{
+						text: "我的生日怎么突然就不快乐了",
+						textEn: "Why has my birthday suddenly become so unhappy?",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						text: "\n下次朋友过生日就给她放这首歌好吧",
+						textEn:
+							"\nI'll play this for her next time a friend has a birthday",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-2dacb2fd47c53ee201539c79ee1e296ccc643d05.webp",
+							alt: "[鸣潮·致予新世界动态表情包_为你打call]",
+							altEn: "Cheering for you",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1bin86XEMg/",
+					title: '《祝你生日快乐》| 司凤版⚡"一年中最通透的一天"⚡',
+					titleEn:
+						"Happy Birthday, Sifeng version: “the clearest day of the year”",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1bin86XEMg.webp",
+						alt: '《祝你生日快乐》| 司凤版⚡"一年中最通透的一天"⚡：视频封面',
+						altEn:
+							"Video cover: Happy Birthday, Sifeng version: “the clearest day of the year”",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269107203271294995",
+				date: "2026-11-10T23:44:07+08:00",
+				content: "我爱你！！😘😘",
+				contentEn: "I love you!! 😘😘",
+				contentParts: [
+					{
+						text: "我爱你！！😘😘",
+						textEn: "I love you!! 😘😘",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1i24P6rEmt/",
+					title: "大家好，这里是 DeepSeek Harness，正式入驻 B 站！",
+					titleEn:
+						"Hello, this is DeepSeek Harness. We are officially on Bilibili!",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1i24P6rEmt.webp",
+						alt: "大家好，这里是 DeepSeek Harness，正式入驻 B 站！：视频封面",
+						altEn:
+							"Video cover: Hello, this is DeepSeek Harness. We are officially on Bilibili!",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269056204832768003",
+				date: "2026-11-10T20:26:13+08:00",
+				content:
+					"天呐……太心酸了……这个地方只有生存，没有生活……不多说，我会带着我的我的伊德莉拉一起来国外的……",
+				contentEn:
+					"Oh, this is so heartbreaking……There is only survival here, no living……I won't say more. I'll bring my, my Idrila abroad with me……",
+				contentParts: [
+					{
+						text: "天呐……太心酸了……",
+						textEn: "Oh, this is so heartbreaking……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						text: "这个地方只有生存，没有生活……",
+						textEn: "There is only survival here, no living……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-346deace16b660643b67da13d98202e2ed6d83a8.webp",
+							alt: "[鸣潮·致予新世界动态表情包_啊...我吗？]",
+							altEn: "Huh... me?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-346deace16b660643b67da13d98202e2ed6d83a8.webp",
+							alt: "[鸣潮·致予新世界动态表情包_啊...我吗？]",
+							altEn: "Huh... me?",
+						},
+					},
+					{
+						text: "不多说，我会带着我的我的伊德莉拉一起来国外的……",
+						textEn:
+							"I won't say more. I'll bring my, my Idrila abroad with me……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1pn8E6iEPD/",
+					title:
+						"农民自杀、工人跳楼、骑手崩溃——中国工农阶层的心理健康问题/  中国百业013",
+					titleEn:
+						"Farmer suicides, workers jumping, delivery riders breaking down: mental health among China's workers and farmers / China's Trades 013",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1pn8E6iEPD.webp",
+						alt: "农民自杀、工人跳楼、骑手崩溃——中国工农阶层的心理健康问题/  中国百业013：视频封面",
+						altEn:
+							"Video cover: Farmer suicides, workers jumping, delivery riders breaking down: mental health among China's workers and farmers / China's Trades 013",
+					},
+				},
+			},
+			{
+				id: "bilibili-1269055126790733828",
+				date: "2026-11-10T20:22:02+08:00",
+				content: "雀食雀食",
+				contentEn: "Exactly, exactly",
+				contentParts: [
+					{
+						text: "雀食雀食",
+						textEn: "Exactly, exactly",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-2dacb2fd47c53ee201539c79ee1e296ccc643d05.webp",
+							alt: "[鸣潮·致予新世界动态表情包_为你打call]",
+							altEn: "Cheering for you",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-2dacb2fd47c53ee201539c79ee1e296ccc643d05.webp",
+							alt: "[鸣潮·致予新世界动态表情包_为你打call]",
+							altEn: "Cheering for you",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1VMTx6EEUj/",
+					title: "只因年轻人不愿做笠公，老笠公就破防了",
+					titleEn:
+						"Young people don't want to be husbands, and the older husbands lose it",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1VMTx6EEUj.webp",
+						alt: "只因年轻人不愿做笠公，老笠公就破防了：视频封面",
+						altEn:
+							"Video cover: Young people don't want to be husbands, and the older husbands lose it",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268774300356182016",
+				date: "2026-11-10T02:12:17+08:00",
+				content: "依旧尘世七执政，依旧竹林七贤，依旧战国七雄",
+				contentEn:
+					"Still the Seven of Teyvat, still the Seven Sages of the Bamboo Grove, still the Seven Warring States",
+				contentParts: [
+					{
+						text: "依旧尘世七执政，依旧竹林七贤，依旧战国七雄",
+						textEn:
+							"Still the Seven of Teyvat, still the Seven Sages of the Bamboo Grove, still the Seven Warring States",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1XVaN6DEKm/",
+					title: "火遍全球以后，“黑人抬棺”的他们后来怎么样了？",
+					titleEn:
+						"What happened to the Ghanaian pallbearers after they became famous worldwide?",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1XVaN6DEKm.webp",
+						alt: "火遍全球以后，“黑人抬棺”的他们后来怎么样了？：视频封面",
+						altEn:
+							"Video cover: What happened to the Ghanaian pallbearers after they became famous worldwide?",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268770696869183491",
+				date: "2026-11-10T01:58:18+08:00",
+				content: "那“现代”中国确实很进步了，那进步确实很大了",
+				contentEn:
+					"Well, “modern” China really has progressed. What enormous progress indeed",
+				contentParts: [
+					{
+						text: "那“现代”中国确实很进步了，那进步确实很大了",
+						textEn:
+							"Well, “modern” China really has progressed. What enormous progress indeed",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1Ty4t6cEB9/",
+					title: "有伄戼问，为什么古代要给丫鬟小厮发工资呢？",
+					titleEn: "Why were maids and servants paid wages in ancient times?",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1Ty4t6cEB9.webp",
+						alt: "有伄戼问，为什么古代要给丫鬟小厮发工资呢？：视频封面",
+						altEn:
+							"Video cover: Why were maids and servants paid wages in ancient times?",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268755015964557320",
+				date: "2026-11-10T00:57:27+08:00",
+				content:
+					"唉……真的很辛酸呀现在国内就业情况过度饱和的人口与巨大的竞争压力……唉，这也是我为何希望，可以带着我喜欢的女孩一起来国外生活呀……国内太累了真的不想在国内被饿死……实在太累了呀……",
+				contentEn:
+					"Sigh…… the employment situation back home really is so painfulAn oversaturated population and enormous competitive pressure……Sigh, that's also why I hope I can bring the girl I like abroad with me…… it's too exhausting back homeI really don't want to starve back home……It's just too exhausting……",
+				contentParts: [
+					{
+						text: "唉……真的很辛酸呀现在国内就业情况",
+						textEn:
+							"Sigh…… the employment situation back home really is so painful",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						text: "过度饱和的人口与巨大的竞争压力……",
+						textEn:
+							"An oversaturated population and enormous competitive pressure……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						text: "唉，这也是我为何希望，可以带着我喜欢的女孩一起来国外生活呀……国内太累了",
+						textEn:
+							"Sigh, that's also why I hope I can bring the girl I like abroad with me…… it's too exhausting back home",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-7d4d58adfe504c71700c1bea0764a42c4ece817c.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_睡觉]",
+							altEn: "Sleeping",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-7d4d58adfe504c71700c1bea0764a42c4ece817c.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_睡觉]",
+							altEn: "Sleeping",
+						},
+					},
+					{
+						text: "真的不想在国内被饿死……",
+						textEn: "I really don't want to starve back home……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0d607209dee106aa4df6904c11ac3cdd9d70c26f.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_捏捏]",
+							altEn: "Squish",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0d607209dee106aa4df6904c11ac3cdd9d70c26f.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_捏捏]",
+							altEn: "Squish",
+						},
+					},
+					{
+						text: "实在太累了呀……",
+						textEn: "It's just too exhausting……",
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1VTEz62EVR/",
+					title: "我们能不能不这么卷了，让生活不要留下那么多遗憾",
+					titleEn:
+						"Could we stop competing so relentlessly, and leave fewer regrets in life?",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1VTEz62EVR.webp",
+						alt: "我们能不能不这么卷了，让生活不要留下那么多遗憾：视频封面",
+						altEn:
+							"Video cover: Could we stop competing so relentlessly, and leave fewer regrets in life?",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268723168813514770",
+				date: "2026-11-09T22:53:52+08:00",
+				content: "世界树能把这个忘了吗……？我真的好怕走马灯再听一遍啊……",
+				contentEn:
+					"Can Irminsul erase this……? I'm honestly terrified of hearing it again in my final flashback……",
+				contentParts: [
+					{
+						text: "世界树能把这个忘了吗……？我真的好怕走马灯再听一遍啊……",
+						textEn:
+							"Can Irminsul erase this……? I'm honestly terrified of hearing it again in my final flashback……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4e9230d000172902485f8c20e5afde07bed12e66.webp",
+							alt: "[鸣潮·致予新世界动态表情包_说什么呢！]",
+							altEn: "What are you saying?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4e9230d000172902485f8c20e5afde07bed12e66.webp",
+							alt: "[鸣潮·致予新世界动态表情包_说什么呢！]",
+							altEn: "What are you saying?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1oopb6KEBg/",
+					title: "⚡我不曾司凤⚡",
+					titleEn: "⚡ I Was Never Sifeng ⚡",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1oopb6KEBg.webp",
+						alt: "⚡我不曾司凤⚡：视频封面",
+						altEn: "Video cover: ⚡ I Was Never Sifeng ⚡",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268704537252724752",
+				date: "2026-11-09T21:41:34+08:00",
+				content:
+					"好吧，那我也说说自己的薄间...首先，我觉得至少要熟练掌握LLM的能力，熟练地使用Agent帮你做事，这在新时代我认为是最重要的事情之一，哪怕是使用国产的LLM都可以...然后结婚不是必要的课题。结婚不一定要生育。在这个时代下，这些东西都太耗费人力和心情正如视频所说的，老一辈的思想观念和新一辈并不融合，老一辈的思想观并不适用于新一代的年轻人。不过如果有喜欢的人，那另说吧...前提是你们得相互喜欢呢……以及老一辈的枷锁，也没有必要再带上一遍吧……不管怎么说，活着是为了幸福，而不是为了完成某些任务。尤其是老一辈给的那些所谓的人生必要的课题和任务，只会让人感到反感和厌恶\n如果说到消费的话，就是一些习俗以及消费陷阱、消费主义制造出来的面子消费……不要沾染上吧。至于习俗很简单，就是彩礼呗。如前文所说的，陋习罢了，封建罢了……\n先说这么多吧，要不来我的个人网站看看呗\n",
+				contentEn:
+					"All right, let me offer my own humble thoughts... First, I think at least becoming proficient with LLMs and using Agents to do things for you is one of the most important skills in this new era. Even domestically developed LLMs will do...Also, marriage is not a required subject. Being married does not mean you have to have children. In this era, these things consume far too much effort and emotional energy. As the video says, the older generation's views do not fit the younger generation; their ideas are not suited to young people today.But if there is someone you like, that is a different matter... provided that you like each other……And there is no need to put on the older generation's shackles all over again…… However you look at it, we live for happiness, not to complete a list of tasks. Especially those supposedly essential life lessons and obligations handed down by older generations—they only inspire resentment and disgust\nAs for spending, there are customs, consumer traps, and status purchases manufactured by consumerism…… don't get tangled up in them. The customs are simple enough: bride price, for instance. As I said earlier, bad customs, feudal customs……\nThat's enough for now. Why not come have a look at my personal website?\n",
+				contentParts: [
+					{
+						text: "好吧，那我也说说自己的薄间...首先，我觉得至少要熟练掌握LLM的能力，熟练地使用Agent帮你做事，这在新时代我认为是最重要的事情之一，哪怕是使用国产的LLM都可以...",
+						textEn:
+							"All right, let me offer my own humble thoughts... First, I think at least becoming proficient with LLMs and using Agents to do things for you is one of the most important skills in this new era. Even domestically developed LLMs will do...",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						text: "然后结婚不是必要的课题。结婚不一定要生育。在这个时代下，这些东西都太耗费人力和心情正如视频所说的，老一辈的思想观念和新一辈并不融合，老一辈的思想观并不适用于新一代的年轻人。",
+						textEn:
+							"Also, marriage is not a required subject. Being married does not mean you have to have children. In this era, these things consume far too much effort and emotional energy. As the video says, the older generation's views do not fit the younger generation; their ideas are not suited to young people today.",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-23b19246702e841f43fb28c307406bd3fbe54046.webp",
+							alt: "[鸣潮·致予新世界动态表情包_哇哦~]",
+							altEn: "Wow",
+						},
+					},
+					{
+						text: "不过如果有喜欢的人，那另说吧...前提是你们得相互喜欢呢……",
+						textEn:
+							"But if there is someone you like, that is a different matter... provided that you like each other……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						text: "以及老一辈的枷锁，也没有必要再带上一遍吧……不管怎么说，活着是为了幸福，而不是为了完成某些任务。尤其是老一辈给的那些所谓的人生必要的课题和任务，只会让人感到反感和厌恶",
+						textEn:
+							"And there is no need to put on the older generation's shackles all over again…… However you look at it, we live for happiness, not to complete a list of tasks. Especially those supposedly essential life lessons and obligations handed down by older generations—they only inspire resentment and disgust",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+							alt: "[鸣潮·致予新世界动态表情包_委屈]",
+							altEn: "Feeling wronged",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4e9230d000172902485f8c20e5afde07bed12e66.webp",
+							alt: "[鸣潮·致予新世界动态表情包_说什么呢！]",
+							altEn: "What are you saying?",
+						},
+					},
+					{
+						text: "\n如果说到消费的话，就是一些习俗以及消费陷阱、消费主义制造出来的面子消费……不要沾染上吧。至于习俗很简单，就是彩礼呗。如前文所说的，陋习罢了，封建罢了……",
+						textEn:
+							"\nAs for spending, there are customs, consumer traps, and status purchases manufactured by consumerism…… don't get tangled up in them. The customs are simple enough: bride price, for instance. As I said earlier, bad customs, feudal customs……",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-23b19246702e841f43fb28c307406bd3fbe54046.webp",
+							alt: "[鸣潮·致予新世界动态表情包_哇哦~]",
+							altEn: "Wow",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-23b19246702e841f43fb28c307406bd3fbe54046.webp",
+							alt: "[鸣潮·致予新世界动态表情包_哇哦~]",
+							altEn: "Wow",
+						},
+					},
+					{
+						text: "\n先说这么多吧，要不来我的个人网站看看呗",
+						textEn:
+							"\nThat's enough for now. Why not come have a look at my personal website?",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+							alt: "[鸣潮·致予新世界动态表情包_打call！]",
+							altEn: "Cheering",
+						},
+					},
+					{
+						text: "\n",
+						textEn: "\n",
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1cR4v6qEK1/",
+					title: "聊聊普通人的出路在哪里",
+					titleEn: "Where is the way forward for ordinary people?",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1cR4v6qEK1.webp",
+						alt: "聊聊普通人的出路在哪里：视频封面",
+						altEn: "Video cover: Where is the way forward for ordinary people?",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268635212165677059",
+				date: "2026-11-09T17:12:33+08:00",
+				content: "四海翻腾云水怒 ，五洲震荡风雷激…",
+				contentEn:
+					"The four seas churn with clouds and furious waters; the five continents shake with storm and thunder…",
+				contentParts: [
+					{
+						text: "四海翻腾云水怒 ，五洲震荡风雷激…",
+						textEn:
+							"The four seas churn with clouds and furious waters; the five continents shake with storm and thunder…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-c2208a5fa845f0015c31a8c4cf6b5573774f728a.webp",
+							alt: "[鸣潮2周年同人绘画动态表情包_弹奏]",
+							altEn: "Playing music",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1ZSxm6eESC/",
+					title: "“优秀的作品都在讲同一个故事”",
+					titleEn: "“Great works all tell the same story”",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1ZSxm6eESC.webp",
+						alt: "“优秀的作品都在讲同一个故事”：视频封面",
+						altEn: "Video cover: “Great works all tell the same story”",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268610052234674215",
+				date: "2026-11-09T15:34:55+08:00",
+				content: "转轴拨弦三两声，未成曲调先有情",
+				contentEn:
+					"Turn the pegs, pluck the strings a few times: before there is a melody, feeling is already there",
+				contentParts: [
+					{
+						text: "转轴拨弦三两声，未成曲调先有情",
+						textEn:
+							"Turn the pegs, pluck the strings a few times: before there is a melody, feeling is already there",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4e9230d000172902485f8c20e5afde07bed12e66.webp",
+							alt: "[鸣潮·致予新世界动态表情包_说什么呢！]",
+							altEn: "What are you saying?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4e9230d000172902485f8c20e5afde07bed12e66.webp",
+							alt: "[鸣潮·致予新世界动态表情包_说什么呢！]",
+							altEn: "What are you saying?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1jLxS6iEY5/",
+					title: '《轻涟》| 司凤版⚡"根本没有这样的芙宁娜！"⚡',
+					titleEn:
+						"La vaguelette, Sifeng version: “There is no Furina like this!”",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1jLxS6iEY5.webp",
+						alt: '《轻涟》| 司凤版⚡"根本没有这样的芙宁娜！"⚡：视频封面',
+						altEn:
+							"Video cover: La vaguelette, Sifeng version: “There is no Furina like this!”",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268348407109386260",
+				date: "2026-11-08T22:39:36+08:00",
+				content: "孩子们，又吃到大份了",
+				contentEn: "Kids, we've been served another huge helping",
+				contentParts: [
+					{
+						text: "孩子们，又吃到大份了",
+						textEn: "Kids, we've been served another huge helping",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4e9230d000172902485f8c20e5afde07bed12e66.webp",
+							alt: "[鸣潮·致予新世界动态表情包_说什么呢！]",
+							altEn: "What are you saying?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-4e9230d000172902485f8c20e5afde07bed12e66.webp",
+							alt: "[鸣潮·致予新世界动态表情包_说什么呢！]",
+							altEn: "What are you saying?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-5080487928ccced269919729c74a1e9bf30c899b.webp",
+							alt: "[鸣潮·致予新世界动态表情包_再说一次？]",
+							altEn: "Say that again?",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1RZ4J6EEjt/",
+					title:
+						"小天才怒跑千问3.8-27B,红米K20Pro强兼122B,家用电脑干爆KIMI K3，diskinfer助你在任何设备上运行超大模型！",
+					titleEn:
+						"Running Qwen 3.8-27B on a smartwatch, 122B on a Redmi K20 Pro, and KIMI K3 on a home PC: diskinfer helps you run large models on any device!",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1RZ4J6EEjt.webp",
+						alt: "小天才怒跑千问3.8-27B,红米K20Pro强兼122B,家用电脑干爆KIMI K3，diskinfer助你在任何设备上运行超大模型！：视频封面",
+						altEn:
+							"Video cover: Running Qwen 3.8-27B on a smartwatch, 122B on a Redmi K20 Pro, and KIMI K3 on a home PC: diskinfer helps you run large models on any device!",
+					},
+				},
+			},
+			{
+				id: "bilibili-1268347406427095045",
+				date: "2026-11-08T22:35:43+08:00",
+				content: "……你头上是否有许多问号……?",
+				contentEn: "……Are there a lot of question marks above your head……?",
+				contentParts: [
+					{
+						text: "……你头上是否有许多问号……?",
+						textEn: "……Are there a lot of question marks above your head……?",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-24c33336039bba61196b67841fdf0de4b08fe569.webp",
+							alt: "[鸣潮·致予新世界动态表情包_没事哒~]",
+							altEn: "It's okay",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1Eyx16cEBK/",
+					title:
+						"宋美龄和蒋介石是真爱吗？蒋介石为何宠信宋美龄？【历史调研室109】",
+					titleEn:
+						"Were Soong Mei-ling and Chiang Kai-shek truly in love? Why did Chiang favor her? [History Research Room 109]",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1Eyx16cEBK.webp",
+						alt: "宋美龄和蒋介石是真爱吗？蒋介石为何宠信宋美龄？【历史调研室109】：视频封面",
+						altEn:
+							"Video cover: Were Soong Mei-ling and Chiang Kai-shek truly in love? Why did Chiang favor her? [History Research Room 109]",
+					},
+				},
+			},
+			{
+				id: "carved-railings-faces-nov7",
+				date: "2026-11-07T19:43:34+11:00",
+				content: "雕栏玉砌应犹在，只是朱颜改...",
+				contentEn:
+					"The carved railings and jade steps must still be there; only the youthful faces have changed...",
+			},
+			{
+				id: "sunset-and-clear-gaze-nov8",
+				date: "2026-11-08T18:52:15+11:00",
+				content: "我渴望雨后的夕阳，也渴望你清澈的目光...",
+				contentEn:
+					"I long for the sunset after rain, and for the clarity of your gaze...",
+			},
+			{
+				id: "dream-and-painting-nov8",
+				date: "2026-11-08T21:01:16+11:00",
+				content: "我梦见了画，于是我画下了梦",
+				contentEn: "I dreamed of a painting, and so I painted my dream",
+			},
+			{
+				id: "yellow-crane-tower-nov9",
+				date: "2026-11-09T22:27:12+11:00",
+				content: "昔人已乘黄鹤去，此地空余黄鹤楼…",
+				contentEn:
+					"The one of old has flown away upon a yellow crane; only Yellow Crane Tower remains here…",
+			},
+			{
+				id: "stars-not-last-night-nov11",
+				date: "2026-11-11T18:22:43+11:00",
+				content: "似此星辰非昨夜，为谁风露立中宵...",
+				contentEn:
+					"These stars resemble last night, yet are not the same; for whom do I stand in the wind and dew at midnight...",
+			},
+			{
+				id: "stories-and-beginnings-nov11",
+				date: "2026-11-11T19:45:37+11:00",
+				content:
+					"当一个故事要结束的时候，我们总会想起它的开始.\n就像是……一切回到了从前......",
+				contentEn:
+					"When a story is about to end, we always remember how it began.\nAs though…… everything has returned to the way it was......",
+			},
+			{
+				id: "phoenix-flute-galactic-night-nov11",
+				date: "2026-11-11T21:14:49+11:00",
+				content: "凤箫吹彻银河夜，玉露凝成相思霜",
+				contentEn:
+					"A phoenix flute sounds through the night of stars; jade dew settles into the frost of longing",
+			},
+			{
+				id: "fallen-stars-frost-sleeves-nov12",
+				date: "2026-11-12T19:51:45+11:00",
+				content: "碧落星沉霜满袖，红尘梦醒月盈阶",
+				contentEn:
+					"Stars sink through the blue heavens, frost filling my sleeves; waking from a worldly dream, I find moonlight flooding the steps",
+			},
+			{
+				id: "starry-betrothal-nov13",
+				date: "2026-11-13T22:58:14+11:00",
+				content:
+					"琉璃万盏燃长夜，不及君眸一点春；\n愿以星河为聘礼，换君朝暮共流年...",
+				contentEn:
+					"Ten thousand glass lanterns light the long night, yet cannot match one touch of spring in your eyes;\nI would offer the river of stars as my betrothal gift, for mornings and evenings spent sharing the years with you...",
+			},
+			{
 				id: "bilibili-1268345624013570052",
 				date: "2026-11-08T22:28:00+08:00",
 				content: "好有道理啊……",
