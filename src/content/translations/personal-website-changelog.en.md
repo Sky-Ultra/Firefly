@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:902992ca326017fd96eada618509e214857630a451df5030a8b240b77ecb7059
+sourceHash: sha256:8beecf1d736858955fed27f82e4ff3a7411e0ab8782e882c146cc32015242288
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -201,3 +201,20 @@ This article provides a brief record of updates to my personal website, beginnin
 ## November 9, 2026
 
 - Published the article [“Are You Really “Sexually Repressed”? Why Do Some People Keep Calling Strangers “Mom”?”](/posts/love-and-sexual-repression/)
+
+## November 10, 2026
+
+- Optimized performance overhead and performance in the [Fairytale theme](/), substantially improving smoothness across different scenarios
+- Updated some image resources and [welcome messages](/posts/homepage-welcome-messages/)
+- Added some [animation effects](/) to the website
+
+## November 13, 2026
+
+- <mark class="theme-highlight">Major update</mark>: We carried out preliminary tests of a new protection method for [the Long Night love letter](/posts/long-night-love-letter/). The latest version introduces two-stage verification: both passwords are required to access the article. We also significantly reduced the permitted password-verification attempts, substantially improving verification security. We will continue exploring the limits of security on Astro and testing protection for more articles
+
+## November 15, 2026
+
+- Added new personalized messages for [incorrect password input](/posts/long-night-love-letter/)
+- Fixed some display bugs in the [Fairytale theme](/)
+- <mark class="theme-highlight">Major update</mark>: We noticed that the jelly-like parallax effect on [homepage article cards](/) could cause uneven clipping and other display issues on desktop. In pursuit of better detail, we refined this behavior
+- Published the article [“Life Is One Enormous Soulslike Game...”](/posts/life-as-a-soulslike-game/)

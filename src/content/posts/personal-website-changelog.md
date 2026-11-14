@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-11-09
+updated: 2026-11-15
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -212,3 +212,20 @@ draft: false
 ## 2026.11.9
 
 - 更新了文章：[你真的“性压抑”吗？为什么有些人爱乱喊“妈妈”？](/posts/love-and-sexual-repression/)
+
+## 2026.11.10
+
+- 我们优化了[童话主题](/)下的性能开销和性能优化，目前在各场景下流畅度都有大幅提升
+- 我们更新了部分图片资源和部分[欢迎词](/posts/homepage-welcome-messages/)
+- 为网站添加了一些[动画效果](/)
+
+## 2026.11.13
+
+- <mark class="theme-highlight">重要更新</mark>：我们为[长夜的情书](/posts/long-night-love-letter/)文章做了全新保密方式的先遣测试。在最新版本下，我们为其推出了双重验证的模式，现行版本下，该文章需要输入两重密码才可以访问，并且我们大幅缩减了密码的验证限制次数，从根本上大幅提升了验证安全等级系数。我们也会不断探索在 Astro 上的安全上限，并且对更多文章做一些测试
+
+## 2026.11.15
+
+- 为[密码错误提示](/posts/long-night-love-letter/)输入做了全新的个性化提示
+- 修复了[童话主题](/)下的一些显示 Bug
+- <mark class="theme-highlight">重要更新</mark>：我们注意到，在 PC 端网页下，[主页文章](/)的果冻视差效果，似乎会出现细节上不均的裁切等显示问题和细节问题。秉承着对细节的追求，我们优化了该项内容
+- 更新了文章：[人生就是一个巨大的类魂游戏...](/posts/life-as-a-soulslike-game/)
