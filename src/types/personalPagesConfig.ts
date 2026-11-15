@@ -16,6 +16,10 @@ export type DeviceItem = {
 };
 
 export type SocialImage = {
+	/** Preserve the complete image when explicitly requested; existing previews are unchanged. */
+	fit?: "cover" | "contain";
+	width?: number;
+	height?: number;
 	src: string;
 	alt: string;
 	altEn?: string;

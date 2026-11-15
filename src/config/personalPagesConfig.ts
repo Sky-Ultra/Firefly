@@ -93,6 +93,38 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "summer-regret-nov14",
+				date: "2026-11-14T17:46:04+11:00",
+				content: "夏天太有生命力了，连遗憾都肆意疯长……",
+				contentEn: "Summer is so full of life that even regrets grow wild……",
+			},
+			{
+				id: "pure-love-frustration-nov15",
+				date: "2026-11-15T19:39:28+11:00",
+				content:
+					"我恨这个世界所有不搞纯爱的傻B。一谈恋爱被你们谈的像上厕所一样随便，把原本单纯善良的人都变得不敢轻易尝试恋爱，在这个社会搞纯爱的我像他妈叶问赤手空拳去参加二战一样搞笑。",
+				contentEn:
+					"I hate all the idiots in this world who refuse to take sincere love seriously. You treat falling in love as casually as going to the bathroom, making people who were once simple and kind afraid to even try a relationship. Trying to love purely in this society makes me look as fucking ridiculous as Ip Man entering World War II bare-handed.",
+			},
+			{
+				id: "love-needs-no-conditions-nov15",
+				date: "2026-11-15T22:43:39+11:00",
+				content: "∵这题没有条件\n∴喜欢你无需条件.",
+				contentEn:
+					"∵ This problem has no conditions\n∴ Liking you needs no conditions.",
+				images: [
+					{
+						src: "/assets/images/moments/love-without-conditions-nov15.webp",
+						fit: "contain",
+						width: 2000,
+						height: 1500,
+						alt: "手写几何图案与“Love = 520°、I love you”字样",
+						altEn:
+							"A handwritten geometry sketch with “Love = 520°” and “I love you.”",
+					},
+				],
+			},
+			{
 				id: "bilibili-1270486635114397731",
 				date: "2026-11-14T16:57:01+08:00",
 				content: "依旧句句不提，依旧句句不离",

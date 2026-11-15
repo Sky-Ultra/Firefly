@@ -88,7 +88,20 @@ const dateLabel = new Intl.DateTimeFormat("zh-CN", {
 								images.length === 3 && index === 0 ? "col-span-2" : "",
 							]}
 						>
-							<ImageWrapper
+							{image.fit === "contain" ? (
+								<img
+									src={image.src.startsWith("http") ? image.src : url(image.src)}
+									alt={image.alt}
+									data-i18n-zh={image.alt}
+									data-i18n-en={image.altEn ?? image.alt}
+									data-i18n-attr="alt"
+									width={image.width}
+									height={image.height}
+									class="block h-auto max-h-[30rem] w-full object-contain"
+									loading="lazy" decoding="async"
+								/>
+							) : (
+								<ImageWrapper
 								src={image.src}
 								alt={image.alt}
 								class:list={[
@@ -96,6 +109,7 @@ const dateLabel = new Intl.DateTimeFormat("zh-CN", {
 									images.length === 1 ? "max-h-[30rem] min-h-60" : "aspect-[4/3]",
 								]}
 							/>
+							)}
 						</a>
 					))}
 				</div>
