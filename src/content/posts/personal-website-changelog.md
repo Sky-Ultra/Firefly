@@ -229,3 +229,5 @@ draft: false
 - 修复了[童话主题](/)下的一些显示 Bug
 - <mark class="theme-highlight">重要更新</mark>：我们注意到，在 PC 端网页下，[主页文章](/)的果冻视差效果，似乎会出现细节上不均的裁切等显示问题和细节问题。秉承着对细节的追求，我们优化了该项内容
 - 更新了文章：[人生就是一个巨大的类魂游戏...](/posts/life-as-a-soulslike-game/)
+- 更新了文章：[无题·其一](/posts/untitled-one/)
+- 更新了文章：[无题·其二](/posts/untitled-two/)

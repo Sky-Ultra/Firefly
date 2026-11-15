@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:8beecf1d736858955fed27f82e4ff3a7411e0ab8782e882c146cc32015242288
+sourceHash: sha256:bb66c613ee26644f52e1a1116682a5fed18bfb8b857416920628273ab47c5e57
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -218,3 +218,5 @@ This article provides a brief record of updates to my personal website, beginnin
 - Fixed some display bugs in the [Fairytale theme](/)
 - <mark class="theme-highlight">Major update</mark>: We noticed that the jelly-like parallax effect on [homepage article cards](/) could cause uneven clipping and other display issues on desktop. In pursuit of better detail, we refined this behavior
 - Published the article [“Life Is One Enormous Soulslike Game...”](/posts/life-as-a-soulslike-game/)
+- Published the article [“Untitled · I”](/posts/untitled-one/)
+- Published the article [“Untitled · II”](/posts/untitled-two/)
