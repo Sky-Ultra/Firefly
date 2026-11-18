@@ -9,15 +9,13 @@ function source(path: string): string {
 	return existsSync(file) ? readFileSync(file, "utf8") : "";
 }
 
-test("homepage entrance follows the countdown on desktop and mobile", () => {
+test("homepage entrance precedes the daily quote on desktop and mobile", () => {
 	for (const widgets of [
 		sidebarLayoutConfig.rightComponents,
 		sidebarLayoutConfig.mobileBottomComponents,
 	]) {
-		const countdownIndex = widgets.findIndex(
-			(item) => item.type === "festivalCountdown",
-		);
-		const entrance = widgets[countdownIndex + 1];
+		const quoteIndex = widgets.findIndex((item) => item.type === "dailyQuote");
+		const entrance = widgets[quoteIndex - 1];
 		assert.equal(entrance.type, "recentActivity");
 		assert.equal(entrance.homeOnly, true);
 		assert.equal(entrance.showOnPostPage, false);
@@ -49,11 +47,13 @@ test("homepage-only visibility is handled on first render and existing route tra
 test("timeline uses public metadata and semantic localized content without article body rendering", () => {
 	const page = source("src/pages/activity.astro");
 	assert.match(page, /MainGridLayout/);
-	assert.match(page, /buildActivityFeed/);
-	assert.match(page, /getSortedPosts\(\)/);
-	assert.match(page, /personalPagesConfig\.moments\.items/);
-	assert.match(page, /getPostUrlBySlug/);
-	assert.match(page, /\/moments\/#/);
+	const feed = source("src/utils/site-timeline.ts");
+	assert.match(page, /getSiteTimeline\(\)/);
+	assert.match(feed, /buildActivityFeed/);
+	assert.match(feed, /getSortedPostsList\(\)/);
+	assert.match(feed, /personalPagesConfig\.moments\.items/);
+	assert.match(feed, /getPostUrlBySlug/);
+	assert.match(feed, /\/moments\/#/);
 	assert.match(page, /<ol\b/);
 	assert.match(page, /<time\b/);
 	assert.match(page, /发布了/);

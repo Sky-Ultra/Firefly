@@ -3,6 +3,7 @@ import { Icon } from "astro-icon/components";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import type { WidgetComponentConfig } from "@/types/config";
+import { getSiteTimeline } from "@/utils/site-timeline";
 import { url } from "@/utils/url-utils";
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const { class: className, style, widgetConfig } = Astro.props;
+const preview = (await getSiteTimeline()).slice(0, 6);
 ---
 
 <WidgetLayout
@@ -22,14 +24,30 @@ const { class: className, style, widgetConfig } = Astro.props;
 	class={className}
 	style={style}
 >
-	<p class="mb-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
-		<LocalizedText zh="新文章、生活片刻与网站更新，都留在这条时间线上。" en="New posts, small moments and site updates, gathered along a timeline." />
-	</p>
+	<ol class="relative mb-3 max-h-48 overflow-y-auto rounded-md pe-1 [scrollbar-width:thin] focus-visible:outline-(--primary)" tabindex="0" aria-label="近期动态" data-i18n-attr="aria-label" data-i18n-zh="近期动态" data-i18n-en="Recent activity preview">
+		{preview.map(item => (
+			<li class="border-b border-(--line-divider) last:border-0">
+				<a href={item.href}
+					data-i18n-attr={item.kind === "changelog" ? "href" : undefined}
+					data-i18n-zh={item.kind === "changelog" ? item.href : undefined}
+					data-i18n-en={item.kind === "changelog" ? item.hrefEn : undefined}
+					class="block rounded px-1.5 py-2 hover:bg-(--btn-regular-bg) focus-visible:outline-(--primary)">
+					<span class="flex items-center gap-2 text-xs text-(--content-meta)">
+						<time datetime={item.date}>{item.date.slice(5, 10)}</time>
+						<LocalizedText zh={item.kind === "post" ? "文章" : item.kind === "moment" ? "朋友圈" : "更新日志"} en={item.kind === "post" ? "Article" : item.kind === "moment" ? "Moment" : "Changelog"} />
+					</span>
+					<LocalizedText class="mt-0.5 line-clamp-2 text-sm leading-snug text-75"
+						zh={item.kind === "post" ? item.title : item.kind === "moment" ? item.content || item.video?.title || "查看动态" : "查看当天的网站更新"}
+						en={item.kind === "post" ? item.titleEn : item.kind === "moment" ? item.contentEn || item.video?.titleEn || "View moment" : "Read the day's site updates"} />
+				</a>
+			</li>
+		))}
+	</ol>
 	<a
 		href={url("/activity/")}
 		class="btn-regular inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary)"
 	>
-		<LocalizedText zh="去看看" en="Take a look" />
+		<LocalizedText zh="查看完整时间线" en="View full timeline" />
 		<Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true" />
 	</a>
 </WidgetLayout>

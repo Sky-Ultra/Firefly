@@ -6,37 +6,20 @@ import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
 import ActivityVideoPreview from "@/components/pages/personal/ActivityVideoPreview.astro";
 import ChangelogActivity from "@/components/pages/personal/ChangelogActivity.astro";
 import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
-import { personalPagesConfig, profileConfig } from "@/config";
-import changelogZh from "@/content/posts/personal-website-changelog.md?raw";
-import changelogEn from "@/content/translations/personal-website-changelog.en.md?raw";
+import { profileConfig } from "@/config";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
-import { buildActivityFeed } from "@/utils/activity-feed";
-import { buildChangelogActivities } from "@/utils/changelog-activity";
-import { getSortedPosts } from "@/utils/content-utils";
-import { getPostUrlBySlug, url } from "@/utils/url-utils";
+import { getSiteTimeline } from "@/utils/site-timeline";
 import "@/styles/activity-timeline.css";
 import "@/styles/elastic-links.css";
 
 const title = "最近发生的事";
 const description = "新文章、生活片刻与网站更新，沿着时间慢慢生长。";
-const posts = (await getSortedPosts()).map(({ id, data }) => ({ id, data }));
-const changelog = await buildChangelogActivities(
-	changelogZh,
-	changelogEn,
-	url("/posts/personal-website-changelog/"),
-);
-const activities = buildActivityFeed(
-	posts,
-	personalPagesConfig.moments.items,
-	{
-		post: getPostUrlBySlug,
-		moment: (id) => `${url("/moments/#")}${id}`,
-	},
-	changelog,
-);
+const activities = await getSiteTimeline();
 const postCount = activities.filter((item) => item.kind === "post").length;
 const momentCount = activities.filter((item) => item.kind === "moment").length;
-const changelogCount = changelog.length;
+const changelogCount = activities.filter(
+	(item) => item.kind === "changelog",
+).length;
 ---
 
 <MainGridLayout title={title} description={description}>
