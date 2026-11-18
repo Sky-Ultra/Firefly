@@ -93,6 +93,14 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "christmas-wish-nov18",
+				date: "2026-11-18T19:24:56+11:00",
+				content:
+					"好想和你一起过圣诞 踩雪 戴互送的围巾喝热可可 做饼干 一直这样幸福地生活 就算冷也值得了",
+				contentEn:
+					"I want to spend Christmas with you, walking through the snow, wearing the scarves we gave each other, drinking hot cocoa and making cookies. If we could always live this happily, even the cold would be worth it.",
+			},
+			{
 				id: "summer-regret-nov14",
 				date: "2026-11-14T17:46:04+11:00",
 				content: "夏天太有生命力了，连遗憾都肆意疯长……",

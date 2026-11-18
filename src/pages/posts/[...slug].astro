@@ -289,6 +289,13 @@ const relatedPosts = await getRelatedPosts(entry, 5);
         }
       </div>
 
+      {entry.data.description.trim() && (
+        <div class="post-introduction onload-animation mb-5 border-s-[3px] border-(--primary) ps-4 text-(--primary)">
+          <LocalizedText as="p" class="mb-1 text-sm font-bold" zh="简介" en="Introduction" />
+          <LocalizedText as="p" class="whitespace-pre-line break-words leading-relaxed" zh={entry.data.description} en={entry.data.descriptionEn || entry.data.description} />
+        </div>
+      )}
+
       <!-- always show cover as long as it has one -->
 
       {

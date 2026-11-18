@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-11-15
+updated: 2026-11-18
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -231,3 +231,7 @@ draft: false
 - 更新了文章：[人生就是一个巨大的类魂游戏...](/posts/life-as-a-soulslike-game/)
 - 更新了文章：[无题·其一](/posts/untitled-one/)
 - 更新了文章：[无题·其二](/posts/untitled-two/)
+
+## 2026.11.18
+
+- 发布了[《花笺的便签实现原理与解析》](/posts/floral-notepaper/)

@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:bb66c613ee26644f52e1a1116682a5fed18bfb8b857416920628273ab47c5e57
+sourceHash: sha256:c5724d9e93ad94ccb9f326bcca8c4835f8eb9de6817a1f9ec5d3cefb8dc54f9e
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -220,3 +220,7 @@ This article provides a brief record of updates to my personal website, beginnin
 - Published the article [“Life Is One Enormous Soulslike Game...”](/posts/life-as-a-soulslike-game/)
 - Published the article [“Untitled · I”](/posts/untitled-one/)
 - Published the article [“Untitled · II”](/posts/untitled-two/)
+
+## November 18, 2026
+
+- Published [How Floral Notepaper Implements Desktop Notes](/posts/floral-notepaper/)
