@@ -725,21 +725,29 @@ const siteLang = lang.replace("_", "-");
     }
   }
 
+  @media (min-width: 768px) {
+    #left-sidebar-sticky {
+      --relationship-limit: calc(100dvh - var(--relationship-end, 0px) - 1rem);
+      top: min(1rem, var(--relationship-limit));
+    }
+    #left-sidebar-sticky.top-0 { top: min(0px, var(--relationship-limit)); }
+  }
+
   @layer utilities {
     .enable-banner #sidebar-sticky {
-      top: calc(1rem - var(--banner-height-extend)) !important;
+      top: calc(min(1rem, var(--relationship-limit, 1rem)) - var(--banner-height-extend)) !important;
     }
     .enable-banner #left-sidebar-sticky {
-      top: calc(1rem - var(--banner-height-extend)) !important;
+      top: calc(min(1rem, var(--relationship-limit, 1rem)) - var(--banner-height-extend)) !important;
     }
     .enable-banner #right-sidebar-sticky {
-      top: calc(1rem - var(--banner-height-extend)) !important;
+      top: calc(min(1rem, var(--relationship-limit, 1rem)) - var(--banner-height-extend)) !important;
     }
 
     body.enable-banner.sticky-navbar #sidebar-sticky,
     body.enable-banner.sticky-navbar #left-sidebar-sticky,
     body.enable-banner.sticky-navbar #right-sidebar-sticky {
-      top: calc(5.5rem - var(--banner-height-extend)) !important;
+      top: calc(min(5.5rem, var(--relationship-limit, 5.5rem)) - var(--banner-height-extend)) !important;
     }
 
     .navbar-hidden {
@@ -775,7 +783,7 @@ const siteLang = lang.replace("_", "-");
     body.sticky-navbar.no-banner-layout #sidebar-sticky,
     body.sticky-navbar.no-banner-layout #left-sidebar-sticky,
     body.sticky-navbar.no-banner-layout #right-sidebar-sticky {
-      top: 5.5rem !important;
+      top: min(5.5rem, var(--relationship-limit, 5.5rem)) !important;
     }
   }
 
@@ -791,7 +799,7 @@ const siteLang = lang.replace("_", "-");
     body.enable-banner:not(.lg\:is-home) #sidebar-sticky,
     body.enable-banner:not(.lg\:is-home) #left-sidebar-sticky,
     body.enable-banner:not(.lg\:is-home) #right-sidebar-sticky {
-      top: 1rem !important;
+      top: min(1rem, var(--relationship-limit, 1rem)) !important;
     }
 
     html[data-wallpaper-mode="none"] body.sticky-navbar #sidebar-sticky,
@@ -803,7 +811,7 @@ const siteLang = lang.replace("_", "-");
     body.sticky-navbar.no-banner-layout #sidebar-sticky,
     body.sticky-navbar.no-banner-layout #left-sidebar-sticky,
     body.sticky-navbar.no-banner-layout #right-sidebar-sticky {
-      top: 5.5rem !important;
+      top: min(5.5rem, var(--relationship-limit, 5.5rem)) !important;
     }
 
     body.sticky-navbar #top-row {

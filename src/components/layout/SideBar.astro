@@ -192,6 +192,7 @@ const isMobileBottom = side === SIDEBAR_SIDE.BOTTOM;
 const { topComponents, stickyComponents } = !isMobileBottom
 	? getComponentsByPosition(filteredComponents)
 	: { topComponents: [], stickyComponents: [] };
+const StickyGroup = side === SIDEBAR_SIDE.LEFT ? "left-sidebar-stack" : "div";
 const bottomComponents = isMobileBottom ? filteredComponents : [];
 const hasInitiallyVisibleTopComponents = topComponents.some(
 	isComponentInitiallyVisible,
@@ -232,7 +233,7 @@ const hasInitiallyVisibleTopComponents = topComponents.some(
 
 					{/* Sticky components */}
 					{stickyComponents.length > 0 && (
-						<div
+						<StickyGroup
 							id={`${side}-sidebar-sticky`}
 							class:list={[
 								"flex flex-col w-full mt-0 gap-4",
@@ -249,10 +250,36 @@ const hasInitiallyVisibleTopComponents = topComponents.some(
 								) as any;
 								return <Component {...props} />;
 							})}
-						</div>
+						</StickyGroup>
 					)}
 				</>
 			)}
 		</div>
 	)
 }
+
+<script>
+	class LeftSidebarStack extends HTMLElement {
+		private observer?: ResizeObserver;
+
+		connectedCallback() {
+			const timer = this.querySelector<HTMLElement>("widget-layout[data-id^='relationship-']");
+			if (!timer) return;
+			// The stack is the positioned offset parent. Exclude any cards below the timer.
+			const measure = () => {
+				if (timer.offsetHeight) {
+					this.style.setProperty("--relationship-end", `${timer.offsetTop + timer.offsetHeight}px`);
+				}
+			};
+			this.observer = new ResizeObserver(measure);
+			for (const card of this.children) this.observer.observe(card);
+			this.observer.observe(this);
+			measure();
+		}
+
+		disconnectedCallback() {
+			this.observer?.disconnect();
+		}
+	}
+	if (!customElements.get("left-sidebar-stack")) customElements.define("left-sidebar-stack", LeftSidebarStack);
+</script>
