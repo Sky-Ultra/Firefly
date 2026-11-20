@@ -299,7 +299,18 @@ export function mountFairytaleParallax(layer: HTMLElement): () => void {
 		},
 		{ signal },
 	);
-	window.addEventListener("scroll", sync, { passive: true, signal });
+	window.addEventListener(
+		"scroll",
+		() => {
+			if (
+				permitted &&
+				document.body.classList.contains("is-home") &&
+				active !== window.scrollY <= 1
+			)
+				sync();
+		},
+		{ passive: true, signal },
+	);
 	window.addEventListener(
 		"resize",
 		() => {

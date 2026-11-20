@@ -14,7 +14,6 @@ import WelcomeToast from "@components/features/WelcomeToast.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
 import FloatingMusic from "@/components/features/FloatingMusic.astro";
 import FullscreenPreferences from "@/components/features/FullscreenPreferences.astro";
-
 import {
 	analyticsConfig,
 	backgroundWallpaper,
@@ -31,6 +30,7 @@ import {
 } from "@/constants/constants";
 import { defaultFavicons } from "@/constants/icon";
 import type { Favicon } from "@/types/config";
+import { DEFAULT_FULLSCREEN_LAYOUT } from "@/utils/fullscreen-layout";
 import { isHomePage } from "@/utils/layout-utils";
 import { url } from "@/utils/url-utils";
 
@@ -115,7 +115,7 @@ const siteLang = lang.replace("_", "-");
 ---
 
 <!doctype html>
-<html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]" data-wallpaper-mode={backgroundWallpaper.mode}>
+<html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]" data-wallpaper-mode={backgroundWallpaper.mode} data-fullscreen-layout={DEFAULT_FULLSCREEN_LAYOUT}>
   <head>
     <meta charset="UTF-8" />
     <FullscreenPreferences />
@@ -312,7 +312,6 @@ const siteLang = lang.replace("_", "-");
         localStorage.getItem(desktopPresetKey) !== desktopThemePresetVersion
       ) {
         localStorage.setItem("hue", String(desktopConfigHue));
-        localStorage.setItem("wallpaperMode", defaultWallpaperMode);
         localStorage.setItem("bannerTitleEnabled", String(desktopBannerTitleDefault));
         localStorage.setItem("bannerCarouselEnabled", String(desktopCarouselDefault));
         localStorage.setItem("wavesEnabled", String(desktopWavesDefault));

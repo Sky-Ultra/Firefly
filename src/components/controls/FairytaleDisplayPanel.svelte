@@ -107,17 +107,34 @@ const modes: { value: WALLPAPER_MODE; label: string; icon: string }[] = [
 	},
 	{ value: "none", label: "纯色", icon: "material-symbols:hide-image-outline" },
 ];
+function navigateTabs(event: KeyboardEvent, index: number) {
+	const count = tabs.length;
+	const positions: Record<string, number> = {
+		ArrowLeft: (index + count - 1) % count,
+		ArrowRight: (index + 1) % count,
+		Home: 0,
+		End: count - 1,
+	};
+	const next = positions[event.key];
+	if (next === undefined) return;
+	event.preventDefault();
+	tab = tabs[next].id;
+	const button = event.currentTarget as HTMLButtonElement;
+	button.parentElement
+		?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+		[next]?.focus();
+}
 </script>
 
 <div class="fairytale-control-panel" data-fairytale-panel>
 	<div class="ft-tabs" role="tablist" aria-label="主题设置">
-		{#each tabs as item}
-			<button type="button" role="tab" aria-selected={tab===item.id} aria-controls={`fairytale-tab-${item.id}`} class:chosen={tab===item.id} onclick={()=>tab=item.id}>
+		{#each tabs as item, index}
+			<button type="button" role="tab" aria-selected={tab===item.id} id={`fairytale-trigger-${item.id}`} tabindex={tab===item.id ? 0 : -1} aria-controls="fairytale-active-panel" onkeydown={(event)=>navigateTabs(event,index)} class:chosen={tab===item.id} onclick={()=>tab=item.id}>
 				{#if item.id === "appearance"}<Icon icon="material-symbols:palette-outline" class="text-[1.25rem]" />{:else if item.id === "wallpaper"}<Icon icon="material-symbols:wallpaper" class="text-[1.25rem]" />{:else}<Icon icon="material-symbols:wand-stars-outline-rounded" class="text-[1.25rem]" />{/if}<span data-i18n-zh={item.label} data-i18n-en={item.en}>{item.label}</span>
 			</button>
 		{/each}
 	</div>
-	<div class="ft-body" role="tabpanel" id={`fairytale-tab-${tab}`}>
+	<div class="ft-body" role="tabpanel" id="fairytale-active-panel" aria-labelledby={`fairytale-trigger-${tab}`}>
 		{#if tab==="wallpaper"}
 			<section>
 				<h3>页面背景</h3>
@@ -165,6 +182,7 @@ const modes: { value: WALLPAPER_MODE; label: string; icon: string }[] = [
 .fairytale-control-panel { --ft-text:#252329; --ft-muted:#66616b; --ft-surface:color-mix(in srgb,var(--card-bg) 94%,#777); --ft-high:color-mix(in srgb,var(--card-bg) 97%,#777); --ft-selected:var(--btn-regular-bg-hover); color:var(--ft-text); display:flex; flex-direction:column; gap:.5rem; font-size:max(.8rem,12px); }
 :global(html.dark) .fairytale-control-panel { --ft-text:#eeebf1; --ft-muted:#c3bdc8; }
 .ft-tabs { display:flex; gap:2px; height:2.25rem; padding:2px; border-radius:.75rem; background:var(--ft-surface); flex:none; }
+@media (max-height: 760px) { .ft-tabs { position:sticky; top:0; z-index:1; background:var(--card-bg); } }
 .ft-tabs button { flex:1; display:flex; align-items:center; justify-content:center; gap:.4rem; min-width:0; border:0; border-radius:.5rem; color:var(--ft-muted); background:transparent; font-size:max(.75rem,12px); font-weight:600; cursor:pointer; transition:background-color .15s cubic-bezier(.2,0,0,1),color .15s cubic-bezier(.2,0,0,1); }
 .ft-tabs button.chosen { color:var(--ft-text); background:var(--ft-selected); box-shadow:0 1px 2px rgb(0 0 0 / 8%); }
 .ft-body { padding:.75rem .5rem .5rem; border-radius:.75rem; background:var(--ft-surface); }

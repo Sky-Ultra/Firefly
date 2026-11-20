@@ -1,15 +1,25 @@
 ---
 import {
+	DEFAULT_FULLSCREEN_LAYOUT,
 	FAIRYTALE_DEFAULTS,
 	FAIRYTALE_SETTINGS_KEY,
 	FULLSCREEN_LAYOUT_KEY,
 } from "@/utils/fullscreen-layout";
 ---
-<script is:inline data-swup-ignore-script define:vars={{ fairytaleDefaults: FAIRYTALE_DEFAULTS, fairytaleSettingsKey: FAIRYTALE_SETTINGS_KEY, fairytaleLayoutKey: FULLSCREEN_LAYOUT_KEY }}>
+<script is:inline data-swup-ignore-script define:vars={{ defaultLayout: DEFAULT_FULLSCREEN_LAYOUT, fairytaleDefaults: FAIRYTALE_DEFAULTS, fairytaleSettingsKey: FAIRYTALE_SETTINGS_KEY, fairytaleLayoutKey: FULLSCREEN_LAYOUT_KEY }}>
  (() => {
-  let layout = "classic", settings = fairytaleDefaults;
+  let layout = defaultLayout, settings = fairytaleDefaults;
   try {
-   layout = localStorage.getItem(fairytaleLayoutKey) === "fairytale" ? "fairytale" : "classic";
+   // Move returning visitors to the new default once, before the first paint.
+   // Keep the independent blur, glass opacity, hue and motion preferences.
+   const rolloutKey = "firefly:fairytale-launch-v1";
+   if (!localStorage.getItem(rolloutKey)) {
+    localStorage.setItem("wallpaperMode", "fullscreen");
+    localStorage.setItem(fairytaleLayoutKey, defaultLayout);
+    localStorage.setItem(rolloutKey, "1");
+   } else if (localStorage.getItem(fairytaleLayoutKey) === "classic") {
+    layout = "classic";
+   }
    const value = JSON.parse(localStorage.getItem(fairytaleSettingsKey) || "null");
    if (value && typeof value === "object") {
     const number = (key, min, max) => typeof value[key] === "number" && Number.isFinite(value[key]) ? Math.max(min, Math.min(max, value[key])) : fairytaleDefaults[key];

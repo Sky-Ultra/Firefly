@@ -52,6 +52,7 @@ import {
 	setParallaxStrength,
 } from "@/utils/fairytale-parallax";
 import {
+	DEFAULT_FULLSCREEN_LAYOUT,
 	FAIRYTALE_DEFAULTS,
 	type FullscreenLayout,
 	readFullscreenPreferences,
@@ -88,7 +89,7 @@ const defaultLayout = siteConfig.postListLayout.defaultMode;
 const mobileDefaultLayout =
 	siteConfig.postListLayout.mobileDefaultMode || defaultLayout;
 let mounted = $state(false);
-let fullscreenLayout: FullscreenLayout = $state("classic");
+let fullscreenLayout: FullscreenLayout = $state(DEFAULT_FULLSCREEN_LAYOUT);
 let fairytaleBlur = $state(FAIRYTALE_DEFAULTS.blur);
 let fairytaleWallpaperOpacity = $state(FAIRYTALE_DEFAULTS.wallpaperOpacity);
 let fairytaleCardOpacity = $state(FAIRYTALE_DEFAULTS.cardOpacity);

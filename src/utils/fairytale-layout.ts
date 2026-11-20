@@ -241,6 +241,13 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 	function schedule() {
 		if (active && !frame) frame = requestAnimationFrame(update);
 	}
+	function onScroll() {
+		// Past the hero both effects have settled. Scrolling back into it
+		// resumes the animation immediately; image/resize events still schedule independently.
+		if (lastBlur === "1.000" && window.scrollY >= stableMotionHeight() * 0.8)
+			return;
+		schedule();
+	}
 	function requestSourceSync() {
 		imageDirty = true;
 		schedule();
@@ -305,7 +312,7 @@ export function mountFairytaleLayout(backdrop: HTMLElement): () => void {
 		active = true;
 		backdrop.hidden = false;
 		scrollScope = new AbortController();
-		window.addEventListener("scroll", schedule, {
+		window.addEventListener("scroll", onScroll, {
 			passive: true,
 			signal: scrollScope.signal,
 		});

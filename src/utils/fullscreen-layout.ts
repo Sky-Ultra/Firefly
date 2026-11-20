@@ -4,6 +4,7 @@ export interface FairytaleSettings {
 	wallpaperOpacity: number;
 	cardOpacity: number;
 }
+export const DEFAULT_FULLSCREEN_LAYOUT: FullscreenLayout = "fairytale";
 export const FULLSCREEN_LAYOUT_KEY = "firefly:fullscreen-layout";
 export const FAIRYTALE_SETTINGS_KEY = "firefly:fairytale-settings";
 export const FAIRYTALE_DEFAULTS: Readonly<FairytaleSettings> = {
@@ -34,19 +35,19 @@ export function readFullscreenPreferences(storage?: PreferenceStorage): {
 	layout: FullscreenLayout;
 	settings: FairytaleSettings;
 } {
-	let layout: FullscreenLayout = "classic";
+	let layout: FullscreenLayout = DEFAULT_FULLSCREEN_LAYOUT;
 	let settings = { ...FAIRYTALE_DEFAULTS };
 	try {
 		const store = storage ?? window.localStorage;
 		layout =
-			store.getItem(FULLSCREEN_LAYOUT_KEY) === "fairytale"
-				? "fairytale"
-				: "classic";
+			store.getItem(FULLSCREEN_LAYOUT_KEY) === "classic"
+				? "classic"
+				: DEFAULT_FULLSCREEN_LAYOUT;
 		settings = normalizeFairytaleSettings(
 			JSON.parse(store.getItem(FAIRYTALE_SETTINGS_KEY) || "null"),
 		);
 	} catch {
-		/* Storage is optional; keep the existing classic layout. */
+		/* Storage is optional; use the default presentation. */
 	}
 	return { layout, settings };
 }

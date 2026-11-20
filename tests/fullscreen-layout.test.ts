@@ -16,7 +16,7 @@ import {
 
 const source = (path: string) =>
 	readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-test("classic is the default and corrupt or blocked storage cannot affect the existing theme", () => {
+test("fairytale is the default while explicit classic and glass settings are preserved", () => {
 	const values = new Map([
 		["wallpaperMode", "overlay"],
 		["overlayBlur", "19"],
@@ -29,10 +29,11 @@ test("classic is the default and corrupt or blocked storage cannot affect the ex
 		},
 	};
 	assert.deepEqual(readFullscreenPreferences(storage), {
-		layout: "classic",
+		layout: "fairytale",
 		settings: FAIRYTALE_DEFAULTS,
 	});
-	values.set(FULLSCREEN_LAYOUT_KEY, "fairytale");
+	values.set(FULLSCREEN_LAYOUT_KEY, "classic");
+	assert.equal(readFullscreenPreferences(storage).layout, "classic");
 	values.set(
 		FAIRYTALE_SETTINGS_KEY,
 		'{"blur":7,"wallpaperOpacity":0.8,"cardOpacity":0.7}',
@@ -51,7 +52,7 @@ test("classic is the default and corrupt or blocked storage cannot affect the ex
 			},
 			setItem: () => {},
 		}).layout,
-		"classic",
+		"fairytale",
 	);
 });
 test("new settings are bounded and write only namespaced presentation variables", async () => {
@@ -544,6 +545,31 @@ test("mobile blur waits for decoding and retains an opaque outgoing pair until a
 		sharp[0].dispatchEvent(new f.view.Event("error"));
 		await f.flush();
 		assert.equal(sharp[1].classList.contains("is-visible"), true);
+	} finally {
+		await f.close();
+	}
+});
+
+test("long reads stop scheduling hero frames and restore the fade on scrolling back", async () => {
+	const f = await fixture("fairytale");
+	try {
+		await f.flush();
+		const scroll = (y: number) => {
+			Object.defineProperty(f.view, "scrollY", { value: y, writable: true });
+			f.view.dispatchEvent(new f.view.Event("scroll"));
+		};
+		scroll(1500);
+		await f.flush();
+		scroll(1700);
+		assert.equal(f.frames.size, 0);
+		scroll(400);
+		assert.equal(f.frames.size, 1);
+		await f.flush();
+		assert.equal(
+			f.backdrop.querySelector<HTMLElement>(".fairytale-soft-layer")?.style
+				.opacity,
+			"0.500",
+		);
 	} finally {
 		await f.close();
 	}
