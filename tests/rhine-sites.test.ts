@@ -133,7 +133,7 @@ test("Rhine pages do not become main-site navigation or article entrances", () =
 	);
 	assert.doesNotMatch(
 		navigation,
-		/RhineGenshin|RhineStarRail|RhineWuwa|RhineZZZ|Stickerwebsite/,
+		/RhineGenshin|RhineStarRail|RhineWuwa|RhineZZZ|Stickerwebsite|PhilosophyTest/,
 	);
 });
 
@@ -145,7 +145,7 @@ test("standalone response rules stay scoped to their own directories", () => {
 	assert.ok(rules.length > 0);
 	assert.ok(
 		rules.every((rule) =>
-			/^\/(?:Rhine(?:Genshin|StarRail|Wuwa|ZZZ)|Stickerwebsite)\//.test(rule),
+			/^\/(?:Rhine(?:Genshin|StarRail|Wuwa|ZZZ)|Stickerwebsite|PhilosophyTest)\//.test(rule),
 		),
 	);
 });

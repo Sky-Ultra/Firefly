@@ -34,6 +34,7 @@ test("personal tools link to their deployed folder paths and retain the featured
 			["Rhine Wuwa", "/RhineWuwa/"],
 			["Rhine ZZZ", "/RhineZZZ/"],
 			["Sticker website", "/Stickerwebsite/"],
+			["思想之间 · 哲学倾向测试", "/PhilosophyTest/"],
 		],
 	);
 	for (const project of personalTools) {

@@ -91,3 +91,7 @@
 
 /Stickerwebsite/
   Cache-Control: no-cache, must-revalidate
+
+/PhilosophyTest/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache, must-revalidate

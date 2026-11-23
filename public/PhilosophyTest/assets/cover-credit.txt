@@ -1,0 +1,45 @@
+首页拼贴《伊壁鸠鲁》
+
+雕像摄影来源：The Metropolitan Museum of Art，Marble head of Epikouros（《伊壁鸠鲁大理石头像》），罗马，公元二世纪。Rogers Fund, 1911，馆藏编号 11.90。馆方标注照片为 Public Domain。
+藏品页面：https://www.metmuseum.org/art/collection/search/248475
+摄影原图：https://images.metmuseum.org/CRDImages/gr/original/DP333051.jpg
+开放获取说明：https://www.metmuseum.org/about-the-met/policies-and-documents/open-access
+
+此网页的拼贴对原照片进行了抠像、色阶调整与网点处理，并叠加群青色圆形及轨道线条。
+
+《至圣先贤半身像》孔子，元代佚名，1330 年以后，纸本设色。台北国立故宫博物院藏。作品为公共领域；首页取右幅人物，进行了去背、暖灰调色和半身构图处理。
+馆方展览：https://theme.npm.edu.tw/exh106/Confucius/en/page-2.html#img1_1
+实际使用的原始图版（馆方双页扫描）：https://theme.npm.edu.tw/exh106/Confucius/common/images/selection/img1_1_1.jpg
+公版记录：https://commons.wikimedia.org/wiki/File:Half_Portraits_of_the_Great_Sage_and_Virtuous_Men_of_Old_-_Confucius.jpg
+标记：https://creativecommons.org/publicdomain/mark/1.0/
+
+# René Descartes · 笛卡尔
+
+Frans van Schooten, *René Descartes*, 1644. Line engraving. Wellcome Collection, reference 2468i. The museum identifies the seated figure as René Descartes. The plate is inscribed “ad vivum delineavit et fecit anno 1644”.
+
+Museum credit: René Descartes. Line engraving by F. à Schooten, 1644. Wellcome Collection. Public Domain Mark.
+Object: https://wellcomecollection.org/works/rbhqrxm9
+Full-resolution scan: https://iiif.wellcomecollection.org/image/V0001543EL/full/full/0/default.jpg
+Rights: https://creativecommons.org/publicdomain/mark/1.0/
+
+Original downloaded as schooten-1644.jpg, 1448 × 2200 px. Run make.py with Python and Pillow to reproduce the 1280 × 1130 RGBA WebP. The hand-traced contour follows the figure inside the oval, with the surrounding lettering and printed ground removed. The engraving is toned to warm ivory and charcoal. Pixel alpha bounds in the final image are (268, 94, 1012, 1050), right and bottom exclusive.
+
+Mary Wollstonecraft (1759–1797)
+
+James Heath, stipple engraving after John Opie, circa 1797. Rockwood Photographer, New York, photographed the engraving between 1850 and 1870. Library of Congress, Prints and Photographs Division, LOT 13301, no. 108. Copy negative LC-USZ62-64309, digital ID cph.3b11901.
+
+Collection record
+https://www.loc.gov/item/2004680088/
+
+Full digital negative downloaded for the asset
+https://tile.loc.gov/storage-services/master/pnp/cph/3b10000/3b11000/3b11900/3b11901u.tif
+
+Rights
+The catalogue records no known restrictions on publication. Wikimedia Commons identifies this reproduction of the historical engraving as public domain and documents the Rockwood photograph.
+https://commons.wikimedia.org/wiki/File:Mary_Wollstonecraft_cph.3b11901.jpg
+
+Source file
+heath-rockwood-loc.tif, 954 × 1536 pixels. SHA-256 CCC304A10F44AD434D28D9A79D47BBA7E0180968E702152B5BADF35B653AF922.
+
+Rebuild
+Run render.py with Python 3, Pillow and NumPy. It uses the adjacent archival TIFF, traces the figure, tones the native stipple, and writes the transparent assets/wollstonecraft.webp and work/portrait-writer/proof.png.

@@ -85,6 +85,31 @@ export const personalTools: ToolItem[] = [
 			{ zh: "本地处理", en: "On-device" },
 		],
 	},
+	{
+		name: "思想之间 · 哲学倾向测试",
+		description: {
+			zh: "从自由、正义与自我出发，通过答题遇见哲学家，获得一份个人阅读单。",
+			en: "Explore freedom, justice and the self through a philosophy quiz, then meet a thinker and discover what to read next.",
+		},
+		category: {
+			zh: "本人项目",
+			en: "My project",
+		},
+		icon: "material-symbols:book-2-rounded",
+		image: "/PhilosophyTest/assets/mark.svg",
+		href: "/PhilosophyTest/",
+		accent: "#293ca2",
+		tags: [
+			{
+				zh: "哲学",
+				en: "Philosophy",
+			},
+			{
+				zh: "互动测试",
+				en: "Interactive quiz",
+			},
+		],
+	},
 ];
 
 export const thirdPartyTools: ToolItem[] = [
