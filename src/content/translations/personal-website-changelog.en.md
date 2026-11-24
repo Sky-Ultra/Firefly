@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:c5724d9e93ad94ccb9f326bcca8c4835f8eb9de6817a1f9ec5d3cefb8dc54f9e
+sourceHash: sha256:2323901516644e8cb980911997796ee9c7ea80e127b821b5f24015abc2dc4417
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -224,3 +224,7 @@ This article provides a brief record of updates to my personal website, beginnin
 ## November 18, 2026
 
 - Published [How Floral Notepaper Implements Desktop Notes](/posts/floral-notepaper/)
+
+## November 24, 2026
+
+- Published [“Do You Know What Platonic Love Is?”](/posts/platonic-love/)

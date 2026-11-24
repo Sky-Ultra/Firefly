@@ -93,6 +93,122 @@ export const personalPagesConfig: PersonalPagesConfig = {
 		descriptionEn: "Small moments and recent updates from my life",
 		items: [
 			{
+				id: "bilibili-1274103564492341249",
+				date: "2026-11-24T10:52:33+08:00",
+				content:
+					"我们不要再抑郁焦虑了  我们一起去过正常的生活吧.\n我们手握手一起看电影吧   我们闭着眼躺在床上拥抱吧   我们在马路上一起逛街吧   我们早上睡醒互相蹭蹭彼此吧   我们去药店买健胃消食片一起去吃自助餐吧   我们傍晚洗完澡穿着睡衣手牵手在小区楼下散步吧   我们手握手一起在幸福的现实受健康生活吧……\n想想就很幸福,我们以后有个家吧……",
+				contentEn:
+					"Let’s leave the gloom and worry behind and live an ordinary life together.\nLet’s hold hands at the movies, lie in bed with our eyes closed and cuddle, and go window-shopping together. Let’s snuggle when we wake up, stop at the pharmacy for digestive tablets before going to a buffet, and hold hands on a walk around the neighborhood in our pajamas after our evening showers. Let’s hold hands and live a happy, healthy life together for real…\nJust thinking about it makes me happy. Let’s have a home together someday…",
+				contentParts: [
+					{
+						text: "我们不要再抑郁焦虑了  我们一起去过正常的生活吧.\n我们手握手一起看电影吧   我们闭着眼躺在床上拥抱吧   我们在马路上一起逛街吧   我们早上睡醒互相蹭蹭彼此吧   我们去药店买健胃消食片一起去吃自助餐吧   我们傍晚洗完澡穿着睡衣手牵手在小区楼下散步吧   我们手握手一起在幸福的现实受健康生活吧……",
+						textEn:
+							"Let’s leave the gloom and worry behind and live an ordinary life together.\nLet’s hold hands at the movies, lie in bed with our eyes closed and cuddle, and go window-shopping together. Let’s snuggle when we wake up, stop at the pharmacy for digestive tablets before going to a buffet, and hold hands on a walk around the neighborhood in our pajamas after our evening showers. Let’s hold hands and live a happy, healthy life together for real…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						text: "\n想想就很幸福,我们以后有个家吧……",
+						textEn:
+							"\nJust thinking about it makes me happy. Let’s have a home together someday…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-ef0fcbd2f8fffc8d75f42ce63297116f2b604afb.webp",
+							alt: "[鸣潮·致予新世界动态表情包_给你心心]",
+							altEn: "Sending hearts",
+						},
+					},
+				],
+			},
+			{
+				id: "bilibili-1274079486953914389",
+				date: "2026-11-24T09:19:07+08:00",
+				content:
+					"这期的发型太他妈神了，我承认你才是真正的菠萝头……我也要卸下小小菠萝的名号了",
+				contentEn:
+					"That haircut is fucking incredible. I admit it, you’re the real pineapple head…I guess I’ll have to give up the Little Pineapple title, too.",
+				contentParts: [
+					{
+						text: "这期的发型太他妈神了，我承认你才是真正的菠萝头……",
+						textEn:
+							"That haircut is fucking incredible. I admit it, you’re the real pineapple head…",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+							alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+							altEn: "Sit tight",
+						},
+					},
+					{
+						text: "我也要卸下小小菠萝的名号了",
+						textEn:
+							"I guess I’ll have to give up the Little Pineapple title, too.",
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0677df2c369315a08477c7ae60fef9b4d179b984.webp",
+							alt: "[鸣潮·致予新世界动态表情包_好奇怪...]",
+							altEn: "So strange...",
+						},
+					},
+					{
+						emoji: {
+							src: "/assets/emojis/moments/bili-0677df2c369315a08477c7ae60fef9b4d179b984.webp",
+							alt: "[鸣潮·致予新世界动态表情包_好奇怪...]",
+							altEn: "So strange...",
+						},
+					},
+				],
+				media: {
+					type: "bilibili",
+					url: "https://www.bilibili.com/video/BV1E7hE6aEH3/",
+					title: "OpenAI的100多个数学成果与数学顾问组的成立",
+					titleEn:
+						"OpenAI’s 100-plus mathematical results and the creation of its math advisory group",
+					poster: {
+						src: "/assets/images/moments/bilibili-BV1E7hE6aEH3.webp",
+						alt: "OpenAI的100多个数学成果与数学顾问组的成立：视频封面",
+						altEn:
+							"Video cover: OpenAI’s 100-plus mathematical results and the creation of its math advisory group",
+					},
+				},
+			},
+			{
 				id: "bilibili-1273894051733569537",
 				date: "2026-11-23T21:19:32+08:00",
 				content:
