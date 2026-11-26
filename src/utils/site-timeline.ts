@@ -1,4 +1,4 @@
-import { personalPagesConfig } from "@/config/personalPagesConfig";
+import { momentsConfig } from "@/config/momentsConfig";
 import changelogZh from "@/content/posts/personal-website-changelog.md?raw";
 import changelogEn from "@/content/translations/personal-website-changelog.en.md?raw";
 import { type ActivityItem, buildActivityFeed } from "@/utils/activity-feed";
@@ -15,7 +15,7 @@ async function loadTimeline() {
 	);
 	return buildActivityFeed(
 		posts,
-		personalPagesConfig.moments.items,
+		momentsConfig.items,
 		{
 			post: getPostUrlBySlug,
 			moment: (id) => `${url("/moments/#")}${id}`,

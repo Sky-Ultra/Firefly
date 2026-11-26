@@ -51,7 +51,7 @@ test("timeline uses public metadata and semantic localized content without artic
 	assert.match(page, /getSiteTimeline\(\)/);
 	assert.match(feed, /buildActivityFeed/);
 	assert.match(feed, /getSortedPostsList\(\)/);
-	assert.match(feed, /personalPagesConfig\.moments\.items/);
+	assert.match(feed, /momentsConfig\.items/);
 	assert.match(feed, /getPostUrlBySlug/);
 	assert.match(feed, /\/moments\/#/);
 	assert.match(page, /<ol\b/);

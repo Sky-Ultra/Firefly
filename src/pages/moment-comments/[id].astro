@@ -1,8 +1,8 @@
 ---
 import Twikoo from "@/components/comment/Twikoo.astro";
-import { personalPagesConfig } from "@/config";
+import { momentsConfig } from "@/config/momentsConfig";
 export function getStaticPaths() {
-	return personalPagesConfig.moments.items
+	return momentsConfig.items
 		.filter((item) => item.media?.type === "bilibili")
 		.map((item) => ({ params: { id: item.id } }));
 }

@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:2323901516644e8cb980911997796ee9c7ea80e127b821b5f24015abc2dc4417
+sourceHash: sha256:92b5de89e6ab9601c92afbb1848b9aa785c702374081878615f932fbd0cbff6b
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -228,3 +228,7 @@ This article provides a brief record of updates to my personal website, beginnin
 ## November 24, 2026
 
 - Published [“Do You Know What Platonic Love Is?”](/posts/platonic-love/)
+
+## November 26, 2026
+
+- Published [“A Boundless Journey”](/posts/boundless-journey/)

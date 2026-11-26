@@ -2,7 +2,7 @@
 title: 个人网站更新日志
 titleEn: Personal Website Changelog
 published: 2026-09-12T18:00:00+10:00
-updated: 2026-11-24
+updated: 2026-11-26
 description: 记录个人网站的功能更新与优化
 descriptionEn: A record of feature updates and improvements to my personal website.
 image: random
@@ -239,3 +239,7 @@ draft: false
 ## 2026.11.24
 
 - 发布文章[《你知道柏拉图式恋爱吗？》](/posts/platonic-love/)
+
+## 2026.11.26
+
+- 发布文章[《“无垠的奔赴”》](/posts/boundless-journey/)

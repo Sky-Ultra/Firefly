@@ -3,10 +3,11 @@ import { Icon } from "astro-icon/components";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
 import SocialFeedCard from "@/components/pages/personal/SocialFeedCard.astro";
-import { personalPagesConfig, profileConfig } from "@/config";
+import { profileConfig } from "@/config";
+import { momentsConfig } from "@/config/momentsConfig";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
-const config = personalPagesConfig.moments;
+const config = momentsConfig;
 const items = [...config.items].sort(
 	(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
 );
