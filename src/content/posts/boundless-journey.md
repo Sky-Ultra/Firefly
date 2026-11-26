@@ -22,15 +22,15 @@ draft: false
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
-原来多巴胺的狂欢只需一瞬，身体却要用2000多个日夜，去代谢一场无疾而终的相遇。
+<mark class="theme-highlight">原来多巴胺的狂欢只需一瞬，身体却要用2000多个日夜，去代谢一场无疾而终的相遇。</mark>
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
-其实很多故事的结局，早就定格在某一个远去的时刻。自分别那天起，往后所有朝夕，都翻开了与彼此无关的全新篇章。身边的人来来去去，有人始终相伴，也有人半路走散。想来，大多数人都有一段久久无法释怀的过往。
+<mark class="theme-highlight">其实很多故事的结局，早就定格在某一个远去的时刻。</mark>自分别那天起，往后所有朝夕，都翻开了与彼此无关的全新篇章。身边的人来来去去，有人始终相伴，也有人半路走散。想来，大多数人都有一段久久无法释怀的过往。
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
-从前我总偏执地认为，每一个人的离开都是我的过错。一段关系走到落幕，我会反复自省，揪着自身的不足反复内耗，把所有离散的遗憾都归咎于自己。后来才慢慢通透，缘分的尽头从来无关对错。
+<mark class="theme-highlight">从前我总偏执地认为，每一个人的离开都是我的过错。</mark>一段关系走到落幕，我会反复自省，揪着自身的不足反复内耗，把所有离散的遗憾都归咎于自己。后来才慢慢通透，缘分的尽头从来无关对错。
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
@@ -50,4 +50,8 @@ draft: false
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
-人生本就只能向前行走，沉溺过往只会困住自己。我们终会各自奔赴属于自己的安稳。从前茫茫人海，我的目光只为你停留。如今再看喧嚣人潮，我不再执着追寻你的身影。人海尽头，藏着独属于我的崭新的幸福，不必回望旧时光，我们都该奔赴各自的前路。
+<mark class="theme-highlight">人生本就只能向前行走，沉溺过往只会困住自己。我们终会各自奔赴属于自己的安稳。从前茫茫人海，我的目光只为你停留。如今再看喧嚣人潮，我不再执着追寻你的身影。人海尽头，藏着独属于我的崭新的幸福，不必回望旧时光，我们都该奔赴各自的前路。</mark>
+
+<div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
+
+如是而已。

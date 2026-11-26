@@ -243,3 +243,4 @@ draft: false
 ## 2026.11.26
 
 - 发布文章[《“无垠的奔赴”》](/posts/boundless-journey/)
+- 发布文章[《你知道⌈我⌋青春的暗恋吗？》](/posts/my-youthful-crush/)

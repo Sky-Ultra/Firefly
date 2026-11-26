@@ -1,21 +1,21 @@
 ---
 translationOf: boundless-journey.md
-sourceHash: sha256:25f80f5d77168c07afe2ae91d5daa8c29619aaba1632d3dcb426b7cf0f16e9e9
+sourceHash: sha256:9906e2e43e8c3a7163245125b8aebdef9d55b3cbec2b5ba39a89d7fdbfda647b
 ---
 
 Biologists say physical attraction can last only four months, yet it takes seven years to slowly forget.
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
-It turns out the dopamine rush is over in an instant, but the body needs more than 2,000 days and nights to process an encounter that came to nothing.
+<mark class="theme-highlight">It turns out the dopamine rush is over in an instant, but the body needs more than 2,000 days and nights to process an encounter that came to nothing.</mark>
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
-The endings of so many stories were set long ago, at some moment already receding into the distance. From the day we parted, every morning and evening opened onto a new chapter that had nothing to do with each other. People come and go. Some stay by our side, while others drift away halfway through. I suppose most people carry a piece of their past they haven’t been able to let go of.
+<mark class="theme-highlight">The endings of so many stories were set long ago, at some moment already receding into the distance.</mark> From the day we parted, every morning and evening opened onto a new chapter that had nothing to do with each other. People come and go. Some stay by our side, while others drift away halfway through. I suppose most people carry a piece of their past they haven’t been able to let go of.
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
-I used to be convinced that every person who left did so because of something I’d done. Whenever a relationship ended, I’d go over my failings again and again, wearing myself down and blaming myself for everything I regretted about the parting. It took me a long time to see that when a connection comes to an end, there may be no one to blame.
+<mark class="theme-highlight">I used to be convinced that every person who left did so because of something I’d done.</mark> Whenever a relationship ended, I’d go over my failings again and again, wearing myself down and blaming myself for everything I regretted about the parting. It took me a long time to see that when a connection comes to an end, there may be no one to blame.
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
@@ -35,4 +35,8 @@ After you left, I lived through more hard days and nights than I can count. Litt
 
 <div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
 
-Life can only move forward. Dwelling on what’s gone only keeps us stuck. In the end, each of us will find a steadiness of our own. I used to look for you alone in a sea of people. Now when I look out at the passing crowds, I no longer insist on finding your face. Somewhere beyond them there’s a new happiness of my own. There’s no need to look back. It’s time for each of us to go our own way.
+<mark class="theme-highlight">Life can only move forward. Dwelling on what’s gone only keeps us stuck. In the end, each of us will find a steadiness of our own. I used to look for you alone in a sea of people. Now when I look out at the passing crowds, I no longer insist on finding your face. Somewhere beyond them there’s a new happiness of my own. There’s no need to look back. It’s time for each of us to go our own way.</mark>
+
+<div class="word-paragraph-gap" data-empty-paragraphs="1" style="--empty-paragraphs: 1" aria-hidden="true"></div>
+
+That’s all.

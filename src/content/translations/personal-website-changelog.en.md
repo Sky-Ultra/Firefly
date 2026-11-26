@@ -1,6 +1,6 @@
 ---
 translationOf: personal-website-changelog.md
-sourceHash: sha256:92b5de89e6ab9601c92afbb1848b9aa785c702374081878615f932fbd0cbff6b
+sourceHash: sha256:249c6ab3d0f730c00b1482a94163e933e27c58bb08cd015927d5d57945da05fb
 ---
 
 This article provides a brief record of updates to my personal website, beginning on September 12, 2026.
@@ -232,3 +232,4 @@ This article provides a brief record of updates to my personal website, beginnin
 ## November 26, 2026
 
 - Published [“A Boundless Journey”](/posts/boundless-journey/)
+- Published [“Do You Know About the Secret Crush ⌈I⌋ Had in My Youth?”](/posts/my-youthful-crush/)
