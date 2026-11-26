@@ -115,7 +115,7 @@ canvas {
 	transform-origin: bottom right;
 	content: "";
 }
-#start-button:focus-visible, #music-toggle:focus-visible, #love-scroll-indicator:focus-visible, #third-page-scroll-indicator:focus-visible, #fourth-page-scroll-indicator:focus-visible {
+#start-button:focus-visible, #music-toggle:focus-visible, #love-scroll-indicator:focus-visible, #third-page-scroll-indicator:focus-visible, #fourth-page-scroll-indicator:focus-visible, #fifth-page-scroll-indicator:focus-visible {
 	outline: 2px solid #be1a25;
 	outline-offset: 5px;
 }
@@ -240,7 +240,7 @@ canvas {
 	50% { transform: translateY(15px); }
 }
 
-#third-page-scroll-indicator, #fourth-page-scroll-indicator {
+#third-page-scroll-indicator, #fourth-page-scroll-indicator, #fifth-page-scroll-indicator {
 	position: fixed;
 	z-index: 6;
 	left: 50%;
@@ -256,7 +256,7 @@ canvas {
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
 }
-#third-page-scroll-indicator:hover, #fourth-page-scroll-indicator:hover { color: #d96f94; }
+#third-page-scroll-indicator:hover, #fourth-page-scroll-indicator:hover, #fifth-page-scroll-indicator:hover { color: #d96f94; }
 .third-page-scroll-icon {
 	width: 3.9rem;
 	height: 3.9rem;
@@ -267,7 +267,7 @@ canvas {
 	50% { transform: translateY(9px); }
 }
 
-#afterword, #love-third-page, #love-fourth-page {
+#afterword, #love-third-page, #love-fourth-page, #love-fifth-page {
 	position: relative;
 	min-height: 100svh;
 	padding: clamp(4rem, 8vw, 7rem) 1.5rem clamp(6rem, 10vw, 9rem);
@@ -276,6 +276,7 @@ canvas {
 }
 #love-third-page { background: linear-gradient(180deg, #fff9f1, #fffaf4); }
 #love-fourth-page { background: linear-gradient(180deg, #fffaf4, #fff9f1); }
+#love-fifth-page { background: linear-gradient(180deg, #fff9f1, #fffaf4); }
 #love-third-page.third-page-awaiting-entry { opacity: 0; }
 #love-third-page.third-page-entering { animation: third-page-fade-in 1.5s ease both; }
 @keyframes third-page-fade-in {
@@ -420,7 +421,7 @@ canvas {
 	#letter p { min-height: 1.85em; }
 	#letter .stanza { margin-bottom: 1.5em; }
 	#letter.mobile-letter-staging { visibility: hidden; }
-	#afterword, #love-third-page, #love-fourth-page { padding: 3.5rem 1.4rem 6rem; }
+	#afterword, #love-third-page, #love-fourth-page, #love-fifth-page { padding: 3.5rem 1.4rem 6rem; }
 	.afterword-content { font-size: 1rem; line-height: 1.95; }
 	.afterword-content::before { margin-bottom: 2.5rem; }
 	#love-scroll-indicator {

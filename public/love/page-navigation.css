@@ -70,7 +70,7 @@
 }
 
 @media (max-width: 700px), (max-height: 540px), (hover: none) {
-	#love-page-navigation { right: max(0.25rem, env(safe-area-inset-right)); top: clamp(3.5rem, 50svh, calc(100svh - 12.75rem)); }
+	#love-page-navigation { right: max(0.25rem, env(safe-area-inset-right)); top: clamp(min(8rem, 50svh), 50svh, calc(100svh - 15rem)); }
 	#love-page-nav-toggle {
 		position: relative;
 		display: flex;
@@ -107,7 +107,7 @@
 	#love-page-nav-toggle:focus-visible { outline: 2px solid #dba9bf; outline-offset: 3px; }
 }
 @media (max-width: 700px) {
-	#afterword, #love-third-page, #love-fourth-page { padding-inline-end: calc(2.25rem + env(safe-area-inset-right)); }
+	#afterword, #love-third-page, #love-fourth-page, #love-fifth-page { padding-inline-end: calc(2.25rem + env(safe-area-inset-right)); }
 	#letter { width: calc(100% - 4rem - env(safe-area-inset-right)); margin-inline: 1.5rem 0; }
 }
 @media (prefers-reduced-motion: reduce) {

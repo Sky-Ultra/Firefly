@@ -1,5 +1,6 @@
 // One timeline per article; 90% of the original speed is 10% slower.
 const AfterwordRevealRuns = new WeakMap();
+const LovePageIds = ["love-first-page", "afterword", "love-third-page", "love-fourth-page", "love-fifth-page"];
 
 function revealAfterwordArticle(section, { restart = false } = {}) {
 	if (section.dataset.revealPrepared === "true" && !restart) return;
@@ -54,8 +55,7 @@ function revealAfterwordArticle(section, { restart = false } = {}) {
 		if (AfterwordRevealRuns.get(section) !== run) return;
 		if (!entries.some(entry => entry.isIntersecting)) return;
 		const destination = document.body?.dataset?.lovePageTarget;
-		const pageIds = ["love-first-page", "afterword", "love-third-page", "love-fourth-page"];
-		if (destination && pageIds[Number(destination) - 1] !== section.id) return;
+		if (destination && LovePageIds[Number(destination) - 1] !== section.id) return;
 		const bounds = section.getBoundingClientRect();
 		if (bounds.bottom <= 0 || bounds.top >= window.innerHeight) return;
 		observer.disconnect();
@@ -70,9 +70,10 @@ function initAfterword() {
 	const hint = indicator.querySelector(".love-scroll-hint");
 	const afterword = document.getElementById("afterword");
 	const fourthPage = document.getElementById("love-fourth-page");
+	const fifthPage = document.getElementById("love-fifth-page");
+	const fifthIndicator = document.getElementById("fifth-page-scroll-indicator");
 	let activated = false;
-	let fourthActivated = false;
-	const thirdPage = initThirdPage({ revealParagraphs: revealAfterwordArticle, canEnter: () => activated, onReveal: revealFourthPage });
+	const thirdPage = initThirdPage({ revealParagraphs: revealAfterwordArticle, canEnter: () => activated, onReveal: revealRemainingArticles });
 
 	function revealAfterword() {
 		if (activated) return;
@@ -84,20 +85,19 @@ function initAfterword() {
 		updateIndicatorVisibility();
 	}
 
-	function revealFourthPage() {
-		if (fourthActivated) return;
-		fourthActivated = true;
+	function revealRemainingArticles() {
+		if (!fourthPage.hidden) return;
 		fourthPage.hidden = false;
+		fifthPage.hidden = false;
 		revealAfterwordArticle(fourthPage);
+		revealAfterwordArticle(fifthPage);
 	}
 
 	function navigateToPage(page) {
-		const ids = ["love-first-page", "afterword", "love-third-page", "love-fourth-page"];
-		const target = document.getElementById(ids[page - 1]);
+		const target = document.getElementById(LovePageIds[page - 1]);
 		if (!target) return;
 		if (page >= 2) revealAfterword();
 		if (page >= 3) thirdPage.reveal();
-		if (page === 4) revealFourthPage();
 		// Direct section navigation avoids passing through another page's timed effects.
 		target.scrollIntoView({ behavior: "auto", block: "start" });
 		target.focus({ preventScroll: true });
@@ -120,11 +120,17 @@ function initAfterword() {
 
 	function updateIndicatorVisibility() {
 		indicator.classList.toggle("hide", window.scrollY > 100);
+		fifthIndicator.hidden = fourthPage.hidden || !isNextPageArrowVisible(fourthPage.getBoundingClientRect(), window.innerHeight);
 	}
 
 	indicator.addEventListener("click", () => {
 		afterword.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
 	});
+	fifthIndicator.addEventListener("click", () => {
+		fifthPage.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+		fifthPage.focus({ preventScroll: true });
+	});
 	window.addEventListener("scroll", updateIndicatorVisibility, { passive: true });
+	window.addEventListener("resize", updateIndicatorVisibility, { passive: true });
 	return { revealAfterword, showScrollHintWhenSecondLineStarts, navigateToPage, setPetalController: thirdPage.setPetalController };
 }

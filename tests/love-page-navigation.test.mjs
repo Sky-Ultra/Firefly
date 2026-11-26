@@ -10,10 +10,10 @@ const styles = readFileSync(new URL("../public/love/page-navigation.css", import
 
 function fixture() {
 	const state = { scroll: 0, callbacks: [], navigate: [], index: null, classes: new Set(), handlers: {}, body: { dataset: {} } };
-	const makeButton = number => ({ dataset: { page: String(number) }, attrs: {}, addEventListener(type, callback) { this[type] = callback; }, setAttribute(name, value) { this.attrs[name] = value; }, removeAttribute(name) { delete this.attrs[name]; }, focus() {} });
-	const buttons = [1, 2, 3, 4].map(makeButton);
+	const makeButton = (number, target) => ({ dataset: { page: String(number) }, attrs: { "aria-controls": target }, addEventListener(type, callback) { this[type] = callback; }, setAttribute(name, value) { this.attrs[name] = value; }, getAttribute(name) { return this.attrs[name]; }, removeAttribute(name) { delete this.attrs[name]; }, focus() {} });
+	const pages = ["love-first-page", "afterword", "love-third-page", "love-fourth-page", "love-fifth-page"].map((id, index) => ({ id, hidden: index > 0, getBoundingClientRect: () => ({ top: index * 1000 - state.scroll }) }));
+	const buttons = pages.map((page, index) => makeButton(index + 1, page.id));
 	const toggle = makeButton(0);
-	const pages = ["love-first-page", "afterword", "love-third-page", "love-fourth-page"].map((id, index) => ({ id, hidden: index > 0, getBoundingClientRect: () => ({ top: index * 1000 - state.scroll }) }));
 	const nav = {
 		hidden: true, style: { setProperty(name, value) { state.index = value; } },
 		classList: { toggle(name, value) { if (value) state.classes.add(name); else state.classes.delete(name); } },
@@ -32,18 +32,18 @@ function fixture() {
 	return { state, buttons, toggle, pages, nav };
 }
 
-test("four-page navigation is available from the welcome page without adding any password gate", () => {
+test("five-page navigation can go directly from the welcome page to page five", () => {
 	assert.match(html, /id="love-page-navigation"/);
-	for (let page = 1; page <= 4; page++) assert.match(html, new RegExp(`data-page="${page}"`));
-	assert.match(html, /datetime="2026-10-23">2026\.10\.23<\/time>/);
+	for (let page = 1; page <= 5; page++) assert.match(html, new RegExp(`data-page="${page}"`));
+	assert.match(html, /datetime="2026-11-26">2026\.11\.26<\/time>/);
 	assert.doesNotMatch(html, /password-gate|protected-site|访问密码/);
 	const f = fixture();
 	assert.equal(f.nav.hidden, false);
-	f.buttons[3].click({ preventDefault() {} });
-	assert.deepEqual(f.state.navigate, [4]);
-	assert.equal(f.state.body.dataset.lovePageTarget, "4");
+	f.buttons[4].click({ preventDefault() {} });
+	assert.deepEqual(f.state.navigate, [5]);
+	assert.equal(f.state.body.dataset.lovePageTarget, "5");
 	while (f.state.callbacks.length) f.state.callbacks.shift()();
-	assert.equal(f.buttons[3].attrs["aria-current"], "page");
+	assert.equal(f.buttons[4].attrs["aria-current"], "page");
 	assert.equal(f.state.body.dataset.lovePageTarget, undefined);
 });
 
@@ -81,4 +81,13 @@ test("the fourth page preserves all seventeen supplied paragraphs and seven para
 	assert.equal([...fourth.matchAll(/class="afterword-stanza/g)].length, 7);
 	assert.equal(createHash("sha256").update(JSON.stringify(paragraphs)).digest("hex"), "97924ada6158e5073cfe12805bef29c34c237986cb1d86df90c85e44529ff956");
 	assert.match(fourth, /class="afterword-content"/);
+});
+
+test("the fifth page includes its date and the 44 original paragraphs in order", () => {
+	const fifth = html.match(/<section id="love-fifth-page"[\s\S]*?<\/section>/)?.[0];
+	assert(fifth);
+	const [date, ...paragraphs] = [...fifth.matchAll(/<p>(.*?)<\/p>/g)].map(match => match[1]);
+	assert.equal(date, "本页面更新于2026.11.26");
+	assert.equal(paragraphs.length, 44);
+	assert.equal(createHash("sha256").update(JSON.stringify(paragraphs)).digest("hex"), "71e2f71879bc34a17983a55857cb8b6f8149cf499e55fb68fee07381f9c2e2c5");
 });

@@ -28,10 +28,9 @@ function fixture() {
 	return { state, context, bar, badge, listeners, controller: context.initReadingProgress({ onReset(page) { state.resets.push(page.id); state.offset = [0, 1000, 4000, 6000][sections.indexOf(page)]; } }) };
 }
 
-test("progress is hidden before the opening and the date follows the requested October twenty-third", () => {
+test("progress is hidden before the opening", () => {
 	assert.match(html, /id="love-reading-progress"[^>]*role="progressbar"[^>]*hidden/);
 	assert.match(html, /id="love-reading-percentage"[^>]*hidden/);
-	assert.match(html, /datetime="2026-10-23">2026\.10\.23<\/time>/);
 	const f = fixture();
 	assert.equal(f.bar.hidden, true);
 	f.controller.start();

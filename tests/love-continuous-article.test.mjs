@@ -86,9 +86,9 @@ test("manual restart cancels stale observers and restarts the whole article from
 	assert(oldTokens.every(token => !token.classes.has("is-visible")));
 });
 
-test("each of pages two, three and four starts its own article once upon entry", () => {
+test("each article page starts its own output once upon entry", () => {
 	const f = fixture();
-	for (const id of ["afterword", "love-third-page", "love-fourth-page"]) {
+	for (const id of ["afterword", "love-third-page", "love-fourth-page", "love-fifth-page"]) {
 		const section = f.section(id);
 		f.reveal(section);
 		const observer = f.observers.at(-1);

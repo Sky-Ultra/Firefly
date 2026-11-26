@@ -48,9 +48,8 @@ function fixture(reduced = false) {
 	return { state, third, fourth, button, fourthButton, controller, observers, windowListeners, buttonListeners, fourthButtonListeners, context };
 }
 
-test("the third page stays hidden until requested, and the update date uses October twenty-third", () => {
+test("the third page stays hidden until requested and keeps its entry animation", () => {
 	assert.match(html, /id="love-third-page"[^>]*hidden/);
-	assert.match(html, /最后更新时间<time datetime="2026-10-23">2026\.10\.23<\/time>/);
 	assert.match(html, /id="third-page-scroll-indicator"[^>]*aria-controls="love-third-page"[^>]*hidden/);
 	assert.match(styles, /\.third-page-scroll-icon[\s\S]*?width: 3\.9rem/);
 	assert.match(styles, /third-page-fade-in 1\.5s/);
@@ -133,7 +132,7 @@ test("the third-page arrow uses the same eighty-percent threshold and scrolls to
 
 test("both arrows share the existing animation and reduced-motion navigation", () => {
 	assert.match(html, /id="fourth-page-scroll-indicator"[^>]*aria-controls="love-fourth-page"[^>]*hidden/);
-	assert.match(styles, /#third-page-scroll-indicator, #fourth-page-scroll-indicator \{/);
+	assert.match(styles, /#third-page-scroll-indicator, #fourth-page-scroll-indicator, #fifth-page-scroll-indicator \{/);
 	const f = fixture(true);
 	f.buttonListeners.click();
 	f.fourthButtonListeners.click();

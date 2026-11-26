@@ -2,7 +2,7 @@ function initPageNavigation({ navigate }) {
 	const nav = document.getElementById("love-page-navigation");
 	const toggle = document.getElementById("love-page-nav-toggle");
 	const buttons = Array.from(nav.querySelectorAll("button[data-page]"));
-	const pages = ["love-first-page", "afterword", "love-third-page", "love-fourth-page"].map(id => document.getElementById(id));
+	const pages = buttons.map(button => document.getElementById(button.getAttribute("aria-controls")));
 	const marks = Array.from(toggle.querySelectorAll?.(".page-nav-toggle-line") ?? []);
 	let expanded = false;
 	let frame = 0;
