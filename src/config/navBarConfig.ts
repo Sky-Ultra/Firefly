@@ -38,6 +38,8 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		],
 	});
 
+	links.push(LinkPresets.Moments);
+
 	// 动态及其子菜单
 	links.push({
 		name: "动态",
@@ -45,12 +47,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		nameEnMobile: "Feed",
 		url: "#",
 		icon: "material-symbols:bolt-rounded",
-		children: [
-			LinkPresets.Moments,
-			LinkPresets.Gallery,
-			LinkPresets.Guestbook,
-			LinkPresets.Diary,
-		],
+		children: [LinkPresets.Gallery, LinkPresets.Guestbook, LinkPresets.Diary],
 	});
 
 	// 我的及其子菜单

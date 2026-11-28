@@ -123,12 +123,13 @@ const minutes = remarkPluginFrontmatter.minutes;
     "post-card-wrapper post-decorated-card",
     hasCover ? "has-cover" : "no-cover",
     pinned ? "pinned" : "",
+    showNightSky && "night-letter-card",
     "card-base flex flex-col-reverse w-full rounded-(--radius-large) overflow-hidden relative",
     className,
   ]}
   style={style}
 >
-  {showNightSky ? <NightLetterSky /> : <SidebarDecoration motif={cardDecor} />}
+  {!showNightSky && <SidebarDecoration motif={cardDecor} />}
   <!-- pinned icon -->
   <div
     class:list={[
@@ -140,9 +141,10 @@ const minutes = remarkPluginFrontmatter.minutes;
       },
     ]}
   >
+    {showNightSky && <NightLetterSky />}
     <a
       href={url}
-      style={usesPrimaryTitleColor ? "color: var(--primary);" : undefined}
+      style={showNightSky ? "color: var(--btn-content);" : usesPrimaryTitleColor ? "color: var(--primary);" : undefined}
       class="post-card-title transition group w-full block font-bold mb-3 text-3xl text-90
         hover:text-(--primary) dark:hover:text-(--primary)
         active:text-(--title-active) dark:active:text-(--title-active)
