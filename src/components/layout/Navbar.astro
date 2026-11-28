@@ -110,8 +110,11 @@ if (isLocalSrcLogo) {
         className,
         "navbar-shell overflow-visible! h-18 px-4"
     ]}>
-        <div class="relative mx-auto grid h-full w-full max-w-(--page-width) grid-cols-[auto_minmax(0,1fr)_auto] items-center">
-            <a href={url('/')} class="navbar-brand btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
+        <div class:list={[
+            "relative mx-auto grid h-full w-full max-w-(--page-width) grid-cols-[auto_minmax(0,1fr)_auto] items-center",
+            isNavbarMenuCentered && "lg:grid-cols-[minmax(max-content,1fr)_auto_minmax(max-content,1fr)]",
+        ]}>
+            <a href={url('/')} aria-label={navbarTitle} class="navbar-brand btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
                 <div class:list={[
                     "flex flex-row items-center text-md",
                     siteConfig.navbar.followTheme ? "text-(--primary)" : "dark:text-white text-black"
@@ -136,14 +139,14 @@ if (isLocalSrcLogo) {
                                     ) : (
                                         <Icon is:inline name="material-symbols:home-pin-outline" class="text-[1.75rem] mb-1 mr-2" />
                                     )}
-                    {navbarTitle}
+                    <span class="navbar-brand-label">{navbarTitle}</span>
                 </div>
             </a>
 			<div class:list={[
-				"hidden lg:flex items-center space-x-1",
+				"navbar-menu col-start-2 hidden lg:flex items-center space-x-1",
 				isNavbarMenuCentered
-					? "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-center"
-					: "col-start-2 justify-start pl-2"
+					? "justify-center"
+					: "justify-start pl-2"
 			]}>
                 {links.map((l) => {
                     return <DropdownMenu link={l} />;
@@ -299,6 +302,20 @@ if (isLocalSrcLogo) {
 </div>
 
 <style>
+    @media (1024px <= width < 1280px) {
+        .navbar-menu :global(.dropdown-container > :is(a, button)) {
+            padding-inline: 0.625rem;
+        }
+
+        .navbar-menu :global(.dropdown-trigger) {
+            padding-inline-end: 1.75rem;
+        }
+
+        :global(#navbar #search-bar input) {
+            width: 7rem;
+        }
+    }
+
     @media (max-width: 1023px) {
         :global(#navbar #search-switch),
         :global(#navbar #scheme-switch) {
@@ -357,12 +374,12 @@ if (isLocalSrcLogo) {
 
         .mobile-navbar-item > button,
         .mobile-navbar-link {
-            width: 2.5rem;
+            width: clamp(2rem, 9vw, 2.5rem);
             height: 3.25rem;
         }
 
         .mobile-navbar-utility {
-            width: 2.5rem;
+            width: clamp(2rem, 9vw, 2.5rem);
             height: 3.25rem;
             flex-direction: column;
             gap: 0.16rem;
@@ -377,23 +394,22 @@ if (isLocalSrcLogo) {
     }
 
     @media (max-width: 380px) {
-        .mobile-navbar-item > button,
-        .mobile-navbar-link {
-            width: 2.25rem;
-            height: 3.25rem;
-        }
-
-        .mobile-navbar-utility {
-            width: 2.25rem;
-            height: 3.25rem;
-        }
-
         .mobile-navbar-label {
             font-size: 0.55rem;
         }
 
         .mobile-navbar-utility::after {
             flex-basis: 0.55rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .navbar-brand {
+            padding-inline: 0.25rem;
+        }
+
+        .navbar-brand-label {
+            display: none;
         }
     }
 </style>

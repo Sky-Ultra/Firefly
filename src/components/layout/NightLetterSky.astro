@@ -2,34 +2,61 @@
 import { Icon } from "astro-icon/components";
 
 const meteors = [
-	[7, 18, 0.4],
-	[34, 74, 2.2],
-	[58, 30, 4.1],
+	[48, 17],
+	[56, 67],
+	[57, 51],
+	[66, 26],
+	[19, 84],
+	[69, 13],
+	[68, 86],
+	[42, 74],
+	[7, 57],
+];
+const stars = [
+	[14, 88],
+	[38, 14],
+	[62, 30],
+	[77, 55],
+	[90, 22],
 ];
 ---
 
 <night-letter-sky class="letter-sky" aria-hidden="true">
 	<Icon is:inline name="material-symbols:star-outline-rounded" class="letter-watermark" />
-	<span class="letter-twinkle letter-twinkle-top"></span>
-	<span class="letter-twinkle letter-twinkle-bottom"></span>
-	{meteors.map(([x, y, delay]) => (
-		<span class="letter-meteor" style={`--meteor-x: ${x}%; --meteor-y: ${y}%; --meteor-delay: ${delay}s;`}></span>
+	{stars.map(([x, y]) => (
+		<span class="letter-twinkle" style={`--star-x: ${x}%; --star-y: ${y}%;`}></span>
+	))}
+	{meteors.map(([x, y], index) => (
+		<span class="letter-meteor" style={`--star-x: ${x}%; --star-y: ${y}%; --meteor-delay: -${index * 700}ms;`}></span>
 	))}
 </night-letter-sky>
 
 <style>
-	.letter-sky {
+	:global(.night-letter-card) {
+		--letter-accent: var(--btn-content);
+	}
+	:global(.night-letter-card)::before {
 		position: absolute;
 		z-index: 0;
 		inset: 0;
-		overflow: hidden;
 		border-radius: inherit;
 		pointer-events: none;
-		color: var(--primary);
+		color: var(--letter-accent);
+		content: "";
 		background:
-			radial-gradient(ellipse at 96% 92%, color-mix(in srgb, currentColor 27%, transparent), transparent 68%),
-			linear-gradient(120deg, color-mix(in srgb, currentColor 12%, transparent), transparent 80%);
-		box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 30%, transparent);
+			radial-gradient(ellipse at 100% 88%, color-mix(in srgb, var(--primary) 57%, transparent), transparent 73%),
+			linear-gradient(126deg, color-mix(in srgb, var(--primary) 23%, transparent), color-mix(in srgb, var(--primary) 8%, transparent) 52%, color-mix(in srgb, var(--letter-accent) 20%, transparent));
+		box-shadow:
+			inset 0 0 0 1px color-mix(in srgb, currentColor 46%, transparent),
+			inset 0 0 1.35rem color-mix(in srgb, var(--primary) 19%, transparent);
+	}
+	.letter-sky {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		overflow: hidden;
+		pointer-events: none;
+		color: var(--letter-accent);
 	}
 	.letter-watermark {
 		position: absolute;
@@ -37,31 +64,29 @@ const meteors = [
 		right: -.5rem;
 		width: 8rem;
 		height: 8rem;
-		opacity: .22;
+		opacity: .32;
 		transform: rotate(-14deg);
 	}
 	.letter-twinkle, .letter-meteor::after {
-		width: .48rem;
-		height: .48rem;
+		width: .6rem;
+		height: .6rem;
 		background: currentColor;
 		clip-path: polygon(50% 0, 64% 36%, 100% 50%, 64% 64%, 50% 100%, 36% 64%, 0 50%, 36% 36%);
 	}
-	.letter-twinkle {
+	.letter-twinkle, .letter-meteor {
 		position: absolute;
-		opacity: .46;
+		top: var(--star-y);
+		left: var(--star-x);
 	}
-	.letter-twinkle-top { top: 12%; right: 28%; }
-	.letter-twinkle-bottom { bottom: 9%; left: 17%; }
+	.letter-twinkle { opacity: .35; }
+	.letter-twinkle:nth-of-type(even) { transform: scale(.66); }
 	.letter-meteor {
-		position: absolute;
-		top: var(--meteor-y);
-		left: var(--meteor-x);
-		width: clamp(1.6rem, 15%, 3.1rem);
+		width: clamp(1.2rem, 13%, 3.65rem);
 		height: 2px;
 		border-radius: 999px;
-		background: linear-gradient(90deg, transparent, currentColor);
+		background: linear-gradient(90deg, transparent, var(--primary) 65%, currentColor);
 		opacity: 0;
-		animation: letter-meteor-drift 6.8s linear var(--meteor-delay) infinite paused;
+		animation: letter-meteor-drift 6.3s linear var(--meteor-delay) infinite paused;
 	}
 	.letter-meteor::after {
 		position: absolute;
@@ -72,10 +97,9 @@ const meteors = [
 	}
 	.letter-sky[data-visible] .letter-meteor { animation-play-state: running; }
 	@keyframes letter-meteor-drift {
-		0%, 100% { opacity: 0; transform: translate3d(0, -.16rem, 0) rotate(8deg); }
-		6% { opacity: .63; }
-		26% { opacity: 0; transform: translate3d(3.5rem, .55rem, 0) rotate(8deg); }
-		27%, 99% { opacity: 0; }
+		0% { opacity: 0; transform: translate3d(-.55rem, -.35rem, 0) rotate(10deg); }
+		7%, 23% { opacity: .88; }
+		46%, 100% { opacity: 0; transform: translate3d(110%, .48rem, 0) rotate(10deg); }
 	}
 	@media (max-width: 767px) {
 		.letter-watermark { width: 6.6rem; height: 6.6rem; }
@@ -90,7 +114,10 @@ const meteors = [
 		private observer?: IntersectionObserver;
 
 		connectedCallback(): void {
-			if (!("IntersectionObserver" in window)) return;
+			if (!("IntersectionObserver" in window)) {
+				this.setAttribute("data-visible", "");
+				return;
+			}
 			this.observer = new IntersectionObserver(([entry]) => {
 				this.toggleAttribute("data-visible", Boolean(entry?.isIntersecting));
 			});

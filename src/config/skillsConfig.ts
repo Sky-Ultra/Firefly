@@ -1,6 +1,7 @@
 const skills = [
 	{
 		name: "Astro",
+		level: 3,
 		category: "web",
 		icon: "simple-icons:astro",
 		zh: "制作内容站点和独立页面，组织文章、路由与站点组件。",
@@ -8,6 +9,7 @@ const skills = [
 	},
 	{
 		name: "TypeScript",
+		level: 3,
 		category: "web",
 		icon: "simple-icons:typescript",
 		zh: "为站点配置、内容数据和组件接口定义类型。",
@@ -15,6 +17,7 @@ const skills = [
 	},
 	{
 		name: "JavaScript",
+		level: 3,
 		category: "web",
 		icon: "simple-icons:javascript",
 		zh: "做浏览器里的互动测试、贴纸编辑与本地结果保存。",
@@ -22,6 +25,7 @@ const skills = [
 	},
 	{
 		name: "Svelte",
+		level: 3,
 		category: "web",
 		icon: "simple-icons:svelte",
 		zh: "用组件实现站点里由状态驱动的交互。",
@@ -29,6 +33,7 @@ const skills = [
 	},
 	{
 		name: "CSS",
+		level: 3,
 		category: "web",
 		icon: "material-symbols:palette",
 		zh: "做响应式布局、主题切换和交互细节。",
@@ -36,6 +41,7 @@ const skills = [
 	},
 	{
 		name: "AST",
+		level: 3,
 		category: "systems",
 		icon: "material-symbols:account-tree-outline-rounded",
 		zh: "从抽象语法树开始，做过一个能运行四则运算的计算器。",
@@ -43,6 +49,7 @@ const skills = [
 	},
 	{
 		name: "数据库系统",
+		level: 3,
 		nameEn: "Database systems",
 		category: "systems",
 		icon: "material-symbols:database-outline",
@@ -51,6 +58,7 @@ const skills = [
 	},
 	{
 		name: "计算机系统与网络",
+		level: 3,
 		nameEn: "Systems & networking",
 		category: "systems",
 		icon: "material-symbols:lan-outline-rounded",
@@ -58,14 +66,48 @@ const skills = [
 		en: "Explored systems and networking fundamentals through labs from 15-213 and CS144.",
 	},
 	{
+		name: "Rust",
+		level: 2,
+		category: "systems",
+		icon: "simple-icons:rust",
+		zh: "用 Rust 开发原生工具和系统组件。",
+		en: "Develop native tools and systems components with Rust.",
+	},
+	{
+		name: "Go",
+		level: 3,
+		category: "systems",
+		icon: "simple-icons:go",
+		zh: "用 Go 编写后端服务和命令行工具。",
+		en: "Write backend services and command-line tools in Go.",
+	},
+	{
+		name: "Kotlin",
+		level: 2,
+		category: "systems",
+		icon: "simple-icons:kotlin",
+		zh: "用 Kotlin 开发 Android 和 JVM 应用。",
+		en: "Develop Android and JVM applications in Kotlin.",
+	},
+	{
 		name: "AI Agent",
+		level: 4,
 		category: "tools",
 		icon: "material-symbols:smart-toy-outline",
 		zh: "在项目里用智能体辅助排错、改代码和推进任务。",
 		en: "Use agents to help diagnose problems, edit code, and move project tasks forward.",
 	},
 	{
+		name: "Node.js",
+		level: 3,
+		category: "tools",
+		icon: "simple-icons:nodedotjs",
+		zh: "运行网站构建流程，并编写内容与资源处理脚本。",
+		en: "Run site builds and write scripts to process content and assets.",
+	},
+	{
 		name: "Git & GitHub",
+		level: 3,
 		category: "tools",
 		icon: "simple-icons:github",
 		zh: "管理网站和个人项目的代码版本与发布记录。",
@@ -73,6 +115,7 @@ const skills = [
 	},
 	{
 		name: "Cloudflare",
+		level: 3,
 		category: "tools",
 		icon: "simple-icons:cloudflare",
 		zh: "用构建流水线发布网站和独立 Web 小应用。",

@@ -13,6 +13,7 @@ const categories = {
 };
 const title = "技能";
 const description = "我在个人项目和课程实践中用过的技术与工具。";
+const levels = [1, 2, 3, 4];
 ---
 
 <MainGridLayout {title} {description}>
@@ -40,7 +41,7 @@ const description = "我在个人项目和课程实践中用过的技术与工�
 			</div>
 			<ul class="skill-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
 				{skills.map((skill) => (
-					<li data-skill={skill.category} class="skill-card group relative rounded-xl border border-(--line-divider) p-4">
+					<li data-skill={skill.category} class="skill-card relative flex flex-col rounded-xl border border-(--line-divider) p-4">
 						<div class="mb-3 flex items-center gap-3">
 							<span class="grid size-10 shrink-0 place-items-center rounded-lg bg-(--btn-regular-bg) text-lg text-(--btn-content)" aria-hidden="true">
 								<Icon is:inline name={skill.icon} />
@@ -53,6 +54,21 @@ const description = "我在个人项目和课程实践中用过的技术与工�
 							</div>
 						</div>
 						<p class="text-sm leading-relaxed text-75"><LocalizedText zh={skill.zh} en={skill.en} /></p>
+						<div
+							class="skill-level mt-auto grid grid-cols-4 gap-1.5 pt-3"
+							role="meter"
+							aria-label="熟练度"
+							aria-valuemin="0"
+							aria-valuemax={levels.length}
+							aria-valuenow={skill.level}
+							data-i18n-attr="aria-label"
+							data-i18n-zh="熟练度"
+							data-i18n-en="Proficiency"
+						>
+							{levels.map((level) => (
+								<span class="skill-level-segment" data-filled={level <= skill.level ? "" : undefined} aria-hidden="true"></span>
+							))}
+						</div>
 					</li>
 				))}
 			</ul>
@@ -84,6 +100,18 @@ const description = "我在个人项目和课程实践中用过的技术与工�
 	.skill-card:hover {
 		border-color: color-mix(in srgb, var(--primary) 65%, var(--line-divider));
 		background: color-mix(in srgb, var(--card-bg) 84%, var(--primary) 16%);
+	}
+	.skill-level-segment {
+		height: .3125rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--btn-content) 20%, var(--line-divider));
+	}
+	.skill-level-segment[data-filled] {
+		background: color-mix(in srgb, var(--btn-content) 45%, var(--primary));
+	}
+	@media (forced-colors: active) {
+		.skill-level-segment { border: 1px solid GrayText; forced-color-adjust: none; }
+		.skill-level-segment[data-filled] { border-color: Highlight; background: Highlight; }
 	}
 	@media (prefers-reduced-motion: reduce) { .skill-card { transition: none; } }
 </style>
