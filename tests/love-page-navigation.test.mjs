@@ -83,11 +83,13 @@ test("the fourth page preserves all seventeen supplied paragraphs and seven para
 	assert.match(fourth, /class="afterword-content"/);
 });
 
-test("the fifth page includes its date and the 44 original paragraphs in order", () => {
+test("the fifth page keeps the original text and the screenshot's paragraph groups", () => {
 	const fifth = html.match(/<section id="love-fifth-page"[\s\S]*?<\/section>/)?.[0];
 	assert(fifth);
 	const [date, ...paragraphs] = [...fifth.matchAll(/<p>(.*?)<\/p>/g)].map(match => match[1]);
 	assert.equal(date, "本页面更新于2026.11.26");
 	assert.equal(paragraphs.length, 44);
+	const groups = [...fifth.matchAll(/<div class="afterword-stanza[^"]*">([\s\S]*?)<\/div>/g)];
+	assert.deepEqual(groups.map(([, group]) => [...group.matchAll(/<p>/g)].length), [1, 17, 5, 1, 9, 3, 5, 1, 1, 1, 1]);
 	assert.equal(createHash("sha256").update(JSON.stringify(paragraphs)).digest("hex"), "71e2f71879bc34a17983a55857cb8b6f8149cf499e55fb68fee07381f9c2e2c5");
 });
