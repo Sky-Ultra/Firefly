@@ -7,17 +7,39 @@ import { skills } from "@/config/skillsConfig";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
 const categories = {
-	web: { zh: "前端开发", en: "Frontend" },
-	systems: { zh: "计算机系统", en: "Systems" },
-	tools: { zh: "开发工具", en: "Tooling" },
+	web: {
+		zh: "前端开发",
+		en: "Frontend",
+		icon: "material-symbols:code-rounded",
+	},
+	systems: {
+		zh: "计算机系统",
+		en: "Systems",
+		icon: "material-symbols:lan-outline-rounded",
+	},
+	tools: {
+		zh: "开发工具",
+		en: "Tooling",
+		icon: "material-symbols:construction-rounded",
+	},
+};
+const filters = {
+	all: { zh: "全部", en: "All", icon: "material-symbols:grid-view-rounded" },
+	...categories,
+};
+const proficiency = {
+	1: { zh: "入门", en: "Beginner" },
+	2: { zh: "熟悉", en: "Familiar" },
+	3: { zh: "熟练", en: "Proficient" },
+	4: { zh: "精通", en: "Expert" },
 };
 const title = "技能";
 const description = "我在个人项目和课程实践中用过的技术与工具。";
-const levels = [1, 2, 3, 4];
+const levels = Object.keys(proficiency).map(Number);
 ---
 
 <MainGridLayout {title} {description}>
-	<skill-gallery class="card-base sidebar-decorated-card relative block overflow-hidden p-5 sm:p-7 lg:p-9">
+	<skill-gallery class="skill-gallery card-base sidebar-decorated-card relative block overflow-hidden p-5 sm:p-7 lg:p-9">
 		<SidebarDecoration motif="window" />
 		<div class="relative">
 			<PersonalPageHeader
@@ -27,31 +49,34 @@ const levels = [1, 2, 3, 4];
 				descriptionEn="Technologies and tools I’ve used in personal projects and coursework."
 				icon="material-symbols:terminal-rounded"
 			/>
-			<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-				<div class="flex flex-wrap gap-2" data-skill-filters hidden role="group" aria-label="按类别筛选" data-i18n-attr="aria-label" data-i18n-zh="按类别筛选" data-i18n-en="Filter by category">
-					<button type="button" data-skill-filter="all" aria-pressed="true"><LocalizedText zh="全部" en="All" /></button>
-					{Object.entries(categories).map(([key, label]) => (
-						<button type="button" data-skill-filter={key} aria-pressed="false"><LocalizedText {...label} /></button>
-					))}
-				</div>
-				<p class="flex items-baseline gap-1 text-sm text-(--content-meta)" aria-live="polite">
-					<span data-skill-count>{skills.length}</span>
-					<LocalizedText zh="项技能" en="skills" />
-				</p>
+			<div class="skill-filters mb-4 grid grid-cols-2 gap-2.5 border-b pb-4 sm:flex sm:flex-wrap" data-skill-filters hidden role="group" aria-label="按类别筛选" data-i18n-attr="aria-label" data-i18n-zh="按类别筛选" data-i18n-en="Filter by category">
+				{Object.entries(filters).map(([key, { zh, en, icon }]) => (
+					<button type="button" data-skill-filter={key} aria-controls="skill-grid" aria-pressed={key === "all"}>
+						<Icon is:inline name={icon} class="size-4 shrink-0" aria-hidden="true" />
+						<LocalizedText {zh} {en} />
+					</button>
+				))}
 			</div>
-			<ul class="skill-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+			<p class="mb-4 flex items-baseline gap-1 text-sm text-(--content-meta)" aria-live="polite" aria-atomic="true">
+				<span data-skill-count>{skills.length}</span>
+				<LocalizedText zh="项技能" en="skills" />
+			</p>
+			<ul id="skill-grid" class="skill-grid grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-[1.125rem] xl:grid-cols-3">
 				{skills.map((skill) => (
-					<li data-skill={skill.category} class="skill-card relative flex flex-col rounded-xl border border-(--line-divider) p-4">
-						<div class="mb-3 flex items-center gap-3">
-							<span class="grid size-10 shrink-0 place-items-center rounded-lg bg-(--btn-regular-bg) text-lg text-(--btn-content)" aria-hidden="true">
+					<li data-skill={skill.category} class="skill-card relative flex flex-col rounded-xl border p-4">
+						<div class="mb-3 grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-1.5">
+							<span class="skill-icon grid size-8 place-items-center rounded-lg text-lg" aria-hidden="true">
 								<Icon is:inline name={skill.icon} />
 							</span>
 							<div class="min-w-0">
-								<h2 class="break-words text-base leading-tight font-semibold text-90">
+								<h2 class="wrap-anywhere text-[0.9375rem] leading-tight font-semibold text-90">
 									<LocalizedText zh={skill.name} en={"nameEn" in skill ? skill.nameEn : skill.name} />
 								</h2>
-								<div class="mt-0.5 text-xs text-(--content-meta)"><LocalizedText {...categories[skill.category]} /></div>
+								<div class="mt-0.5 text-xs leading-tight text-(--content-meta)">
+									<LocalizedText zh={categories[skill.category].zh} en={categories[skill.category].en} />
+								</div>
 							</div>
+							<span class="skill-rank"><LocalizedText {...proficiency[skill.level]} /></span>
 						</div>
 						<p class="text-sm leading-relaxed text-75"><LocalizedText zh={skill.zh} en={skill.en} /></p>
 						<div
@@ -77,37 +102,62 @@ const levels = [1, 2, 3, 4];
 </MainGridLayout>
 
 <style>
+	.skill-gallery {
+		--skill-accent: color-mix(in oklab, var(--btn-content) 72%, var(--content-meta));
+		--skill-outline: color-mix(in srgb, var(--content-meta) 18%, var(--line-divider));
+		--skill-wash: color-mix(in srgb, var(--skill-accent) 11%, transparent);
+	}
+	.skill-filters { border-color: var(--skill-outline); }
 	[data-skill-filters][hidden], .skill-card[hidden] { display: none; }
 	[data-skill-filter] {
-		padding: .42rem .8rem;
-		border: 1px solid var(--line-divider);
-		border-radius: 999px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: .5rem;
+		min-height: 2.5rem;
+		padding: .4rem .7rem;
+		border: 1px solid var(--skill-outline);
+		border-radius: .625rem;
 		color: var(--content-meta);
 		font-size: .85rem;
 		font-weight: 600;
 		cursor: pointer;
 	}
 	[data-skill-filter]:hover, [data-skill-filter][aria-pressed="true"] {
-		background: var(--btn-regular-bg);
-		color: var(--btn-content);
+		background: var(--skill-wash);
+		color: var(--skill-accent);
 	}
-	[data-skill-filter][aria-pressed="true"] { border-color: var(--primary); }
-	[data-skill-filter]:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+	[data-skill-filter][aria-pressed="true"] { border-color: var(--skill-accent); }
+	[data-skill-filter]:focus-visible { outline: 2px solid var(--skill-accent); outline-offset: 3px; }
 	.skill-card {
-		background: color-mix(in srgb, var(--card-bg) 89%, var(--primary) 11%);
+		border-color: var(--skill-outline);
+		background: color-mix(in srgb, var(--card-bg) 96%, var(--primary));
 		transition: border-color .2s ease, background .2s ease;
 	}
 	.skill-card:hover {
-		border-color: color-mix(in srgb, var(--primary) 65%, var(--line-divider));
-		background: color-mix(in srgb, var(--card-bg) 84%, var(--primary) 16%);
+		border-color: color-mix(in srgb, var(--primary) 46%, var(--skill-outline));
+		background: color-mix(in srgb, var(--card-bg) 92%, var(--primary));
+	}
+	.skill-icon, .skill-rank {
+		color: var(--skill-accent);
+		background: var(--skill-wash);
+	}
+	.skill-rank {
+		margin-block-start: .125rem;
+		padding: .15rem .35rem;
+		border-radius: 999px;
+		font-size: .7rem;
+		font-weight: 600;
+		line-height: 1.35;
+		white-space: nowrap;
 	}
 	.skill-level-segment {
 		height: .3125rem;
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--btn-content) 20%, var(--line-divider));
+		background: var(--skill-outline);
 	}
 	.skill-level-segment[data-filled] {
-		background: color-mix(in srgb, var(--btn-content) 45%, var(--primary));
+		background: color-mix(in srgb, var(--primary) 68%, var(--skill-accent));
 	}
 	@media (forced-colors: active) {
 		.skill-level-segment { border: 1px solid GrayText; forced-color-adjust: none; }
@@ -122,24 +172,21 @@ const levels = [1, 2, 3, 4];
 			const filters = this.querySelector<HTMLElement>("[data-skill-filters]");
 			const cards = [...this.querySelectorAll<HTMLElement>("[data-skill]")];
 			const count = this.querySelector<HTMLElement>("[data-skill-count]");
-			const buttons = [...this.querySelectorAll<HTMLButtonElement>("[data-skill-filter]")];
-			if (!filters || !count) return;
+			const [all, ...categoryButtons] = this.querySelectorAll<HTMLButtonElement>("[data-skill-filter]");
+			if (!filters || !count || !all) return;
 
 			filters.hidden = false;
 			filters.onclick = (event) => {
 				if (!(event.target instanceof Element)) return;
 				const button = event.target.closest<HTMLButtonElement>("[data-skill-filter]");
 				if (!button) return;
-				const all = buttons[0];
-				if (!all) return;
-
 				const next = button.getAttribute("aria-pressed") !== "true";
 				if (button === all) {
-					for (const filter of buttons.slice(1)) filter.setAttribute("aria-pressed", "false");
+					for (const filter of categoryButtons) filter.setAttribute("aria-pressed", "false");
 				} else {
 					button.setAttribute("aria-pressed", String(next));
 				}
-				const active = buttons.slice(1).filter((filter) => filter.getAttribute("aria-pressed") === "true")
+				const active = categoryButtons.filter((filter) => filter.getAttribute("aria-pressed") === "true")
 					.map((filter) => filter.dataset.skillFilter);
 				all.setAttribute("aria-pressed", String(active.length === 0));
 				let visible = 0;
