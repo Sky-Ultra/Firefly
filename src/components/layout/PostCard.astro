@@ -60,7 +60,8 @@ const {
 	randomCoverFallback = "",
 } = Astro.props;
 const className = Astro.props.class;
-const showNightSky = entry.id === "long-night-love-letter" && isHomePage(Astro.url.pathname);
+const showNightSky =
+	entry.id === "long-night-love-letter" && isHomePage(Astro.url.pathname);
 const cardDecor = getPostDecoration(entry.id, category, tags);
 
 const usesRandomCover = isRandomCoverImage(image);
