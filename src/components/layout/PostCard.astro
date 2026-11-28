@@ -5,10 +5,12 @@ import { Icon } from "astro-icon/components";
 import CoverImage from "@/components/common/CoverImage.astro";
 import LocalizedText from "@/components/common/LocalizedText.astro";
 import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
+import NightLetterSky from "@/components/layout/NightLetterSky.astro";
 import PostMetadata from "@/components/layout/PostMeta.astro";
 import PostStats from "@/components/layout/PostStats.astro";
 import { siteConfig } from "@/config";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
+import { isHomePage } from "@/utils/layout-utils";
 import { getPostDecoration } from "@/utils/post-decoration";
 import { getPostTranslation } from "@/utils/post-translations";
 import { isRandomCoverImage } from "@/utils/random-cover-utils";
@@ -58,6 +60,7 @@ const {
 	randomCoverFallback = "",
 } = Astro.props;
 const className = Astro.props.class;
+const showNightSky = entry.id === "long-night-love-letter" && isHomePage(Astro.url.pathname);
 const cardDecor = getPostDecoration(entry.id, category, tags);
 
 const usesRandomCover = isRandomCoverImage(image);
@@ -124,7 +127,7 @@ const minutes = remarkPluginFrontmatter.minutes;
   ]}
   style={style}
 >
-  <SidebarDecoration motif={cardDecor} />
+  {showNightSky ? <NightLetterSky /> : <SidebarDecoration motif={cardDecor} />}
   <!-- pinned icon -->
   <div
     class:list={[

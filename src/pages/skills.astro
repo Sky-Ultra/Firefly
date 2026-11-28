@@ -1,0 +1,127 @@
+---
+import { Icon } from "astro-icon/components";
+import LocalizedText from "@/components/common/LocalizedText.astro";
+import SidebarDecoration from "@/components/common/SidebarDecoration.astro";
+import PersonalPageHeader from "@/components/pages/personal/PersonalPageHeader.astro";
+import { skills } from "@/config/skillsConfig";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const categories = {
+	web: { zh: "前端开发", en: "Frontend" },
+	systems: { zh: "计算机系统", en: "Systems" },
+	tools: { zh: "开发工具", en: "Tooling" },
+};
+const title = "技能";
+const description = "我在个人项目和课程实践中用过的技术与工具。";
+---
+
+<MainGridLayout {title} {description}>
+	<skill-gallery class="card-base sidebar-decorated-card relative block overflow-hidden p-5 sm:p-7 lg:p-9">
+		<SidebarDecoration motif="window" />
+		<div class="relative">
+			<PersonalPageHeader
+				{title}
+				{description}
+				titleEn="Skills"
+				descriptionEn="Technologies and tools I’ve used in personal projects and coursework."
+				icon="material-symbols:terminal-rounded"
+			/>
+			<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+				<div class="flex flex-wrap gap-2" data-skill-filters hidden role="group" aria-label="按类别筛选" data-i18n-attr="aria-label" data-i18n-zh="按类别筛选" data-i18n-en="Filter by category">
+					<button type="button" data-skill-filter="all" aria-pressed="true"><LocalizedText zh="全部" en="All" /></button>
+					{Object.entries(categories).map(([key, label]) => (
+						<button type="button" data-skill-filter={key} aria-pressed="false"><LocalizedText {...label} /></button>
+					))}
+				</div>
+				<p class="flex items-baseline gap-1 text-sm text-(--content-meta)" aria-live="polite">
+					<span data-skill-count>{skills.length}</span>
+					<LocalizedText zh="项技能" en="skills" />
+				</p>
+			</div>
+			<ul class="skill-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+				{skills.map((skill) => (
+					<li data-skill={skill.category} class="skill-card group relative rounded-xl border border-(--line-divider) p-4">
+						<div class="mb-3 flex items-center gap-3">
+							<span class="grid size-10 shrink-0 place-items-center rounded-lg bg-(--btn-regular-bg) text-lg text-(--btn-content)" aria-hidden="true">
+								<Icon is:inline name={skill.icon} />
+							</span>
+							<div class="min-w-0">
+								<h2 class="break-words text-base leading-tight font-semibold text-90">
+									<LocalizedText zh={skill.name} en={"nameEn" in skill ? skill.nameEn : skill.name} />
+								</h2>
+								<div class="mt-0.5 text-xs text-(--content-meta)"><LocalizedText {...categories[skill.category]} /></div>
+							</div>
+						</div>
+						<p class="text-sm leading-relaxed text-75"><LocalizedText zh={skill.zh} en={skill.en} /></p>
+					</li>
+				))}
+			</ul>
+		</div>
+	</skill-gallery>
+</MainGridLayout>
+
+<style>
+	[data-skill-filters][hidden], .skill-card[hidden] { display: none; }
+	[data-skill-filter] {
+		padding: .42rem .8rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 999px;
+		color: var(--content-meta);
+		font-size: .85rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	[data-skill-filter]:hover, [data-skill-filter][aria-pressed="true"] {
+		background: var(--btn-regular-bg);
+		color: var(--btn-content);
+	}
+	[data-skill-filter][aria-pressed="true"] { border-color: var(--primary); }
+	[data-skill-filter]:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+	.skill-card {
+		background: color-mix(in srgb, var(--card-bg) 89%, var(--primary) 11%);
+		transition: border-color .2s ease, background .2s ease;
+	}
+	.skill-card:hover {
+		border-color: color-mix(in srgb, var(--primary) 65%, var(--line-divider));
+		background: color-mix(in srgb, var(--card-bg) 84%, var(--primary) 16%);
+	}
+	@media (prefers-reduced-motion: reduce) { .skill-card { transition: none; } }
+</style>
+
+<script>
+	class SkillGallery extends HTMLElement {
+		connectedCallback(): void {
+			const filters = this.querySelector<HTMLElement>("[data-skill-filters]");
+			const cards = [...this.querySelectorAll<HTMLElement>("[data-skill]")];
+			const count = this.querySelector<HTMLElement>("[data-skill-count]");
+			const buttons = [...this.querySelectorAll<HTMLButtonElement>("[data-skill-filter]")];
+			if (!filters || !count) return;
+
+			filters.hidden = false;
+			filters.onclick = (event) => {
+				if (!(event.target instanceof Element)) return;
+				const button = event.target.closest<HTMLButtonElement>("[data-skill-filter]");
+				if (!button) return;
+				const all = buttons[0];
+				if (!all) return;
+
+				const next = button.getAttribute("aria-pressed") !== "true";
+				if (button === all) {
+					for (const filter of buttons.slice(1)) filter.setAttribute("aria-pressed", "false");
+				} else {
+					button.setAttribute("aria-pressed", String(next));
+				}
+				const active = buttons.slice(1).filter((filter) => filter.getAttribute("aria-pressed") === "true")
+					.map((filter) => filter.dataset.skillFilter);
+				all.setAttribute("aria-pressed", String(active.length === 0));
+				let visible = 0;
+				for (const card of cards) {
+					card.hidden = active.length > 0 && !active.includes(card.dataset.skill);
+					if (!card.hidden) visible++;
+				}
+				count.textContent = String(visible);
+			};
+		}
+	}
+	if (!customElements.get("skill-gallery")) customElements.define("skill-gallery", SkillGallery);
+</script>

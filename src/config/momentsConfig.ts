@@ -5,6 +5,405 @@ export const momentsConfig: PersonalPagesConfig["moments"] = {
 	...personalPagesConfig.moments,
 	items: [
 		{
+			id: "androgyny-and-care-nov27",
+			date: "2026-11-27T21:44:08+11:00",
+			content:
+				"我见青山多妩媚，料青山见我应如是\n阅读时碰到了 androgynous 这个词，查了一下是“雌雄同体”的意思。\n\n想到最近经常刷到的关于雌雄同体高级人类的解释。它指的是一个人突破了单一的性别特质，既具备坚毅、果断与边界感，又兼具细腻、敏锐与高共情，是一种极度成熟、内核自洽的人格。\n\n又联系到原生家庭中关于缺爱的表述，留守儿童和单亲家庭往往多发。因为抚养者通常是单一的（只有父性或母性甚至都无），必然伴随某种特质的缺位。\n\n于是脑子里突然冒出一个问题：\n如果是由这样一个兼具两性优质特质，且能提供高度情感支持的“高级人类”独立抚养长大，小孩依旧会产生那种缺爱感吗？",
+			contentEn:
+				"I see how lovely the green hills are and imagine they must see me the same way.\nI came across the word “androgynous” while reading. I looked it up and found that it means combining masculine and feminine qualities.\n\nIt reminded me of something I keep seeing online about the “highly evolved androgynous person.” The idea is that someone grows beyond the traits assigned to one gender. They can be resilient, decisive, and good at setting boundaries while also being perceptive, sensitive, and empathetic. The posts describe it as a deeply mature personality at ease with itself.\n\nThat made me think of how people talk about feeling unloved growing up, especially among children whose parents have moved away for work or who live in single-parent households. In that account there may be only one caregiver providing one kind of care, paternal or maternal, or neither, so some qualities are assumed to be missing.\n\nThen a question came to mind:\nIf a child were raised by just one of these “highly evolved” people, who combined the best traits associated with both genders and offered plenty of emotional support, would the child still grow up feeling that kind of absence of love?",
+		},
+		{
+			id: "time-spent-on-computing-nov27",
+			date: "2026-11-27T18:32:12+11:00",
+			content:
+				"我很庆幸，在最压抑、最内卷的大学时代，我大二就已经摆脱了应试教育的束缚，没有活成千篇一律的样子。\n\n我到现在还记得，第一次做出一个前端抽象语法树，接上现成的后端，最后成功跑通了一个可以算加减乘除的计算器时，我激动得不行。\n\n现在回头看，我甚至已经记不清当时到底做过哪些实验，只模糊记得一些课程编号：15-445、15-213、CS144这些？很奇怪，这些编号当年我几乎可以脱口而出。那时候可以和网友和朋友们聊B+树，聊缓冲池，聊异步调度；也会很认真地用调试工具一行一行地找程序漏洞。\n\n但后来去做人工智能，这些东西几乎全忘了。现在再碰到一个项目跑不通，第一反应就是把报错和代码一起扔给AI，甚至都让AI智能体来接管任务了。\n\n我也经常会想，如果我大一、大二的时候就进实验室做科研，会不会现在完全是另一条路。也许我能早几年开始写论文，早几年知道基准测试、消融实验、截止日期是怎么回事。\n\n那些知识没有帮我提高绩点，没有直接变成论文，也没有决定我后来做什么方向。但如果再回到大一，我还是会去看那些书，还是会去写那些注定会被我忘掉的代码。\n\n因为人生的长远轨迹实在太长了，选择很多，回报又太少太慢。大家根本不知道一件事会不会在五年十年以后真正影响你的轨迹。所以人在很年轻的时候，本来就需要一些探索。\n\n我第一次发现，原来我真的会因为想弄懂一个东西而废寝忘食。没有考试，没有绩点，没有死线。我喜欢那些系统的严谨，喜欢一个巨大的系统最后可以被拆成一个又一个明确的机制，再一点一点拼起来。\n\n我第一次真正觉得：原来我是真的喜欢计算机。\n\n真正留下来的，不是B+树具体怎么分裂，是你知道自己曾经真的因为“想搞明白一个问题”而坐在那里一整天；知道自己不是只能靠绩点、论文、录用通知才能驱动。这些东西会变成一个人的一部分。我至少想知道自己最后要成为一个什么样的人。人总不能最后只剩一张纸，写满酒色财气、功名利禄。至少应该有一些东西，是自己真正喜欢过、认真相信过，也愿意为它浪费过时间的。",
+			contentEn:
+				"I’m glad that in the most stifling and competitive years of college, I’d already shaken off the grip of exam-driven education by my sophomore year. I didn’t end up living the same life as everyone else.\n\nI still remember how excited I was the first time I built a front end around an abstract syntax tree, hooked it up to an existing back end, and got a calculator working that could add, subtract, multiply, and divide.\n\nLooking back, I can hardly remember which labs I did. I vaguely remember course numbers like 15-445, 15-213, and CS144. It’s odd to think I could rattle those off without a pause back then. I used to talk with friends online and off about B+ trees, buffer pools, and asynchronous scheduling. I’d also sit with a debugger and go through the program line by line looking for bugs.\n\nThen I went into AI and forgot almost all of it. Now when a project won’t run, my first instinct is to give the error and the code to AI. Sometimes I let an agent take over the task entirely.\n\nI often wonder whether I’d be on a completely different path if I’d joined a research lab in my first or second year. Maybe I’d have started writing papers earlier and learned sooner what benchmarks, ablation studies, and deadlines were all about.\n\nNone of that knowledge raised my GPA, led directly to a paper, or determined what I went on to work on. But if I could go back to my first year, I’d still read those books. I’d still write the code I was bound to forget.\n\nA life takes a long time to unfold. There are plenty of choices, and the returns are often small and slow. Nobody can really tell whether something will change your course five or ten years down the line. That’s why you need room to explore when you’re young.\n\nIt was the first time I realized I could forget to eat or sleep because I wanted to understand something. There was no exam, no GPA, no deadline. I loved the rigor of those systems and how you could break something huge into clear mechanisms and then fit them back together piece by piece.\n\nFor the first time, I thought, I really do love computing.\n\nWhat stayed with me was the knowledge that I’d once spent an entire day in that chair just because I wanted to figure something out. I knew that grades, papers, and acceptance letters weren’t the only things that could drive me. Those experiences become part of who you are. At the very least, I want to know what kind of person I’m becoming. A life has to amount to more than a sheet of paper crowded with pleasures, money, titles, and honors. There ought to be something you genuinely loved, believed in, and were willing to spend time on for its own sake.",
+		},
+		{
+			id: "bilibili-1275280888083513369",
+			date: "2026-11-27T15:01:10+08:00",
+			content: "这Astra字写的这么好看…",
+			contentEn: "Astra’s handwriting is so nice…",
+			contentParts: [
+				{
+					text: "这Astra字写的这么好看…",
+					textEn: "Astra’s handwriting is so nice…",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+						alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+						altEn: "Sit tight",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+						alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+						altEn: "Sit tight",
+					},
+				},
+			],
+			media: {
+				type: "bilibili",
+				url: "https://www.bilibili.com/video/BV1tHyBzmEYp/",
+				title: "眩晕瘫坐！GPT完全手写2026年高考数学试卷，24分钟150分满分！",
+				titleEn:
+					"Dizzy and stunned! GPT handwrites the 2026 gaokao math paper and scores 150 out of 150 in 24 minutes",
+				poster: {
+					src: "/assets/images/moments/bilibili-BV1tHyBzmEYp.webp",
+					alt: "眩晕瘫坐！GPT完全手写2026年高考数学试卷，24分钟150分满分！：视频封面",
+					altEn:
+						"Video cover: Dizzy and stunned! GPT handwrites the 2026 gaokao math paper and scores 150 out of 150 in 24 minutes",
+				},
+			},
+		},
+		{
+			id: "bilibili-1275260169167568905",
+			date: "2026-11-27T13:40:46+08:00",
+			content: "那还说啥了，给你了孩子有这水平随便玩吧…",
+			contentEn:
+				"What else can I say? It’s yours.If the kid’s that good, let them play all they want…",
+			contentParts: [
+				{
+					text: "那还说啥了，给你了",
+					textEn: "What else can I say? It’s yours.",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+						alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+						altEn: "Sit tight",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+						alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+						altEn: "Sit tight",
+					},
+				},
+				{
+					text: "孩子有这水平随便玩吧…",
+					textEn: "If the kid’s that good, let them play all they want…",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-0e1f8ed486b16ea917c27aa8b18e12552e74bc35.webp",
+						alt: "[鸣潮·致予新世界动态表情包_啊？]",
+						altEn: "Huh?",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-0e1f8ed486b16ea917c27aa8b18e12552e74bc35.webp",
+						alt: "[鸣潮·致予新世界动态表情包_啊？]",
+						altEn: "Huh?",
+					},
+				},
+			],
+			media: {
+				type: "bilibili",
+				url: "https://www.bilibili.com/video/BV1Say5zXEeG/",
+				title: "我循声守卫2📢",
+				titleEn: "I’m the Clicker Guard 2 📢",
+				poster: {
+					src: "/assets/images/moments/bilibili-BV1Say5zXEeG.webp",
+					alt: "我循声守卫2📢：视频封面",
+					altEn: "Video cover: I’m the Clicker Guard 2 📢",
+				},
+			},
+		},
+		{
+			id: "bilibili-1275234983466762243",
+			date: "2026-11-27T12:03:02+08:00",
+			content: "我不行了🤣🤣我以为这是串子比赛🤣",
+			contentEn: "I can’t 🤣🤣 I thought this was a trolling contest 🤣",
+			contentParts: [
+				{
+					text: "我不行了🤣🤣我以为这是串子比赛🤣",
+					textEn: "I can’t 🤣🤣 I thought this was a trolling contest 🤣",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+						alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+						altEn: "Sit tight",
+					},
+				},
+			],
+			media: {
+				type: "bilibili",
+				url: "https://www.bilibili.com/video/BV1wtymzvEMM/",
+				title: "任正非成深圳诗词大赛主角，大部分作品都是歌颂夸赞",
+				titleEn:
+					"Ren Zhengfei takes center stage in Shenzhen’s poetry contest, where most entries sing his praises",
+				poster: {
+					src: "/assets/images/moments/bilibili-BV1wtymzvEMM.webp",
+					alt: "任正非成深圳诗词大赛主角，大部分作品都是歌颂夸赞：视频封面",
+					altEn:
+						"Video cover: Ren Zhengfei takes center stage in Shenzhen’s poetry contest, where most entries sing his praises",
+				},
+			},
+		},
+		{
+			id: "bilibili-1275234571149901826",
+			date: "2026-11-27T12:01:26+08:00",
+			content: "求求你教我怎么串吧",
+			contentEn: "Please teach me how to troll like that",
+			contentParts: [
+				{
+					text: "求求你教我怎么串吧",
+					textEn: "Please teach me how to troll like that",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-0e1f8ed486b16ea917c27aa8b18e12552e74bc35.webp",
+						alt: "[鸣潮·致予新世界动态表情包_啊？]",
+						altEn: "Huh?",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-0e1f8ed486b16ea917c27aa8b18e12552e74bc35.webp",
+						alt: "[鸣潮·致予新世界动态表情包_啊？]",
+						altEn: "Huh?",
+					},
+				},
+			],
+			media: {
+				type: "bilibili",
+				url: "https://www.bilibili.com/video/BV1TtykzcE9i/",
+				title: "黄仁勋实际上已经完蛋了",
+				titleEn: "Jensen Huang is actually finished already",
+				poster: {
+					src: "/assets/images/moments/bilibili-BV1TtykzcE9i.webp",
+					alt: "黄仁勋实际上已经完蛋了：视频封面",
+					altEn: "Video cover: Jensen Huang is actually finished already",
+				},
+			},
+		},
+		{
+			id: "bilibili-1275232187408449544",
+			date: "2026-11-27T11:52:11+08:00",
+			content: "真好啊……根本没有这样的生活😭😭😭😭\n我只是区罢了……",
+			contentEn:
+				"That sounds so nice…… There’s no life like that for me 😭😭😭😭\nI’m just bitter about it……",
+			contentParts: [
+				{
+					text: "真好啊……根本没有这样的生活😭😭😭😭\n我只是区罢了……",
+					textEn:
+						"That sounds so nice…… There’s no life like that for me 😭😭😭😭\nI’m just bitter about it……",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+						alt: "[鸣潮·致予新世界动态表情包_委屈]",
+						altEn: "Feeling wronged",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+						alt: "[鸣潮·致予新世界动态表情包_委屈]",
+						altEn: "Feeling wronged",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-ba40dda4747b6b697f495633391ae4ed62d2927f.webp",
+						alt: "[鸣潮·致予新世界动态表情包_委屈]",
+						altEn: "Feeling wronged",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-0677df2c369315a08477c7ae60fef9b4d179b984.webp",
+						alt: "[鸣潮·致予新世界动态表情包_好奇怪...]",
+						altEn: "So strange...",
+					},
+				},
+			],
+			media: {
+				type: "bilibili",
+				url: "https://www.bilibili.com/video/BV1NuyDzLEEs/",
+				title: "我发现两个人真的很喜欢彼此以后 会有一个特别幼稚的习惯",
+				titleEn:
+					"I noticed that when two people really like each other, they pick up one especially childish habit",
+				poster: {
+					src: "/assets/images/moments/bilibili-BV1NuyDzLEEs.webp",
+					alt: "我发现两个人真的很喜欢彼此以后 会有一个特别幼稚的习惯：视频封面",
+					altEn:
+						"Video cover: I noticed that when two people really like each other, they pick up one especially childish habit",
+				},
+			},
+		},
+		{
+			id: "bilibili-1275215295311511575",
+			date: "2026-11-27T10:46:38+08:00",
+			content: "笑死我了",
+			contentEn: "I’m dying",
+			contentParts: [
+				{
+					text: "笑死我了",
+					textEn: "I’m dying",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-87f8d3511a71e47b14e63a5b5a39cff85c4a48e1.webp",
+						alt: "[鸣潮·致予新世界动态表情包_拜托拜托！]",
+						altEn: "Please, please!",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-87f8d3511a71e47b14e63a5b5a39cff85c4a48e1.webp",
+						alt: "[鸣潮·致予新世界动态表情包_拜托拜托！]",
+						altEn: "Please, please!",
+					},
+				},
+			],
+			media: {
+				type: "bilibili",
+				url: "https://www.bilibili.com/video/BV1iFsg6nEsq/",
+				title: "图灵奖得主：中国高校过于看重国际声望 而忽略本科教育",
+				titleEn:
+					"Turing Award winner: Chinese universities care too much about international prestige and neglect undergraduate education",
+				poster: {
+					src: "/assets/images/moments/bilibili-BV1iFsg6nEsq.webp",
+					alt: "图灵奖得主：中国高校过于看重国际声望 而忽略本科教育：视频封面",
+					altEn:
+						"Video cover: Turing Award winner: Chinese universities care too much about international prestige and neglect undergraduate education",
+				},
+			},
+		},
+		{
+			id: "bilibili-1274999924221542457",
+			date: "2026-11-26T20:50:53+08:00",
+			content: "笑死了",
+			contentEn: "I’m dying",
+			contentParts: [
+				{
+					text: "笑死了",
+					textEn: "I’m dying",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+						alt: "[鸣潮·致予新世界动态表情包_打call！]",
+						altEn: "Cheering",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-95f2b558212d63b1d8ff0c3d685f0b70ba368a9e.webp",
+						alt: "[鸣潮·致予新世界动态表情包_打call！]",
+						altEn: "Cheering",
+					},
+				},
+			],
+			media: {
+				type: "bilibili",
+				url: "https://www.bilibili.com/video/BV1ahyUzHEQ9/",
+				title: "当我在大学食堂绑定了KPL直播系统后...",
+				titleEn:
+					"I hooked up my university cafeteria to a KPL broadcast system...",
+				poster: {
+					src: "/assets/images/moments/bilibili-BV1ahyUzHEQ9.webp",
+					alt: "当我在大学食堂绑定了KPL直播系统后...：视频封面",
+					altEn:
+						"Video cover: I hooked up my university cafeteria to a KPL broadcast system...",
+				},
+			},
+		},
+		{
+			id: "bilibili-1274998876234842112",
+			date: "2026-11-26T20:46:49+08:00",
+			content: "老大嫁作商人妇…",
+			contentEn: "Boss married a merchant and became his wife…",
+			contentParts: [
+				{
+					text: "老大嫁作商人妇…",
+					textEn: "Boss married a merchant and became his wife…",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+						alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+						altEn: "Sit tight",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-342082c19d2ddad2e223283df839dd17864534c6.webp",
+						alt: "[鸣潮·致予新世界动态表情包_坐好了]",
+						altEn: "Sit tight",
+					},
+				},
+			],
+			media: {
+				type: "bilibili",
+				url: "https://www.bilibili.com/video/BV1whyLzVENM/",
+				title: "🤓👆🏻老大我们怎么有公司社保了！",
+				titleEn:
+					"🤓👆🏻 Boss, since when do we have company social insurance?!",
+				poster: {
+					src: "/assets/images/moments/bilibili-BV1whyLzVENM.webp",
+					alt: "🤓👆🏻老大我们怎么有公司社保了！：视频封面",
+					altEn:
+						"Video cover: 🤓👆🏻 Boss, since when do we have company social insurance?!",
+				},
+			},
+		},
+		{
+			id: "bilibili-1274979849494069249",
+			date: "2026-11-26T19:32:59+08:00",
+			content: "TCP真的笑死我了",
+			contentEn: "The TCP joke is killing me",
+			contentParts: [
+				{
+					text: "TCP真的笑死我了",
+					textEn: "The TCP joke is killing me",
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-23b19246702e841f43fb28c307406bd3fbe54046.webp",
+						alt: "[鸣潮·致予新世界动态表情包_哇哦~]",
+						altEn: "Wow",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-23b19246702e841f43fb28c307406bd3fbe54046.webp",
+						alt: "[鸣潮·致予新世界动态表情包_哇哦~]",
+						altEn: "Wow",
+					},
+				},
+				{
+					emoji: {
+						src: "/assets/emojis/moments/bili-23b19246702e841f43fb28c307406bd3fbe54046.webp",
+						alt: "[鸣潮·致予新世界动态表情包_哇哦~]",
+						altEn: "Wow",
+					},
+				},
+			],
+			media: {
+				type: "bilibili",
+				url: "https://www.bilibili.com/video/BV1BNy6zTEtw/",
+				title:
+					"婚礼现场新郎“复盘”恋爱账走红！恋爱不到1300天 新娘提了1341次分手他回了1342次“不行”",
+				titleEn:
+					"A groom’s wedding recap goes viral: in under 1,300 days, the bride tried to break up 1,341 times and he said no 1,342 times",
+				poster: {
+					src: "/assets/images/moments/bilibili-BV1BNy6zTEtw.webp",
+					alt: "婚礼现场新郎“复盘”恋爱账走红！恋爱不到1300天 新娘提了1341次分手他回了1342次“不行”：视频封面",
+					altEn:
+						"Video cover: A groom’s wedding recap goes viral: in under 1,300 days, the bride tried to break up 1,341 times and he said no 1,342 times",
+				},
+			},
+		},
+		{
 			id: "with-her-forever-nov26",
 			date: "2026-11-26T20:49:30+11:00",
 			content:
